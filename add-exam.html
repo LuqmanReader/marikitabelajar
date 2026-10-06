@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Add an Attempt · Personal Hub</title><link rel="icon" href="favicon-32.png"><link rel="stylesheet" href="revision-flow.css">
+<script src="auth.js"></script><script>if(!PersonalHubAuth.guard())throw new Error('Locked');</script>
+<script src="subject-catalog.js"></script><script src="exam-model.js"></script><script src="chapter-analysis.js"></script><script src="revision-flow.js"></script>
+</head><body class="flow-page">
+<div class="flow-topbar">PERSONAL HUB · REVISION WORKFLOW</div>
+<main class="flow-wrap"><header class="flow-hero"><a href="hub.html">← Revision Hub</a><h1>Add an attempt</h1><p>Start with your answers. Build your understanding. Track your progress.</p></header>
+<nav class="flow-steps" aria-label="Revision workflow"><span class="current">1 · Add attempt</span><span>2 · Review &amp; ask AI</span><span>3 · Paste &amp; save</span><span>4 · See progress</span></nav>
+<section class="flow-panel"><h2>Which attempt is this?</h2><div class="flow-form-grid">
+<label>Subject<select id="subjectSelect"></select></label>
+<label>Attempt type<select id="testType"><option value="set">Chapter set</option><option value="pre">Progress Test</option><option value="mock">Mock Test</option></select></label>
+<label><span id="numberLabel">Set number</span><input type="number" id="testNumber" min="1" step="1" value="1"></label>
+<label>Attempt date &amp; time<input id="attemptDate" type="datetime-local"></label>
+</div><div id="setFields" class="flow-form-grid">
+<label>Chapter for this set<input id="setChapter" list="setChapterNames" placeholder="Chapter 4 · Accruals and prepayments" maxlength="120"><datalist id="setChapterNames"></datalist></label>
+<label>Total sets in this chapter (optional)<input id="setTotal" type="number" min="1" step="1" placeholder="e.g. 8"><small>Each chapter can have a different number of sets.</small></label>
+</div><label class="flow-field">Attempt label (optional)<input id="titleInput" maxlength="180" placeholder="e.g. Second attempt after revision"></label>
+<label class="flow-upload">Upload your marked attempt review<input id="sourceFile" type="file" accept=".html,.htm,.json,.txt,text/html,application/json,text/plain"><small>Save the completed attempt-review page as HTML, or choose an exported questions JSON file.</small></label>
+<button id="parseAttempt" class="flow-button" disabled>Build answer review</button><p id="entryMessage" role="status" aria-live="polite"></p></section>
+<section class="flow-panel"><h2>Check &amp; save</h2><div id="entryPreview"><p>Your result will appear here after you upload the attempt.</p></div><button id="saveAttempt" class="flow-button primary" disabled>Save attempt &amp; open debrief →</button></section>
+<p class="flow-muted">Your attempts save in this browser. Retaking the same set creates a new attempt; it does not increase the number of distinct sets completed.</p>
+</main><script src="attempt-entry.js"></script><script>PersonalHubAuth.addLockButton();</script></body></html>

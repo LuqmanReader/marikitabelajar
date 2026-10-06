@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="auth.js"></script><script>if(!PersonalHubAuth.guard()) throw new Error("Locked");</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Loading… · Personal Hub</title>
+<style>
+  :root{
+    --ink:#111111;
+    --paper:#F4EEDD;
+    --card:#FFFFFF;
+    --red:#E63B2E;
+    --blue:#1D3FA0;
+    --yellow:#F5C518;
+    --green:#2E8B4F;
+    --green-deep:#1F6B39;
+    --grey:#777777;
+    --line:4px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle, rgba(17,17,17,0.06) 1px, transparent 1px);
+    background-size: 18px 18px;
+    color:var(--ink);
+    font-family: ui-monospace,"JetBrains Mono","Space Mono",Menlo,Consolas,monospace;
+    padding-bottom:80px;
+  }
+  h1,h2,h3,h4,.display{
+    font-family:"Arial Black","Helvetica Neue",Impact,sans-serif;
+    text-transform:uppercase;
+    letter-spacing:-0.02em;
+    margin:0;
+  }
+  .wrap{max-width:880px;margin:0 auto;padding:0 16px;}
+
+  /* ===== Top marquee ===== */
+  .topbar{
+    background:var(--ink);
+    color:var(--paper);
+    border-bottom:var(--line) solid var(--ink);
+    padding:8px 0;
+    overflow:hidden;
+    white-space:nowrap;
+  }
+  .marquee{
+    display:inline-block;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:0.08em;
+    animation: scroll-left 22s linear infinite;
+  }
+  @keyframes scroll-left{
+    0%{transform:translateX(0);}
+    100%{transform:translateX(-50%);}
+  }
+
+  /* ===== Header ===== */
+  header.hero{
+    padding:28px 0 18px;
+  }
+  .brandmark{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:10px;
+  }
+  .mark{position:relative;width:34px;height:34px;flex:0 0 auto;}
+  .mark-circle{position:absolute;left:0;top:0;width:19px;height:19px;border-radius:50%;background:var(--red);border:2px solid var(--ink);}
+  .mark-tri{position:absolute;left:12px;top:8px;width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-bottom:17px solid var(--blue);}
+  .mark-square{position:absolute;left:19px;top:0;width:14px;height:14px;background:var(--yellow);border:2px solid var(--ink);}
+  .brand-name{font-size:13px;font-weight:800;letter-spacing:0.06em;}
+  .brand-name span{color:var(--red);}
+
+  h1.title{font-size:clamp(28px,6vw,46px);line-height:0.95;}
+  .subtitle{
+    font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--grey);
+    margin-top:8px;
+  }
+
+  /* ===== Panel base (brutalist card) ===== */
+  .panel{
+    background:var(--card);
+    border:var(--line) solid var(--ink);
+    box-shadow:8px 8px 0 0 var(--ink);
+  }
+
+  /* ===== Stats dashboard ===== */
+  .dash{
+    margin-top:22px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:0;
+  }
+  .stat{
+    border-right:var(--line) solid var(--ink);
+    padding:14px 12px;
+    background:var(--card);
+  }
+  .stat:last-child{border-right:none;}
+  .stat .num{font-family:"Arial Black","Helvetica Neue",Impact,sans-serif;font-size:30px;line-height:1;}
+  .stat .lbl{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;color:var(--grey);margin-top:4px;}
+  .stat.correct .num{color:var(--green-deep);}
+  .stat.incorrect .num{color:var(--red);}
+  .stat.xp .num{color:var(--blue);}
+  @media (max-width:600px){
+    .dash{grid-template-columns:repeat(2,1fr);}
+    .stat:nth-child(2){border-right:none;}
+    .stat:nth-child(1),.stat:nth-child(2){border-bottom:var(--line) solid var(--ink);}
+  }
+
+  /* ===== Progress bars ===== */
+  .progress-block{margin-top:16px;padding:16px;}
+  .progress-row{margin-bottom:14px;}
+  .progress-row:last-child{margin-bottom:0;}
+  .progress-label{
+    display:flex;justify-content:space-between;align-items:baseline;
+    font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;
+    margin-bottom:6px;
+  }
+  .progress-label .val{font-family:"Arial Black","Helvetica Neue",Impact,sans-serif;font-size:14px;letter-spacing:0;}
+  .track{
+    height:20px;
+    border:3px solid var(--ink);
+    background:repeating-linear-gradient(45deg,#00000008,#00000008 6px,transparent 6px,transparent 12px), #fff;
+    position:relative;
+    overflow:hidden;
+  }
+  .fill{
+    height:100%;
+    width:0%;
+    transition:width 0.5s cubic-bezier(.2,.9,.3,1.2);
+    position:relative;
+  }
+  .fill.exam{background:repeating-linear-gradient(135deg,var(--green),var(--green) 10px,var(--green-deep) 10px,var(--green-deep) 20px);}
+  .fill.review{background:repeating-linear-gradient(135deg,var(--blue),var(--blue) 10px,#13297a 10px,#13297a 20px);}
+
+  /* ===== Filter tabs ===== */
+  .filters{
+    display:flex;
+    gap:10px;
+    margin-top:18px;
+    flex-wrap:wrap;
+  }
+  .filter-btn{
+    font-family:"Arial Black","Helvetica Neue",Impact,sans-serif;
+    font-size:12px;
+    letter-spacing:0.03em;
+    padding:9px 16px;
+    border:3px solid var(--ink);
+    background:var(--card);
+    cursor:pointer;
+    box-shadow:4px 4px 0 0 var(--ink);
+    transition:transform .08s ease, box-shadow .08s ease;
+    color:var(--ink);
+  }
+  .filter-btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 0 var(--ink);}
+  .filter-btn:active,.filter-btn.active{
+    transform:translate(4px,4px);
+    box-shadow:0 0 0 0 var(--ink);
+  }
+  .filter-btn.active{background:var(--yellow);}
+  .filter-btn .count{opacity:.6;font-size:10px;margin-left:4px;}
+
+  /* ===== Question list ===== */
+  .qlist{margin-top:22px;display:flex;flex-direction:column;gap:16px;}
+
+  .qcard{
+    background:var(--card);
+    border:var(--line) solid var(--ink);
+    box-shadow:7px 7px 0 0 var(--ink);
+    scroll-margin-top:16px;
+  }
+  .qcard.hidden{display:none;}
+
+  .qhead{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:14px 16px;
+    cursor:pointer;
+    user-select:none;
+    border-bottom:var(--line) solid transparent;
+  }
+  .qcard.open .qhead{border-bottom-color:var(--ink);}
+
+  .qno-badge{
+    font-family:"Arial Black","Helvetica Neue",Impact,sans-serif;
+    font-size:15px;
+    width:38px;height:38px;
+    flex:0 0 auto;
+    display:flex;align-items:center;justify-content:center;
+    border:3px solid var(--ink);
+    background:var(--paper);
+  }
+  .qcard.correct .qno-badge{background:var(--green);color:#fff;}
+  .qcard.incorrect .qno-badge{background:var(--red);color:#fff;}
+
+  .qhead-mid{flex:1;min-width:0;}
+  .qhead-snippet{
+    font-size:12.5px;
+    font-weight:600;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    display:-webkit-box;
+    -webkit-line-clamp:1;
+    -webkit-box-orient:vertical;
+  }
+  .qhead-tags{display:flex;gap:6px;margin-top:5px;flex-wrap:wrap;}
+
+  .stamp{
+    font-family:"Arial Black","Helvetica Neue",Impact,sans-serif;
+    font-size:9.5px;
+    letter-spacing:0.05em;
+    padding:2px 7px;
+    border:2px solid currentColor;
+    text-transform:uppercase;
+    display:inline-block;
+  }
+  .stamp.correct{color:var(--green-deep);}
+  .stamp.incorrect{color:var(--red);}
+  .stamp.xp{color:var(--ink);background:var(--yellow);border-color:var(--ink);}
+  .stamp.reviewed{color:#fff;background:var(--blue);border-color:var(--blue);}
+
+  .chevron{
+    flex:0 0 auto;
+    width:26px;height:26px;
+    border:2px solid var(--ink);
+    display:flex;align-items:center;justify-content:center;
+    font-size:14px;font-weight:900;
+    transition:transform .2s ease;
+  }
+  .qcard.open .chevron{transform:rotate(45deg);}
+
+  .qbody{display:none;padding:0 16px 20px;}
+  .qcard.open .qbody{display:block;}
+
+  .qtext{font-size:13.5px;line-height:1.55;margin-top:14px;}
+  .qtext p{margin:0 0 10px;}
+  .qtext table{border-collapse:collapse;width:100%;margin:10px 0;font-size:12.5px;}
+  .qtext table td{border:2px solid var(--ink);padding:5px 8px;}
+  .qtext table td:last-child{text-align:right;}
+
+  .opts{margin-top:14px;display:flex;flex-direction:column;gap:8px;}
+  .opt{
+    display:flex;align-items:flex-start;gap:10px;
+    border:2.5px solid var(--ink);
+    padding:9px 11px;
+    font-size:12.5px;
+    background:#fff;
+  }
+  .opt-mark{
+    flex:0 0 auto;width:20px;height:20px;
+    border:2px solid var(--ink);
+    display:flex;align-items:center;justify-content:center;
+    font-size:12px;font-weight:900;
+    margin-top:1px;
+  }
+  .opt.chosen-correct{background:#EAF7EE;border-color:var(--green-deep);}
+  .opt.chosen-correct .opt-mark{background:var(--green);color:#fff;border-color:var(--green-deep);}
+  .opt.chosen-wrong{background:#FDECEA;border-color:var(--red);}
+  .opt.chosen-wrong .opt-mark{background:var(--red);color:#fff;border-color:var(--red);}
+  .opt.right-unchosen{background:#EAF7EE;border-style:dashed;border-color:var(--green-deep);}
+  .opt.right-unchosen .opt-mark{background:#fff;color:var(--green-deep);}
+  .opt.plain .opt-mark{background:#fff;color:transparent;}
+  .opt p{margin:0;}
+
+  .compare{
+    margin-top:16px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  @media (max-width:520px){.compare{grid-template-columns:1fr;}}
+  .compare .box{
+    border:3px solid var(--ink);
+    padding:10px 11px;
+  }
+  .compare .box.wrong{background:#FDECEA;border-color:var(--red);}
+  .compare .box.right{background:#EAF7EE;border-color:var(--green-deep);}
+  .compare .box .box-lbl{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;}
+  .compare .box.wrong .box-lbl{color:var(--red);}
+  .compare .box.right .box-lbl{color:var(--green-deep);}
+  .compare .box p{margin:0;font-size:12.5px;}
+
+  .debrief{
+    margin-top:16px;
+    border:3px solid var(--ink);
+    background:#FFFDF5;
+    position:relative;
+  }
+  .debrief::before{
+    content:"";
+    position:absolute;top:-9px;left:18px;
+    width:34px;height:16px;
+    background:var(--yellow);
+    border:2px solid var(--ink);
+    transform:rotate(-3deg);
+  }
+  .debrief-head{
+    padding:12px 14px 4px;
+    font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;
+    display:flex;align-items:center;gap:8px;
+    color:var(--ink);
+  }
+  .debrief-head .pin{width:8px;height:8px;border-radius:50%;background:var(--red);border:1px solid var(--ink);}
+  .debrief-body{padding:6px 14px 14px;font-size:13px;line-height:1.6;}
+  .debrief-body p{margin:0 0 10px;}
+  .debrief-body p:last-child{margin-bottom:0;}
+  .debrief-body strong{background:linear-gradient(transparent 60%, var(--yellow) 60%);}
+
+  .note-tag{
+    display:inline-block;
+    font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;
+    color:var(--grey);
+    margin-top:10px;
+  }
+
+  .qfooter{
+    margin-top:16px;
+    display:flex;justify-content:space-between;align-items:center;
+    flex-wrap:wrap;gap:10px;
+  }
+  .review-btn{
+    font-family:"Arial Black","Helvetica Neue",Impact,sans-serif;
+    font-size:11.5px;
+    padding:9px 14px;
+    border:3px solid var(--ink);
+    background:var(--yellow);
+    cursor:pointer;
+    box-shadow:4px 4px 0 0 var(--ink);
+    transition:transform .08s ease, box-shadow .08s ease, background .15s ease;
+  }
+  .review-btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 0 var(--ink);}
+  .review-btn:active{transform:translate(4px,4px);box-shadow:0 0 0 0 var(--ink);}
+  .review-btn.done{
+    background:var(--blue);color:#fff;cursor:default;
+    box-shadow:4px 4px 0 0 var(--ink);
+    transform:none;
+  }
+  .review-btn.done:hover{transform:none;box-shadow:4px 4px 0 0 var(--ink);}
+
+  .xp-earned{font-size:11px;font-weight:800;color:var(--green-deep);}
+
+  /* ===== Confidence + Retry ===== */
+  .learning-panel{margin-top:14px;padding:16px;border:3px solid var(--ink);background:#fff;box-shadow:6px 6px 0 0 var(--ink);}
+  .learning-title{font-family:"Arial Black","Helvetica Neue",Impact,sans-serif;font-size:14px;text-transform:uppercase;margin-bottom:8px;}
+  .confidence-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .confidence-row input{width:76px;padding:9px;border:3px solid var(--ink);font-family:ui-monospace,monospace;font-weight:800;}
+  .confidence-result{margin-top:10px;padding:10px 12px;border-left:7px solid var(--blue);background:#f4f6ff;font-size:11.5px;font-weight:700;line-height:1.5;}
+  .retry-area{margin-top:14px;display:none;}
+  .retry-area.show{display:block;}
+  .retry-q{border:3px solid var(--ink);padding:14px;margin-top:10px;background:#fff;box-shadow:4px 4px 0 0 var(--ink);}
+  .retry-q.correct{border-left:8px solid var(--green-deep);}
+  .retry-q.wrong{border-left:8px solid var(--red);}
+  .retry-option{display:block;margin:8px 0;padding:9px;border:2px solid #bbb;cursor:pointer;font-size:12px;}
+  .retry-option input{margin-right:8px;}
+  .retry-result{font-weight:900;margin-top:10px;font-size:12px;}
+
+  /* ===== Toast ===== */
+  #toast{
+    position:fixed;left:50%;bottom:24px;transform:translate(-50%,120%);
+    background:var(--ink);color:var(--yellow);
+    font-family:"Arial Black","Helvetica Neue",Impact,sans-serif;
+    font-size:13px;letter-spacing:.03em;
+    padding:12px 20px;
+    border:3px solid var(--ink);
+    box-shadow:6px 6px 0 0 var(--red);
+    transition:transform .35s cubic-bezier(.2,.9,.3,1.2);
+    z-index:50;
+    white-space:nowrap;
+  }
+  #toast.show{transform:translate(-50%,0);}
+
+  /* ===== Footer ===== */
+  footer{
+    margin-top:34px;
+    padding:20px 16px 4px;
+    text-align:center;
+    font-size:10.5px;
+    color:var(--grey);
+    font-weight:700;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+  }
+
+  .empty-state{
+    padding:40px 16px;text-align:center;
+    font-size:12px;font-weight:700;color:var(--grey);
+    text-transform:uppercase;letter-spacing:.04em;
+  }
+</style>
+<script src="subject-catalog.js"></script>
+<script src="exam-model.js"></script>
+<script src="chapter-analysis.js"></script>
+<script src="chapter-ui.js"></script>
+<link rel="stylesheet" href="chapter-analysis.css">
+<link rel="stylesheet" href="revision-flow.css">
+<script src="revision-flow.js"></script>
+<script src="debrief-workflow.js"></script>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="marquee" id="marquee"></div>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="brandmark">
+      <div class="mark"><span class="mark-circle"></span><span class="mark-tri"></span><span class="mark-square"></span></div>
+      <div class="brand-name">PERSONAL HUB · CORRECTIONS ENGINE</div>
+    </div>
+    <h1 class="title" id="pageTitle">Loading&hellip;</h1>
+    <div class="subtitle" id="pageSubtitle"></div>
+    <a href="hub.html" style="display:inline-block;margin-top:10px;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--blue);text-decoration:none;">&larr; Back to hub</a>
+  </header>
+
+  <div class="dash panel">
+    <div class="stat correct"><div class="num" id="statCorrect">0</div><div class="lbl">Correct</div></div>
+    <div class="stat incorrect"><div class="num" id="statIncorrect">0</div><div class="lbl">Incorrect</div></div>
+    <div class="stat"><div class="num" id="statPct">0%</div><div class="lbl">Score</div></div>
+    <div class="stat xp"><div class="num" id="statXP">0</div><div class="lbl">Total XP</div></div>
+  </div>
+
+  <div class="progress-block panel" style="margin-top:14px;">
+    <div class="progress-row">
+      <div class="progress-label"><span>Exam Score</span><span class="val" id="examScoreLabel">0 / 100 XP</span></div>
+      <div class="track"><div class="fill exam" id="examFill"></div></div>
+    </div>
+    <div class="progress-row">
+      <div class="progress-label"><span>Debrief Progress (review every miss to bank bonus XP)</span><span class="val" id="reviewLabel">0 / 0</span></div>
+      <div class="track"><div class="fill review" id="reviewFill"></div></div>
+    </div>
+  </div>
+
+  <div class="learning-panel" id="learningTools">
+    <div class="learning-title">Learning Calibration</div>
+    <div style="font-size:11.5px;line-height:1.55;margin-bottom:10px;">How confident were you in this paper <strong>before seeing the result?</strong> Save a 1–10 rating and the hub will compare perception with performance.</div>
+    <div class="confidence-row">
+      <input id="confidenceInput" type="number" min="1" max="10" step="1" placeholder="1–10" aria-label="Confidence from 1 to 10">
+      <button class="btn secondary" id="saveConfidenceBtn" style="width:auto;padding:10px 18px;font-size:11.5px;">Save Confidence</button>
+      <button class="btn secondary" id="startRetryBtn" style="width:auto;padding:10px 18px;font-size:11.5px;background:var(--yellow);">Retry My Mistakes</button>
+    </div>
+    <div class="confidence-result" id="confidenceResult" style="display:none;"></div>
+    <div class="retry-area" id="retryArea">
+      <div class="learning-title" style="font-size:12px;">Mistake Retry · Active Recall</div>
+      <div style="font-size:11px;line-height:1.5;">Answers are hidden until you submit. This attempt is practice only and does not overwrite your original exam score.</div>
+      <div id="retryQuestions"></div>
+      <button class="btn secondary" id="submitRetryBtn" style="width:auto;padding:10px 18px;font-size:11.5px;margin-top:12px;">Submit Retry</button>
+      <div class="confidence-result" id="retrySummary" style="display:none;"></div>
+    </div>
+  </div>
+
+  <div id="claudeSyncPanel"></div>
+
+  <div class="filters" id="filters">
+    <button class="filter-btn active" data-filter="all">All <span class="count" id="cAll"></span></button>
+    <button class="filter-btn" data-filter="incorrect">Needs Debrief <span class="count" id="cIncorrect"></span></button>
+    <button class="filter-btn" data-filter="correct">Correct <span class="count" id="cCorrect"></span></button>
+    <button class="filter-btn" data-filter="unreviewed">Not Yet Reviewed <span class="count" id="cUnreviewed"></span></button>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;flex-wrap:wrap;gap:8px;">
+    <div style="font-size:9.5px;font-weight:800;color:var(--grey);text-transform:uppercase;letter-spacing:.05em;">&#128190; Progress saves automatically to this browser</div>
+    <button id="resetProgress" style="font-family:ui-monospace,monospace;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;background:none;border:2px solid var(--grey);color:var(--grey);padding:4px 9px;cursor:pointer;">Reset Progress</button>
+  </div>
+
+  <div class="qlist" id="qlist"></div>
+  <div class="empty-state" id="emptyState" style="display:none;">No questions match this filter.</div>
+
+  <footer>Personal Hub &middot; Corrections Engine &middot; Keep grinding, the exam doesn't grade effort but your memory does.</footer>
+</div>
+
+<div id="toast"></div>
+
+<script>(function(){
+  var params = new URLSearchParams(window.location.search);
+  var examId = params.get('id');
+  var DATA = [];
+  var META = null;
+  var LOAD_ERROR = null;
+
+  if(!examId){
+    LOAD_ERROR = 'No exam id was given in the URL (expected something like view.html?id=your-exam).';
+  } else {
+    try{
+      var rawData = localStorage.getItem('tymba_exam_data:' + examId);
+      var customExams = JSON.parse(localStorage.getItem('tymba_custom_exams') || '[]');
+      customExams=ExamModel.normalize(customExams);
+      META = customExams.find(function(e){ return e.id === examId; }) || null;
+      if(!rawData || !META){
+        LOAD_ERROR = 'No saved exam found for id "' + examId + '" in this browser. It may have been saved on a different device/browser, or storage was cleared.';
+      } else {
+        DATA = JSON.parse(rawData);
+      }
+    }catch(e){
+      LOAD_ERROR = 'Could not read saved exam data from this browser (' + e.message + ').';
+    }
+  }
+
+  if(META){var subtitle=document.querySelector('.subtitle');if(subtitle)subtitle.textContent=ExamModel.label(META)+' · '+META.subject;}
+
+  var STORAGE_KEY = 'view_' + (examId || 'unknown') + '_debrief_progress_v1';
+  var reviewed = {}; // qno -> true
+  var currentFilter = 'all';
+  var confidenceKey = 'tymba_exam_confidence:' + (examId || 'unknown');
+  var retryHistoryKey = 'tymba_retry_history:' + (examId || 'unknown');
+
+  function confidenceFeedback(confidence, pct){
+    var expected = confidence * 10;
+    var gap = pct - expected;
+    if(gap <= -15) return 'Calibration: you rated yourself higher than the result suggests. Prioritise the weak topics before the next attempt.';
+    if(gap >= 15) return 'Calibration: your performance is stronger than your self-rating. Your confidence may be lagging behind your actual ability.';
+    return 'Calibration: your confidence and actual performance are reasonably aligned.';
+  }
+  function renderConfidence(){
+    var box = document.getElementById('confidenceResult');
+    var input = document.getElementById('confidenceInput');
+    if(!box || !input) return;
+    var saved = parseInt(localStorage.getItem(confidenceKey),10);
+    if(saved >= 1 && saved <= 10){
+      input.value = saved;
+      var graded=correctCount+incorrectCount;
+      var pct = graded ? Math.round(correctCount/graded*100) : 0;
+      box.style.display = 'block';
+      box.innerHTML = 'Confidence: <strong>' + saved + '/10</strong> &middot; Actual score: <strong>' + pct + '%</strong><br>' + confidenceFeedback(saved,pct);
+    } else box.style.display = 'none';
+  }
+  function saveConfidence(){
+    var v = parseInt(document.getElementById('confidenceInput').value,10);
+    if(!(v >= 1 && v <= 10)){ showToast('ENTER A CONFIDENCE SCORE FROM 1 TO 10'); return; }
+    localStorage.setItem(confidenceKey, String(v));
+    renderConfidence();
+    showToast('CONFIDENCE SAVED');
+  }
+  function retryOptionIndex(d){
+    var target = stripTags(d.correct_answer).toLowerCase();
+    for(var i=0;i<d.options.length;i++){
+      var txt = stripTags(d.options[i].text).toLowerCase();
+      if(txt === target || target.indexOf(txt) !== -1 || txt.indexOf(target) !== -1) return i;
+    }
+    return -1;
+  }
+  function renderRetry(){
+    var area = document.getElementById('retryArea');
+    var wrap = document.getElementById('retryQuestions');
+    if(!incorrectList.length){ showToast('NO MISTAKES TO RETRY'); return; }
+    wrap.innerHTML = incorrectList.map(function(d,qi){
+      var opts = d.options.map(function(opt,oi){
+        return '<label class="retry-option"><input type="radio" name="retry_' + qi + '" value="' + oi + '">' + opt.text + '</label>';
+      }).join('');
+      return '<div class="retry-q" data-retry-index="' + qi + '"><div style="font-weight:900;font-size:12px;margin-bottom:8px;">Q' + d.qno + '</div><div class="qtext">' + d.qtext + '</div>' + opts + '<div class="retry-result"></div></div>';
+    }).join('');
+    document.getElementById('retrySummary').style.display='none';
+    area.classList.add('show');
+    area.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  function submitRetry(){
+    var answered=0, score=0;
+    incorrectList.forEach(function(d,qi){
+      var card=document.querySelector('[data-retry-index="'+qi+'"]');
+      var picked=document.querySelector('input[name="retry_'+qi+'"]:checked');
+      var result=card.querySelector('.retry-result');
+      card.classList.remove('correct','wrong');
+      if(!picked){ result.textContent='Not answered'; return; }
+      answered++;
+      var correctIndex=retryOptionIndex(d);
+      if(parseInt(picked.value,10)===correctIndex){ score++; card.classList.add('correct'); result.innerHTML='✓ Correct'; }
+      else { card.classList.add('wrong'); result.innerHTML='✗ Incorrect · Correct answer: ' + d.correct_answer; }
+    });
+    if(answered < incorrectList.length){ showToast('ANSWER EVERY RETRY QUESTION FIRST'); return; }
+    var history=[];
+    try{ history=JSON.parse(localStorage.getItem(retryHistoryKey)||'[]'); }catch(e){}
+    history.push({date:new Date().toISOString(),correct:score,total:incorrectList.length});
+    localStorage.setItem(retryHistoryKey,JSON.stringify(history.slice(-20)));
+    var summary=document.getElementById('retrySummary');
+    summary.style.display='block';
+    summary.innerHTML='Retry result: <strong>'+score+' / '+incorrectList.length+'</strong> ('+Math.round(score/incorrectList.length*100)+'%). This practice result has been saved separately from your original exam score.';
+    showToast('RETRY COMPLETE · '+score+'/'+incorrectList.length);
+  }
+
+
+  function loadProgress(){
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if(raw){
+        var parsed = JSON.parse(raw);
+        if(parsed && typeof parsed === 'object') reviewed = parsed;
+      }
+    }catch(e){ /* localStorage unavailable or corrupt — start fresh */ }
+  }
+
+  function saveProgress(){
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(reviewed));
+    }catch(e){ /* storage full or blocked — progress just won't persist */ }
+  }
+
+  var totalQ = DATA.length;
+  var correctList = DATA.filter(function(d){return d.is_correct===true;});
+  var incorrectList = DATA.filter(function(d){return d.is_correct===false;});
+  var correctCount = correctList.length;
+  var incorrectCount = incorrectList.length;
+  var XP_PER_Q = 2;
+  var examMaxXP = (correctCount+incorrectCount) * XP_PER_Q;
+
+  function stripTags(html){
+    var tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return (tmp.textContent || tmp.innerText || '').replace(/\s+/g,' ').trim();
+  }
+
+  function escapeAttr(s){
+    return String(s).replace(/"/g,'&quot;');
+  }
+
+  function renderMarquee(){
+    var msgs = [
+      (META ? META.title.toUpperCase() : 'EXAM') + ' \u00b7 ATTEMPT REVIEW',
+      correctCount + ' / ' + totalQ + ' CORRECT',
+      'DEBRIEF EVERY MISS TO BANK BONUS XP',
+      'Personal Hub CORRECTIONS ENGINE'
+    ];
+    var text = msgs.join('   ★   ') + '   ★   ';
+    document.getElementById('marquee').textContent = text + text;
+  }
+
+  function optionRowClass(opt, isCorrectQuestion){
+    if(opt.checked && isCorrectQuestion) return 'chosen-correct';
+    if(opt.checked && !isCorrectQuestion) return 'chosen-wrong';
+    return 'plain';
+  }
+
+  // Determine which unchosen option is "the correct one" by matching text to d.correct_answer
+  function markOptions(d){
+    var normTarget = stripTags(d.correct_answer).toLowerCase();
+    return (d.options||[]).map(function(opt){
+      var normOpt = stripTags(opt.text).toLowerCase();
+      var isTheCorrectOne = !!normOpt && !!normTarget && (normOpt === normTarget || normTarget.indexOf(normOpt) !== -1 || normOpt.indexOf(normTarget) !== -1);
+      var cls;
+      if(opt.checked && d.is_correct){
+        cls = 'chosen-correct';
+      } else if(opt.checked && d.is_correct===false){
+        cls = 'chosen-wrong';
+      } else if(!opt.checked && isTheCorrectOne && d.is_correct===false){
+        cls = 'right-unchosen';
+      } else {
+        cls = 'plain';
+      }
+      var mark = '';
+      if(cls === 'chosen-correct') mark = '&#10003;';
+      else if(cls === 'chosen-wrong') mark = '&#10007;';
+      else if(cls === 'right-unchosen') mark = '&#10003;';
+      return '<div class="opt ' + cls + '"><div class="opt-mark">' + mark + '</div>' + RevisionFlow.sanitize(opt.text) + '</div>';
+    }).join('');
+  }
+
+  function cardTemplate(d){
+    var stateClass = d.is_correct===true ? 'correct' : d.is_correct===false ? 'incorrect' : 'unscored';
+    var stateLabel = d.is_correct===true ? 'Correct' : d.is_correct===false ? 'Incorrect' : 'Unscored';
+    var snippet = stripTags(d.qtext).slice(0, 90);
+    var isReviewed = !!reviewed[d.qno];
+
+    var tags = '<span class="stamp ' + stateClass + '">' + stateLabel + '</span>' +
+      '<span class="stamp xp">' + (d.is_correct ? ('+' + XP_PER_Q + ' XP') : (isReviewed ? ('+' + XP_PER_Q + ' XP') : '0 XP')) + '</span>';
+    tags += '<span class="stamp">' + ChapterUI.escape(d.chapter || 'Chapter unassigned') + '</span>';
+    if(isReviewed){
+      tags += '<span class="stamp reviewed">Reviewed</span>';
+    }
+
+    var body = '<div class="qtext">' + RevisionFlow.sanitize(d.qtext) + '</div>';
+    if(d.source_feedback)body+='<details><summary>Original feedback</summary>'+RevisionFlow.sanitize(d.source_feedback)+'</details>';
+    body += '<div class="opts">' + markOptions(d) + '</div>';
+
+    if(d.is_correct===false){
+      body += '<div class="compare">' +
+        '<div class="box wrong"><div class="box-lbl">Your Answer</div><p>' + RevisionFlow.sanitize(d.your_answer||'Not captured') + '</p></div>' +
+        '<div class="box right"><div class="box-lbl">Correct Answer</div><p>' + RevisionFlow.escape(d.correct_answer) + '</p></div>' +
+      '</div>';
+
+      body += '<div class="debrief"><div class="debrief-head"><span class="pin"></span>Debrief &amp; Working</div>' +
+        '<div class="debrief-body">' + RevisionFlow.feedback(d) + '</div></div>';
+
+      body += '<div class="qfooter">';
+      if(isReviewed){
+        body += '<button class="review-btn done" disabled>&#10003; Debrief Reviewed</button>';
+        body += '<span class="xp-earned">+' + XP_PER_Q + ' bonus XP banked</span>';
+      } else {
+        body += '<button class="review-btn" data-action="review" data-qno="' + d.qno + '">Mark Debrief Reviewed &middot; +' + XP_PER_Q + ' XP</button>';
+        body += '<span class="xp-earned" style="color:#777;">Review to bank bonus XP</span>';
+      }
+      body += '</div>';
+    } else {
+      if(RevisionFlow.hasFeedback(d)){
+        body += '<div class="debrief"><div class="debrief-head"><span class="pin" style="background:var(--green-deep);"></span>Why This Works</div>' +
+          '<div class="debrief-body">' + RevisionFlow.feedback(d) + '</div></div>';
+      }
+      body += '<div class="qfooter"><span class="xp-earned">' + (d.is_correct===true?'+' + XP_PER_Q + ' XP earned on the exam':'Unscored · excluded from accuracy') + '</span></div>';
+    }
+
+    return (
+      '<div class="qcard ' + stateClass + '" data-qno="' + d.qno + '" id="q-' + d.qno + '">' +
+        '<div class="qhead" data-action="toggle" data-qno="' + d.qno + '">' +
+          '<div class="qno-badge">' + d.qno + '</div>' +
+          '<div class="qhead-mid">' +
+            '<div class="qhead-snippet">' + RevisionFlow.escape(snippet) + (stripTags(d.qtext).length > 90 ? '…' : '') + '</div>' +
+            '<div class="qhead-tags">' + tags + '</div>' +
+          '</div>' +
+          '<div class="chevron">+</div>' +
+        '</div>' +
+        '<div class="qbody">' + body + '</div>' +
+      '</div>'
+    );
+  }
+
+  function matchesFilter(d){
+    if(currentFilter === 'all') return true;
+    if(currentFilter === 'correct') return d.is_correct;
+    if(currentFilter === 'incorrect') return d.is_correct===false;
+    if(currentFilter === 'unreviewed') return d.is_correct===false && !reviewed[d.qno];
+    return true;
+  }
+
+  function render(){
+    var list = document.getElementById('qlist');
+    list.innerHTML = DATA.map(cardTemplate).join('');
+    applyFilter();
+    updateStats();
+    updateCounts();
+  }
+
+  function applyFilter(){
+    var any = false;
+    DATA.forEach(function(d){
+      var el = document.getElementById('q-' + d.qno);
+      if(!el) return;
+      if(matchesFilter(d)){
+        el.classList.remove('hidden');
+        any = true;
+      } else {
+        el.classList.add('hidden');
+      }
+    });
+    document.getElementById('emptyState').style.display = any ? 'none' : 'block';
+  }
+
+  function updateCounts(){
+    document.getElementById('cAll').textContent = totalQ;
+    document.getElementById('cIncorrect').textContent = incorrectCount;
+    document.getElementById('cCorrect').textContent = correctCount;
+    var unreviewedCount = incorrectList.filter(function(d){return !reviewed[d.qno];}).length;
+    document.getElementById('cUnreviewed').textContent = unreviewedCount;
+  }
+
+  function updateStats(){
+    var reviewedCount = Object.keys(reviewed).length;
+    var examXP = correctCount * XP_PER_Q;
+    var bonusXP = reviewedCount * XP_PER_Q;
+    var totalXP = examXP + bonusXP;
+    var scored=correctCount+incorrectCount;
+    var pct = scored ? Math.round(correctCount/scored*100) : null;
+
+    document.getElementById('statCorrect').textContent = correctCount;
+    document.getElementById('statIncorrect').textContent = incorrectCount;
+    document.getElementById('statPct').textContent = pct===null ? 'Unscored' : pct + '%';
+    document.getElementById('statXP').textContent = totalXP;
+
+    document.getElementById('examScoreLabel').textContent = examXP + ' / ' + examMaxXP + ' XP';
+    document.getElementById('examFill').style.width = (examMaxXP?examXP / examMaxXP * 100:0) + '%';
+
+    var reviewPct = incorrectCount ? Math.round((reviewedCount / incorrectCount) * 100) : 100;
+    document.getElementById('reviewLabel').textContent = reviewedCount + ' / ' + incorrectCount;
+    document.getElementById('reviewFill').style.width = reviewPct + '%';
+
+    updateCounts();
+  }
+
+  var toastTimer = null;
+  function showToast(msg){
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2200);
+  }
+
+  document.getElementById('qlist').addEventListener('click', function(e){
+    var toggleEl = e.target.closest('[data-action="toggle"]');
+    if(toggleEl){
+      var card = toggleEl.closest('.qcard');
+      card.classList.toggle('open');
+      return;
+    }
+    var reviewBtn = e.target.closest('[data-action="review"]');
+    if(reviewBtn){
+      var qno = reviewBtn.getAttribute('data-qno');
+      if(!reviewed[qno]){
+        reviewed[qno] = true;
+        saveProgress();
+        var d = DATA.find(function(x){ return String(x.qno) === String(qno); });
+        var openCards = Array.prototype.map.call(document.querySelectorAll('.qcard.open'), function(c){return c.getAttribute('data-qno');});
+        render();
+        // restore open state
+        openCards.forEach(function(qn){
+          var el = document.getElementById('q-' + qn);
+          if(el) el.classList.add('open');
+        });
+        showToast('+' + XP_PER_Q + ' XP BANKED — Q' + qno + ' LOCKED IN');
+      }
+    }
+  });
+
+  document.getElementById('filters').addEventListener('click', function(e){
+    var btn = e.target.closest('.filter-btn');
+    if(!btn) return;
+    document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    currentFilter = btn.getAttribute('data-filter');
+    applyFilter();
+  });
+
+  var resetBtn = document.getElementById('resetProgress');
+  if(resetBtn){
+    resetBtn.addEventListener('click', function(){
+      if(confirm('Clear all saved debrief progress on this device? This cannot be undone.')){
+        reviewed = {};
+        saveProgress();
+        render();
+        showToast('PROGRESS CLEARED');
+      }
+    });
+  }
+
+  loadProgress();
+
+  if(LOAD_ERROR){
+    document.getElementById('pageTitle').textContent = 'Exam Not Found';
+    document.getElementById('pageSubtitle').textContent = LOAD_ERROR;
+    document.querySelector('.dash.panel').style.display = 'none';
+    document.querySelector('.progress-block').style.display = 'none';
+    document.getElementById('filters').style.display = 'none';
+    document.getElementById('claudeSyncPanel').style.display = 'none';
+    document.getElementById('learningTools').style.display = 'none';
+    document.title = 'Not Found · Personal Hub';
+  } else {
+    document.getElementById('pageTitle').innerHTML = RevisionFlow.escape(META.title).replace(/ \u2014 /g, '<br>');
+    document.getElementById('pageSubtitle').textContent = META.subject + ' \u00b7 ' + ExamModel.label(META) + ' \u00b7 ' + totalQ + ' questions \u00b7 deferred feedback \u00b7 debrief mode';
+    document.title = META.title + ' \u00b7 Personal Hub';
+    renderMarquee();
+    render();
+    renderConfidence();
+    document.getElementById('saveConfidenceBtn').addEventListener('click', saveConfidence);
+    document.getElementById('startRetryBtn').addEventListener('click', renderRetry);
+    document.getElementById('submitRetryBtn').addEventListener('click', submitRetry);
+
+    DebriefWorkflow.mount(document.getElementById('claudeSyncPanel'),DATA,META,localStorageSaved);
+    function localStorageSaved(){ location.reload(); }
+
+  }
+})();
+</script>
+<script>PersonalHubAuth.addLockButton();</script></body>
+</html>

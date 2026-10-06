@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="auth.js"></script><script>if(!PersonalHubAuth.guard()) throw new Error("Locked");</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Revision Hub · Personal Hub</title>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+  :root{
+    --ink:#111111;
+    --paper:#F4EEDD;
+    --card:#FFFFFF;
+    --red:#E63B2E;
+    --blue:#1D3FA0;
+    --yellow:#F5C518;
+    --green:#2E8B4F;
+    --green-deep:#1F6B39;
+    --grey:#777777;
+    --line:4px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle, rgba(17,17,17,0.06) 1px, transparent 1px);
+    background-size: 18px 18px;
+    color:var(--ink);
+    font-family: ui-monospace,"JetBrains Mono","Space Mono",Menlo,Consolas,monospace;
+    padding-bottom:80px;
+  }
+  h1,h2,h3,h4,.display{
+    font-family:"Arial Black","Helvetica Neue",Impact,sans-serif;
+    text-transform:uppercase;
+    letter-spacing:-0.02em;
+    margin:0;
+  }
+  .wrap{max-width:880px;margin:0 auto;padding:0 16px;}
+
+  .topbar{
+    background:var(--ink);
+    color:var(--paper);
+    border-bottom:var(--line) solid var(--ink);
+    padding:8px 0;
+    overflow:hidden;
+    white-space:nowrap;
+  }
+  .marquee{
+    display:inline-block;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:0.08em;
+    animation: scroll-left 22s linear infinite;
+  }
+  @keyframes scroll-left{
+    0%{transform:translateX(0);}
+    100%{transform:translateX(-50%);}
+  }
+
+  header.hero{padding:28px 0 18px;}
+  .brandmark{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+  .mark{position:relative;width:34px;height:34px;flex:0 0 auto;}
+  .mark-circle{position:absolute;left:0;top:0;width:19px;height:19px;border-radius:50%;background:var(--red);border:2px solid var(--ink);}
+  .mark-tri{position:absolute;left:12px;top:8px;width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-bottom:17px solid var(--blue);}
+  .mark-square{position:absolute;left:19px;top:0;width:14px;height:14px;background:var(--yellow);border:2px solid var(--ink);}
+  .brand-name{font-size:13px;font-weight:800;letter-spacing:0.06em;}
+  .brand-name span{color:var(--red);}
+
+  h1.title{font-size:clamp(28px,6vw,46px);line-height:0.95;}
+  .subtitle{
+    font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--grey);
+    margin-top:8px;
+  }
+
+  .panel{
+    background:var(--card);
+    border:var(--line) solid var(--ink);
+    box-shadow:8px 8px 0 0 var(--ink);
+  }
+
+  .dash{
+    margin-top:10px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:0;
+  }
+  .subject-dash-title{
+    margin-top:26px;
+    font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;color:var(--grey);
+  }
+  .subject-dash-title:first-child{margin-top:22px;}
+  .stat{border-right:var(--line) solid var(--ink);padding:14px 12px;background:var(--card);}
+  .stat:last-child{border-right:none;}
+  .stat .num{font-family:"Arial Black","Helvetica Neue",Impact,sans-serif;font-size:30px;line-height:1;}
+  .stat .lbl{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;color:var(--grey);margin-top:4px;}
+  .stat.correct .num{color:var(--green-deep);}
+  .stat.incorrect .num{color:var(--red);}
+  .stat.xp .num{color:var(--blue);}
+  @media (max-width:600px){
+    .dash{grid-template-columns:repeat(2,1fr);}
+    .stat:nth-child(2){border-right:none;}
+    .stat:nth-child(1),.stat:nth-child(2){border-bottom:var(--line) solid var(--ink);}
+  }
+
+  .section-title{
+    margin-top:34px;
+    margin-bottom:14px;
+    font-size:16px;
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+  }
+  .section-title .count{
+    font-family:ui-monospace,monospace;
+    font-size:10px;font-weight:700;color:var(--grey);text-transform:none;letter-spacing:0;
+  }
+
+  .examlist{display:flex;flex-direction:column;gap:14px;}
+
+  .examcard-wrap{position:relative;}
+  .menu-btn{
+    position:absolute;top:-10px;right:-10px;width:28px;height:28px;
+    background:#fff;border:3px solid var(--ink);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:15px;font-weight:900;line-height:1;cursor:pointer;
+    z-index:5;box-shadow:2px 2px 0 0 var(--ink);padding:0;
+    font-family:ui-monospace,monospace;color:var(--ink);
+  }
+  .menu-btn:hover{background:var(--yellow);}
+  .menu-dropdown{
+    position:absolute;top:22px;right:-10px;
+    background:#fff;border:3px solid var(--ink);box-shadow:4px 4px 0 0 var(--ink);
+    z-index:6;display:none;min-width:170px;
+  }
+  .menu-dropdown.show{display:block;}
+  .menu-dropdown button{
+    display:block;width:100%;text-align:left;padding:11px 14px;
+    background:none;border:none;font-family:inherit;font-size:11.5px;font-weight:800;
+    color:var(--red);cursor:pointer;text-transform:uppercase;letter-spacing:.03em;
+  }
+  .menu-dropdown button:hover{background:#FDECEA;}
+
+  .examcard{
+    background:var(--card);
+    border:var(--line) solid var(--ink);
+    box-shadow:7px 7px 0 0 var(--ink);
+    display:flex;
+    align-items:stretch;
+    text-decoration:none;
+    color:var(--ink);
+    transition:transform .08s ease, box-shadow .08s ease;
+  }
+  .examcard:hover{transform:translate(-2px,-2px);box-shadow:9px 9px 0 0 var(--ink);}
+  .examcard:active{transform:translate(3px,3px);box-shadow:4px 4px 0 0 var(--ink);}
+
+  .examcard .score-block{
+    flex:0 0 auto;
+    width:92px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    border-right:3px solid var(--ink);
+    padding:10px 6px;
+  }
+  .examcard .score-block .pct{
+    font-family:"Arial Black","Helvetica Neue",Impact,sans-serif;
+    font-size:26px;line-height:1;
+  }
+  .examcard .score-block .frac{
+    font-size:9.5px;font-weight:800;color:var(--grey);margin-top:4px;
+  }
+  .examcard.high .score-block .pct{color:var(--green-deep);}
+  .examcard.mid .score-block .pct{color:var(--yellow);-webkit-text-stroke:1px var(--ink);}
+  .examcard.low .score-block .pct{color:var(--red);}
+
+  .examcard .body{flex:1;min-width:0;padding:14px 16px;}
+  .examcard .exam-title{font-size:15px;}
+  .examcard .exam-meta{
+    margin-top:6px;font-size:10.5px;font-weight:700;color:var(--grey);
+    text-transform:uppercase;letter-spacing:0.04em;
+  }
+  .examcard .arrow{
+    flex:0 0 auto;width:46px;
+    display:flex;align-items:center;justify-content:center;
+    border-left:3px solid var(--ink);
+    font-family:"Arial Black","Helvetica Neue",Impact,sans-serif;
+    font-size:18px;
+  }
+
+  .countdown-grid{display:flex;flex-direction:column;gap:12px;}
+  .countdown-card{
+    background:var(--card);border:var(--line) solid var(--ink);box-shadow:6px 6px 0 0 var(--ink);
+    padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  }
+  .countdown-card .cd-info{flex:1;min-width:160px;}
+  .countdown-card .cd-label{font-size:13px;font-weight:800;}
+  .countdown-card .cd-date{font-size:10.5px;color:var(--grey);font-weight:700;margin-top:3px;text-transform:uppercase;letter-spacing:.03em;}
+  .countdown-card .cd-days{
+    font-family:"Arial Black","Helvetica Neue",Impact,sans-serif;font-size:26px;line-height:1;
+    padding:6px 14px;border:3px solid var(--ink);background:var(--yellow);
+  }
+  .countdown-card .cd-days.past{background:#eee;color:var(--grey);}
+  .countdown-card .cd-days.soon{background:var(--red);color:#fff;}
+  .countdown-card .cd-actions{display:flex;gap:6px;}
+  .countdown-card .cd-actions button{
+    width:30px;height:30px;border:2px solid var(--ink);background:#fff;cursor:pointer;font-size:13px;
+  }
+  .countdown-card .cd-actions button:hover{background:var(--yellow);}
+  .countdown-card .cd-actions button.cd-delete:hover{background:#FDECEA;}
+
+  .countdown-form{
+    background:var(--card);border:3px dashed var(--ink);padding:14px 16px;margin-top:10px;display:none;
+  }
+  .countdown-form.show{display:block;}
+  .countdown-form .row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+  .countdown-form input{
+    padding:9px 10px;border:3px solid var(--ink);font-family:inherit;font-size:12.5px;flex:1;min-width:140px;
+  }
+  .countdown-form .btn-row{display:flex;gap:8px;}
+  .countdown-form .btn-row button{
+    font-family:"Arial Black","Helvetica Neue",Impact,sans-serif;font-size:11.5px;
+    padding:9px 16px;border:3px solid var(--ink);cursor:pointer;
+  }
+  .countdown-form .save-btn{background:var(--green);color:#fff;}
+  .countdown-form .cancel-btn{background:#fff;}
+
+  .add-note{
+    margin-top:16px;
+    padding:14px 16px;
+    border:3px dashed var(--grey);
+    font-size:11.5px;
+    color:var(--grey);
+    font-weight:700;
+    line-height:1.6;
+  }
+  .add-note strong{color:var(--ink);}
+
+  /* ===== Analysis section ===== */
+  .analysis-title{
+    margin-top:38px;
+    margin-bottom:14px;
+    font-size:16px;
+    display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+  }
+  .analysis-title .tag{
+    font-size:9.5px;font-weight:800;letter-spacing:.06em;
+    color:#fff;background:var(--ink);padding:3px 8px;text-transform:uppercase;
+  }
+
+  .subpanel-label{
+    font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;color:var(--grey);
+    margin-top:22px;margin-bottom:8px;
+  }
+  .subpanel-label:first-of-type{margin-top:0;}
+
+  .chart-panel{background:var(--card);border:var(--line) solid var(--ink);box-shadow:8px 8px 0 0 var(--ink);padding:16px;}
+  .chart-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:2px solid var(--ink);}
+  .chart-legend .item{display:flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700;}
+  .chart-legend .swatch{width:12px;height:12px;border:2px solid var(--ink);flex:0 0 auto;}
+  .chart-empty{font-size:11.5px;color:var(--grey);font-weight:700;text-align:center;padding:30px 10px;}
+
+  .sw-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media (max-width:600px){.sw-grid{grid-template-columns:1fr;}}
+  .sw-col-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;}
+  .sw-col-label.weak{color:var(--red);}
+  .sw-col-label.strong{color:var(--green-deep);}
+  .sw-item{
+    background:var(--card);border:3px solid var(--ink);padding:10px 12px;margin-bottom:8px;
+    display:flex;justify-content:space-between;align-items:center;gap:8px;
+  }
+  .sw-item.weak{border-left:8px solid var(--red);}
+  .sw-item.strong{border-left:8px solid var(--green-deep);}
+  .sw-item .t-name{font-size:11.5px;font-weight:700;line-height:1.3;}
+  .sw-item .t-pct{font-family:"Arial Black","Helvetica Neue",Impact,sans-serif;font-size:16px;flex:0 0 auto;}
+  .sw-item.weak .t-pct{color:var(--red);}
+  .sw-item.strong .t-pct{color:var(--green-deep);}
+  .sw-subject{font-size:10.5px;font-weight:800;text-transform:uppercase;color:var(--grey);margin:16px 0 8px;}
+  .sw-subject:first-child{margin-top:0;}
+
+  .fia-panel{background:var(--card);border:var(--line) solid var(--ink);box-shadow:8px 8px 0 0 var(--ink);}
+  .fia-paper{border-bottom:3px solid var(--ink);}
+  .fia-paper:last-child{border-bottom:none;}
+  .fia-summary{
+    padding:12px 16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;
+    list-style:none;
+  }
+  .fia-summary::-webkit-details-marker{display:none;}
+  .fia-summary .code{font-family:"Arial Black","Helvetica Neue",Impact,sans-serif;font-size:14px;flex:0 0 auto;width:52px;}
+  .fia-summary .name{font-size:12px;font-weight:700;flex:1;}
+  .fia-summary .chev{font-size:12px;font-weight:800;color:var(--grey);flex:0 0 auto;}
+  .fia-paper[open] .fia-summary{background:var(--yellow);}
+  .fia-detail{padding:0 16px 16px 68px;font-size:11.5px;line-height:1.7;}
+  .fia-detail ul{margin:6px 0 0;padding-left:18px;}
+  .fia-detail li{margin-bottom:3px;}
+
+  .addexam-btn{
+    display:inline-block;margin-top:14px;
+    font-family:"Arial Black","Helvetica Neue",Impact,sans-serif;
+    font-size:12px;letter-spacing:.03em;
+    padding:12px 20px;border:3px solid var(--ink);
+    background:#FFFFFF;box-shadow:4px 4px 0 0 var(--ink);
+    text-decoration:none;color:var(--ink);
+    transition:transform .08s ease, box-shadow .08s ease;
+  }
+  .addexam-btn:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 0 var(--ink);}
+  .addexam-btn:active{transform:translate(2px,2px);box-shadow:2px 2px 0 0 var(--ink);}
+
+  footer{
+    margin-top:40px;
+    padding:20px 16px 4px;
+    text-align:center;
+    font-size:10.5px;
+    color:var(--grey);
+    font-weight:700;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+  }  /* ===== Currently Learning banner ===== */
+  .current-subject-banner{
+    background:var(--ink);color:#fff;border:var(--line) solid var(--ink);box-shadow:6px 6px 0 0 var(--yellow);
+    padding:14px 18px;margin-top:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  }
+  .current-subject-banner .csb-label{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--yellow);}
+  .current-subject-banner .csb-value{font-family:"Arial Black","Helvetica Neue",Impact,sans-serif;font-size:18px;margin-top:2px;}
+  .csb-edit-btn{
+    font-family:"Arial Black","Helvetica Neue",Impact,sans-serif;font-size:11px;
+    padding:8px 14px;border:3px solid #fff;background:transparent;color:#fff;cursor:pointer;flex:0 0 auto;
+  }
+  .csb-edit-btn:hover{background:#fff;color:var(--ink);}
+  .csb-edit-row{display:none;margin-top:12px;gap:8px;width:100%;}
+  .csb-edit-row.show{display:flex;flex-wrap:wrap;}
+  .csb-check-item{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:#fff;cursor:pointer;}
+  .csb-check-item input{width:18px;height:18px;flex:0 0 auto;cursor:pointer;}
+  .csb-edit-row button{
+    font-family:"Arial Black","Helvetica Neue",Impact,sans-serif;font-size:11px;
+    padding:9px 16px;border:3px solid var(--ink);background:var(--yellow);cursor:pointer;
+  }
+
+  /* ===== Final Exam Progress Tracker ===== */
+  .progress-tracker-grid{display:flex;flex-direction:column;gap:0;border:var(--line) solid var(--ink);box-shadow:8px 8px 0 0 var(--ink);margin-top:14px;}
+  .pt-row{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+    padding:12px 16px;border-bottom:3px solid var(--ink);background:var(--card);
+  }
+  .pt-row:last-child{border-bottom:none;}
+  .pt-subject{font-size:12.5px;font-weight:800;}
+  .pt-status-select{
+    padding:7px 10px;border:3px solid var(--ink);font-family:inherit;font-size:11px;font-weight:800;
+    text-transform:uppercase;background:#fff;cursor:pointer;
+  }
+  .pt-status-select.status-passed{background:#EAF7EE;border-color:var(--green-deep);color:var(--green-deep);}
+  .pt-status-select.status-exemption{background:#EAF1FC;border-color:var(--blue);color:var(--blue);}
+  .pt-status-select.status-learning{background:var(--yellow);}
+  .pt-status-select.status-scheduled{background:#FFF3D6;}
+  .pt-status-select.status-referred{background:#FDECEA;border-color:var(--red);color:var(--red);}
+  .pt-status-select.status-notstarted{background:#f0f0f0;color:var(--grey);}
+
+  /* ===== Countdown expired action ===== */
+  .cd-next-row{
+    width:100%;margin-top:8px;padding-top:8px;border-top:2px dashed var(--ink);
+    display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:10.5px;font-weight:700;
+  }
+  .cd-next-btn{
+    font-family:"Arial Black","Helvetica Neue",Impact,sans-serif;font-size:10.5px;
+    padding:7px 12px;border:3px solid var(--ink);background:var(--green-deep);color:#fff;cursor:pointer;
+  }
+  .cd-next-btn:hover{background:var(--green);}
+  .cd-actioned-tag{font-size:9.5px;font-weight:800;text-transform:uppercase;color:var(--grey);}
+
+  #toast{
+    position:fixed;left:50%;bottom:24px;transform:translate(-50%,120%);
+    background:var(--ink);color:var(--yellow);
+    font-family:"Arial Black","Helvetica Neue",Impact,sans-serif;
+    font-size:13px;letter-spacing:.03em;padding:12px 20px;border:3px solid var(--ink);
+    box-shadow:6px 6px 0 0 var(--red);transition:transform .35s cubic-bezier(.2,.9,.3,1.2);
+    z-index:90;white-space:nowrap;
+  }
+  #toast.show{transform:translate(-50%,0);}
+
+</style>
+<script src="subject-catalog.js"></script>
+<script src="exam-model.js"></script>
+<script src="chapter-analysis.js"></script>
+<script src="chapter-ui.js"></script>
+<link rel="stylesheet" href="chapter-analysis.css">
+<link rel="stylesheet" href="revision-flow.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="marquee" id="marquee"></div>
+</div>
+
+<div class="wrap">
+  <header class="hero">
+    <div class="brandmark">
+      <div class="mark"><img src="logo.png" alt="logo" style="width:100%;height:100%;object-fit:contain;"></div>
+      <div class="brand-name">PERSONAL HUB · REVISION HUB</div>
+    </div>
+    <h1 class="title">My Revision Hub</h1>
+    <div class="subtitle">Chapter sets · Progress Tests · Mock Tests · one revision workflow</div>
+    <a href="add-exam.html" class="addexam-btn">+ Add a Set / Test Attempt</a>
+    <nav class="flow-steps" aria-label="Revision workflow"><span class="current">1 · Add attempt</span><span>2 · Review &amp; ask AI</span><span>3 · Paste &amp; save</span><span>4 · Track progress</span></nav>
+  </header>
+
+  <div id="subjectDash"></div>
+
+  <div class="current-subject-banner">
+    <div>
+      <div class="csb-label">Currently Learning</div>
+      <div class="csb-value" id="csbValue">Not set</div>
+    </div>
+    <button class="csb-edit-btn" id="csbEditBtn" type="button">Change</button>
+    <div class="csb-edit-row" id="csbEditRow" style="flex-direction:column;align-items:stretch;">
+      <div id="csbCheckboxList" style="display:flex;flex-direction:column;gap:6px;width:100%;"></div>
+      <button id="csbSaveBtn" type="button" style="margin-top:6px;">Save</button>
+    </div>
+  </div>
+
+  <div class="analysis-title"><h2>Final Exam Progress</h2><span class="tag">Manual</span></div>
+  <div class="progress-tracker-grid" id="progressTrackerGrid"></div>
+
+  <div id="sections"></div>
+
+  <div class="analysis-title"><h2>Exam Countdown</h2><span class="tag">Custom</span></div>
+  <div class="countdown-grid" id="countdownGrid"></div>
+  <button class="addexam-btn" id="addCountdownBtn" style="margin-top:10px;">+ Add Countdown</button>
+  <div class="countdown-form" id="countdownForm">
+    <div class="row">
+      <input type="text" id="cdLabel" placeholder="e.g. FA1 Real Exam">
+      <input type="date" id="cdDate">
+    </div>
+    <div class="row">
+      <select id="cdSubject" style="flex:1;min-width:140px;padding:9px 10px;border:3px solid var(--ink);font-family:inherit;font-size:12.5px;">
+        <option value="">Subject (optional)</option>
+      </select>
+      <select id="cdNextSubject" style="flex:1;min-width:140px;padding:9px 10px;border:3px solid var(--ink);font-family:inherit;font-size:12.5px;">
+        <option value="">Then start studying... (optional)</option>
+      </select>
+    </div>
+    <div class="btn-row">
+      <button class="save-btn" id="cdSaveBtn" type="button">Save</button>
+      <button class="cancel-btn" id="cdCancelBtn" type="button">Cancel</button>
+    </div>
+  </div>
+
+  <div class="analysis-title" id="analysis"><h2>Your Revision Analysis</h2><span class="tag">From saved answers</span><button class="addexam-btn" type="button" id="resetAnalysis" style="margin:0;background:var(--red);color:#fff;">Reset Analysis</button></div>
+  <p style="font-size:12px;line-height:1.6;">Saving an AI response updates your topic ranking, progress lines and practice priorities. Reset starts a fresh analysis while keeping saved attempts and debriefs.</p>
+
+  <div class="subpanel-label">Confidence Calibration</div>
+  <div class="chart-panel" id="confidenceCalibration"></div>
+
+  <div class="subpanel-label">Topic Progress · Line Graph</div>
+  <div class="chart-panel" id="chapterGraph"></div>
+
+  <div class="subpanel-label">Topic Ranking · Strongest to Weakest</div>
+  <div id="topicMastery"></div>
+
+  <div class="subpanel-label">Overall Test Score Trend</div>
+  <div class="chart-panel">
+    <div id="chartWrap"></div>
+    <div class="chart-legend" id="chartLegend"></div>
+  </div>
+
+  <div class="subpanel-label">Your Strengths &amp; Practice Priorities</div>
+  <div id="strengthsWeaknesses"></div>
+
+  <div class="subpanel-label">FIA Topic Reference</div>
+  <div class="fia-panel" id="fiaTopics"></div>
+
+  <div class="add-note">
+    <strong>Clean MVP state.</strong> No exam attempts are preloaded. Add or import an exam attempt to begin building confidence calibration, chapter mastery, score trends, and strengths &amp; weaknesses.
+  </div>
+
+  <footer>Personal Revision Hub &middot; Keep grinding, the exam doesn't grade effort but your memory does.</footer>
+</div>
+
+<script>
+(function(){
+  window.addEventListener('storage',function(e){
+    if(e.key && (e.key.indexOf('tymba_exam_data:')===0 || e.key==='tymba_custom_exams' || e.key==='tymba_analysis_excluded_v1')) location.reload();
+  });
+  // ===== Add every exam debrief page here =====
+  var EXAMS = [];
+  // ==============================================
+
+  // Auto-added exams (saved by add-exam.html into this browser's storage)
+  try{
+    var saved = JSON.parse(localStorage.getItem('tymba_custom_exams') || '[]');
+    if(Array.isArray(saved)) EXAMS = EXAMS.concat(saved);
+  }catch(e){ /* storage unavailable or corrupt — ignore */ }
+
+  // Hide any exams the user has deleted (built-in ones can't be removed from code, so we hide them instead)
+  try{
+    var dismissed = JSON.parse(localStorage.getItem('tymba_dismissed_exams') || '[]');
+    if(Array.isArray(dismissed) && dismissed.length){
+      EXAMS = EXAMS.filter(function(e){ return dismissed.indexOf(e.id) === -1; });
+    }
+  }catch(e){ /* ignore */ }
+
+  EXAMS=ExamModel.normalize(EXAMS);
+  var ANALYSIS_EXAMS=[];
+  try{ANALYSIS_EXAMS=ExamModel.analysisExams(EXAMS,localStorage);}catch(e){ANALYSIS_EXAMS=EXAMS.slice();}
+  function escapeText(value){return String(value).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  document.getElementById('resetAnalysis').addEventListener('click',function(){
+    if(!confirm('Reset all analysis history, including score trends, confidence ratings, retry history and chapter mastery? Saved exams, debrief review progress, finances, countdowns and your password will be kept. New attempts will start a fresh analysis.'))return;
+    try{ExamModel.resetAnalysis(EXAMS,localStorage);location.reload();}catch(e){alert('Could not reset analysis: '+e.message);}
+  });
+
+  function deleteExam(id){
+    try{
+      var custom = JSON.parse(localStorage.getItem('tymba_custom_exams') || '[]');
+      var isCustom = custom.some(function(e){ return e.id === id; });
+      if(isCustom){
+        custom = custom.filter(function(e){ return e.id !== id; });
+        localStorage.setItem('tymba_custom_exams', JSON.stringify(custom));
+        localStorage.removeItem('tymba_exam_data:' + id);
+      } else {
+        var dismissed = JSON.parse(localStorage.getItem('tymba_dismissed_exams') || '[]');
+        if(dismissed.indexOf(id) === -1) dismissed.push(id);
+        localStorage.setItem('tymba_dismissed_exams', JSON.stringify(dismissed));
+      }
+      location.reload();
+    }catch(e){
+      alert('Could not delete this attempt: ' + e.message);
+    }
+  }
+
+  var SUBJECT_ORDER = SubjectCatalog.labels;
+
+  function sortSubjects(subjects){
+    return subjects.slice().sort(function(a, b){
+      var ia = SUBJECT_ORDER.indexOf(a);
+      var ib = SUBJECT_ORDER.indexOf(b);
+      if(ia === -1 && ib === -1) return a.localeCompare(b); // unknown subjects: alphabetical, after known ones
+      if(ia === -1) return 1;
+      if(ib === -1) return -1;
+      return ia - ib;
+    });
+  }
+
+  function scoreClass(pct){
+    if(pct >= 75) return 'high';
+    if(pct >= 50) return 'mid';
+    return 'low';
+  }
+
+  function renderMarquee(){
+    var totalCorrect = EXAMS.reduce(function(a,e){return a+e.correct;},0);
+    var totalQ = EXAMS.reduce(function(a,e){return a+e.total;},0);
+    var avgPct = totalQ ? Math.round((totalCorrect/totalQ)*100) : 0;
+    var msgs = [
+      'MY REVISION HUB',
+      EXAMS.length + ' EXAMS LOGGED',
+      avgPct + '% AVERAGE SCORE',
+      'Personal Hub CORRECTIONS ENGINE'
+    ];
+    var text = msgs.join('   ★   ') + '   ★   ';
+    document.getElementById('marquee').textContent = text + text;
+  }
+
+  function renderDash(){
+    var bySubject = {};
+    var order = [];
+    EXAMS.forEach(function(e){
+      if(!bySubject[e.subject]){ bySubject[e.subject] = []; order.push(e.subject); }
+      bySubject[e.subject].push(e);
+    });
+    order = sortSubjects(order);
+
+    var html = '';
+    order.forEach(function(subject){
+      var exams = bySubject[subject];
+      var totalCorrect = exams.reduce(function(a,e){return a+e.correct;},0);
+      var totalQ = exams.reduce(function(a,e){return a+e.total;},0);
+      var totalIncorrect = totalQ - totalCorrect;
+      var avgPct = totalQ ? Math.round((totalCorrect/totalQ)*100) : 0;
+      html += '<div class="subject-dash-title">' + subject + '</div>';
+      html += '<div class="dash panel">' +
+        '<div class="stat correct"><div class="num">' + totalCorrect + '</div><div class="lbl">Correct</div></div>' +
+        '<div class="stat incorrect"><div class="num">' + totalIncorrect + '</div><div class="lbl">Incorrect</div></div>' +
+        '<div class="stat"><div class="num">' + avgPct + '%</div><div class="lbl">Avg Score</div></div>' +
+        '<div class="stat"><div class="num">' + exams.length + '</div><div class="lbl">Exams</div></div>' +
+      '</div>';
+    });
+
+    if(!EXAMS.length){
+      html = '<div class="chart-empty">No exam attempts yet. Add or import an attempt to start tracking your performance.</div>';
+    }
+    document.getElementById('subjectDash').innerHTML = html;
+  }
+
+  function renderSections(){
+    var bySubject = {};
+    var order = [];
+    EXAMS.forEach(function(e){
+      if(!bySubject[e.subject]){ bySubject[e.subject] = []; order.push(e.subject); }
+      bySubject[e.subject].push(e);
+    });
+    order = sortSubjects(order);
+
+    var html = '';
+    order.forEach(function(subject){
+      var exams = bySubject[subject];
+      html += '<div class="section-title"><h2>' + subject + '</h2><span class="count">' + exams.length + ' attempt' + (exams.length===1?'':'s') + '</span></div>';
+      html += '<div class="examlist">';
+      exams.forEach(function(e){
+        var pct = e.total ? Math.round((e.correct/e.total)*100) : '—';
+        html += '<div class="examcard-wrap">' +
+          '<a class="examcard ' + scoreClass(pct) + '" href="' + e.file + '">' +
+            '<div class="score-block"><div class="pct">' + pct + '%</div><div class="frac">' + e.correct + ' / ' + e.total + '</div></div>' +
+            '<div class="body"><div class="exam-title">' + escapeText(e.title) + '</div><div class="exam-meta">' + ExamModel.label(e) + ' · Open debrief &amp; review misses</div></div>' +
+            '<div class="arrow">&rarr;</div>' +
+          '</a>' +
+          '<button class="menu-btn" data-menu-toggle="' + e.id + '" aria-label="Options" type="button">&#8942;</button>' +
+          '<div class="menu-dropdown" data-menu="' + e.id + '">' +
+            '<button type="button" data-classify-id="' + e.id + '">Change test type / number</button>' +
+            '<button type="button" class="menu-delete" data-delete-id="' + e.id + '">Delete this attempt</button>' +
+          '</div>' +
+        '</div>';
+      });
+      html += '</div>';
+    });
+
+    if(!EXAMS.length){
+      html = '<div class="chart-empty">Your exam attempts will appear here after you add or import one.</div>';
+    }
+    document.getElementById('sections').innerHTML = html;
+  }
+
+  var PALETTE = ['#1D3FA0', '#E63B2E', '#1F6B39', '#F5C518'];
+
+  function renderChart(){
+    var bySubject={};
+    ANALYSIS_EXAMS.forEach(function(e){
+      if(e.testType==='set'||!e.total)return;
+      if(!bySubject[e.subject])bySubject[e.subject]={pre:[],mock:[]};
+      bySubject[e.subject][e.testType].push(e);
+    });
+    var order=sortSubjects(Object.keys(bySubject));
+    if(!order.length){
+      document.getElementById('chartWrap').innerHTML='<div class="chart-empty">No analysis data yet. Add a Progress Test or Mock Test to start a new trend.</div>';
+      document.getElementById('chartLegend').innerHTML='';return;
+    }
+    var html='';
+    order.forEach(function(subject){
+      var groups=bySubject[subject], maxNumber=10;
+      ['pre','mock'].forEach(function(type){groups[type].forEach(function(e){maxNumber=Math.max(maxNumber,e.testNumber);});});
+      var W=800,H=320,L=48,R=24,T=24,B=48,pw=W-L-R,ph=H-T-B;
+      function x(n){return L+(n-1)/(maxNumber-1)*pw;}
+      function y(score){return T+ph-score/100*ph;}
+      var svg='<svg role="img" aria-label="'+escapeText(subject)+' Progress Test and Mock Test scores by test number" viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;font-family:ui-monospace,monospace;">';
+      [0,25,50,75,100].forEach(function(v){svg+='<line x1="'+L+'" y1="'+y(v)+'" x2="'+(W-R)+'" y2="'+y(v)+'" stroke="#ddd"/><text x="'+(L-8)+'" y="'+(y(v)+4)+'" text-anchor="end" font-size="11">'+v+'%</text>';});
+      var step=Math.max(1,Math.ceil(maxNumber/15));
+      for(var n=1;n<=maxNumber;n+=step){svg+='<text x="'+x(n)+'" y="'+(H-25)+'" text-anchor="middle" font-size="11">'+n+'</text>';}
+      svg+='<text x="'+W/2+'" y="'+(H-5)+'" text-anchor="middle" font-size="12">Test number</text>';
+      ['pre','mock'].forEach(function(type){
+        var latest={};
+        groups[type].forEach(function(e){latest[e.testNumber]=e;});
+        var points=Object.keys(latest).map(Number).sort(function(a,b){return a-b;}).map(function(n){var e=latest[n];return {e:e,pct:e.total?Math.round(e.correct/e.total*100):0};});
+        var color=type==='pre'?'#1D3FA0':'#E63B2E';
+        var path=points.map(function(p,i){return (i?'L':'M')+x(p.e.testNumber).toFixed(1)+','+y(p.pct).toFixed(1);}).join(' ');
+        if(points.length)svg+='<path data-series="'+type+'" d="'+path+'" fill="none" stroke="'+color+'" stroke-width="3"'+(type==='mock'?' stroke-dasharray="8 5"':'')+'/>';
+        points.forEach(function(p){svg+='<circle data-type="'+type+'" data-number="'+p.e.testNumber+'" cx="'+x(p.e.testNumber)+'" cy="'+y(p.pct)+'" r="5" fill="'+color+'" stroke="#111" stroke-width="2"><title>'+escapeText(ExamModel.label(p.e)+' · '+p.pct+'% · '+p.e.title)+'</title></circle>';});
+      });
+      svg+='</svg>';
+      html+='<h3 style="font-size:14px;">'+escapeText(subject)+'</h3>'+svg+
+        '<div style="font-size:11px;line-height:1.7;">Progress Tests: '+groups.pre.length+' · Mock Tests: '+groups.mock.length+' · Latest saved attempt shown for each test number.</div>';
+    });
+    document.getElementById('chartWrap').innerHTML=html;
+    document.getElementById('chartLegend').innerHTML='<div class="item"><span class="swatch" style="background:#1D3FA0;"></span>Progress Test · solid line</div><div class="item"><span class="swatch" style="background:#E63B2E;"></span>Mock Test · dashed line</div>';
+  }
+
+  function renderConfidenceCalibration(){
+    var rows=[];
+    ANALYSIS_EXAMS.forEach(function(e){
+      var raw=localStorage.getItem('tymba_exam_confidence:'+e.id);
+      if(!e.total)return;
+      var c=parseInt(raw,10);
+      if(!(c>=1&&c<=10)) return;
+      var pct=e.total ? Math.round(e.correct/e.total*100) : 0;
+      var gap=pct-(c*10);
+      var label=gap<=-15?'Overestimated':(gap>=15?'Underestimated':'Aligned');
+      rows.push({e:e,c:c,pct:pct,gap:gap,label:label});
+    });
+    var el=document.getElementById('confidenceCalibration');
+    if(!rows.length){
+      el.innerHTML='<div class="chart-empty">Open an exam debrief and save a 1–10 confidence rating. Your perceived confidence will be compared with your actual result here.</div>';
+      return;
+    }
+    el.innerHTML=rows.map(function(r){
+      return '<div style="display:grid;grid-template-columns:1fr auto;gap:10px;padding:10px 0;border-bottom:2px solid #ddd;">'+
+        '<div><strong>'+r.e.subject+' · '+r.e.title+'</strong><br><span style="font-size:11px;color:#777;">Confidence '+r.c+'/10 · Score '+r.pct+'%</span></div>'+
+        '<div style="font-weight:900;align-self:center;">'+r.label+'</div></div>';
+    }).join('');
+  }
+
+  function renderFIATopics(){
+    var papers = [
+      {code:"FA1", name:"Recording Financial Transactions",
+       topics:["Types of business transactions and documentation","Duality of transactions and the double entry system","Banking system and transactions","Payroll","Ledger accounts","Cash and bank (incl. petty cash and bank reconciliations)","Sales and credit transactions","Purchases and credit transactions","Control account reconciliations and correcting errors","Preparing the trial balance"]},
+      {code:"MA1", name:"Management Information",
+       topics:["Nature and purpose of cost and management accounting","Source documents and coding data in a costing system","Classifying costs by nature, behaviour and purpose","Recording costs for material, labour and expenses","Overheads: allocation, apportionment and absorption","Providing information on actual and expected costs","Responsibility accounting (cost, profit and investment centres)","Using spreadsheets (Microsoft Excel) for costing"]},
+      {code:"FA2", name:"Maintaining Financial Records",
+       topics:["Underlying principles, concepts and regulations of accounting","Non-current assets and depreciation","Ledger accounting and double entry","Preparing basic financial statements for sole traders","Preparing basic financial statements for partnerships and simple consolidations","Interpretation of financial statements (introductory ratios)"]},
+      {code:"MA2", name:"Managing Costs and Finance",
+       topics:["Costing techniques: absorption, marginal and activity-based costing","Job, batch and process costing","Budgeting and standard costing","Variance analysis","Short-term decision making techniques","Cash management and sources of finance"]},
+      {code:"FBT", name:"Business and Technology", topics:["Business organisation structure and governance","The role of accounting and finance functions","Business ethics and professionalism","Technology and its impact on accounting","Managing people and personal effectiveness"]},
+      {code:"FMA", name:"Management Accounting", topics:["Combines and extends MA1/MA2 content at a broader applied level","Cost classification, budgeting and standard costing","Performance measurement and short-term decision making"]},
+      {code:"FFA", name:"Financial Accounting", topics:["Combines and extends FA1/FA2 content at a broader applied level","Preparing financial statements for single entities and simple groups","Regulatory and conceptual framework"]},
+      {code:"FAU", name:"Foundations in Audit", topics:["Concepts of audit and assurance","Internal control systems","Gathering evidence and audit procedures","Review and reporting"]},
+      {code:"FFM", name:"Foundations in Financial Management", topics:["Investment appraisal techniques","Sources of business finance","Working capital management","Risk and business finance decisions"]},
+      {code:"FTX", name:"Foundations in Taxation", topics:["Principles of taxation systems","Income tax and corporate tax computations","Tax administration and compliance"]}
+    ];
+
+    var html = '';
+    papers.forEach(function(p, i){
+      html += '<details class="fia-paper">' +
+        '<summary class="fia-summary"><span class="code">' + p.code + '</span><span class="name">' + p.name + '</span><span class="chev">+</span></summary>' +
+        '<div class="fia-detail"><ul>' + p.topics.map(function(t){ return '<li>' + t + '</li>'; }).join('') + '</ul></div>' +
+      '</details>';
+    });
+
+    document.getElementById('fiaTopics').innerHTML = html;
+  }
+
+  // ===== Exam Countdown =====
+  var toastTimer = null;
+  function showToast(msg){
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2400);
+  }
+  var editingCountdownId = null;
+
+  function loadCountdowns(){
+    try{
+      var list = JSON.parse(localStorage.getItem('tymba_countdowns') || '[]');
+      return Array.isArray(list) ? list.map(function(c){return Object.assign({},c,{subject:SubjectCatalog.canonical(c.subject),nextSubject:SubjectCatalog.canonical(c.nextSubject)});}) : [];
+    }catch(e){ return []; }
+  }
+  function saveCountdowns(list){
+    localStorage.setItem('tymba_countdowns', JSON.stringify(list));
+  }
+
+  function daysUntil(dateStr){
+    var today = new Date();
+    today.setHours(0,0,0,0);
+    var target = new Date(dateStr + 'T00:00:00');
+    return Math.round((target - today) / 86400000);
+  }
+
+  function renderCountdowns(){
+    var list = loadCountdowns();
+    list.sort(function(a,b){ return new Date(a.date) - new Date(b.date); });
+
+    if(!list.length){
+      document.getElementById('countdownGrid').innerHTML =
+        '<div class="chart-panel"><div class="chart-empty">No countdowns yet. Add one for your next real exam.</div></div>';
+      return;
+    }
+
+    var html = '';
+    list.forEach(function(c){
+      var d = daysUntil(c.date);
+      var dayClass = d < 0 ? 'past' : (d <= 3 ? 'soon' : '');
+      var dayLabel = d < 0 ? Math.abs(d) + 'd ago' : (d === 0 ? 'TODAY' : d + 'd');
+      var niceDate = new Date(c.date + 'T00:00:00').toLocaleDateString(undefined, {day:'numeric', month:'short', year:'numeric'});
+      html += '<div class="countdown-card">' +
+        '<div class="cd-info"><div class="cd-label">' + c.label + (c.subject ? ' <span style="font-weight:700;color:var(--grey);font-size:10px;">(' + c.subject + ')</span>' : '') + '</div><div class="cd-date">' + niceDate + '</div></div>' +
+        '<div class="cd-days ' + dayClass + '">' + dayLabel + '</div>' +
+        '<div class="cd-actions">' +
+          '<button type="button" data-cd-edit="' + c.id + '" title="Edit">&#9998;</button>' +
+          '<button type="button" class="cd-delete" data-cd-delete="' + c.id + '" title="Delete">&times;</button>' +
+        '</div>';
+      if(c.nextSubject){
+        if(d < 0 && !c.actioned){
+          html += '<div class="cd-next-row">' +
+            '<span>Countdown ended &mdash; start studying ' + c.nextSubject + '?</span>' +
+            '<button type="button" class="cd-next-btn" data-cd-advance="' + c.id + '">Switch Now</button>' +
+          '</div>';
+        } else if(c.actioned){
+          html += '<div class="cd-next-row"><span class="cd-actioned-tag">&#10003; Switched to ' + c.nextSubject + '</span></div>';
+        } else {
+          html += '<div class="cd-next-row"><span class="cd-actioned-tag">Next up: ' + c.nextSubject + '</span></div>';
+        }
+      }
+      html += '</div>';
+    });
+    document.getElementById('countdownGrid').innerHTML = html;
+  }
+
+  function populateSubjectDropdowns(){
+    ['cdSubject','cdNextSubject'].forEach(function(id){
+      var select=document.getElementById(id);SubjectCatalog.fill(select);
+      var blank=document.createElement('option');blank.value='';blank.textContent=id==='cdSubject'?'Subject (optional)':'Then start studying... (optional)';
+      select.insertBefore(blank,select.firstChild);select.value='';
+    });
+  }
+
+  function openCountdownForm(existing){
+    editingCountdownId = existing ? existing.id : null;
+    document.getElementById('cdLabel').value = existing ? existing.label : '';
+    document.getElementById('cdDate').value = existing ? existing.date : '';
+    document.getElementById('cdSubject').value = existing && existing.subject ? existing.subject : '';
+    document.getElementById('cdNextSubject').value = existing && existing.nextSubject ? existing.nextSubject : '';
+    document.getElementById('countdownForm').classList.add('show');
+    document.getElementById('cdLabel').focus();
+  }
+  function closeCountdownForm(){
+    editingCountdownId = null;
+    document.getElementById('countdownForm').classList.remove('show');
+  }
+
+  document.getElementById('addCountdownBtn').addEventListener('click', function(){
+    openCountdownForm(null);
+  });
+  document.getElementById('cdCancelBtn').addEventListener('click', closeCountdownForm);
+  document.getElementById('cdSaveBtn').addEventListener('click', function(){
+    var label = document.getElementById('cdLabel').value.trim();
+    var date = document.getElementById('cdDate').value;
+    var subject = document.getElementById('cdSubject').value;
+    var nextSubject = document.getElementById('cdNextSubject').value;
+    if(!label || !date){ alert('Please enter both a label and a date.'); return; }
+
+    var list = loadCountdowns();
+    if(editingCountdownId){
+      list = list.map(function(c){
+        return c.id === editingCountdownId ? Object.assign({}, c, {label:label, date:date, subject:subject, nextSubject:nextSubject}) : c;
+      });
+    } else {
+      list.push({id: 'cd_' + Date.now(), label: label, date: date, subject: subject, nextSubject: nextSubject, actioned: false});
+    }
+    saveCountdowns(list);
+    closeCountdownForm();
+    renderCountdowns();
+  });
+
+  document.getElementById('countdownGrid').addEventListener('click', function(e){
+    var editBtn = e.target.closest('[data-cd-edit]');
+    var delBtn = e.target.closest('[data-cd-delete]');
+    var advBtn = e.target.closest('[data-cd-advance]');
+    if(editBtn){
+      var id = editBtn.getAttribute('data-cd-edit');
+      var found = loadCountdowns().find(function(c){ return c.id === id; });
+      if(found) openCountdownForm(found);
+    }
+    if(delBtn){
+      var did = delBtn.getAttribute('data-cd-delete');
+      if(confirm('Delete this countdown?')){
+        saveCountdowns(loadCountdowns().filter(function(c){ return c.id !== did; }));
+        renderCountdowns();
+      }
+    }
+    if(advBtn){
+      var aid = advBtn.getAttribute('data-cd-advance');
+      var list = loadCountdowns();
+      var cd = list.find(function(c){ return c.id === aid; });
+      if(cd && cd.nextSubject){
+        addCurrentSubject(cd.nextSubject);
+        list = list.map(function(c){ return c.id === aid ? Object.assign({}, c, {actioned:true}) : c; });
+        saveCountdowns(list);
+        renderCountdowns();
+        renderCurrentSubjectBanner();
+        showToast('SWITCHED TO ' + cd.nextSubject.toUpperCase());
+      }
+    }
+  });
+
+  // ===== Currently Learning (multi-select) =====
+  function getCurrentSubjects(){
+    try{
+      var raw = localStorage.getItem('tymba_current_subjects');
+      if(raw){
+        var arr = JSON.parse(raw);
+        return Array.isArray(arr) ? arr.map(SubjectCatalog.canonical) : [];
+      }
+      // migrate from the old single-value key, if present
+      var old = localStorage.getItem('tymba_current_subject');
+      if(old){
+        var migrated = [SubjectCatalog.canonical(old)];
+        localStorage.setItem('tymba_current_subjects', JSON.stringify(migrated));
+        localStorage.removeItem('tymba_current_subject');
+        return migrated;
+      }
+      return [];
+    }catch(e){ return []; }
+  }
+  function setCurrentSubjects(list){
+    localStorage.setItem('tymba_current_subjects', JSON.stringify(list));
+  }
+  function addCurrentSubject(subject){
+    var list = getCurrentSubjects();
+    if(list.indexOf(subject) === -1){
+      list.push(subject);
+      setCurrentSubjects(list);
+    }
+  }
+  function renderCurrentSubjectBanner(){
+    var current = getCurrentSubjects();
+    document.getElementById('csbValue').textContent = current.length ? current.join(', ') : 'Not set — click Change';
+  }
+  function populateCsbCheckboxes(){
+    var current = getCurrentSubjects();
+    var container = document.getElementById('csbCheckboxList');
+    container.innerHTML = SUBJECT_ORDER.map(function(s){
+      var id = 'csbchk_' + s.replace(/[^a-zA-Z0-9]/g,'');
+      var checked = current.indexOf(s) !== -1 ? ' checked' : '';
+      return '<label class="csb-check-item" for="' + id + '">' +
+        '<input type="checkbox" id="' + id + '" value="' + s.replace(/"/g,'&quot;') + '"' + checked + '>' +
+        s +
+      '</label>';
+    }).join('');
+  }
+  document.getElementById('csbEditBtn').addEventListener('click', function(){
+    var row = document.getElementById('csbEditRow');
+    row.classList.toggle('show');
+    if(row.classList.contains('show')) populateCsbCheckboxes();
+  });
+  document.getElementById('csbSaveBtn').addEventListener('click', function(){
+    var checked = Array.from(document.querySelectorAll('#csbCheckboxList input[type="checkbox"]:checked'));
+    var selected = checked.map(function(c){ return c.value; });
+    setCurrentSubjects(selected);
+    renderCurrentSubjectBanner();
+    document.getElementById('csbEditRow').classList.remove('show');
+  });
+
+  // ===== Final Exam Progress Tracker =====
+  var PT_STATUSES = [
+    {value:'not_started', label:'Not Started', cls:'status-notstarted'},
+    {value:'learning', label:'Currently Learning', cls:'status-learning'},
+    {value:'scheduled', label:'Exam Scheduled', cls:'status-scheduled'},
+    {value:'passed', label:'Passed', cls:'status-passed'},
+    {value:'exemption', label:'Exemption', cls:'status-exemption'},
+    {value:'referred', label:'Referred / Retake Needed', cls:'status-referred'}
+  ];
+  function loadProgressTracker(){
+    try{
+      var obj = JSON.parse(localStorage.getItem('tymba_progress_tracker') || '{}');
+      var normalized={};
+      if(obj && typeof obj==='object')Object.keys(obj).forEach(function(s){normalized[SubjectCatalog.canonical(s)]=obj[s];});
+      return normalized;
+    }catch(e){ return {}; }
+  }
+  function saveProgressTracker(obj){
+    localStorage.setItem('tymba_progress_tracker', JSON.stringify(obj));
+  }
+  function renderProgressTracker(){
+    var statuses = loadProgressTracker();
+    var html = SUBJECT_ORDER.map(function(subject){
+      var current = statuses[subject] || 'not_started';
+      var statusMeta = PT_STATUSES.find(function(s){ return s.value === current; }) || PT_STATUSES[0];
+      var options = PT_STATUSES.map(function(s){
+        return '<option value="' + s.value + '"' + (s.value === current ? ' selected' : '') + '>' + s.label + '</option>';
+      }).join('');
+      return '<div class="pt-row">' +
+        '<div class="pt-subject">' + subject + '</div>' +
+        '<select class="pt-status-select ' + statusMeta.cls + '" data-pt-subject="' + subject.replace(/"/g,'&quot;') + '">' + options + '</select>' +
+      '</div>';
+    }).join('');
+    document.getElementById('progressTrackerGrid').innerHTML = html;
+  }
+  document.getElementById('progressTrackerGrid').addEventListener('change', function(e){
+    var sel = e.target.closest('[data-pt-subject]');
+    if(!sel) return;
+    var subject = sel.getAttribute('data-pt-subject');
+    var statuses = loadProgressTracker();
+    statuses[subject] = sel.value;
+    saveProgressTracker(statuses);
+    renderProgressTracker();
+  });
+
+  populateSubjectDropdowns();
+  renderCurrentSubjectBanner();
+  renderProgressTracker();
+  renderCountdowns();
+
+
+  renderMarquee();
+  renderDash();
+  renderSections();
+
+  // Delegated handlers for the per-card "..." menu (delete)
+  document.getElementById('sections').addEventListener('click', function(e){
+    var toggleBtn = e.target.closest('[data-menu-toggle]');
+    var deleteBtn = e.target.closest('[data-delete-id]');
+    var classifyBtn=e.target.closest('[data-classify-id]');
+    if(classifyBtn){
+      e.preventDefault();e.stopPropagation();
+      var target=EXAMS.find(function(x){return x.id===classifyBtn.getAttribute('data-classify-id');});
+      var type=prompt('Enter set, progress, or mock:',target.testType==='pre'?'progress':target.testType);
+      if(type===null)return;type=type.trim().toLowerCase();if(type==='progress')type='pre';
+      if(type!=='pre'&&type!=='mock'&&type!=='set'){alert('Enter set, progress or mock.');return;}
+      var rawNumber=prompt('Test number (1–10 or higher):',target.testNumber);
+      if(rawNumber===null)return;var number=Number(rawNumber);
+      if(!Number.isSafeInteger(number)||number<1){alert('Enter a whole test number of 1 or higher.');return;}
+      var setChapter=target.setChapter||'';
+      if(type==='set'){setChapter=prompt('Chapter for this set:',setChapter);if(setChapter===null)return;setChapter=setChapter.trim();if(!setChapter||setChapter.length>120){alert('Enter a chapter name of 1–120 characters.');return;}}
+      try{
+        var custom=JSON.parse(localStorage.getItem('tymba_custom_exams')||'[]');
+        var found=custom.some(function(x){return x.id===target.id;});
+        if(!found){alert('This attempt is registered in hub.html. Change its testType and testNumber in that file.');return;}
+        custom.forEach(function(x){if(x.id===target.id){x.testType=type;x.testNumber=number;x.setChapter=type==='set'?setChapter:'';if(type!=='set'||number>x.setTotal)x.setTotal=null;}});
+        localStorage.setItem('tymba_custom_exams',JSON.stringify(custom));location.reload();
+      }catch(err){alert('Could not change test classification: '+err.message);}
+      return;
+    }
+
+    if(deleteBtn){
+      e.preventDefault();
+      e.stopPropagation();
+      var id = deleteBtn.getAttribute('data-delete-id');
+      if(confirm('Delete this attempt? This can\'t be undone.')){
+        deleteExam(id);
+      }
+      return;
+    }
+
+    if(toggleBtn){
+      e.preventDefault();
+      e.stopPropagation();
+      var id2 = toggleBtn.getAttribute('data-menu-toggle');
+      var dropdown = document.querySelector('.menu-dropdown[data-menu="' + id2 + '"]');
+      var wasOpen = dropdown && dropdown.classList.contains('show');
+      document.querySelectorAll('.menu-dropdown.show').forEach(function(el){ el.classList.remove('show'); });
+      if(dropdown && !wasOpen) dropdown.classList.add('show');
+      return;
+    }
+
+    // clicked elsewhere inside sections — close any open menu
+    document.querySelectorAll('.menu-dropdown.show').forEach(function(el){ el.classList.remove('show'); });
+  });
+  document.addEventListener('click', function(e){
+    if(!e.target.closest('.examcard-wrap')){
+      document.querySelectorAll('.menu-dropdown.show').forEach(function(el){ el.classList.remove('show'); });
+    }
+  });
+
+  renderConfidenceCalibration();
+  ChapterUI.mountDashboard(document.getElementById("chapterGraph"),document.getElementById("strengthsWeaknesses"),document.getElementById("topicMastery"),ANALYSIS_EXAMS,localStorage);
+  renderChart();
+
+  renderFIATopics();
+})();
+</script>
+<div id="toast"></div>
+<script>PersonalHubAuth.addLockButton();</script></body>
+</html>
