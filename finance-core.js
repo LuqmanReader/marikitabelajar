@@ -4,7 +4,7 @@
   const sections=['cash','saving','investment','gold'];
   const assetFields=[['cash','Cash'],['stocks','Stocks / equity funds'],['bonds','Bonds / sukuk'],['property','Real estate'],['gold','Gold'],['otherInvestments','Other investments'],['otherAssets','Other assets']];
   const debtFields=[['mortgage','Mortgage'],['carLoan','Car loans'],['creditCard','Credit cards'],['otherDebt','Other debt']];
-  const defaults={savingsTarget:20,emergencyMonths:6,essentialMonthly:0,annualExpenses:0,fiMultiple:25,taxAccount:'EPF',taxTarget:0};
+  const defaults={savingsTarget:20,monthlyBudget:0,emergencyMonths:3,essentialMonthly:0,annualExpenses:0,fiMultiple:25,taxAccount:'EPF',taxTarget:0};
   const number=x=>Number.isFinite(Number(x))?Number(x):0;
   const sum=(rows,key='amount')=>rows.reduce((n,r)=>n+number(r[key]),0);
   const money=x=>'RM'+number(x).toLocaleString('en-MY',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -12,7 +12,7 @@
   function dateValid(d){if(!/^\d{4}-\d{2}-\d{2}$/.test(d||''))return false;const t=new Date(d+'T12:00:00Z');return !isNaN(t)&&t.toISOString().slice(0,10)===d;}
   function today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
   function load(storage=localStorage){const raw=storage.getItem(KEY);if(!raw)return {cash:[],saving:[],investment:[],gold:[]};const state=JSON.parse(raw);if(!state||typeof state!=='object'||Array.isArray(state))throw Error('Saved tracker data is not a valid ledger.');sections.forEach(s=>{if(state[s]==null)state[s]=[];if(!Array.isArray(state[s]))throw Error('Saved '+s+' records are not a list.');});return state;}
-  function loadDashboard(storage=localStorage){const raw=storage.getItem(DASH_KEY);if(!raw)return {snapshots:[],settings:{...defaults}};const state=JSON.parse(raw);if(!state||!Array.isArray(state.snapshots))throw Error('Saved dashboard data is invalid.');return {snapshots:state.snapshots,settings:{...defaults,...state.settings}};}
+  function loadDashboard(storage=localStorage){const raw=storage.getItem(DASH_KEY);if(!raw)return {snapshots:[],goals:[],settings:{...defaults}};const state=JSON.parse(raw);if(!state||!Array.isArray(state.snapshots))throw Error('Saved dashboard data is invalid.');return {snapshots:state.snapshots,goals:Array.isArray(state.goals)?state.goals:[],settings:{...defaults,...state.settings}};}
   function shiftMonth(month,by){const [y,m]=month.split('-').map(Number);const d=new Date(Date.UTC(y,m-1+by,1));return d.toISOString().slice(0,7);}
   function monthsEnding(month,count=12){return Array.from({length:count},(_,i)=>shiftMonth(month,i-count+1));}
   function monthRows(state,type,month){return state[type].filter(r=>dateValid(r.date)&&r.date.slice(0,7)===month);}
@@ -41,7 +41,7 @@
     let dashboard=null;
     if(backup.dashboard){
       dashboard=JSON.parse(JSON.stringify(backup.dashboard));
-      if(!Array.isArray(dashboard.snapshots)||!dashboard.settings||typeof dashboard.settings!=='object')throw Error('The dashboard backup is invalid.');
+      if(!Array.isArray(dashboard.snapshots)||!dashboard.settings||typeof dashboard.settings!=='object')throw Error('The dashboard backup is invalid.'); dashboard.goals=Array.isArray(dashboard.goals)?dashboard.goals:[];
       dashboard.settings={...defaults,...dashboard.settings};
       for(const key of Object.keys(defaults).filter(k=>k!=='taxAccount')){
         if(!Number.isFinite(Number(dashboard.settings[key]))||Number(dashboard.settings[key])<0)throw Error('Dashboard targets must be non-negative numbers.');dashboard.settings[key]=Number(dashboard.settings[key]);
