@@ -3,3 +3,6 @@
 .site-back:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--site-nav-ink)!important}
 .site-back:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--site-nav-ink)!important}
 .site-back:focus-visible{outline:3px solid #1D3FA0;outline-offset:3px}
+
+/* Revision Dashboard: keep shadow clear of the brand/logo row. */
+.revision-hub-back{margin-bottom:18px!important}
