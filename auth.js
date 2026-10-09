@@ -3,7 +3,7 @@
  const CLIENT='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
  const PREFIX='rh_beta_active_user';
  const IGNORE=/^(ph_auth_hash_v1|ph_unlocked_v1|sb-|rh_beta_|google)/i;
- let client, user=null, timer=null, saving=false, lastSaved='', lastCloud='', pending=false;
+ let client, user=null, timer=null, saving=false, lastSaved='', lastCloud='', pending=false, activeSync=null;
  function keys(){return Object.keys(localStorage).filter(k=>!IGNORE.test(k));}
  function snapshot(){const data={};for(const k of keys())data[k]=localStorage.getItem(k);return data;}
  function clearData(){for(const k of keys())localStorage.removeItem(k);}
@@ -24,10 +24,16 @@
  }
  async function sync(force=false){
   if(!user)return false;
-  if(saving){pending=true;return false;}
+  if(saving){
+    // Wait for the active sync, then re-evaluate the newest local snapshot.
+    // Never report failure merely because an automatic sync is in flight.
+    await activeSync;
+    return sync(force);
+  }
   const local=snapshot();
   if(!force&&sameData(local,JSON.parse(lastSaved||'null')))return true;
   saving=true;
+  activeSync=(async()=>{
   try{
     const remoteBefore=await fetchCloud();
     const baseline=JSON.parse(lastCloud||'null');
@@ -59,8 +65,9 @@
     return false;
   }finally{
     saving=false;
-    if(pending){pending=false;setTimeout(()=>sync(),0);}
   }
+  })();
+  return activeSync;
  }
  async function hydrate(){
   await loadUser();
