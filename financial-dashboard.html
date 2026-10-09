@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Financial Dashboard · Personal Hub</title>
-<script src="auth.js"></script><script>if(!PersonalHubAuth.guard())throw new Error('Locked');</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="supabase-config.js"></script><script src="auth.js"></script><script>if(!PersonalHubAuth.guard())throw new Error('Locked');</script>
 <script src="finance-core.js"></script><script src="finance-charts.js"></script><link rel="stylesheet" href="financial-dashboard.css"><link rel="stylesheet" href="site-nav.css">
 </head><body><main class="wrap">
 <div class="nav"><a href="index.html" class="site-back">← Personal Hub</a><span class="pill">Student money dashboard · RM</span></div>
