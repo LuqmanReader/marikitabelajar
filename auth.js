@@ -3,27 +3,53 @@
  const CLIENT='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
  const PREFIX='rh_beta_active_user';
  const IGNORE=/^(ph_auth_hash_v1|ph_unlocked_v1|sb-|rh_beta_|google)/i;
- let client, user=null, timer=null, saving=false, lastSaved='', pending=false;
+ let client, user=null, timer=null, saving=false, lastSaved='', lastCloud='', pending=false;
  function keys(){return Object.keys(localStorage).filter(k=>!IGNORE.test(k));}
  function snapshot(){const data={};for(const k of keys())data[k]=localStorage.getItem(k);return data;}
  function clearData(){for(const k of keys())localStorage.removeItem(k);}
  function status(s,fail=false){let e=document.getElementById('rhSyncStatus');if(!e&&document.body){e=document.createElement('div');e.id='rhSyncStatus';e.style.cssText='position:fixed;bottom:12px;left:12px;z-index:99998;padding:8px 12px;border:2px solid #111;background:#fff;color:#111;font:700 12px sans-serif;max-width:300px';document.body.append(e);}if(e){e.textContent=s;e.style.borderColor=fail?'#d22':'#111';}}
  async function init(){if(client)return client; if(!window.supabase)throw Error('Supabase library could not load');client=window.supabase.createClient(window.RH_SUPABASE_URL,window.RH_SUPABASE_PUBLISHABLE_KEY,{auth:{detectSessionInUrl:true,flowType:'implicit'}});return client;}
  async function loadUser(){await init();const {data:{user:u},error}=await client.auth.getUser();if(error||!u)throw Error('Please sign in again.');user=u;return u;}
+ // Supabase stores payload as jsonb, which can reorder object keys. Compare values, not JSON text order.
+ function sameData(a,b){
+  if(!a||!b||typeof a!=='object'||typeof b!=='object')return false;
+  const ak=Object.keys(a).sort(),bk=Object.keys(b).sort();
+  return ak.length===bk.length&&ak.every((k,i)=>k===bk[i]&&a[k]===b[k]);
+ }
+ function applyData(data){clearData();for(const [k,v] of Object.entries(data||{}))if(typeof v==='string'&&!IGNORE.test(k))localStorage.setItem(k,v);}
+ async function fetchCloud(){
+  const {data,error}=await client.from('user_documents').select('payload').eq('user_id',user.id).eq('document_key','revision_hub_local_storage_v1').maybeSingle();
+  if(error)throw error;
+  return data?.payload?.data||null;
+ }
  async function sync(force=false){
   if(!user)return false;
   if(saving){pending=true;return false;}
-  const data=snapshot(),json=JSON.stringify(data);
-  if(!force&&json===lastSaved)return true;
+  const local=snapshot();
+  if(!force&&sameData(local,JSON.parse(lastSaved||'null')))return true;
   saving=true;
   try{
-    const {error}=await client.from('user_documents').upsert({user_id:user.id,document_key:'revision_hub_local_storage_v1',payload:{data}},{onConflict:'user_id,document_key'});
+    const remoteBefore=await fetchCloud();
+    const baseline=JSON.parse(lastCloud||'null');
+    const cloudChanged=remoteBefore&&!sameData(remoteBefore,baseline);
+    const localChanged=!sameData(local,JSON.parse(lastSaved||'null'));
+    if(cloudChanged){
+      if(localChanged){
+        status('Cloud conflict: another device changed this account. Do not overwrite; back up both devices first.',true);
+        return false;
+      }
+      applyData(remoteBefore);
+      lastSaved=JSON.stringify(snapshot());lastCloud=JSON.stringify(remoteBefore);
+      status('Newer cloud data loaded. Refresh this page to display it.');
+      return true;
+    }
+    if(!localChanged&&remoteBefore){status('Cloud already up to date ✓');return true;}
+    const {error}=await client.from('user_documents').upsert({user_id:user.id,document_key:'revision_hub_local_storage_v1',payload:{data:local}},{onConflict:'user_id,document_key'});
     if(error)throw error;
-    // Read back the server record so a local-only save cannot be mistaken for a cloud save.
-    const {data:remote,error:readError}=await client.from('user_documents').select('payload').eq('user_id',user.id).eq('document_key','revision_hub_local_storage_v1').maybeSingle();
-    if(readError)throw readError;
-    if(!remote||JSON.stringify(remote.payload?.data)!==json)throw Error('Cloud verification failed: saved document was not returned.');
-    lastSaved=json;
+    const remoteAfter=await fetchCloud();
+    if(!remoteAfter)throw Error('Cloud verification failed: no document was returned.');
+    if(!sameData(remoteAfter,local))throw Error('Cloud verification failed: saved values differ from this device.');
+    lastSaved=JSON.stringify(local);lastCloud=JSON.stringify(remoteAfter);
     status('Cloud saved and verified ✓');
     return true;
   }catch(e){
@@ -36,7 +62,15 @@
     if(pending){pending=false;setTimeout(()=>sync(),0);}
   }
  }
- async function hydrate(){await loadUser();const prior=sessionStorage.getItem(PREFIX);if(prior!==user.id){clearData();sessionStorage.setItem(PREFIX,user.id);}const {data,error}=await client.from('user_documents').select('payload').eq('user_id',user.id).eq('document_key','revision_hub_local_storage_v1').maybeSingle();if(error)throw error;if(data?.payload?.data){clearData();for(const [k,v] of Object.entries(data.payload.data))if(typeof v==='string'&&!IGNORE.test(k))localStorage.setItem(k,v);}lastSaved=JSON.stringify(snapshot());status('Cloud connected · use SAVE TO CLOUD to verify ✓');}
+ async function hydrate(){
+  await loadUser();
+  const prior=sessionStorage.getItem(PREFIX);
+  if(prior!==user.id){clearData();sessionStorage.setItem(PREFIX,user.id);}
+  const cloud=await fetchCloud();
+  if(cloud)applyData(cloud);
+  lastSaved=JSON.stringify(snapshot());lastCloud=JSON.stringify(cloud);
+  status(cloud?'Cloud loaded ✓ · SAVE TO CLOUD verifies changes':'Cloud connected · no saved document yet');
+ }
  async function login(email,password){await init();const {error}=await client.auth.signInWithPassword({email,password});if(error)throw error;await hydrate();location.href='index.html';}
  async function sendRecovery(email){await init();const {error}=await client.auth.resetPasswordForEmail(email,{redirectTo:new URL("index.html",location.href).href});if(error)throw error;}
  async function updatePassword(password){await init();const {error}=await client.auth.updateUser({password});if(error)throw error;}
