@@ -1,26 +1,53 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>LedgerPeer · Animated Homepage</title><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"><link rel="apple-touch-icon" href="apple-touch-icon.png"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="supabase-config.js"></script><script src="auth.js"></script><style>
-:root{--ink:#111;--paper:#F4EEDD;--red:#E63B2E;--blue:#1D3FA0;--yellow:#F5C518;--grey:#777;--green:#9fe0b8}
+:root{
+  --ink:#111;--paper:#F4EEDD;--red:#E63B2E;--blue:#1D3FA0;
+  --yellow:#F5C518;--grey:#777;--green:#9fe0b8;
+  --ticker-height:40px;
+  /* Scale the original 1920×1080 artwork down to fit the viewport; NEVER enlarge. */
+  --tile-size: min(172px, 8.9583vw, 15.9259vh);
+}
 *{box-sizing:border-box}
-html{min-height:100%}
-body{margin:0;min-height:100vh;color:var(--ink);font-family:ui-monospace,"JetBrains Mono","Space Mono",Menlo,Consolas,monospace;background:var(--paper);overflow-x:hidden}
-/* Authentic user-supplied Canva checkerboard, cropped to one tile and moved down. */
-.home-wallpaper{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
-.home-wallpaper::before{content:"";position:absolute;inset:-172px 0; background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKwAAACsCAIAAABpU9CPAAACWUlEQVR42u3Wv46MURjH8d+ZPxgE2bCxtFYiotjCJbgCUaj0whVssdG4AQm90OgoKFYiCi26TSSyURCZtVhhJmaZo9hLmLd5zedzAU/yPvme95xSV1bSkF/rj9LppF1+PC8f15oZVXPw5lJaqBPmnggQASJABCRJr8lhO8/SKa1bQT21miT7z+TA2dkG1eTKvEdQPt1u8Z/l+LU6YwSuA0SACBABIkAEiAARIAJEgAgQASJABIgAESACRIAIEAH/lTJ+8SRJdtbL98czzvq7PEmSacq3bvs2sXC5LlydcUZ3412SdLr12JE2RfDz6/sk2X5QhveambjdHawtzvPBmp5eGt+/4zrAmwARIAJEgAgQASJABIgAESACRIAIEAEiQASIABEgAkSACBABIkAEiAARIAJEgAgQASJABIgAESACRIAIEAEiQASIABEgAkSACBABIkAEiAARIAJEgAgQASJABIgAESACRMC86JUPN5LUo5fquVfNjPw8TK7P807Ln+HeVlsTQUZvkpTB+epENGX6e2+rrgNEgAgQASJABIgAESACRIAIEAEiQASIABEgAkSACBABbVYmq8tJMriQQxcbmVj39ctkt32bGL3N6HUzG+jXslta9Om9/tPDSZLNZLOZFZxcHD28274IvozL1stmDtZWb3DrhOsAbwJEgAgQASJABIgAESACRIAIEAEiQASIABEgAkSACBABIkAEiAARIAJEgAgQASJABIgAESACRIAIEAEiQASIABEgAkSACBABIkAEiAARIAJEgAgQASJABIgAETAP/gFjY1MxZHGMOQAAAABJRU5ErkJggg==");background-size:172px 172px;background-repeat:repeat; animation:checkerboardDown 9s linear infinite;will-change:background-position}
-@keyframes checkerboardDown{to{background-position:0 172px}}
-/* Horizontal ticker: duplicate tracks for a seamless right-to-left loop. */
-.marquee-strip{position:fixed;left:0;right:0;height:59px;z-index:5;overflow:hidden;display:flex;align-items:center;background:#fff;border-top:7px solid #111;border-bottom:7px solid #111;pointer-events:none}
+html,body{margin:0;min-height:100%;}
+body{background:var(--paper);color:var(--ink);font-family:ui-monospace,"JetBrains Mono","Space Mono",Menlo,Consolas,monospace;overflow-x:hidden}
+/* Original user's checkerboard tile; no background zoom, no cropping of content. */
+.home-wallpaper{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:var(--paper)}
+.home-wallpaper::before{
+  content:"";position:absolute;inset:0;
+  background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKwAAACsCAIAAABpU9CPAAACWUlEQVR42u3Wv46MURjH8d+ZPxgE2bCxtFYiotjCJbgCUaj0whVssdG4AQm90OgoKFYiCi26TSSyURCZtVhhJmaZo9hLmLd5zedzAU/yPvme95xSV1bSkF/rj9LppF1+PC8f15oZVXPw5lJaqBPmnggQASJABCRJr8lhO8/SKa1bQT21miT7z+TA2dkG1eTKvEdQPt1u8Z/l+LU6YwSuA0SACBABIkAEiAARIAJEgAgQASJABIgAESACRIAIEAH/lTJ+8SRJdtbL98czzvq7PEmSacq3bvs2sXC5LlydcUZ3412SdLr12JE2RfDz6/sk2X5QhveambjdHawtzvPBmp5eGt+/4zrAmwARIAJEgAgQASJABIgAESACRIAIEAEiQASIABEgAkSACBABIkAEiAARIAJEgAgQASJABIgAESACRIAIEAEiQASIABEgAkSACBABIkAEiAARIAJEgAgQASJABIgAESACRMC86JUPN5LUo5fquVfNjPw8TK7P807Ln+HeVlsTQUZvkpTB+epENGX6e2+rrgNEgAgQASJABIgAESACRIAIEAEiQASIABEgAkSACBABbVYmq8tJMriQQxcbmVj39ctkt32bGL3N6HUzG+jXslta9Om9/tPDSZLNZLOZFZxcHD28274IvozL1stmDtZWb3DrhOsAbwJEgAgQASJABIgAESACRIAIEAEiQASIABEgAkSACBABIkAEiAARIAJEgAgQASJABIgAESACRIAIEAEiQASIABEgAkSACBABIkAEiAARIAJEgAgQASJABIgAETAP/gFjY1MxZHGMOQAAAABJRU5ErkJggg==");
+  background-repeat:repeat;background-size:var(--tile-size) var(--tile-size);
+  animation:checkerboardDown 12s linear infinite;
+  will-change:background-position;
+}
+@keyframes checkerboardDown{from{background-position:0 0}to{background-position:0 var(--tile-size)}}
+/* Two thin, non-overlapping marquees fixed at the edges. */
+.marquee-strip{
+ position:fixed;left:0;right:0;height:var(--ticker-height);z-index:5;
+ display:flex;align-items:center;overflow:hidden;white-space:nowrap;
+ border-top:4px solid #111;border-bottom:4px solid #111;
+ background:#fff;pointer-events:none;
+}
 .marquee-strip.top{top:0}.marquee-strip.bottom{bottom:0}
-.marquee-track{display:flex;width:max-content;white-space:nowrap;animation:marqueeLeft 27s linear infinite}
-.marquee-copy{flex:none;display:block;padding-right:64px;font:400 clamp(14px,1.6vw,25px)/1.2 Arial,Helvetica,sans-serif;letter-spacing:.01em;color:#111}
+.marquee-track{display:flex;width:max-content;white-space:nowrap;animation:marqueeLeft 28s linear infinite}
+.marquee-copy{display:block;flex:none;padding-right:48px;color:#111;font:400 clamp(13px,1.2vw,19px)/1.15 Arial,Helvetica,sans-serif;letter-spacing:0}
 @keyframes marqueeLeft{to{transform:translateX(-50%)}}
-/* Existing functional homepage content; retain the existing forms and links. */
-.wrap{position:relative;z-index:1;max-width:1120px;min-height:100vh;margin:auto;padding:88px 24px 88px;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.top{text-align:center;width:100%}
+/* One-screen homepage layout, with space reserved for BOTH tickers. */
+.wrap{
+ position:relative;z-index:1;
+ max-width:1120px;height:100dvh;min-height:0;margin:0 auto;
+ padding:calc(var(--ticker-height) + 9px) 20px;
+ display:flex;flex-direction:column;align-items:center;justify-content:center;
+ gap:5px;
+}
+.top{text-align:center;width:100%;flex:0 0 auto}
 h1,h2{font-family:"Arial Black","Helvetica Neue",Impact,sans-serif;text-transform:uppercase;letter-spacing:-.025em}
-h1{font-size:clamp(43px,7.8vw,100px);line-height:1;margin:0;filter:drop-shadow(2px 3px 0 rgba(255,255,255,.3))}
-.sub{margin:8px auto 8px;color:#404040;font-weight:900;text-transform:uppercase;font-size:11px;letter-spacing:.12em;background:rgba(244,238,221,.88);display:table;padding:2px 9px}
-.mascot-stage{width:min(205px,55vw);aspect-ratio:1591/989;position:relative;margin:0 auto 14px;isolation:isolate;animation:mascotFloat 4s ease-in-out infinite}
+h1{font-size:clamp(43px, min(5.8vw,10vh), 88px);line-height:.98;margin:0;text-shadow:1px 2px rgba(244,238,221,.55)}
+.sub{display:table;margin:5px auto 0;padding:1px 8px;background:rgba(244,238,221,.9);color:#404040;font-weight:900;text-transform:uppercase;font-size:10px;letter-spacing:.11em}
+.mascot-stage{
+ width:clamp(124px, min(14vw,23vh), 185px);
+ aspect-ratio:1591/989;position:relative;margin:3px auto 6px;
+ isolation:isolate;animation:mascotFloat 4s ease-in-out infinite;
+}
 .mascot-stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;animation:poseCycle 20s linear infinite;pointer-events:none;user-select:none}
 .mascot-stage img:nth-child(1){animation-delay:0s;opacity:1}
 .mascot-stage img:nth-child(2){animation-delay:-16s}
@@ -28,23 +55,57 @@ h1{font-size:clamp(43px,7.8vw,100px);line-height:1;margin:0;filter:drop-shadow(2
 .mascot-stage img:nth-child(4){animation-delay:-8s}
 .mascot-stage img:nth-child(5){animation-delay:-4s}
 @keyframes poseCycle{0%,16%{opacity:1}20%,99%{opacity:0}100%{opacity:1}}
-@keyframes mascotFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-/* Existing retro box look retained, centered beneath title and mascot. */
-.lockbox{width:min(520px,100%);margin:0 auto;background:#f7f7f7;border:4px solid var(--ink);box-shadow:9px 9px 0 var(--ink);padding:26px 28px}
-.lockbox h2{font-size:28px;margin:0 0 8px}
-.lockbox p{font-size:12px;line-height:1.6;color:#555}
-.locktag{display:inline-block;background:var(--yellow);border:2px solid var(--ink);padding:5px 8px;font-size:10px;font-weight:900;text-transform:uppercase;margin-bottom:16px}
-input{width:100%;border:3px solid var(--ink);padding:13px;background:#fff;font:inherit;margin:8px 0}
-.btn{width:100%;border:3px solid var(--ink);background:var(--ink);color:#fff;padding:12px 14px;font:900 12px inherit;text-transform:uppercase;cursor:pointer;box-shadow:4px 4px 0 var(--grey)}
+@keyframes mascotFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+/* Keep entire login box in the available center viewport. */
+.lockbox{width:min(505px,100%);flex:0 0 auto;margin:0 auto;background:#f7f7f7;border:3px solid var(--ink);box-shadow:7px 7px 0 var(--ink);padding:15px 20px}
+.lockbox h2{font-size:clamp(20px,3vh,26px);margin:0 0 6px}
+.lockbox p{font-size:11px;line-height:1.4;color:#555;margin:3px 0}
+.locktag{display:inline-block;background:var(--yellow);border:2px solid var(--ink);padding:4px 7px;font-size:9px;font-weight:900;text-transform:uppercase;margin-bottom:9px}
+input{width:100%;border:2px solid var(--ink);padding:10px 12px;background:#fff;font:inherit;margin:5px 0}
+.btn{width:100%;border:2px solid var(--ink);background:var(--ink);color:#fff;padding:10px 12px;font:900 12px inherit;text-transform:uppercase;cursor:pointer;box-shadow:3px 3px 0 var(--grey);margin-top:5px}
 .btn:hover{transform:translate(-1px,-1px)}
-.error{min-height:18px;margin-top:12px;color:var(--red);font-size:11px;font-weight:900}
-.auth-tabs{display:flex;gap:8px;margin:12px 0 16px}.auth-tabs button{flex:1;background:#fff;color:#111;border:3px solid #111;padding:12px;font:900 12px monospace;cursor:pointer}.auth-tabs button.active{background:var(--yellow)}
-.auth-link{border:0;background:none;text-decoration:underline;font:800 12px monospace;cursor:pointer;color:var(--blue);padding:8px 0}.auth-links{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:8px}.notice{font-size:12px;color:#222;line-height:1.6;min-height:20px}button:disabled{opacity:.6;cursor:wait}[hidden]{display:none!important}
-#hubView{width:100%}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}.card{border:4px solid var(--ink);padding:28px;background:#fff;box-shadow:8px 8px 0 var(--ink);text-decoration:none;color:var(--ink);transition:.08s}.card:hover{transform:translate(-2px,-2px);box-shadow:10px 10px 0 var(--ink)}.tag{display:inline-block;border:2px solid var(--ink);padding:5px 8px;font-weight:900;font-size:10px;text-transform:uppercase}.dashboard .tag{background:var(--yellow)}.finance .tag{background:var(--green)}.card h2{font-size:28px;margin:18px 0 10px}.card p{font-size:13px;line-height:1.6;margin:0 0 22px}.features{font-size:11px;font-weight:800;line-height:1.9;color:#444}.go{margin-top:22px;display:inline-block;border:3px solid var(--ink);padding:10px 14px;background:var(--ink);color:#fff;font-weight:900;text-transform:uppercase}.topbar{display:flex;justify-content:flex-end;margin-bottom:18px}.lockbtn{border:3px solid var(--ink);background:var(--red);color:#fff;padding:8px 12px;font:900 11px inherit;cursor:pointer;box-shadow:3px 3px 0 var(--ink)}
-footer{text-align:center;margin-top:22px;color:#111;font-size:10px;font-weight:900;text-transform:uppercase;background:rgba(244,238,221,.88);padding:4px 8px}
-@media(max-width:700px){.wrap{padding:80px 16px 85px}.grid{grid-template-columns:1fr}.lockbox{padding:20px 18px;box-shadow:6px 6px 0 var(--ink)}.marquee-strip{height:46px;border-width:5px}.marquee-copy{font-size:15px}.mascot-stage{width:min(180px,52vw);margin-bottom:12px}h1{font-size:clamp(38px,11vw,66px)}}
-@media(prefers-reduced-motion:reduce){.home-wallpaper::before,.marquee-track,.mascot-stage,.mascot-stage img{animation:none!important}.mascot-stage img{opacity:0}.mascot-stage img:first-child{opacity:1}}
-</style></head><body><div class="home-wallpaper" aria-hidden="true"></div><div class="marquee-strip top" aria-hidden="true"><div class="marquee-track"><span class="marquee-copy">STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦</span><span class="marquee-copy">STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦</span></div></div><div class="marquee-strip bottom" aria-hidden="true"><div class="marquee-track"><span class="marquee-copy">STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦</span><span class="marquee-copy">STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦</span></div></div><main class="wrap"><div class="top"><h1>LedgerPeer</h1><div class="sub" id="subtitle">Private student beta</div><div class="mascot-stage" role="img" aria-label="LedgerPeer's friendly balance-scale mascot waving, studying, explaining and celebrating"><img src="ledgerpeer-idle.png" alt="" decoding="async"><img src="ledgerpeer-wave.png" alt="" decoding="async"><img src="ledgerpeer-study.png" alt="" decoding="async"><img src="ledgerpeer-explain.png" alt="" decoding="async"><img src="ledgerpeer-celebrate.png" alt="" decoding="async"></div></div><section id="authView" class="lockbox" hidden><span class="locktag">Student account · Private beta</span><h2 id="authTitle">Student Log In</h2><div class="auth-tabs" id="authTabs"><button id="loginTab" type="button" class="active">Log In</button><button id="signupTab" type="button">Sign Up</button></div><p id="authCopy"></p><input id="email" type="email" autocomplete="off" placeholder="Student email address" required><input id="password" type="password" autocomplete="off" placeholder="Password"><input id="confirm" type="password" autocomplete="new-password" placeholder="Confirm password" hidden><button class="btn" id="authButton">Log In →</button><div class="auth-links"><button class="auth-link" id="forgotButton" type="button">Forgot password?</button><button class="auth-link" id="backButton" type="button" hidden>← Back to log in</button></div><p class="notice" id="notice" role="status"></p><div class="error" id="error" role="alert"></div></section><section id="hubView" hidden><div class="topbar"><button class="lockbtn" id="lockButton">Lock hub</button></div><div class="grid"><a class="card dashboard" href="hub.html"><span class="tag">Section 01 · Academic</span><h2>Revision Dashboard</h2><p><strong>Academic performance & revision section.</strong> Turn exam attempts into useful revision decisions and see what to work on next.</p><div class="features">EXAM DEBRIEFS · CONFIDENCE CALIBRATION<br>TOPIC MASTERY · RETRY MISTAKES · PROGRESS</div><span class="go">Enter academic section →</span></a><a class="card finance" href="financial-manager.html"><span class="tag">Section 02 · Finance</span><h2>Financial Manager</h2><p><strong>Personal money management section.</strong> Record cash flow, savings, investments and gold contributions in one place.</p><div class="features">INCOME · EXPENSES · SAVINGS<br>INVESTMENTS · GOLD · GOAL HORIZONS<br>FINANCIAL TRACKER · FINANCIAL DASHBOARD</div><span class="go">Enter finance section →</span></a></div><nav style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:26px"><a class="go" href="calendar.html">▦ Calendar →</a><a class="go" href="study-planner.html">☑ Study Planner →</a><a class="go" href="achievements.html">★ Achievements →</a></nav></section><footer>LedgerPeer beta · Cloud-backed student accounts</footer></main><script>
+.error{min-height:13px;margin-top:5px;color:var(--red);font-size:11px;font-weight:900}
+.auth-tabs{display:flex;gap:8px;margin:6px 0 10px}
+.auth-tabs button{flex:1;background:#fff;color:#111;border:2px solid #111;padding:9px;font:900 12px monospace;cursor:pointer}
+.auth-tabs button.active{background:var(--yellow)}
+.auth-link{border:0;background:none;text-decoration:underline;font:800 11px monospace;cursor:pointer;color:var(--blue);padding:3px 0}
+.auth-links{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:5px}
+.notice{font-size:11px;color:#222;line-height:1.4;min-height:0}
+button:disabled{opacity:.6;cursor:wait}[hidden]{display:none!important}
+#hubView{width:100%;flex:0 0 auto}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.card{border:3px solid var(--ink);padding:22px;background:#fff;box-shadow:7px 7px 0 var(--ink);text-decoration:none;color:var(--ink);transition:.08s}
+.card:hover{transform:translate(-2px,-2px);box-shadow:9px 9px 0 var(--ink)}
+.tag{display:inline-block;border:2px solid var(--ink);padding:5px 8px;font-weight:900;font-size:10px;text-transform:uppercase}
+.dashboard .tag{background:var(--yellow)}.finance .tag{background:var(--green)}
+.card h2{font-size:clamp(21px,2.4vw,28px);margin:14px 0 8px}
+.card p{font-size:12px;line-height:1.5;margin:0 0 16px}
+.features{font-size:10px;font-weight:800;line-height:1.7;color:#444}
+.go{margin-top:15px;display:inline-block;border:3px solid var(--ink);padding:8px 11px;background:var(--ink);color:#fff;font-weight:900;text-transform:uppercase}
+.topbar{display:flex;justify-content:flex-end;margin-bottom:11px}
+.lockbtn{border:3px solid var(--ink);background:var(--red);color:#fff;padding:7px 11px;font:900 11px inherit;cursor:pointer;box-shadow:3px 3px 0 var(--ink)}
+footer{flex:0 0 auto;text-align:center;margin-top:6px;color:#111;font-size:9px;font-weight:900;text-transform:uppercase;background:rgba(244,238,221,.9);padding:3px 8px}
+@media(max-height:620px) and (min-width:701px){
+  .wrap{justify-content:flex-start;overflow-y:auto}
+  h1{font-size:40px}.mascot-stage{width:96px;margin:2px auto}
+  .lockbox{padding:12px 16px}footer{margin-top:3px}
+}
+@media(max-width:700px){
+  :root{--ticker-height:36px;--tile-size:76px}
+  .wrap{height:100dvh;min-height:100dvh;padding:calc(var(--ticker-height) + 12px) 16px;justify-content:center;overflow:visible}
+  .grid{grid-template-columns:1fr}
+  .lockbox{padding:15px 15px;box-shadow:5px 5px 0 var(--ink)}
+  .marquee-strip{border-width:3px}.marquee-copy{font-size:13px}
+  h1{font-size:clamp(36px,10vw,54px)}
+  .mascot-stage{width:min(145px,35vw);margin:5px auto 8px}
+  #hubView{padding-bottom:15px}
+}
+@media(max-width:700px) and (max-height:680px){.wrap{height:auto;justify-content:flex-start}}
+@media(prefers-reduced-motion:reduce){
+ .home-wallpaper::before,.marquee-track,.mascot-stage,.mascot-stage img{animation:none!important}
+ .mascot-stage img{opacity:0}.mascot-stage img:first-child{opacity:1}
+}
+</style></head><body><div class="home-wallpaper" aria-hidden="true"></div><div class="marquee-strip top" aria-hidden="true"><div class="marquee-track"><span class="marquee-copy">STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦</span><span class="marquee-copy">STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦</span></div></div><div class="marquee-strip bottom" aria-hidden="true"><div class="marquee-track"><span class="marquee-copy">STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦</span><span class="marquee-copy">STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦</span></div></div><main class="wrap"><div class="top"><h1>LedgerPeer</h1><div class="sub" id="subtitle">Private student beta</div><div class="mascot-stage" role="img" aria-label="LedgerPeer's friendly balance-scale mascot waving, studying, explaining and celebrating"><img src="ledgerpeer-idle.png" alt="" decoding="async"><img src="ledgerpeer-wave.png" alt="" decoding="async"><img src="ledgerpeer-study.png" alt="" decoding="async"><img src="ledgerpeer-explain.png" alt="" decoding="async"><img src="ledgerpeer-celebrate.png" alt="" decoding="async"></div></div><section id="authView" class="lockbox" hidden><span class="locktag">Student account · Private beta</span><h2 id="authTitle">Student Log In</h2><div class="auth-tabs" id="authTabs"><button id="loginTab" type="button" class="active">Log In</button><button id="signupTab" type="button">Sign Up</button></div><p id="authCopy"></p><input id="email" type="email" autocomplete="off" placeholder="Student email address" required><input id="password" type="password" autocomplete="off" placeholder="Password"><input id="confirm" type="password" autocomplete="new-password" placeholder="Confirm password" hidden><button class="btn" id="authButton">Log In →</button><div class="auth-links"><button class="auth-link" id="forgotButton" type="button">Forgot password?</button><button class="auth-link" id="backButton" type="button" hidden>← Back to log in</button></div><p class="notice" id="notice" role="status"></p><div class="error" id="error" role="alert"></div></section><section id="hubView" hidden><div class="topbar"><button class="lockbtn" id="lockButton">Lock hub</button></div><div class="grid"><a class="card dashboard" href="hub.html"><span class="tag">Section 01 · Academic</span><h2>Revision Dashboard</h2><p><strong>Academic performance & revision section.</strong> Turn exam attempts into useful revision decisions and see what to work on next.</p><div class="features">EXAM DEBRIEFS · CONFIDENCE CALIBRATION<br>TOPIC MASTERY · RETRY MISTAKES · PROGRESS</div><span class="go">Enter academic section →</span></a><a class="card finance" href="financial-manager.html"><span class="tag">Section 02 · Finance</span><h2>Financial Manager</h2><p><strong>Personal money management section.</strong> Record cash flow, savings, investments and gold contributions in one place.</p><div class="features">INCOME · EXPENSES · SAVINGS<br>INVESTMENTS · GOLD · GOAL HORIZONS<br>FINANCIAL TRACKER · FINANCIAL DASHBOARD</div><span class="go">Enter finance section →</span></a></div><nav style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:26px"><a class="go" href="calendar.html">▦ Calendar →</a><a class="go" href="study-planner.html">☑ Study Planner →</a><a class="go" href="achievements.html">★ Achievements →</a></nav></section><footer>LedgerPeer beta · Cloud-backed student accounts</footer></main><script>
 const A=PersonalHubAuth,authView=document.getElementById('authView'),hubView=document.getElementById('hubView'),error=document.getElementById('error');
 const password=document.getElementById('password'),email=document.getElementById('email'),button=document.getElementById('authButton'),confirmInput=document.getElementById('confirm'),notice=document.getElementById('notice');
 const tabs=document.getElementById('authTabs'),forgot=document.getElementById('forgotButton'),back=document.getElementById('backButton');
