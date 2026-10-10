@@ -4,7 +4,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="supabase-config.js"></script><script src="auth.js"></script><script>if(!PersonalHubAuth.guard()) throw new Error("Locked");</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Loading… · Personal Hub</title>
+<title>Loading… · LedgerPeer</title>
 <style>
   :root{
     --ink:#111111;
@@ -415,11 +415,11 @@
   <header class="hero">
     <div class="brandmark">
       <div class="mark"><span class="mark-circle"></span><span class="mark-tri"></span><span class="mark-square"></span></div>
-      <div class="brand-name">PERSONAL HUB · CORRECTIONS ENGINE</div>
+      <div class="brand-name">LEDGERPEER · CORRECTIONS ENGINE</div>
     </div>
     <h1 class="title" id="pageTitle">Loading&hellip;</h1>
     <div class="subtitle" id="pageSubtitle"></div>
-    <a href="hub.html" class="site-back">← Revision Hub</a>
+    <a href="hub.html" class="site-back">← LedgerPeer</a>
   </header>
 
   <div class="dash panel">
@@ -474,7 +474,7 @@
   <div class="qlist" id="qlist"></div>
   <div class="empty-state" id="emptyState" style="display:none;">No questions match this filter.</div>
 
-  <footer>Personal Hub &middot; Corrections Engine &middot; Keep grinding, the exam doesn't grade effort but your memory does.</footer>
+  <footer>LedgerPeer &middot; Corrections Engine &middot; Keep grinding, the exam doesn't grade effort but your memory does.</footer>
 </div>
 
 <div id="toast"></div>
@@ -625,7 +625,7 @@
       (META ? META.title.toUpperCase() : 'EXAM') + ' \u00b7 ATTEMPT REVIEW',
       correctCount + ' / ' + totalQ + ' CORRECT',
       'DEBRIEF EVERY MISS TO BANK BONUS XP',
-      'Personal Hub CORRECTIONS ENGINE'
+      'LedgerPeer CORRECTIONS ENGINE'
     ];
     var text = msgs.join('   ★   ') + '   ★   ';
     document.getElementById('marquee').textContent = text + text;
@@ -847,11 +847,11 @@
     document.getElementById('filters').style.display = 'none';
     document.getElementById('claudeSyncPanel').style.display = 'none';
     document.getElementById('learningTools').style.display = 'none';
-    document.title = 'Not Found · Personal Hub';
+    document.title = 'Not Found · LedgerPeer';
   } else {
     document.getElementById('pageTitle').innerHTML = RevisionFlow.escape(META.title).replace(/ \u2014 /g, '<br>');
     document.getElementById('pageSubtitle').textContent = META.subject + ' \u00b7 ' + ExamModel.label(META) + ' \u00b7 ' + totalQ + ' questions \u00b7 deferred feedback \u00b7 debrief mode';
-    document.title = META.title + ' \u00b7 Personal Hub';
+    document.title = META.title + ' \u00b7 LedgerPeer';
     renderMarquee();
     render();
     renderConfidence();

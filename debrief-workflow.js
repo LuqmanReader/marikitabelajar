@@ -11,7 +11,7 @@
     el.className='flow-panel';
     el.innerHTML='<nav class="flow-steps" aria-label="Revision workflow"><span>1 · Attempt saved</span><span class="current">2 · Ask AI</span><span>3 · Paste &amp; save</span><span>4 · See progress</span></nav>'+
       '<h2>Answer review → Gemini analysis → progress</h2><p>'+data.length+' questions saved · '+explained+' with explanations · '+summary.coverage.tagged+' scored questions tagged.</p>'+
-      '<h3>Analyze this attempt here</h3><p>Get topic assignments, explanations and practice priorities without leaving Revision Hub. Your question text, choices and answers will be sent to Google Gemini when you select Analyze.</p>'+
+      '<h3>Analyze this attempt here</h3><p>Get topic assignments, explanations and practice priorities without leaving LedgerPeer. Your question text, choices and answers will be sent to Google Gemini when you select Analyze.</p>'+
       '<div class="flow-actions"><button type="button" id="analyzeGemini" class="flow-button primary">Analyze with Gemini</button><button type="button" id="cancelGemini" class="flow-button secondary" hidden>Cancel analysis</button></div><p id="geminiMessage" role="status" aria-live="polite"></p>'+
       '<details id="manualAIImport"><summary>Use another AI or import an existing response</summary>'+
       '<h3>2. Get the reasoning from AI</h3><p>Copy the request into ChatGPT or your preferred AI. It asks for reasoning, calculation, justification, practice focus, and topic tags for every question. You do not need to edit any code.</p>'+

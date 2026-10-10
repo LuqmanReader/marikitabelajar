@@ -5,7 +5,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="supabase-config.js"></script><script src="auth.js"></script><script>if(!PersonalHubAuth.guard()) throw new Error("Locked");</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Revision Hub · Personal Hub</title>
+<title>Revision Dashboard · LedgerPeer</title>
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -396,12 +396,12 @@
 
 <div class="wrap">
   <header class="hero">
-    <a href="index.html" class="site-back revision-hub-back">← Personal Hub</a>
+    <a href="index.html" class="site-back revision-hub-back">← LedgerPeer</a>
     <div class="brandmark">
       <div class="mark"><img src="logo.png" alt="logo" style="width:100%;height:100%;object-fit:contain;"></div>
-      <div class="brand-name">PERSONAL HUB · REVISION HUB</div>
+      <div class="brand-name">LEDGERPEER · REVISION DASHBOARD</div>
     </div>
-    <h1 class="title">My Revision Hub</h1>
+    <h1 class="title">Revision Dashboard</h1>
     <div class="subtitle">Chapter sets · Progress Tests · Mock Tests · one revision workflow</div>
     <a href="add-exam.html" class="addexam-btn">+ Add a Set / Test Attempt</a>
     <nav class="flow-steps" aria-label="Revision workflow"><span class="current">1 · Add attempt</span><span>2 · Review &amp; ask AI</span><span>3 · Paste &amp; save</span><span>4 · Track progress</span></nav>
@@ -476,7 +476,7 @@
     <strong>Clean MVP state.</strong> No exam attempts are preloaded. Add or import an exam attempt to begin building confidence calibration, chapter mastery, score trends, and strengths &amp; weaknesses.
   </div>
 
-  <footer>Personal Revision Hub &middot; Keep grinding, the exam doesn't grade effort but your memory does.</footer>
+  <footer>LedgerPeer &middot; Keep grinding, the exam doesn't grade effort but your memory does.</footer>
 </div>
 
 <script>
@@ -554,10 +554,10 @@
     var totalQ = EXAMS.reduce(function(a,e){return a+e.total;},0);
     var avgPct = totalQ ? Math.round((totalCorrect/totalQ)*100) : 0;
     var msgs = [
-      'MY REVISION HUB',
+      'LEDGERPEER',
       EXAMS.length + ' EXAMS LOGGED',
       avgPct + '% AVERAGE SCORE',
-      'Personal Hub CORRECTIONS ENGINE'
+      'LedgerPeer CORRECTIONS ENGINE'
     ];
     var text = msgs.join('   ★   ') + '   ★   ';
     document.getElementById('marquee').textContent = text + text;

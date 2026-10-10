@@ -1,4 +1,4 @@
-/* Revision Hub beta: Supabase identity and per-account cloud document sync. */
+/* LedgerPeer beta: Supabase identity and per-account cloud document sync. */
 (function(){
  const CLIENT='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
  const PREFIX='rh_beta_active_user';
@@ -64,7 +64,7 @@
   }catch(e){
     const message=e?.message||String(e);
     status('Cloud save FAILED: '+message,true);
-    console.error('Revision Hub cloud save',e);
+    console.error('LedgerPeer cloud save',e);
     return false;
   }finally{
     saving=false;

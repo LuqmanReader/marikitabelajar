@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Achievements · Achievement </title><link rel="icon" href="favicon-32.png"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="supabase-config.js"></script><script src="auth.js"></script><link rel="stylesheet" href="productivity.css"></head><body><template id="navtemplate"><aside class="sidebar"><img src="logo.png" alt="Logo"><h2>Achievements</h2><small>Personal Hub</small><hr><a href="index.html">⌂ Home</a><a href="hub.html">▤ Revision Dashboard</a><a href="financial-manager.html">▣ Financial Manager</a><a href="calendar.html" data-page="calendar">▦ Calendar</a><a href="achievements.html" data-page="achievements">★ Achievements</a><a href="study-planner.html" data-page="study-planner">☑ Study Planner</a></aside></template><script>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Achievements · LedgerPeer</title><link rel="icon" href="favicon-32.png"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="supabase-config.js"></script><script src="auth.js"></script><link rel="stylesheet" href="productivity.css"></head><body><template id="navtemplate"><aside class="sidebar"><img src="logo.png" alt="Logo"><h2>Achievements</h2><small>LedgerPeer</small><hr><a href="index.html">⌂ Home</a><a href="hub.html">▤ Revision Dashboard</a><a href="financial-manager.html">▣ Financial Manager</a><a href="calendar.html" data-page="calendar">▦ Calendar</a><a href="achievements.html" data-page="achievements">★ Achievements</a><a href="study-planner.html" data-page="study-planner">☑ Study Planner</a></aside></template><script>
 (async function(){
   document.documentElement.style.visibility='hidden';
   try {
@@ -8,9 +8,9 @@
     PersonalHubAuth.addLockButton();
     document.documentElement.style.visibility='visible';
   } catch(error) {
-    console.error('Revision Hub page initialization failed', error);
+    console.error('LedgerPeer page initialization failed', error);
     document.documentElement.style.visibility='visible';
-    document.body.textContent='Unable to load this page. Please refresh or return to Revision Hub.';
+    document.body.textContent='Unable to load this page. Please refresh or return to LedgerPeer.';
   }
   function loadScript(src) { return new Promise((resolve,reject)=>{
     const script=document.createElement('script'); script.src=src;
