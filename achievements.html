@@ -2,7 +2,7 @@
 (async function(){
   document.documentElement.style.visibility='hidden';
   try {
-    if (!await PersonalHubAuth.ready()) { location.replace('index.html'); return; }
+    try { if (!await PersonalHubAuth.ready()) { location.replace('index.html'); return; } } catch (e) { document.body.textContent='Cloud temporarily unavailable. Your work is preserved. Please reload to retry: '+e.message; return; }
     await loadScript('productivity-core.js');
     await loadScript('achievements-page.js');
     PersonalHubAuth.addLockButton();

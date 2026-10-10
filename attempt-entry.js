@@ -85,12 +85,12 @@
   });
   $('saveAttempt').addEventListener('click',async function(){
     if(!staged)return;
-    var meta=Object.assign({},staged.meta), id='attempt-'+Date.now()+'-'+Math.random().toString(36).slice(2,9), key='tymba_exam_data:'+id;
+    var meta=Object.assign({},staged.meta), id=staged.savedId||(staged.savedId='attempt-'+Date.now()+'-'+Math.random().toString(36).slice(2,9)), key='tymba_exam_data:'+id;
     meta.id=id;meta.createdAt=new Date().toISOString();meta.file='view.html?id='+encodeURIComponent(id);meta.topics={};
     try{
       var exams=JSON.parse(localStorage.getItem('tymba_custom_exams')||'[]');if(!Array.isArray(exams))throw new Error('Saved attempts could not be read.');
       F.save(localStorage,key,staged.questions);
-      try{F.save(localStorage,'tymba_custom_exams',exams.concat([meta]));}catch(e){localStorage.removeItem(key);throw e;}
+      try{F.save(localStorage,'tymba_custom_exams',exams.some(function(x){return x.id===id;})?exams:exams.concat([meta]));}catch(e){localStorage.removeItem(key);throw e;}
       this.disabled=true;
       message('Attempt saved locally. Verifying cloud backup before opening debrief…');
       // Await the remote write before navigating: the destination page hydrates

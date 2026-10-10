@@ -1,0 +1,12 @@
+Revision Hub — login and cloud safety repair
+
+- Account identification is now shared across tabs (previously sessionStorage caused a second tab to delete working local data).
+- Cloud connection errors are shown as errors, not automatically treated as logout on protected pages.
+- Cloud hydration preserves existing local work when the snapshot differs, instead of silently overwriting it.
+- Cloud sync checks for remote changes and refuses unsafe overwrites.
+- Automatic syncing checks every 10 seconds while visible; page-exit writes are disabled to avoid navigation races.
+- Saving an exam attempt and retrying cloud verification does not create a second copy of the same attempt.
+
+IMPORTANT: When local and cloud versions differ, you will see a conflict warning. This version intentionally does NOT automatically merge or overwrite conflicting attempts. Keep backups and do not press Save on other devices until reconciled.
+
+Validation: JavaScript syntax checked; mocked client tests verified multi-tab data retention, successful save, and transient cloud failure. Live Supabase and browser end-to-end flows are NOT verified.
