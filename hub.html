@@ -481,8 +481,14 @@
 
 <script>
 (function(){
+  var storageRefreshTimer=null;
   window.addEventListener('storage',function(e){
-    if(e.key && (e.key.indexOf('tymba_exam_data:')===0 || e.key==='tymba_custom_exams' || e.key==='tymba_analysis_excluded_v1')) location.reload();
+    if(e.key && (e.key.indexOf('tymba_exam_data:')===0 || e.key==='tymba_custom_exams' || e.key==='tymba_analysis_excluded_v1')){
+      // A single cloud update can touch several keys. Refresh once after the
+      // batch instead of reloading once per storage event.
+      clearTimeout(storageRefreshTimer);
+      storageRefreshTimer=setTimeout(function(){ location.reload(); },150);
+    }
   });
   // ===== Add every exam debrief page here =====
   var EXAMS = [];

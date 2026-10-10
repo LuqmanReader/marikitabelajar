@@ -19,7 +19,16 @@
   const ak=Object.keys(a).sort(),bk=Object.keys(b).sort();
   return ak.length===bk.length&&ak.every((k,i)=>k===bk[i]&&a[k]===b[k]);
  }
- function applyData(data){clearData();for(const [k,v] of Object.entries(data||{}))if(typeof v==='string'&&!IGNORE.test(k))localStorage.setItem(k,v);}
+ // Reconcile cloud data without clearing and rewriting identical values.
+ // Rewriting every key makes other open tabs receive storage events and can
+ // create an endless cross-tab reload loop.
+ function applyData(data){
+  const incoming=data&&typeof data==='object'?data:{};
+  for(const k of keys())if(!Object.prototype.hasOwnProperty.call(incoming,k))localStorage.removeItem(k);
+  for(const [k,v] of Object.entries(incoming)){
+   if(typeof v==='string'&&!IGNORE.test(k)&&localStorage.getItem(k)!==v)localStorage.setItem(k,v);
+  }
+ }
  async function fetchCloud(){
   const {data,error}=await client.from('user_documents').select('payload').eq('user_id',user.id).eq('document_key','revision_hub_local_storage_v1').maybeSingle();
   if(error)throw error;
