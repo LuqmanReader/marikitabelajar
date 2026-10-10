@@ -106,7 +106,119 @@ footer{flex:0 0 auto;text-align:center;margin-top:6px;color:#111;font-size:9px;f
  .home-wallpaper::before,.marquee-track,.mascot-stage,.mascot-stage img{animation:none!important}
  .mascot-stage img{opacity:0}.mascot-stage img:first-child{opacity:1}
 }
-</style></head><body><div class="home-wallpaper" aria-hidden="true"></div><div class="marquee-strip top" aria-hidden="true"><div class="marquee-track"><span class="marquee-copy">STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦</span><span class="marquee-copy">STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦</span></div></div><div class="marquee-strip bottom" aria-hidden="true"><div class="marquee-track"><span class="marquee-copy">STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦</span><span class="marquee-copy">STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦</span></div></div><main class="wrap"><div class="top"><h1>LedgerPeer</h1><div class="sub" id="subtitle">Private student beta</div><div class="mascot-stage" role="img" aria-label="LedgerPeer's friendly balance-scale mascot waving, studying, explaining and celebrating"><img src="ledgerpeer-idle.png" alt="" decoding="async"><img src="ledgerpeer-wave.png" alt="" decoding="async"><img src="ledgerpeer-study.png" alt="" decoding="async"><img src="ledgerpeer-explain.png" alt="" decoding="async"><img src="ledgerpeer-celebrate.png" alt="" decoding="async"></div></div><section id="authView" class="lockbox" hidden><span class="locktag">Student account · Private beta</span><h2 id="authTitle">Student Log In</h2><div class="auth-tabs" id="authTabs"><button id="loginTab" type="button" class="active">Log In</button><button id="signupTab" type="button">Sign Up</button></div><p id="authCopy"></p><input id="email" type="email" autocomplete="off" placeholder="Student email address" required><input id="password" type="password" autocomplete="off" placeholder="Password"><input id="confirm" type="password" autocomplete="new-password" placeholder="Confirm password" hidden><button class="btn" id="authButton">Log In →</button><div class="auth-links"><button class="auth-link" id="forgotButton" type="button">Forgot password?</button><button class="auth-link" id="backButton" type="button" hidden>← Back to log in</button></div><p class="notice" id="notice" role="status"></p><div class="error" id="error" role="alert"></div></section><section id="hubView" hidden><div class="topbar"><button class="lockbtn" id="lockButton">Lock hub</button></div><div class="grid"><a class="card dashboard" href="hub.html"><span class="tag">Section 01 · Academic</span><h2>Revision Dashboard</h2><p><strong>Academic performance & revision section.</strong> Turn exam attempts into useful revision decisions and see what to work on next.</p><div class="features">EXAM DEBRIEFS · CONFIDENCE CALIBRATION<br>TOPIC MASTERY · RETRY MISTAKES · PROGRESS</div><span class="go">Enter academic section →</span></a><a class="card finance" href="financial-manager.html"><span class="tag">Section 02 · Finance</span><h2>Financial Manager</h2><p><strong>Personal money management section.</strong> Record cash flow, savings, investments and gold contributions in one place.</p><div class="features">INCOME · EXPENSES · SAVINGS<br>INVESTMENTS · GOLD · GOAL HORIZONS<br>FINANCIAL TRACKER · FINANCIAL DASHBOARD</div><span class="go">Enter finance section →</span></a></div><nav style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:26px"><a class="go" href="calendar.html">▦ Calendar →</a><a class="go" href="study-planner.html">☑ Study Planner →</a><a class="go" href="achievements.html">★ Achievements →</a></nav></section><footer>LedgerPeer beta · Cloud-backed student accounts</footer></main><script>
+/* LedgerPeer visual editor, scoped to the homepage. */
+.home-wallpaper::before{animation-duration:var(--lp-checker-speed,12s)}
+:root{
+ --lp-title-scale:1;--lp-mascot-scale:1;--lp-login-scale:1;
+ --lp-bg-color:#F4EEDD;--lp-bg-mode:checkerboard;--lp-bg-opacity:1;
+ --lp-marquee-speed:28s;--lp-ticker-bg:#fff;--lp-ticker-ink:#111;
+ --lp-title-x:0vw;--lp-title-y:0vh;--lp-mascot-x:0vw;--lp-mascot-y:0vh;--lp-login-x:0vw;--lp-login-y:0vh;
+}
+.home-wallpaper{background-color:var(--lp-bg-color)}
+.home-wallpaper::before{opacity:var(--lp-bg-opacity)}
+.marquee-strip{background:var(--lp-ticker-bg);color:var(--lp-ticker-ink)}
+.marquee-copy{color:var(--lp-ticker-ink)}
+.marquee-track{animation-duration:var(--lp-marquee-speed)}
+.top h1{font-size:clamp(24px,calc(min(5.8vw,10vh) * var(--lp-title-scale)),112px);transform:translate(var(--lp-title-x),var(--lp-title-y));position:relative}
+.mascot-stage{width:clamp(64px,calc(min(14vw,23vh) * var(--lp-mascot-scale)),340px);transform:translate(var(--lp-mascot-x),var(--lp-mascot-y));animation-name:none}
+/* Keep the mascot floating independently from the movable stage. */
+.mascot-stage img{transform:translateY(0)}
+#authView{max-width:calc(505px * var(--lp-login-scale));width:100%;transform:translate(var(--lp-login-x),var(--lp-login-y))}
+@media(max-width:700px){
+ .top h1{font-size:clamp(24px,calc(10vw * var(--lp-title-scale)),72px)}
+ .mascot-stage{width:clamp(64px,calc(35vw * var(--lp-mascot-scale)),280px)}
+ :root{--lp-title-x:0vw;--lp-title-y:0vh;--lp-mascot-x:0vw;--lp-mascot-y:0vh;--lp-login-x:0vw;--lp-login-y:0vh}
+}
+/* Owner-only editor chrome. All public navigation and form functionality remains unchanged. */
+#lp-edit-launch{
+ display:none;position:fixed;bottom:55px;right:17px;z-index:9001;padding:12px 15px;
+ background:#111;color:white;border:2px solid #fff;border-radius:10px;
+ font:800 13px system-ui,sans-serif;box-shadow:0 4px 16px #0005;cursor:pointer;
+}
+#lp-edit-panel{
+ display:none;position:fixed;right:14px;top:56px;bottom:54px;width:min(342px,calc(100vw - 28px));
+ background:#fff;color:#111;z-index:9003;border:3px solid #111;border-radius:14px;
+ box-shadow:8px 9px 0 #1118;font-family:system-ui,sans-serif;overflow:hidden;flex-direction:column;
+}
+#lp-edit-panel *{box-sizing:border-box}
+body.lp-editing #lp-edit-launch{display:none!important}
+body.lp-editing #lp-edit-panel{display:flex}
+#lp-edit-panel button,#lp-edit-panel input,#lp-edit-panel textarea,#lp-edit-panel select{font:inherit}
+.lp-ed-head{padding:14px;background:#f5c518;border-bottom:2px solid #111;display:flex;align-items:center;gap:8px;justify-content:space-between}
+.lp-ed-head strong{font-size:16px}
+.lp-ed-body{padding:13px 14px 18px;overflow:auto;flex:1;overscroll-behavior:contain}
+.lp-ed-body label{font-size:12px;font-weight:800;display:block;margin:11px 0 5px}
+.lp-ed-body input[type="text"],.lp-ed-body input[type="number"],.lp-ed-body textarea,.lp-ed-body select{background:white;width:100%;border:2px solid #999;border-radius:7px;font-size:13px;padding:9px;margin:0;color:#111}
+.lp-ed-body input[type="color"]{width:100%;height:36px;border:0;background:transparent;padding:0;margin:0;cursor:pointer}
+.lp-ed-body input[type="range"]{width:100%;height:22px;accent-color:#e63b2e;cursor:pointer}
+.lp-ed-body input[type="file"]{font-size:12px;width:100%;margin:2px 0 0;border:1px dashed #aaa;border-radius:8px;padding:8px}
+.lp-ed-body .lp-help{font-size:11px;color:#555;line-height:1.4;margin:5px 0 11px}
+.lp-ed-tabs{display:flex;gap:3px;padding:8px;background:#eee;border-bottom:1px solid #ddd}
+.lp-ed-tabs button{padding:8px 6px;flex:1;border:0;border-radius:6px;background:transparent;font-size:12px!important;cursor:pointer}
+.lp-ed-tabs button.active{background:#111;color:#fff;font-weight:800}
+.lp-ed-pane[hidden]{display:none!important}
+.lp-ed-footer{display:flex;gap:7px;flex-wrap:wrap;align-items:center;padding:10px 12px;border-top:2px solid #111;background:#f8f8f8}
+.lp-ed-footer button,.lp-ed-head button{border:2px solid #111;background:white;border-radius:7px;padding:9px 10px;font-size:12px!important;font-weight:800;cursor:pointer}
+.lp-ed-footer #lp-publish{background:#111;color:#fff;flex:1}
+#lp-edit-status{display:block;padding:0 13px 11px;font:600 11px/1.35 system-ui,sans-serif;color:#555;background:#f8f8f8}
+.lp-ed-pill{display:inline-flex;gap:5px;align-items:center;font-size:11px;font-weight:700;margin:8px 0;white-space:normal}
+.lp-ed-move{touch-action:none!important;cursor:grab!important;outline:2px dashed #111!important;outline-offset:5px;user-select:none!important}
+.lp-ed-moving{cursor:grabbing!important;outline:3px dashed #f5c518!important}
+body.lp-editing #authView input,body.lp-editing #authView button,body.lp-editing #authView a{pointer-events:none}
+body.lp-editing .marquee-strip{pointer-events:none}
+/* Keep the character visible while layout is being edited. */
+body.lp-editing .mascot-stage img{animation:none!important;opacity:0!important}
+body.lp-editing .mascot-stage img:first-child{opacity:1!important}
+body.lp-editing #authView{z-index:2;position:relative}
+body.lp-editing .wrap{padding-bottom:calc(var(--ticker-height) + 30px)}
+body.lp-editing #rhManualSave{display:none!important}
+@media(max-width:760px){
+ #lp-edit-panel{top:auto;bottom:0;right:0;left:0;width:100%;height:min(57dvh,520px);border-radius:16px 16px 0 0}
+ #lp-edit-launch{bottom:55px;right:12px}
+ body.lp-editing .wrap{padding-bottom:calc(57dvh + 30px)!important;min-height:100dvh;height:auto!important}
+}
+@media(prefers-reduced-motion:reduce){.marquee-track{animation:none}}
+</style></head><body><div class="home-wallpaper" aria-hidden="true"></div><div class="marquee-strip top" aria-hidden="true"><div class="marquee-track"><span class="marquee-copy">STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦</span><span class="marquee-copy">STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦</span></div></div><div class="marquee-strip bottom" aria-hidden="true"><div class="marquee-track"><span class="marquee-copy">STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦</span><span class="marquee-copy">STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦</span></div></div><button id="lp-edit-launch" type="button" hidden aria-label="Edit site design">✎ EDIT SITE</button>
+<aside id="lp-edit-panel" aria-label="LedgerPeer website editor">
+ <div class="lp-ed-head"><strong>✎ Edit LedgerPeer</strong><button type="button" id="lp-close">✕ Close</button></div>
+ <div class="lp-ed-tabs" role="tablist"><button type="button" data-pane="words" class="active">Text</button><button type="button" data-pane="style">Design</button><button type="button" data-pane="layout">Move / Size</button><button type="button" data-pane="media">Images</button></div>
+ <div class="lp-ed-body">
+  <div class="lp-ed-pane" data-pane-content="words">
+   <p class="lp-help">Tap the title on the page to type directly, or edit the fields here.</p>
+   <label for="lp-title-input">Main title</label><input id="lp-title-input" type="text" maxlength="50" />
+   <label for="lp-sub-input">Subtitle</label><input id="lp-sub-input" type="text" maxlength="100" />
+   <label for="lp-ticker-input">Scrolling text (both strips)</label><textarea id="lp-ticker-input" rows="3" maxlength="500"></textarea>
+   <label for="lp-ticker-speed">Ticker speed — <span id="lp-ticker-speed-val"></span></label><input id="lp-ticker-speed" type="range" min="10" max="90" step="1" />
+  </div>
+  <div class="lp-ed-pane" data-pane-content="style" hidden>
+   <label for="lp-tile">Checkerboard size — <span id="lp-tile-val"></span></label><input id="lp-tile" type="range" min="35" max="180" step="5" />
+   <label for="lp-checker-speed">Checkerboard speed — <span id="lp-checker-speed-val"></span></label><input id="lp-checker-speed" type="range" min="3" max="40" step="1" />
+   <label for="lp-bg-color">Background color</label><input id="lp-bg-color" type="color" />
+   <label for="lp-mode">Background style</label><select id="lp-mode"><option value="checkerboard">Moving checkerboard</option><option value="image">Your background picture</option><option value="both">Picture + checkerboard overlay</option></select>
+   <label for="lp-checker-opacity">Checkerboard visibility — <span id="lp-checker-opacity-val"></span></label><input id="lp-checker-opacity" type="range" min="0" max="100" step="5" />
+   <label for="lp-image-fit">Background picture fit</label><select id="lp-image-fit"><option value="contain">Fit whole image (no crop)</option><option value="cover">Fill screen (may crop)</option></select>
+   <label for="lp-ticker-height">Scrolling strip thickness — <span id="lp-ticker-height-val"></span></label><input id="lp-ticker-height" type="range" min="24" max="86" step="2" />
+   <label for="lp-ticker-color">Scrolling strip background</label><input id="lp-ticker-color" type="color" />
+  </div>
+  <div class="lp-ed-pane" data-pane-content="layout" hidden>
+   <p class="lp-help">Turn on drag mode, then drag the big title, mascot or login box. Layout offsets are saved separately for phone and desktop.</p>
+   <label class="lp-ed-pill"><input type="checkbox" id="lp-drag-toggle" style="margin:0;accent-color:#111" /> Enable dragging on page</label>
+   <label for="lp-title-scale">Title size — <span id="lp-title-scale-val"></span></label><input id="lp-title-scale" type="range" min="55" max="160" step="5" />
+   <label for="lp-mascot-scale">Mascot size — <span id="lp-mascot-scale-val"></span></label><input id="lp-mascot-scale" type="range" min="50" max="190" step="5" />
+   <label for="lp-login-scale">Login box width — <span id="lp-login-scale-val"></span></label><input id="lp-login-scale" type="range" min="70" max="130" step="5" />
+   <button type="button" id="lp-center-elements" style="width:100%;padding:9px;border:2px solid #111;border-radius:8px;background:#fff;cursor:pointer">Center title, mascot and box</button>
+  </div>
+  <div class="lp-ed-pane" data-pane-content="media" hidden>
+   <p class="lp-help">Choose a PNG/JPG/WebP from your phone or Canva. You can see a preview immediately; publishing the image requires cloud storage setup.</p>
+   <label for="lp-bg-upload">Upload new homepage background</label><input type="file" id="lp-bg-upload" accept="image/png,image/jpeg,image/webp" />
+   <label for="lp-mascot-upload">Replace animated mascot with one picture</label><input type="file" id="lp-mascot-upload" accept="image/png,image/jpeg,image/webp" />
+   <button type="button" id="lp-restore-mascot" style="margin-top:12px;border:2px solid #111;background:#fff;border-radius:7px;padding:9px;cursor:pointer">Restore original animated mascot</button>
+  </div>
+ </div>
+ <div class="lp-ed-footer"><button type="button" id="lp-reset">Reset design</button><button type="button" id="lp-publish">Save &amp; Publish</button></div>
+ <span id="lp-edit-status" aria-live="polite">Edit your design, then press Save &amp; Publish.</span>
+</aside>
+<main class="wrap"><div class="top"><h1>LedgerPeer</h1><div class="sub" id="subtitle">Private student beta</div><div class="mascot-stage" role="img" aria-label="LedgerPeer's friendly balance-scale mascot waving, studying, explaining and celebrating"><img src="ledgerpeer-idle.png" alt="" decoding="async"><img src="ledgerpeer-wave.png" alt="" decoding="async"><img src="ledgerpeer-study.png" alt="" decoding="async"><img src="ledgerpeer-explain.png" alt="" decoding="async"><img src="ledgerpeer-celebrate.png" alt="" decoding="async"></div></div><section id="authView" class="lockbox" hidden><span class="locktag">Student account · Private beta</span><h2 id="authTitle">Student Log In</h2><div class="auth-tabs" id="authTabs"><button id="loginTab" type="button" class="active">Log In</button><button id="signupTab" type="button">Sign Up</button></div><p id="authCopy"></p><input id="email" type="email" autocomplete="off" placeholder="Student email address" required><input id="password" type="password" autocomplete="off" placeholder="Password"><input id="confirm" type="password" autocomplete="new-password" placeholder="Confirm password" hidden><button class="btn" id="authButton">Log In →</button><div class="auth-links"><button class="auth-link" id="forgotButton" type="button">Forgot password?</button><button class="auth-link" id="backButton" type="button" hidden>← Back to log in</button></div><p class="notice" id="notice" role="status"></p><div class="error" id="error" role="alert"></div></section><section id="hubView" hidden><div class="topbar"><button class="lockbtn" id="lockButton">Lock hub</button></div><div class="grid"><a class="card dashboard" href="hub.html"><span class="tag">Section 01 · Academic</span><h2>Revision Dashboard</h2><p><strong>Academic performance & revision section.</strong> Turn exam attempts into useful revision decisions and see what to work on next.</p><div class="features">EXAM DEBRIEFS · CONFIDENCE CALIBRATION<br>TOPIC MASTERY · RETRY MISTAKES · PROGRESS</div><span class="go">Enter academic section →</span></a><a class="card finance" href="financial-manager.html"><span class="tag">Section 02 · Finance</span><h2>Financial Manager</h2><p><strong>Personal money management section.</strong> Record cash flow, savings, investments and gold contributions in one place.</p><div class="features">INCOME · EXPENSES · SAVINGS<br>INVESTMENTS · GOLD · GOAL HORIZONS<br>FINANCIAL TRACKER · FINANCIAL DASHBOARD</div><span class="go">Enter finance section →</span></a></div><nav style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:26px"><a class="go" href="calendar.html">▦ Calendar →</a><a class="go" href="study-planner.html">☑ Study Planner →</a><a class="go" href="achievements.html">★ Achievements →</a></nav></section><footer>LedgerPeer beta · Cloud-backed student accounts</footer></main><script>
 const A=PersonalHubAuth,authView=document.getElementById('authView'),hubView=document.getElementById('hubView'),error=document.getElementById('error');
 const password=document.getElementById('password'),email=document.getElementById('email'),button=document.getElementById('authButton'),confirmInput=document.getElementById('confirm'),notice=document.getElementById('notice');
 const tabs=document.getElementById('authTabs'),forgot=document.getElementById('forgotButton'),back=document.getElementById('backButton');
@@ -134,4 +246,292 @@ const hash=new URLSearchParams(location.hash.slice(1));const query=new URLSearch
 if(hash.get('type')==='recovery'||query.get('type')==='recovery'){recovering=true;show('setpassword');}
 if(!recovering){const yes=await A.isSignedIn();if(yes&&!recovering){const ok=await A.ready();if(ok&&!recovering){authView.hidden=true;hubView.hidden=false;}}}
 }catch(e){error.textContent=e.message||'Unable to connect to authentication.';}})();
-</script></body></html>
+</script><script>
+/* LedgerPeer visual homepage editor: public read, owner-only cloud write via Supabase RLS. */
+(()=>{
+ 'use strict';
+ const DEFAULT={
+  title:'LedgerPeer',subtitle:'Private student beta',
+  ticker:'STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™',
+  tickerSpeed:28,tickerHeight:40,tickerColor:'#ffffff',
+  tileSize:100,checkerSpeed:12,checkerOpacity:100,
+  bgColor:'#f4eedd',bgMode:'checkerboard',imageFit:'contain',
+  backgroundImage:'',mascotImage:'',
+  titleScale:100,mascotScale:100,loginScale:100,
+  positions:{desktop:{title:[0,0],mascot:[0,0],login:[0,0]},mobile:{title:[0,0],mascot:[0,0],login:[0,0]}}
+ };
+ const id=x=>document.getElementById(x);
+ const launch=id('lp-edit-launch'),panel=id('lp-edit-panel'),status=id('lp-edit-status');
+ const root=document.documentElement;
+ const endpoint=(window.RH_SUPABASE_URL||'').replace(/\/$/,'');
+ const key=window.RH_SUPABASE_PUBLISHABLE_KEY||'';
+ const storageKey='sb-'+(endpoint?new URL(endpoint).hostname.split('.')[0]:'')+'-auth-token';
+ const draftKey='rh_beta_site_editor_draft_v1'; // excluded from account-data hydration
+ const validHex=s=>typeof s==='string'&&/^#[0-9a-fA-F]{6}$/.test(s);
+ const number=(v,lo,hi,fallback)=>Number.isFinite(+v)?Math.max(lo,Math.min(hi,+v)):fallback;
+ const clone=x=>JSON.parse(JSON.stringify(x));
+ const isLocal=location.protocol==='file:'||['localhost','127.0.0.1'].includes(location.hostname);
+ const isOwnerPreview=new URLSearchParams(location.search).get('edit')==='1';
+ let published=clone(DEFAULT),draft=clone(DEFAULT),editing=false,canPublish=false,accessToken=null;
+ let bgFile=null,mascotFile=null,previewBgUrl='',previewMascotUrl='',checkTimer=null,dragging=null;
+ const ownerUi=id('lp-edit-launch');
+ function announce(message,error=false){status.textContent=message;status.style.color=error?'#b91c1c':'#555';}
+ function safeImage(url){return typeof url==='string'&&url.startsWith(endpoint+'/storage/v1/object/public/site-assets/')?url:'';}
+ function clean(raw){
+  const x=raw&&typeof raw==='object'?raw:{};
+  const s=clone(DEFAULT);
+  for(const k of ['title','subtitle','ticker']) if(typeof x[k]==='string') s[k]=x[k].slice(0,k==='ticker'?500:100);
+  for(const [k,lo,hi] of [['tickerSpeed',10,90],['tickerHeight',24,86],['tileSize',35,180],['checkerSpeed',3,40],['checkerOpacity',0,100],['titleScale',55,160],['mascotScale',50,190],['loginScale',70,130]]) s[k]=number(x[k],lo,hi,DEFAULT[k]);
+  if(validHex(x.tickerColor))s.tickerColor=x.tickerColor;
+  if(validHex(x.bgColor))s.bgColor=x.bgColor;
+  if(['checkerboard','image','both'].includes(x.bgMode))s.bgMode=x.bgMode;
+  if(['contain','cover'].includes(x.imageFit))s.imageFit=x.imageFit;
+  s.backgroundImage=safeImage(x.backgroundImage);
+  s.mascotImage=safeImage(x.mascotImage);
+  for(const screen of ['desktop','mobile'])for(const item of ['title','mascot','login']){
+   const p=x.positions?.[screen]?.[item];
+   if(Array.isArray(p))s.positions[screen][item]=[number(p[0],-35,35,0),number(p[1],-35,35,0)];
+  }
+  return s;
+ }
+ function token(){
+  try{return JSON.parse(sessionStorage.getItem(storageKey)||'null')?.access_token||null}catch{return null}
+ }
+ async function api(path,options={},signed=false){
+  if(!endpoint||!key)throw Error('Supabase is not configured.');
+  const headers={'apikey':key,...(signed?{'Authorization':'Bearer '+(token()||'')}:{}),...(options.headers||{})};
+  if(signed&&!token())throw Error('Log in as the website owner first.');
+  const response=await fetch(endpoint+path,{...options,headers});
+  const type=response.headers.get('content-type')||'';
+  let out=type.includes('json')?await response.json():await response.text();
+  if(!response.ok)throw Error(out?.message||out?.error_description||out?.error||'Cloud request failed ('+response.status+').');
+  return out;
+ }
+ async function loadPublished(){
+  try{
+   const data=await api('/rest/v1/ledgerpeer_site_settings?key=eq.homepage&select=settings&limit=1');
+   if(Array.isArray(data)&&data[0]?.settings){published=clean(data[0].settings);if(!editing)apply(published);}
+  }catch(e){console.info('LedgerPeer default design shown; cloud design table not ready.',e.message);}
+ }
+ function setCSS(name,value){root.style.setProperty(name,value)}
+ function applyPosition(s){
+  const screen=window.innerWidth<=700?'mobile':'desktop';
+  const p=s.positions[screen];
+  for(const item of ['title','mascot','login']){
+   setCSS('--lp-'+item+'-x',p[item][0]+'vw');setCSS('--lp-'+item+'-y',p[item][1]+'vh');
+  }
+ }
+ function apply(s){
+  const mobile=window.innerWidth<=700;
+  const defaultTiles=mobile?'46px':'min(86px,5vw,8vh)';
+  setCSS('--tile-size','calc('+defaultTiles+' * '+(s.tileSize/100)+')');
+  setCSS('--lp-title-scale',s.titleScale/100);
+  setCSS('--lp-mascot-scale',s.mascotScale/100);
+  setCSS('--lp-login-scale',s.loginScale/100);
+  setCSS('--lp-bg-color',s.bgColor);
+  setCSS('--lp-ticker-bg',s.tickerColor);
+  setCSS('--lp-marquee-speed',s.tickerSpeed+'s');
+  setCSS('--ticker-height',s.tickerHeight+'px');
+  const checkerOpacity=s.bgMode==='image'?0:s.bgMode==='both'?(s.checkerOpacity/100)*.5:s.checkerOpacity/100;
+  setCSS('--lp-bg-opacity',checkerOpacity);
+  const wallpaper=document.querySelector('.home-wallpaper');
+  const bgUrl=editing&&previewBgUrl?previewBgUrl:s.backgroundImage;
+  wallpaper.style.backgroundImage=(s.bgMode==='checkerboard'||!bgUrl)?'none':'url('+JSON.stringify(bgUrl)+')';
+  wallpaper.style.backgroundRepeat='no-repeat';
+  wallpaper.style.backgroundPosition='center center';
+  wallpaper.style.backgroundSize=s.imageFit;
+  const currentTitle=document.querySelector('.top h1');
+  if(document.activeElement!==currentTitle && currentTitle.textContent!==s.title)currentTitle.textContent=s.title;
+  if(id('subtitle').textContent!==s.subtitle)id('subtitle').textContent=s.subtitle;
+  document.querySelectorAll('.marquee-copy').forEach(e=>{
+   const txt=(s.ticker.trim()+' ✦ ').repeat(4);
+   if(e.textContent!==txt)e.textContent=txt;
+  });
+  const mascotImage=editing&&previewMascotUrl?previewMascotUrl:s.mascotImage;
+  const stage=document.querySelector('.mascot-stage');
+  if(mascotImage){
+   stage.querySelectorAll('img').forEach((im,i)=>{
+    if(i===0){if(im.src!==mascotImage)im.src=mascotImage;im.style.animation='none';im.style.opacity='1';}
+    else{im.style.animation='none';im.style.opacity='0';}
+   });
+  }else{
+   stage.querySelectorAll('img').forEach((im,i)=>{
+    const orig=['ledgerpeer-idle.png','ledgerpeer-wave.png','ledgerpeer-study.png','ledgerpeer-explain.png','ledgerpeer-celebrate.png'][i];
+    if(im.getAttribute('src')!==orig)im.src=orig;
+    im.style.animation='';im.style.opacity='';
+   });
+  }
+  setCSS('--lp-checker-speed',s.checkerSpeed+'s');
+  applyPosition(s);
+ }
+ function syncFields(){
+  const map={
+   'lp-title-input':'title','lp-sub-input':'subtitle','lp-ticker-input':'ticker',
+   'lp-ticker-speed':'tickerSpeed','lp-tile':'tileSize','lp-checker-speed':'checkerSpeed',
+   'lp-bg-color':'bgColor','lp-mode':'bgMode','lp-checker-opacity':'checkerOpacity',
+   'lp-image-fit':'imageFit','lp-ticker-height':'tickerHeight','lp-ticker-color':'tickerColor',
+   'lp-title-scale':'titleScale','lp-mascot-scale':'mascotScale','lp-login-scale':'loginScale'
+  };
+  for(const [field,property] of Object.entries(map))id(field).value=draft[property];
+  for(const field of ['lp-ticker-speed','lp-tile','lp-checker-speed','lp-checker-opacity','lp-ticker-height','lp-title-scale','lp-mascot-scale','lp-login-scale'])updateValue(field);
+ }
+ const labels={'lp-ticker-speed':'s','lp-tile':'%','lp-checker-speed':'s','lp-checker-opacity':'%','lp-ticker-height':'px','lp-title-scale':'%','lp-mascot-scale':'%','lp-login-scale':'%'};
+ function updateValue(field){id(field+'-val').textContent=id(field).value+labels[field];}
+ function keepDraft(){try{localStorage.setItem(draftKey,JSON.stringify(draft))}catch{}}
+ function update(){draft=clean(draft);keepDraft();apply(draft);}
+ function previewAuth(){
+  // Admins are normally signed in and see the dashboard. Show the login section
+  // temporarily for design editing; no sign-in attempt is triggered here.
+  id('authView').hidden=false;id('hubView').hidden=true;
+  id('authView').querySelectorAll('input').forEach(e=>e.disabled=true);
+ }
+ function restoreAuth(){
+  id('authView').querySelectorAll('input').forEach(e=>e.disabled=false);
+  id('authView').hidden=true;id('hubView').hidden=false;
+ }
+ function begin(){
+  editing=true;document.body.classList.add('lp-editing');
+  try{draft=clean(JSON.parse(localStorage.getItem(draftKey)||'null')||published)}catch{draft=clone(published)}
+  syncFields();previewAuth();apply(draft);
+  id('lp-drag-toggle').checked=false;refreshDrag();
+  announce(canPublish?'Your changes are a preview until you press Save & Publish.':'Preview only. Finish the one-time Supabase owner setup to publish.');
+ }
+ function stop(){
+  editing=false;document.body.classList.remove('lp-editing');
+  id('lp-drag-toggle').checked=false;refreshDrag();
+  if(previewBgUrl){URL.revokeObjectURL(previewBgUrl);previewBgUrl=''}
+  if(previewMascotUrl){URL.revokeObjectURL(previewMascotUrl);previewMascotUrl=''}
+  bgFile=null;mascotFile=null;
+  restoreAuth();apply(published);
+ }
+ function refreshDrag(){
+  const on=editing&&id('lp-drag-toggle').checked;
+  [['title','.top h1'],['mascot','.mascot-stage'],['login','#authView']].forEach(([name,sel])=>{
+   const element=document.querySelector(sel);element.dataset.lpDraggable=name;element.classList.toggle('lp-ed-move',on);
+  });
+  const title=document.querySelector('.top h1');
+  title.contentEditable=editing&&!on?'plaintext-only':'false';
+  if(editing&&!on)title.setAttribute('aria-label','Tap to edit LedgerPeer title');else title.removeAttribute('aria-label');
+ }
+ for(const [field,property] of Object.entries({
+  'lp-title-input':'title','lp-sub-input':'subtitle','lp-ticker-input':'ticker',
+  'lp-ticker-speed':'tickerSpeed','lp-tile':'tileSize','lp-checker-speed':'checkerSpeed',
+  'lp-bg-color':'bgColor','lp-mode':'bgMode','lp-checker-opacity':'checkerOpacity',
+  'lp-image-fit':'imageFit','lp-ticker-height':'tickerHeight','lp-ticker-color':'tickerColor',
+  'lp-title-scale':'titleScale','lp-mascot-scale':'mascotScale','lp-login-scale':'loginScale'
+ })){
+  id(field).addEventListener('input',e=>{
+   draft[property]=e.target.value;
+   if(e.target.type==='range')updateValue(field);
+   update();
+  });
+ }
+ document.querySelector('.top h1').addEventListener('input',e=>{
+  if(!editing||id('lp-drag-toggle').checked)return;
+  draft.title=e.target.textContent.slice(0,50);id('lp-title-input').value=draft.title;keepDraft();
+ });
+ document.querySelector('.top h1').addEventListener('blur',()=>{if(editing)update()});
+ id('lp-drag-toggle').onchange=refreshDrag;
+ for(const element of [document.querySelector('.top h1'),document.querySelector('.mascot-stage'),id('authView')]){
+  element.addEventListener('pointerdown',e=>{
+   if(!editing||!id('lp-drag-toggle').checked||e.button!==0)return;
+   if(e.target.closest('#lp-edit-panel'))return;
+   e.preventDefault();
+   const name=element.dataset.lpDraggable;
+   const screen=innerWidth<=700?'mobile':'desktop';
+   dragging={name,screen,x:e.clientX,y:e.clientY,old:[...draft.positions[screen][name]]};
+   element.classList.add('lp-ed-moving');
+   element.setPointerCapture(e.pointerId);
+  });
+  element.addEventListener('pointermove',e=>{
+   if(!dragging||dragging.name!==element.dataset.lpDraggable)return;
+   const dx=(e.clientX-dragging.x)/innerWidth*100;
+   const dy=(e.clientY-dragging.y)/innerHeight*100;
+   draft.positions[dragging.screen][dragging.name]=[
+    number(dragging.old[0]+dx,-35,35,0),number(dragging.old[1]+dy,-35,35,0)
+   ];
+   applyPosition(draft);
+  });
+  function finish(){if(!dragging||dragging.name!==element.dataset.lpDraggable)return;dragging=null;element.classList.remove('lp-ed-moving');keepDraft()}
+  element.addEventListener('pointerup',finish);element.addEventListener('pointercancel',finish);
+ }
+ id('lp-center-elements').onclick=()=>{
+  const screen=innerWidth<=700?'mobile':'desktop';
+  for(const item of ['title','mascot','login'])draft.positions[screen][item]=[0,0];update();
+ };
+ panel.querySelectorAll('.lp-ed-tabs button').forEach(button=>button.addEventListener('click',()=>{
+  panel.querySelectorAll('.lp-ed-tabs button').forEach(b=>b.classList.toggle('active',b===button));
+  panel.querySelectorAll('.lp-ed-pane').forEach(p=>p.hidden=p.dataset.paneContent!==button.dataset.pane);
+ }));
+ async function imageChosen(e,which){
+  const file=e.target.files?.[0];if(!file)return;
+  if(!['image/png','image/jpeg','image/webp'].includes(file.type)){announce('Choose a PNG, JPG or WebP image.',true);return}
+  if(file.size>5*1024*1024){announce('Image must be smaller than 5 MB.',true);return}
+  if(which==='bg'){
+   if(previewBgUrl)URL.revokeObjectURL(previewBgUrl);
+   previewBgUrl=URL.createObjectURL(file);bgFile=file;draft.bgMode='image';id('lp-mode').value='image';
+  }else{
+   if(previewMascotUrl)URL.revokeObjectURL(previewMascotUrl);
+   previewMascotUrl=URL.createObjectURL(file);mascotFile=file;
+  }
+  update();announce('Image preview loaded. Press Save & Publish to make it live.');
+ }
+ id('lp-bg-upload').onchange=e=>imageChosen(e,'bg');
+ id('lp-mascot-upload').onchange=e=>imageChosen(e,'mascot');
+ id('lp-restore-mascot').onclick=()=>{
+  mascotFile=null;if(previewMascotUrl)URL.revokeObjectURL(previewMascotUrl);previewMascotUrl='';
+  draft.mascotImage='';update();announce('Original animated mascot restored in preview.');
+ };
+ async function uploadImage(file){
+  const ext={'image/png':'png','image/jpeg':'jpg','image/webp':'webp'}[file.type];
+  const name='homepage/'+crypto.randomUUID()+'.'+ext;
+  await api('/storage/v1/object/site-assets/'+name,{method:'POST',headers:{'Content-Type':file.type,'x-upsert':'false'},body:file},true);
+  return endpoint+'/storage/v1/object/public/site-assets/'+name;
+ }
+ async function publish(){
+  if(!canPublish){announce('Cloud setup not complete. Run the owner-only Supabase setup SQL first, then reload.',true);return}
+  const button=id('lp-publish');button.disabled=true;button.textContent='Publishing…';
+  try{
+   const next=clean(draft);
+   if(bgFile)next.backgroundImage=await uploadImage(bgFile);
+   if(mascotFile)next.mascotImage=await uploadImage(mascotFile);
+   const updated=await api('/rest/v1/ledgerpeer_site_settings?key=eq.homepage',{method:'PATCH',headers:{'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify({settings:next,updated_at:new Date().toISOString()})},true);
+   if(!Array.isArray(updated)||!updated[0])throw Error('Publishing failed. Owner permissions may be missing.');
+   const confirmed=await api('/rest/v1/ledgerpeer_site_settings?key=eq.homepage&select=settings&limit=1');
+   if(!Array.isArray(confirmed)||!confirmed[0]||JSON.stringify(clean(confirmed[0].settings))!==JSON.stringify(next))throw Error('Cloud verification failed.');
+   published=clone(next);draft=clone(next);
+   localStorage.removeItem(draftKey);
+   if(previewBgUrl){URL.revokeObjectURL(previewBgUrl);previewBgUrl=''}
+   if(previewMascotUrl){URL.revokeObjectURL(previewMascotUrl);previewMascotUrl=''}
+   bgFile=mascotFile=null;
+   apply(published);
+   announce('Published and verified ✓ Everyone will see your changes.');
+  }catch(e){announce('Not published: '+(e.message||String(e)),true)}
+  finally{button.disabled=false;button.textContent='Save & Publish'}
+ }
+ id('lp-publish').onclick=publish;
+ id('lp-reset').onclick=()=>{
+  if(!confirm('Reset the homepage design to its original values? Publish afterward to make it live.'))return;
+  draft=clone(DEFAULT);bgFile=mascotFile=null;
+  if(previewBgUrl){URL.revokeObjectURL(previewBgUrl);previewBgUrl=''}
+  if(previewMascotUrl){URL.revokeObjectURL(previewMascotUrl);previewMascotUrl=''}
+  syncFields();update();announce('Original design restored in preview. Publish when ready.');
+ };
+ launch.onclick=begin;id('lp-close').onclick=stop;
+ async function checkOwner(){
+  if(!token())return;
+  try{
+   const data=await api('/rest/v1/ledgerpeer_site_admins?select=user_id&limit=1',{},true);
+   canPublish=Array.isArray(data)&&data.length>0;
+   if(canPublish){launch.hidden=false;launch.style.display='block';clearInterval(checkTimer)}
+  }catch(e){console.info('Owner editing will activate after one-time database setup.',e.message)}
+ }
+ window.addEventListener('resize',()=>apply(editing?draft:published));
+ window.addEventListener('storage',e=>{if(e.key===draftKey&&!editing)return});
+ apply(published);loadPublished();
+ checkOwner();checkTimer=setInterval(checkOwner,2400);
+ setTimeout(()=>clearInterval(checkTimer),60000);
+ if(isLocal&&isOwnerPreview){launch.hidden=false;launch.style.display='block';canPublish=false;setTimeout(begin,200)}
+})();
+</script>
+</body></html>
