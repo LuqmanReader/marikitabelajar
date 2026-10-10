@@ -1,70 +1,27 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>LedgerPeer · Private Access</title><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"><link rel="apple-touch-icon" href="apple-touch-icon.png"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="supabase-config.js"></script><script src="auth.js"></script><style>
-:root{--ink:#111;--paper:#F4EEDD;--red:#E63B2E;--blue:#1D3FA0;--yellow:#F5C518;--grey:#777;--green:#9fe0b8}*{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--paper);background-image:radial-gradient(circle,rgba(17,17,17,.06) 1px,transparent 1px);background-size:18px 18px;color:var(--ink);font-family:ui-monospace,"JetBrains Mono","Space Mono",Menlo,Consolas,monospace}.wrap{max-width:980px;margin:auto;padding:54px 24px}.top{text-align:center}h1,h2{font-family:"Arial Black","Helvetica Neue",Impact,sans-serif;text-transform:uppercase;letter-spacing:-.02em}h1{font-size:clamp(34px,7vw,64px);line-height:.9;margin:0}.sub{margin:14px auto 38px;color:var(--grey);font-weight:800;text-transform:uppercase;font-size:12px;letter-spacing:.06em}.lockbox{max-width:520px;margin:0 auto;background:#fff;border:4px solid var(--ink);box-shadow:8px 8px 0 var(--ink);padding:28px}.lockbox h2{font-size:28px;margin:0 0 8px}.lockbox p{font-size:12px;line-height:1.6;color:#555}.locktag{display:inline-block;background:var(--yellow);border:2px solid var(--ink);padding:5px 8px;font-size:10px;font-weight:900;text-transform:uppercase;margin-bottom:16px}input{width:100%;border:3px solid var(--ink);padding:13px;background:#fff;font:inherit;margin:10px 0}.btn{width:100%;border:3px solid var(--ink);background:var(--ink);color:#fff;padding:12px 14px;font:900 12px inherit;text-transform:uppercase;cursor:pointer;box-shadow:4px 4px 0 var(--grey)}.btn:hover{transform:translate(-1px,-1px)}.error{min-height:18px;margin-top:12px;color:var(--red);font-size:11px;font-weight:900}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}.card{border:4px solid var(--ink);padding:28px;background:#fff;box-shadow:8px 8px 0 var(--ink);text-decoration:none;color:var(--ink);transition:.08s}.card:hover{transform:translate(-2px,-2px);box-shadow:10px 10px 0 var(--ink)}.tag{display:inline-block;border:2px solid var(--ink);padding:5px 8px;font-weight:900;font-size:10px;text-transform:uppercase}.dashboard .tag{background:var(--yellow)}.finance .tag{background:var(--green)}.card h2{font-size:28px;margin:18px 0 10px}.card p{font-size:13px;line-height:1.6;margin:0 0 22px}.features{font-size:11px;font-weight:800;line-height:1.9;color:#444}.go{margin-top:22px;display:inline-block;border:3px solid var(--ink);padding:10px 14px;background:var(--ink);color:#fff;font-weight:900;text-transform:uppercase}.topbar{display:flex;justify-content:flex-end;margin-bottom:18px}.lockbtn{border:3px solid var(--ink);background:var(--red);color:#fff;padding:8px 12px;font:900 11px inherit;cursor:pointer;box-shadow:3px 3px 0 var(--ink)}footer{text-align:center;margin-top:42px;color:var(--grey);font-size:10px;font-weight:800;text-transform:uppercase}@media(max-width:700px){.grid{grid-template-columns:1fr}.wrap{padding-top:32px}}
-.auth-tabs{display:flex;gap:8px;<!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>LedgerPeer · Private Access</title><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"><link rel="apple-touch-icon" href="apple-touch-icon.png"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="supabase-config.js"></script><script src="auth.js"></script><style>
-:root{--ink:#111;--paper:#e7e0cf;--red:#ff3131;--blue:#1D3FA0;--yellow:#F1C81A;--grey:#777;--green:#9fe0b8;--panel:#ececec}
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>LedgerPeer · Animated Homepage</title><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"><link rel="apple-touch-icon" href="apple-touch-icon.png"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="supabase-config.js"></script><script src="auth.js"></script><style>
+:root{--ink:#111;--paper:#F4EEDD;--red:#E63B2E;--blue:#1D3FA0;--yellow:#F5C518;--grey:#777;--green:#9fe0b8}
 *{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;min-height:100vh;color:var(--ink);
-  font-family:ui-monospace,"JetBrains Mono","Space Mono",Menlo,Consolas,monospace;
-  background:var(--paper);overflow-x:hidden;
-}
-
-/* Moving background */
-.home-wallpaper{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.home-wallpaper-art{
-  position:absolute;inset:0;
-  background:
-    linear-gradient(90deg,rgba(0,0,0,0) 0 100%),
-    conic-gradient(from 90deg,var(--paper) 25%,var(--red) 0 50%,var(--paper) 0 75%,var(--red) 0);
-  background-size: 100% 100%, 148px 148px;
-  animation:checkerDown 10s linear infinite;
-}
-.home-wallpaper-art::before{
-  content:"";position:absolute;inset:0;
-  background:
-    linear-gradient(90deg, transparent 0 22px, var(--yellow) 22px 30px, transparent 30px 74px) 0 0/148px 148px repeat,
-    linear-gradient(0deg, transparent 0 22px, var(--yellow) 22px 30px, transparent 30px 74px) 0 0/148px 148px repeat;
-  animation:checkerDown 10s linear infinite;
-  opacity:1;
-}
-@keyframes checkerDown{from{background-position:0 0,0 0}to{background-position:0 148px,0 148px}}
-
-/* Layout */
-.page-shell{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column}
-.ticker-wrap{
-  position:relative;z-index:2;overflow:hidden;white-space:nowrap;
-  background:#f7f7f7;border-top:6px solid #000;border-bottom:6px solid #000;
-  min-height:58px;display:flex;align-items:center;
-}
-.ticker{display:inline-flex;align-items:center;gap:44px;padding-left:44px;min-width:max-content;animation:tickerMove 26s linear infinite;font-size:20px;letter-spacing:.02em}
-.ticker strong{font-weight:400}
-@keyframes tickerMove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-
-.wrap{
-  width:100%;max-width:1280px;margin:0 auto;flex:1;
-  padding:34px 20px 34px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-}
-.hero{display:flex;flex-direction:column;align-items:center;text-align:center;margin:10px 0 18px}
-h1,h2{font-family:"Arial Black","Helvetica Neue",Impact,sans-serif;text-transform:uppercase;letter-spacing:-.03em}
-h1{font-size:clamp(48px,9vw,108px);line-height:.9;margin:0 0 10px}
-.sub{margin:0 auto 14px;color:#6d6d6d;font-weight:800;text-transform:uppercase;font-size:12px;letter-spacing:.12em}
-
-/* remove old small logo marker visually */
-.mark{display:none}
-
-.mascot-stage{
-  width:min(250px,52vw);aspect-ratio:1591/989;
-  position:relative;margin:0 auto 18px;isolation:isolate;
-  animation:mascotFloat 4.2s ease-in-out infinite;
-}
-.mascot-stage img{
-  position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
-  opacity:0;animation:poseCycle 20s linear infinite;pointer-events:none;user-select:none;
-}
+html{min-height:100%}
+body{margin:0;min-height:100vh;color:var(--ink);font-family:ui-monospace,"JetBrains Mono","Space Mono",Menlo,Consolas,monospace;background:var(--paper);overflow-x:hidden}
+/* Authentic user-supplied Canva checkerboard, cropped to one tile and moved down. */
+.home-wallpaper{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.home-wallpaper::before{content:"";position:absolute;inset:-172px 0; background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKwAAACsCAIAAABpU9CPAAACWUlEQVR42u3Wv46MURjH8d+ZPxgE2bCxtFYiotjCJbgCUaj0whVssdG4AQm90OgoKFYiCi26TSSyURCZtVhhJmaZo9hLmLd5zedzAU/yPvme95xSV1bSkF/rj9LppF1+PC8f15oZVXPw5lJaqBPmnggQASJABCRJr8lhO8/SKa1bQT21miT7z+TA2dkG1eTKvEdQPt1u8Z/l+LU6YwSuA0SACBABIkAEiAARIAJEgAgQASJABIgAESACRIAIEAH/lTJ+8SRJdtbL98czzvq7PEmSacq3bvs2sXC5LlydcUZ3412SdLr12JE2RfDz6/sk2X5QhveambjdHawtzvPBmp5eGt+/4zrAmwARIAJEgAgQASJABIgAESACRIAIEAEiQASIABEgAkSACBABIkAEiAARIAJEgAgQASJABIgAESACRIAIEAEiQASIABEgAkSACBABIkAEiAARIAJEgAgQASJABIgAESACRMC86JUPN5LUo5fquVfNjPw8TK7P807Ln+HeVlsTQUZvkpTB+epENGX6e2+rrgNEgAgQASJABIgAESACRIAIEAEiQASIABEgAkSACBABbVYmq8tJMriQQxcbmVj39ctkt32bGL3N6HUzG+jXslta9Om9/tPDSZLNZLOZFZxcHD28274IvozL1stmDtZWb3DrhOsAbwJEgAgQASJABIgAESACRIAIEAEiQASIABEgAkSACBABIkAEiAARIAJEgAgQASJABIgAESACRIAIEAEiQASIABEgAkSACBABIkAEiAARIAJEgAgQASJABIgAETAP/gFjY1MxZHGMOQAAAABJRU5ErkJggg==");background-size:172px 172px;background-repeat:repeat; animation:checkerboardDown 9s linear infinite;will-change:background-position}
+@keyframes checkerboardDown{to{background-position:0 172px}}
+/* Horizontal ticker: duplicate tracks for a seamless right-to-left loop. */
+.marquee-strip{position:fixed;left:0;right:0;height:59px;z-index:5;overflow:hidden;display:flex;align-items:center;background:#fff;border-top:7px solid #111;border-bottom:7px solid #111;pointer-events:none}
+.marquee-strip.top{top:0}.marquee-strip.bottom{bottom:0}
+.marquee-track{display:flex;width:max-content;white-space:nowrap;animation:marqueeLeft 27s linear infinite}
+.marquee-copy{flex:none;display:block;padding-right:64px;font:400 clamp(14px,1.6vw,25px)/1.2 Arial,Helvetica,sans-serif;letter-spacing:.01em;color:#111}
+@keyframes marqueeLeft{to{transform:translateX(-50%)}}
+/* Existing functional homepage content; retain the existing forms and links. */
+.wrap{position:relative;z-index:1;max-width:1120px;min-height:100vh;margin:auto;padding:88px 24px 88px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.top{text-align:center;width:100%}
+h1,h2{font-family:"Arial Black","Helvetica Neue",Impact,sans-serif;text-transform:uppercase;letter-spacing:-.025em}
+h1{font-size:clamp(43px,7.8vw,100px);line-height:1;margin:0;filter:drop-shadow(2px 3px 0 rgba(255,255,255,.3))}
+.sub{margin:8px auto 8px;color:#404040;font-weight:900;text-transform:uppercase;font-size:11px;letter-spacing:.12em;background:rgba(244,238,221,.88);display:table;padding:2px 9px}
+.mascot-stage{width:min(205px,55vw);aspect-ratio:1591/989;position:relative;margin:0 auto 14px;isolation:isolate;animation:mascotFloat 4s ease-in-out infinite}
+.mascot-stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;animation:poseCycle 20s linear infinite;pointer-events:none;user-select:none}
 .mascot-stage img:nth-child(1){animation-delay:0s;opacity:1}
 .mascot-stage img:nth-child(2){animation-delay:-16s}
 .mascot-stage img:nth-child(3){animation-delay:-12s}
@@ -72,168 +29,22 @@ h1{font-size:clamp(48px,9vw,108px);line-height:.9;margin:0 0 10px}
 .mascot-stage img:nth-child(5){animation-delay:-4s}
 @keyframes poseCycle{0%,16%{opacity:1}20%,99%{opacity:0}100%{opacity:1}}
 @keyframes mascotFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-
-.lockbox{
-  width:min(590px,92vw);margin:0 auto 14px;background:var(--panel);
-  border:4px solid var(--ink);box-shadow:10px 10px 0 var(--ink);padding:28px 30px;
-}
-.lockbox h2{font-size:28px;margin:0 0 12px}
+/* Existing retro box look retained, centered beneath title and mascot. */
+.lockbox{width:min(520px,100%);margin:0 auto;background:#f7f7f7;border:4px solid var(--ink);box-shadow:9px 9px 0 var(--ink);padding:26px 28px}
+.lockbox h2{font-size:28px;margin:0 0 8px}
 .lockbox p{font-size:12px;line-height:1.6;color:#555}
 .locktag{display:inline-block;background:var(--yellow);border:2px solid var(--ink);padding:5px 8px;font-size:10px;font-weight:900;text-transform:uppercase;margin-bottom:16px}
-input{width:100%;border:3px solid var(--ink);padding:16px;background:#f6f6f6;font:inherit;margin:12px 0 0}
-.btn{width:100%;border:3px solid var(--ink);background:var(--ink);color:#fff;padding:14px 14px;font:900 12px inherit;text-transform:uppercase;cursor:pointer;box-shadow:4px 4px 0 #333;margin-top:14px}
+input{width:100%;border:3px solid var(--ink);padding:13px;background:#fff;font:inherit;margin:8px 0}
+.btn{width:100%;border:3px solid var(--ink);background:var(--ink);color:#fff;padding:12px 14px;font:900 12px inherit;text-transform:uppercase;cursor:pointer;box-shadow:4px 4px 0 var(--grey)}
 .btn:hover{transform:translate(-1px,-1px)}
-.error{min-height:18px;margin-top:12px;color:#c41717;font-size:11px;font-weight:900}
-.auth-tabs{display:flex;gap:10px;margin:12px 0 18px}
-.auth-tabs button{flex:1;background:#f3f3f3;color:#111;border:3px solid #111;padding:14px;font:900 12px monospace;cursor:pointer}
-.auth-tabs button.active{background:var(--yellow)}
+.error{min-height:18px;margin-top:12px;color:var(--red);font-size:11px;font-weight:900}
+.auth-tabs{display:flex;gap:8px;margin:12px 0 16px}.auth-tabs button{flex:1;background:#fff;color:#111;border:3px solid #111;padding:12px;font:900 12px monospace;cursor:pointer}.auth-tabs button.active{background:var(--yellow)}
 .auth-link{border:0;background:none;text-decoration:underline;font:800 12px monospace;cursor:pointer;color:var(--blue);padding:8px 0}.auth-links{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:8px}.notice{font-size:12px;color:#222;line-height:1.6;min-height:20px}button:disabled{opacity:.6;cursor:wait}[hidden]{display:none!important}
-
-/* Hub */
-.topbar{display:flex;justify-content:flex-end;margin-bottom:18px;width:min(1100px,100%)}
-.lockbtn{border:3px solid var(--ink);background:var(--red);color:#fff;padding:8px 12px;font:900 11px inherit;cursor:pointer;box-shadow:3px 3px 0 var(--ink)}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:26px;width:min(1100px,100%)}
-.card{border:4px solid var(--ink);padding:28px;background:#efefef;box-shadow:8px 8px 0 var(--ink);text-decoration:none;color:var(--ink);transition:.08s}.card:hover{transform:translate(-2px,-2px);box-shadow:10px 10px 0 var(--ink)}.tag{display:inline-block;border:2px solid var(--ink);padding:5px 8px;font-weight:900;font-size:10px;text-transform:uppercase}.dashboard .tag{background:var(--yellow)}.finance .tag{background:var(--green)}.card h2{font-size:28px;margin:18px 0 10px}.card p{font-size:13px;line-height:1.6;margin:0 0 22px}.features{font-size:11px;font-weight:800;line-height:1.9;color:#444}.go{margin-top:22px;display:inline-block;border:3px solid var(--ink);padding:10px 14px;background:var(--ink);color:#fff;font-weight:900;text-transform:uppercase;text-decoration:none}
-footer{text-align:center;margin:18px 0 10px;color:#444;font-size:10px;font-weight:800;text-transform:uppercase}
-
-@media(max-width:700px){
-  .wrap{padding:22px 14px 22px}
-  h1{font-size:clamp(40px,13vw,68px)}
-  .mascot-stage{width:min(200px,58vw);margin-bottom:12px}
-  .ticker-wrap{min-height:48px}
-  .ticker{font-size:15px;gap:28px;padding-left:28px}
-  .lockbox{padding:22px 18px;box-shadow:7px 7px 0 var(--ink)}
-  .grid{grid-template-columns:1fr}
-}
-@media(prefers-reduced-motion:reduce){
-  .home-wallpaper-art,.home-wallpaper-art::before,.ticker,.mascot-stage,.mascot-stage img{animation:none!important}
-  .mascot-stage img{opacity:0}.mascot-stage img:first-child{opacity:1}
-}
-</style></head><body><div class="home-wallpaper" aria-hidden="true"><div class="home-wallpaper-art"></div></div>
-<div class="page-shell">
-  <div class="ticker-wrap" aria-hidden="true">
-    <div class="ticker">
-      <span>STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ MASTER YOUR PROGRESS ✦ BUILD YOUR FUTURE ✦</span>
-      <span>STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ MASTER YOUR PROGRESS ✦ BUILD YOUR FUTURE ✦</span>
-    </div>
-  </div>
-  <main class="wrap">
-    <div class="hero">
-      <div class="mark"><img src="logo.png" alt="LedgerPeer logo"></div>
-      <h1>LedgerPeer</h1>
-      <div class="sub" id="subtitle">Private student beta</div>
-      <div class="mascot-stage" role="img" aria-label="LedgerPeer's friendly balance-scale mascot waving, studying, explaining and celebrating"><img src="ledgerpeer-idle.png" alt="" decoding="async"><img src="ledgerpeer-wave.png" alt="" decoding="async"><img src="ledgerpeer-study.png" alt="" decoding="async"><img src="ledgerpeer-explain.png" alt="" decoding="async"><img src="ledgerpeer-celebrate.png" alt="" decoding="async"></div>
-    </div>
-    <section id="authView" class="lockbox" hidden><span class="locktag">Student account · Private beta</span><h2 id="authTitle">Student Log In</h2><div class="auth-tabs" id="authTabs"><button id="loginTab" type="button" class="active">Log In</button><button id="signupTab" type="button">Sign Up</button></div><p id="authCopy"></p><input id="email" type="email" autocomplete="off" placeholder="Student email address" required><input id="password" type="password" autocomplete="off" placeholder="Password"><input id="confirm" type="password" autocomplete="new-password" placeholder="Confirm password" hidden><button class="btn" id="authButton">Log In →</button><div class="auth-links"><button class="auth-link" id="forgotButton" type="button">Forgot password?</button><button class="auth-link" id="backButton" type="button" hidden>← Back to log in</button></div><p class="notice" id="notice" role="status"></p><div class="error" id="error" role="alert"></div></section>
-    <section id="hubView" hidden><div class="topbar"><button class="lockbtn" id="lockButton">Lock hub</button></div><div class="grid"><a class="card dashboard" href="hub.html"><span class="tag">Section 01 · Academic</span><h2>Revision Dashboard</h2><p><strong>Academic performance & revision section.</strong> Turn exam attempts into useful revision decisions and see what to work on next.</p><div class="features">EXAM DEBRIEFS · CONFIDENCE CALIBRATION<br>TOPIC MASTERY · RETRY MISTAKES · PROGRESS</div><span class="go">Enter academic section →</span></a><a class="card finance" href="financial-manager.html"><span class="tag">Section 02 · Finance</span><h2>Financial Manager</h2><p><strong>Personal money management section.</strong> Record cash flow, savings, investments and gold contributions in one place.</p><div class="features">INCOME · EXPENSES · SAVINGS<br>INVESTMENTS · GOLD · GOAL HORIZONS<br>FINANCIAL TRACKER · FINANCIAL DASHBOARD</div><span class="go">Enter finance section →</span></a></div><nav style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:26px"><a class="go" href="calendar.html">▦ Calendar →</a><a class="go" href="study-planner.html">☑ Study Planner →</a><a class="go" href="achievements.html">★ Achievements →</a></nav></section>
-    <footer>LedgerPeer beta · Cloud-backed student accounts</footer>
-  </main>
-  <div class="ticker-wrap" aria-hidden="true">
-    <div class="ticker">
-      <span>STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ MASTER YOUR PROGRESS ✦ BUILD YOUR FUTURE ✦</span>
-      <span>STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ MASTER YOUR PROGRESS ✦ BUILD YOUR FUTURE ✦</span>
-    </div>
-  </div>
-</div>
-<script>
-const A=PersonalHubAuth,authView=document.getElementById('authView'),hubView=document.getElementById('hubView'),error=document.getElementById('error');
-const password=document.getElementById('password'),email=document.getElementById('email'),button=document.getElementById('authButton'),confirmInput=document.getElementById('confirm'),notice=document.getElementById('notice');
-const tabs=document.getElementById('authTabs'),forgot=document.getElementById('forgotButton'),back=document.getElementById('backButton');
-let mode='login',recovering=false;
-function clearLoginFields(){email.value='';password.value='';confirmInput.value='';}
-window.addEventListener('pageshow',clearLoginFields);
-function show(next){clearLoginFields();mode=next;error.textContent='';notice.textContent='';const isReset=next==='setpassword',isLogin=next==='login',isSignup=next==='signup',isForgot=next==='forgot';
- tabs.hidden=!(isLogin||isSignup);document.getElementById('loginTab').classList.toggle('active',isLogin);document.getElementById('signupTab').classList.toggle('active',isSignup);
- document.getElementById('authTitle').textContent=isReset?'Set New Password':isSignup?'Join LedgerPeer':isForgot?'Recover Password':'Student Log In';
- document.getElementById('authCopy').textContent=isReset?'Choose a new password for your account.':isSignup?'Private beta: only invited email addresses can activate accounts. Enter your invited email to receive a password setup link.':isForgot?'Enter your account email. We will email you a password reset link.':'Log in with your student email and password.';
- password.hidden=isSignup||isForgot;confirmInput.hidden=!isReset;email.hidden=isReset;forgot.hidden=!isLogin;back.hidden=isLogin;
- password.autocomplete=isReset?'new-password':'off';button.textContent=isReset?'Save New Password →':isSignup?'Send Setup Link →':isForgot?'Send Reset Link →':'Log In →';
-}
-async function submit(){error.textContent='';notice.textContent='';button.disabled=true;const label=button.textContent;button.textContent='Please wait…';try{
- if(mode==='login'){if(!email.value.trim()||!password.value)throw Error('Enter your email and password.');await A.login(email.value.trim(),password.value);clearLoginFields();return;}
- if(mode==='setpassword'){if(password.value.length<6)throw Error('Password must contain at least 6 characters.');if(password.value!==confirmInput.value)throw Error('Passwords do not match.');await A.updatePassword(password.value);recovering=false;await A.logout();notice.textContent='Password saved. Please log in.';show('login');notice.textContent='Password saved. Log in with your new password.';return;}
- if(!email.value.trim())throw Error('Enter your email address.');await A.sendRecovery(email.value.trim());notice.textContent=mode==='signup'?'If this email has been invited, check its inbox for a password setup link.':'If this email is registered, check its inbox for a recovery link.';
- }catch(e){error.textContent=e.message||'Something went wrong.';}finally{button.disabled=false;button.textContent=mode==='setpassword'?'Save New Password →':mode==='signup'?'Send Setup Link →':mode==='forgot'?'Send Reset Link →':'Log In →';}}
-button.onclick=submit;[email,password,confirmInput].forEach(el=>el.addEventListener('keydown',e=>{if(e.key==='Enter')submit()}));
-document.getElementById('loginTab').onclick=()=>show('login');document.getElementById('signupTab').onclick=()=>show('signup');forgot.onclick=()=>show('forgot');back.onclick=()=>show('login');
-document.getElementById('lockButton').onclick=()=>A.logout();
-authView.hidden=false;hubView.hidden=true;
-(async()=>{try{await A.onAuthChange((event)=>{if(event==='PASSWORD_RECOVERY'){recovering=true;authView.hidden=false;hubView.hidden=true;show('setpassword');}});
-const hash=new URLSearchParams(location.hash.slice(1));const query=new URLSearchParams(location.search);
-if(hash.get('type')==='recovery'||query.get('type')==='recovery'){recovering=true;show('setpassword');}
-if(!recovering){const yes=await A.isSignedIn();if(yes&&!recovering){const ok=await A.ready();if(ok&&!recovering){authView.hidden=true;hubView.hidden=false;}}}
-}catch(e){error.textContent=e.message||'Unable to connect to authentication.';}})();
-</script></body></html>:12px 0 18px}.auth-tabs button{flex:1;background:#fff;color:#111;border:3px solid #111;padding:12px;font:900 12px monospace;cursor:pointer}.auth-tabs button.active{background:var(--yellow)}.auth-link{border:0;background:none;text-decoration:underline;font:800 12px monospace;cursor:pointer;color:var(--blue);padding:8px 0}.auth-links{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:8px}.notice{font-size:12px;color:#222;line-height:1.6;min-height:20px}button:disabled{opacity:.6;cursor:wait}[hidden]{display:none!important}
-
-/* Exact new red/yellow/cream artwork, with its left checkerboard separated
-   into a single scrolling image layer. No old yellow wallpaper is used. */
-body{background:#f4eedd;background-image:none}
-.home-wallpaper{
-  position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
-}
-.home-wallpaper-art{
-  position:absolute;inset:0;
-  background-color:#f4eedd;
-  background-image:url("data:image/webp;base64,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");
-  background-repeat:no-repeat;
-  background-position:left top;
-  background-size:100% 100%;
-}
-.home-wallpaper-checker{
-  position:absolute;
-  left:0;top:0;bottom:0;
-  width:min(23.4375vw,450px);
-  background-image:url("data:image/webp;base64,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");
-  background-repeat:repeat-y;
-  background-position:0 0;
-  background-size:100% auto;
-  animation:ledgerpeer-checker-down 10s linear infinite;
-}
-@keyframes ledgerpeer-checker-down{
-  from{background-position:0 0}
-  to{background-position:0 min(9.010417vw,173px)}
-}
-/* Keep existing login, cards, mascots and links above the background. */
-body > .wrap{position:relative;z-index:1}
-@media(prefers-reduced-motion:reduce){
-  .home-wallpaper-checker{animation:none}
-}
-
-/* LedgerPeer mascot: the original logo stays in place; five transparent
-   pose images rotate above the login and dashboard content. */
-.top .sub{margin-bottom:14px}
-.mascot-stage{
-  width:min(236px,65vw);aspect-ratio:1591/989;
-  position:relative;margin:0 auto 20px;
-  isolation:isolate;
-  animation:ledgerpeer-mascot-float 4.2s ease-in-out infinite;
-}
-.mascot-stage img{
-  position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
-  opacity:0;animation:ledgerpeer-pose-cycle 20s linear infinite;
-  pointer-events:none;user-select:none;
-}
-.mascot-stage img:nth-child(1){animation-delay:0s;opacity:1}
-.mascot-stage img:nth-child(2){animation-delay:-16s}
-.mascot-stage img:nth-child(3){animation-delay:-12s}
-.mascot-stage img:nth-child(4){animation-delay:-8s}
-.mascot-stage img:nth-child(5){animation-delay:-4s}
-@keyframes ledgerpeer-pose-cycle{
-  0%,16%{opacity:1}
-  20%,99%{opacity:0}
-  100%{opacity:1}
-}
-@keyframes ledgerpeer-mascot-float{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-5px)}
-}
-@media(max-width:700px){.mascot-stage{width:min(198px,62vw);margin-bottom:17px}}
-@media(prefers-reduced-motion:reduce){
-  .mascot-stage,.mascot-stage img{animation:none!important}
-  .mascot-stage img{opacity:0}
-  .mascot-stage img:first-child{opacity:1}
-}
-</style></head><body><div class="home-wallpaper" aria-hidden="true"><div class="home-wallpaper-art"><div class="home-wallpaper-checker"></div></div></div><main class="wrap"><div class="top"><h1>LedgerPeer</h1><div class="sub" id="subtitle">Private student beta</div><div class="mascot-stage" role="img" aria-label="LedgerPeer's friendly balance-scale mascot waving, studying, explaining and celebrating"><img src="ledgerpeer-idle.png" alt="" decoding="async"><img src="ledgerpeer-wave.png" alt="" decoding="async"><img src="ledgerpeer-study.png" alt="" decoding="async"><img src="ledgerpeer-explain.png" alt="" decoding="async"><img src="ledgerpeer-celebrate.png" alt="" decoding="async"></div></div><section id="authView" class="lockbox" hidden><span class="locktag">Student account · Private beta</span><h2 id="authTitle">Student Log In</h2><div class="auth-tabs" id="authTabs"><button id="loginTab" type="button" class="active">Log In</button><button id="signupTab" type="button">Sign Up</button></div><p id="authCopy"></p><input id="email" type="email" autocomplete="off" placeholder="Student email address" required><input id="password" type="password" autocomplete="off" placeholder="Password"><input id="confirm" type="password" autocomplete="new-password" placeholder="Confirm password" hidden><button class="btn" id="authButton">Log In →</button><div class="auth-links"><button class="auth-link" id="forgotButton" type="button">Forgot password?</button><button class="auth-link" id="backButton" type="button" hidden>← Back to log in</button></div><p class="notice" id="notice" role="status"></p><div class="error" id="error" role="alert"></div></section><section id="hubView" hidden><div class="topbar"><button class="lockbtn" id="lockButton">Lock hub</button></div><div class="grid"><a class="card dashboard" href="hub.html"><span class="tag">Section 01 · Academic</span><h2>Revision Dashboard</h2><p><strong>Academic performance & revision section.</strong> Turn exam attempts into useful revision decisions and see what to work on next.</p><div class="features">EXAM DEBRIEFS · CONFIDENCE CALIBRATION<br>TOPIC MASTERY · RETRY MISTAKES · PROGRESS</div><span class="go">Enter academic section →</span></a><a class="card finance" href="financial-manager.html"><span class="tag">Section 02 · Finance</span><h2>Financial Manager</h2><p><strong>Personal money management section.</strong> Record cash flow, savings, investments and gold contributions in one place.</p><div class="features">INCOME · EXPENSES · SAVINGS<br>INVESTMENTS · GOLD · GOAL HORIZONS<br>FINANCIAL TRACKER · FINANCIAL DASHBOARD</div><span class="go">Enter finance section →</span></a></div><nav style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:26px"><a class="go" href="calendar.html">▦ Calendar →</a><a class="go" href="study-planner.html">☑ Study Planner →</a><a class="go" href="achievements.html">★ Achievements →</a></nav></section><footer>LedgerPeer beta · Cloud-backed student accounts</footer></main><script>
+#hubView{width:100%}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}.card{border:4px solid var(--ink);padding:28px;background:#fff;box-shadow:8px 8px 0 var(--ink);text-decoration:none;color:var(--ink);transition:.08s}.card:hover{transform:translate(-2px,-2px);box-shadow:10px 10px 0 var(--ink)}.tag{display:inline-block;border:2px solid var(--ink);padding:5px 8px;font-weight:900;font-size:10px;text-transform:uppercase}.dashboard .tag{background:var(--yellow)}.finance .tag{background:var(--green)}.card h2{font-size:28px;margin:18px 0 10px}.card p{font-size:13px;line-height:1.6;margin:0 0 22px}.features{font-size:11px;font-weight:800;line-height:1.9;color:#444}.go{margin-top:22px;display:inline-block;border:3px solid var(--ink);padding:10px 14px;background:var(--ink);color:#fff;font-weight:900;text-transform:uppercase}.topbar{display:flex;justify-content:flex-end;margin-bottom:18px}.lockbtn{border:3px solid var(--ink);background:var(--red);color:#fff;padding:8px 12px;font:900 11px inherit;cursor:pointer;box-shadow:3px 3px 0 var(--ink)}
+footer{text-align:center;margin-top:22px;color:#111;font-size:10px;font-weight:900;text-transform:uppercase;background:rgba(244,238,221,.88);padding:4px 8px}
+@media(max-width:700px){.wrap{padding:80px 16px 85px}.grid{grid-template-columns:1fr}.lockbox{padding:20px 18px;box-shadow:6px 6px 0 var(--ink)}.marquee-strip{height:46px;border-width:5px}.marquee-copy{font-size:15px}.mascot-stage{width:min(180px,52vw);margin-bottom:12px}h1{font-size:clamp(38px,11vw,66px)}}
+@media(prefers-reduced-motion:reduce){.home-wallpaper::before,.marquee-track,.mascot-stage,.mascot-stage img{animation:none!important}.mascot-stage img{opacity:0}.mascot-stage img:first-child{opacity:1}}
+</style></head><body><div class="home-wallpaper" aria-hidden="true"></div><div class="marquee-strip top" aria-hidden="true"><div class="marquee-track"><span class="marquee-copy">STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦</span><span class="marquee-copy">STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦</span></div></div><div class="marquee-strip bottom" aria-hidden="true"><div class="marquee-track"><span class="marquee-copy">STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦</span><span class="marquee-copy">STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦</span></div></div><main class="wrap"><div class="top"><h1>LedgerPeer</h1><div class="sub" id="subtitle">Private student beta</div><div class="mascot-stage" role="img" aria-label="LedgerPeer's friendly balance-scale mascot waving, studying, explaining and celebrating"><img src="ledgerpeer-idle.png" alt="" decoding="async"><img src="ledgerpeer-wave.png" alt="" decoding="async"><img src="ledgerpeer-study.png" alt="" decoding="async"><img src="ledgerpeer-explain.png" alt="" decoding="async"><img src="ledgerpeer-celebrate.png" alt="" decoding="async"></div></div><section id="authView" class="lockbox" hidden><span class="locktag">Student account · Private beta</span><h2 id="authTitle">Student Log In</h2><div class="auth-tabs" id="authTabs"><button id="loginTab" type="button" class="active">Log In</button><button id="signupTab" type="button">Sign Up</button></div><p id="authCopy"></p><input id="email" type="email" autocomplete="off" placeholder="Student email address" required><input id="password" type="password" autocomplete="off" placeholder="Password"><input id="confirm" type="password" autocomplete="new-password" placeholder="Confirm password" hidden><button class="btn" id="authButton">Log In →</button><div class="auth-links"><button class="auth-link" id="forgotButton" type="button">Forgot password?</button><button class="auth-link" id="backButton" type="button" hidden>← Back to log in</button></div><p class="notice" id="notice" role="status"></p><div class="error" id="error" role="alert"></div></section><section id="hubView" hidden><div class="topbar"><button class="lockbtn" id="lockButton">Lock hub</button></div><div class="grid"><a class="card dashboard" href="hub.html"><span class="tag">Section 01 · Academic</span><h2>Revision Dashboard</h2><p><strong>Academic performance & revision section.</strong> Turn exam attempts into useful revision decisions and see what to work on next.</p><div class="features">EXAM DEBRIEFS · CONFIDENCE CALIBRATION<br>TOPIC MASTERY · RETRY MISTAKES · PROGRESS</div><span class="go">Enter academic section →</span></a><a class="card finance" href="financial-manager.html"><span class="tag">Section 02 · Finance</span><h2>Financial Manager</h2><p><strong>Personal money management section.</strong> Record cash flow, savings, investments and gold contributions in one place.</p><div class="features">INCOME · EXPENSES · SAVINGS<br>INVESTMENTS · GOLD · GOAL HORIZONS<br>FINANCIAL TRACKER · FINANCIAL DASHBOARD</div><span class="go">Enter finance section →</span></a></div><nav style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:26px"><a class="go" href="calendar.html">▦ Calendar →</a><a class="go" href="study-planner.html">☑ Study Planner →</a><a class="go" href="achievements.html">★ Achievements →</a></nav></section><footer>LedgerPeer beta · Cloud-backed student accounts</footer></main><script>
 const A=PersonalHubAuth,authView=document.getElementById('authView'),hubView=document.getElementById('hubView'),error=document.getElementById('error');
 const password=document.getElementById('password'),email=document.getElementById('email'),button=document.getElementById('authButton'),confirmInput=document.getElementById('confirm'),notice=document.getElementById('notice');
 const tabs=document.getElementById('authTabs'),forgot=document.getElementById('forgotButton'),back=document.getElementById('backButton');
