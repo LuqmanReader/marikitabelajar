@@ -33,7 +33,7 @@
       var n=Number(q.qno);if(!Number.isSafeInteger(n)||n<1||seen.has(n))throw new Error('Every question needs a unique positive question number.');seen.add(n);
       if(q.is_correct!==true&&q.is_correct!==false&&q.is_correct!==null)throw new Error('Q'+n+' needs an original result (true, false, or null for unscored).');
       if(typeof q.qtext!=='string')throw new Error('Q'+n+' is missing its question text field.');
-      var x=Object.assign({},q,{qno:n,qtext:F.sanitize(q.qtext),chapter:ChapterAnalysis.label(q.chapter||meta.setChapter||''),options:(Array.isArray(q.options)?q.options:[]).map(function(o){return {text:F.sanitize(o.text||''),checked:!!o.checked};})});
+      var x=Object.assign({},q,{qno:n,qtext:F.sanitize(q.qtext),chapter:ChapterAnalysis.label(q.chapter||''),options:(Array.isArray(q.options)?q.options:[]).map(function(o){return {text:F.sanitize(o.text||''),checked:!!o.checked};})});
       x.your_answer=q.your_answer==null?null:F.sanitize(q.your_answer);x.correct_answer=String(q.correct_answer||'');x.debrief=F.sanitize(q.debrief||'');
       return x;
     });
@@ -85,12 +85,12 @@
   });
   $('saveAttempt').addEventListener('click',async function(){
     if(!staged)return;
-    var meta=Object.assign({},staged.meta), id=staged.savedId||(staged.savedId='attempt-'+Date.now()+'-'+Math.random().toString(36).slice(2,9)), key='tymba_exam_data:'+id;
+    var meta=Object.assign({},staged.meta), id='attempt-'+Date.now()+'-'+Math.random().toString(36).slice(2,9), key='tymba_exam_data:'+id;
     meta.id=id;meta.createdAt=new Date().toISOString();meta.file='view.html?id='+encodeURIComponent(id);meta.topics={};
     try{
       var exams=JSON.parse(localStorage.getItem('tymba_custom_exams')||'[]');if(!Array.isArray(exams))throw new Error('Saved attempts could not be read.');
       F.save(localStorage,key,staged.questions);
-      try{F.save(localStorage,'tymba_custom_exams',exams.some(function(x){return x.id===id;})?exams:exams.concat([meta]));}catch(e){localStorage.removeItem(key);throw e;}
+      try{F.save(localStorage,'tymba_custom_exams',exams.concat([meta]));}catch(e){localStorage.removeItem(key);throw e;}
       this.disabled=true;
       message('Attempt saved locally. Verifying cloud backup before opening debrief…');
       // Await the remote write before navigating: the destination page hydrates
