@@ -113,7 +113,7 @@
     var instruction=[
       'Act as my FIA/ACCA exam debrief tutor for '+meta.subject+' ('+type+').',
       'For EVERY numbered question: (1) choose one specific primary topic, (2) explain the reasoning, (3) show calculations or say Not applicable, (4) justify the recorded answer and explain my mistake if relevant, (5) suggest one practice focus.',
-      'Use a supplied topic name EXACTLY when it fits; otherwise use a consistent descriptive topic name. Do not invent textbook chapter numbers. An empty or unclassifiable question may have chapter "".',
+      'CLASSIFICATION IS THE FIRST PRIORITY. Assign ONE specific primary topic to EVERY scored question, correct or incorrect. When TOPIC CATALOG is supplied, choose ONLY a name verbatim from that list; do not invent synonyms, umbrella labels, or chapter numbers. Do not use Generic, Other, Miscellaneous, or the paper title as a topic. If a question lacks enough text/images to classify safely, use chapter "" and explain the missing information.',
       'Respect the original marks and answers: never change the question, result or answer key. If a key appears suspect, or an image/context is missing, explain the uncertainty rather than inventing information.',
       'Return ONLY one valid JSON object with every question once, in the format shown below. No Markdown or website code. All feedback fields must be strings. No graphs, rankings, averages or score totals: LedgerPeer calculates these from my marked answers.',
       '',
@@ -122,7 +122,7 @@
       '',
       'ATTEMPT: '+meta.title,
       'SET CHAPTER: '+(meta.setChapter||'Not applicable'),
-      'TOPIC CATALOG: '+(catalog.length?catalog.join(' | '):'No prescribed list'),
+      'ALLOWED TOPICS (exact labels for this paper): '+(catalog.length?JSON.stringify(catalog):'No validated topic list available — choose consistent descriptive primary topics'),
       'QUESTION DATA:',
       JSON.stringify(payload)
     ];

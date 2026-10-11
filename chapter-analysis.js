@@ -62,7 +62,7 @@
     });
   }
   function catalog(storage,subject){
-    try{var all=JSON.parse(storage.getItem('personal_hub_chapters_v1')||'{}');return Array.isArray(all[subject])?all[subject].map(label).filter(Boolean):[];}catch(e){return [];}
+    try{var all=JSON.parse(storage.getItem('personal_hub_chapters_v1')||'{}');return Array.isArray(all[subject])&&all[subject].some(function(v){return typeof v==='string'&&v.trim();})?all[subject].map(label).filter(Boolean):(root.LedgerTopicTaxonomy?root.LedgerTopicTaxonomy.names(subject):[]);}catch(e){return root.LedgerTopicTaxonomy?root.LedgerTopicTaxonomy.names(subject):[];}
   }
   function saveCatalog(storage,subject,lines){
     var names=[], seen=new Set();lines.forEach(function(v){var n=label(v);if(n&&!seen.has(key(n))){seen.add(key(n));names.push(n);}});
