@@ -227,7 +227,11 @@ html[data-lp-page="productivity"] .sidebar{
   background:var(--yellow);border-right:4px solid var(--ink);
   padding:22px 15px;box-shadow:4px 0 0 var(--ink);
 }
-html[data-lp-page="productivity"] .sidebar img{width:54px;height:auto;object-fit:contain}
+/* Transparent logo artwork — no cream/white image tile; let the yellow sidebar show through. */
+html[data-lp-page="productivity"] .sidebar img{
+  display:block;width:76px;height:76px;max-width:100%;object-fit:contain;
+  background:transparent;border:0;box-shadow:none;
+}
 html[data-lp-page="productivity"] .sidebar h2{font:900 20px/1.1 var(--font-display);overflow-wrap:anywhere;margin:12px 0}
 html[data-lp-page="productivity"] .sidebar a{
   border:3px solid transparent;border-radius:0;margin:5px 0;
@@ -281,6 +285,7 @@ html[data-lp-page="productivity"] .task{border-bottom:2px solid var(--ink)}
   html[data-lp-page="finance"] .wrap,
   html[data-lp-page="finance-dashboard"] .wrap{padding-inline:16px}
   html[data-lp-page="productivity"] .sidebar{width:auto;box-shadow:none;border-right:0;border-bottom:4px solid var(--ink)}
+  html[data-lp-page="productivity"] .sidebar img{width:64px;height:64px}
   html[data-lp-page="productivity"] .sidebar a{display:inline-flex;margin:3px 2px;min-height:40px;align-items:center}
   html[data-lp-page="productivity"] .main{padding:16px}
 }
