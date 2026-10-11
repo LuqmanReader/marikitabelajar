@@ -1,0 +1,305 @@
+/*
+ * LEDGERPEER DESIGN SYSTEM · Vibrant Neobrutalism · 2026-10-11
+ * SINGLE SOURCE OF TRUTH FOR ALL PAGES
+ * Editing the variables below changes the global site palette.
+ * Intended to load LAST, after each page's legacy stylesheets and <style>.
+ * No checkerboard or decorative dot-grid backgrounds.
+ */
+:root {
+  --ink:#111111;
+  --paper:#FFF7E4;
+  --card:#FFFEFA;
+  --red:#FF5046;
+  --blue:#2956FF;
+  --yellow:#FFCF24;
+  --green:#36D98B;
+  --green-deep:#137A49;
+  --purple:#BA80FF;
+  --orange:#FF9345;
+  --grey:#494949;
+  --pink:#FF94C9;
+  --line:4px;
+  --flow-ink:var(--ink);
+  --flow-paper:var(--paper);
+  --flow-blue:var(--blue);
+  --flow-yellow:var(--yellow);
+  --flow-green:var(--green-deep);
+  --shadow:7px 7px 0 var(--ink);
+  --font-display:"Arial Black","Helvetica Neue",Impact,sans-serif;
+  --font-body:ui-monospace,"JetBrains Mono","Space Mono",Menlo,Consolas,monospace;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{min-height:100%;scroll-behavior:smooth}
+html body{
+  margin:0;
+  min-height:100dvh;
+  background-color:var(--paper);
+  background-image:none!important;
+  background-size:auto;
+  color:var(--ink);
+  font-family:var(--font-body);
+  line-height:1.55;
+}
+h1,h2,h3,h4,h5,h6,.display,.big-number,.gauge-number{
+  font-family:var(--font-display);
+  font-weight:900;
+  letter-spacing:-.027em;
+  line-height:1.13;
+  text-transform:uppercase;
+}
+h1{letter-spacing:-.05em}
+button,input,select,textarea{font-family:var(--font-body);color:var(--ink)}
+input,select,textarea{
+  background:#fff;
+  border:3px solid var(--ink);
+  border-radius:0;
+  min-height:42px;
+  max-width:100%;
+}
+input[type="checkbox"],input[type="radio"]{min-height:initial;accent-color:var(--blue)}
+:where(button,a,input,select,textarea,summary):focus-visible{
+  outline:3px solid var(--blue);outline-offset:3px;
+}
+[hidden]{display:none!important}
+a,button{ -webkit-tap-highlight-color:transparent }
+button{cursor:pointer}
+button:disabled{cursor:not-allowed;opacity:.58}
+::selection{background:var(--purple);color:var(--ink)}
+
+/* Global surface + headings. Specificity > legacy 2px outlines. */
+:where(.panel,.stat,.chart-panel,.countdown-card,.fia-panel,.examcard,.sw-item,.current-subject-banner,.progress-tracker-grid,.flow-panel,.badgecard,.lockbox,.card){border-radius:0}
+:where(.panel,.stat,.chart-panel,.countdown-card,.fia-panel,.examcard,.flow-panel,.badgecard){border:var(--line) solid var(--ink);box-shadow:var(--shadow)}
+:where(.site-back,.btn,.go,.addexam-btn,.flow-button,.finance-nav a,.tabs button,.auth-tabs button){
+  border:3px solid var(--ink);
+  border-radius:0;
+  box-shadow:4px 4px 0 var(--ink);
+  text-decoration:none;
+  transition:transform .14s ease,box-shadow .14s ease,background-color .14s ease;
+}
+:where(.site-back,.btn,.go,.addexam-btn,.flow-button,.finance-nav a,.tabs button,.auth-tabs button):hover:not(:disabled){
+  transform:translate(-2px,-2px);
+  box-shadow:6px 6px 0 var(--ink);
+}
+:where(.site-back,.btn,.go,.addexam-btn,.flow-button,.finance-nav a,.tabs button,.auth-tabs button):active:not(:disabled){
+  transform:translate(2px,2px);
+  box-shadow:2px 2px 0 var(--ink);
+}
+.site-back{display:inline-flex;align-items:center;gap:7px;background:#fff;padding:10px 14px;color:var(--ink);font-weight:900}
+.site-back:hover{background:var(--yellow)}
+:where(.notice,.flow-success){border:3px solid var(--ink);border-radius:0;background:#fff}
+.muted,.subtitle,.note{color:var(--grey)}
+
+/* Dashboard + Exam Review */
+html[data-lp-page="revision"] .wrap,
+html[data-lp-page="review"] .wrap{max-width:1040px}
+html[data-lp-page="revision"] header.hero,
+html[data-lp-page="review"] header.hero{padding-top:28px}
+html[data-lp-page="revision"] h1.title,
+html[data-lp-page="review"] h1.title{
+  font-size:clamp(34px,5vw,58px);line-height:1.02;
+  margin-top:14px;
+}
+html[data-lp-page="revision"] .topbar,
+html[data-lp-page="review"] .topbar{
+  background:var(--ink);color:var(--yellow);border-bottom:4px solid var(--ink)
+}
+html[data-lp-page="revision"] .hero .brandmark,
+html[data-lp-page="review"] .hero .brandmark{margin-top:20px}
+html[data-lp-page="revision"] .addexam-btn,
+html[data-lp-page="review"] .addexam-btn{
+  background:var(--yellow);color:var(--ink);
+  font:900 12px var(--font-display);letter-spacing:.015em;
+  min-height:44px;display:inline-flex;align-items:center;
+}
+html[data-lp-page="revision"] .addexam-btn:hover,
+html[data-lp-page="review"] .addexam-btn:hover{background:var(--orange)}
+html[data-lp-page="revision"] .dash.panel,
+html[data-lp-page="review"] .dash.panel{border:4px solid var(--ink);box-shadow:7px 7px 0 var(--ink)}
+html[data-lp-page="revision"] .dash .stat,
+html[data-lp-page="review"] .dash .stat{
+  box-shadow:none;border:0;border-right:3px solid var(--ink);background:#fff;
+}
+html[data-lp-page="revision"] .dash .stat:last-child,
+html[data-lp-page="review"] .dash .stat:last-child{border-right:0}
+html[data-lp-page="revision"] .dash .stat:nth-child(1),
+html[data-lp-page="review"] .dash .stat:nth-child(1){background:#EBFFF2}
+html[data-lp-page="revision"] .dash .stat:nth-child(2),
+html[data-lp-page="review"] .dash .stat:nth-child(2){background:#FFF0EB}
+html[data-lp-page="revision"] .dash .stat:nth-child(3),
+html[data-lp-page="review"] .dash .stat:nth-child(3){background:#FFF6CE}
+html[data-lp-page="revision"] .dash .stat:nth-child(4),
+html[data-lp-page="review"] .dash .stat:nth-child(4){background:#E9EDFF}
+html[data-lp-page="revision"] .analysis-title,
+html[data-lp-page="review"] .analysis-title{border-top:4px solid var(--ink);padding-top:20px;gap:12px;flex-wrap:wrap}
+html[data-lp-page="revision"] .analysis-title .tag{background:var(--purple);color:var(--ink);border:2px solid var(--ink);padding:5px 8px}
+html[data-lp-page="revision"] .current-subject-banner{background:var(--blue);color:white;border:4px solid var(--ink);box-shadow:7px 7px var(--ink)}
+html[data-lp-page="revision"] .current-subject-banner .csb-label{color:var(--yellow)}
+html[data-lp-page="revision"] .csb-edit-btn,
+html[data-lp-page="revision"] .csb-edit-row button,
+html[data-lp-page="revision"] .countdown-form button{min-height:43px;border:3px solid var(--ink);background:var(--yellow);color:var(--ink);box-shadow:3px 3px var(--ink)}
+html[data-lp-page="revision"] .csb-edit-btn:hover{background:var(--green)}
+html[data-lp-page="revision"] .progress-tracker-grid{border:4px solid var(--ink);box-shadow:7px 7px var(--ink)}
+html[data-lp-page="revision"] .pt-row{background:#fff;border-bottom:3px solid var(--ink)}
+html[data-lp-page="revision"] .pt-row:nth-child(even){background:#FFFBEF}
+html[data-lp-page="revision"] .pt-status-select{border:3px solid var(--ink);padding:10px}
+html[data-lp-page="revision"] .fia-summary{min-height:48px}
+html[data-lp-page="revision"] .fia-paper[open] .fia-summary{background:var(--yellow)}
+html[data-lp-page="revision"] .countdown-card .cd-days{border:3px solid var(--ink);background:var(--yellow)}
+html[data-lp-page="revision"] .countdown-card .cd-days.soon{background:var(--red);color:#111}
+html[data-lp-page="review"] .panel{border:4px solid var(--ink);box-shadow:7px 7px var(--ink)}
+html[data-lp-page="review"] .filter-btn.active{background:var(--yellow)}
+html[data-lp-page="review"] .progress-block{border-color:var(--ink)}
+
+/* Add attempt / guided revision workflow */
+html[data-lp-page="attempt"] body.flow-page{font-family:var(--font-body)}
+.flow-page .flow-topbar{background:var(--ink);color:var(--yellow);letter-spacing:.10em}
+.flow-page .flow-hero h1{font-family:var(--font-display);font-size:clamp(35px,5vw,58px)}
+.flow-page .flow-hero a{color:var(--ink)}
+.flow-page .flow-steps{border:4px solid var(--ink);box-shadow:5px 5px var(--ink);background:white}
+.flow-page .flow-steps span{border-color:var(--ink)}
+.flow-page .flow-steps .current{background:var(--yellow)}
+.flow-page .flow-panel{background:var(--card);border:4px solid var(--ink);box-shadow:7px 7px var(--ink);padding:clamp(16px,2vw,25px)}
+.flow-page .flow-panel h2,.flow-page .flow-panel h3{font-family:var(--font-display)}
+.flow-page .flow-upload{background:#FFF0D1;border:3px dashed var(--ink)}
+.flow-page .flow-button{font-family:var(--font-display);font-size:12px;background:var(--yellow);color:var(--ink);min-height:44px}
+.flow-page .flow-button.primary{background:var(--green);color:var(--ink)}
+.flow-page .flow-button.secondary{background:#fff;color:var(--ink)}
+.flow-page .flow-panel input,.flow-page .flow-panel select,.flow-page .flow-panel textarea,.flow-page .flow-controls select{font-family:var(--font-body);border:3px solid var(--ink)}
+.flow-page .flow-rank-table th{background:var(--yellow)}
+.flow-page .flow-rank-table button{color:var(--blue);font-weight:900}
+.flow-page .flow-preview{border:3px solid var(--ink);background:#fff}
+
+/* Financial Tracker + Financial Dashboard */
+html[data-lp-page="finance"] .wrap,
+html[data-lp-page="finance-dashboard"] .wrap{max-width:1240px}
+html[data-lp-page="finance"] h1,
+html[data-lp-page="finance-dashboard"] h1{font-size:clamp(36px,5vw,64px)}
+html[data-lp-page="finance"] .finance-nav a,
+html[data-lp-page="finance-dashboard"] .finance-nav a{background:#fff;color:var(--ink);font-family:var(--font-display);font-size:12px;line-height:1.4;min-height:44px}
+html[data-lp-page="finance"] .finance-nav a.active,
+html[data-lp-page="finance-dashboard"] .finance-nav a.active{background:var(--yellow)}
+html[data-lp-page="finance"] .summary .stat,
+html[data-lp-page="finance-dashboard"] .summary .stat{border:4px solid var(--ink);box-shadow:5px 5px 0 var(--ink);min-width:0}
+html[data-lp-page="finance"] .summary .stat:nth-child(4n+1),
+html[data-lp-page="finance-dashboard"] .summary .stat:nth-child(4n+1){background:#FFE897}
+html[data-lp-page="finance"] .summary .stat:nth-child(4n+2),
+html[data-lp-page="finance-dashboard"] .summary .stat:nth-child(4n+2){background:#FFD3CB}
+html[data-lp-page="finance"] .summary .stat:nth-child(4n+3),
+html[data-lp-page="finance-dashboard"] .summary .stat:nth-child(4n+3){background:#B7F7D6}
+html[data-lp-page="finance"] .summary .stat:nth-child(4n),
+html[data-lp-page="finance-dashboard"] .summary .stat:nth-child(4n){background:#D7D9FF}
+html[data-lp-page="finance"] .summary .stat b,
+html[data-lp-page="finance-dashboard"] .summary .stat b{font:900 clamp(20px,2.5vw,30px)/1.15 var(--font-display);overflow-wrap:anywhere}
+html[data-lp-page="finance"] .panel,
+html[data-lp-page="finance-dashboard"] .panel{background:var(--card);border:4px solid var(--ink);box-shadow:6px 6px var(--ink)}
+html[data-lp-page="finance"] .tabs button{
+  background:#fff;border:3px solid var(--ink);font:900 12px var(--font-display);min-height:44px
+}
+html[data-lp-page="finance"] .tabs button.active{background:var(--blue);color:#fff}
+html[data-lp-page="finance"] .tabs button:hover{background:var(--purple);color:var(--ink)}
+html[data-lp-page="finance"] .btn,
+html[data-lp-page="finance-dashboard"] .btn,
+html[data-lp-page="finance-dashboard"] button{border:3px solid var(--ink);background:var(--yellow);font-weight:900;min-height:44px}
+html[data-lp-page="finance"] .btn.primary,
+html[data-lp-page="finance-dashboard"] .primary{background:var(--green)}
+html[data-lp-page="finance"] .catalog-list{background:#fff;border:3px solid var(--ink)}
+html[data-lp-page="finance"] .catrow:nth-child(even){background:#FFF5DF}
+html[data-lp-page="finance"] .delete{background:#FFE2D9;border:3px solid var(--ink);padding:8px 10px;min-height:40px}
+html[data-lp-page="finance"] .row{border-top:2px solid var(--ink)}
+html[data-lp-page="finance"] .row .row-actions{justify-content:flex-end}
+html[data-lp-page="finance"] .goal-short{background:#D3DBFF}
+html[data-lp-page="finance"] .goal-long{background:#BAF5D4}
+html[data-lp-page="finance"] .gold{background:#FFE285}
+html[data-lp-page="finance-dashboard"] .section-head{border-top:4px solid var(--ink)}
+html[data-lp-page="finance-dashboard"] .big-number{font-size:clamp(24px,3vw,40px)}
+html[data-lp-page="finance-dashboard"] .jump{border-bottom:4px solid var(--ink)}
+html[data-lp-page="finance-dashboard"] .jump a{padding:6px 0;border-bottom:3px solid transparent}
+html[data-lp-page="finance-dashboard"] .jump a:hover{border-bottom-color:var(--blue)}
+html[data-lp-page="finance-dashboard"] .panel.spotlight:nth-child(1){background:#FFE897}
+html[data-lp-page="finance-dashboard"] .panel.spotlight:nth-child(2){background:#CBE1FF}
+html[data-lp-page="finance-dashboard"] .panel.spotlight:nth-child(3){background:#CBF7DD}
+html[data-lp-page="finance-dashboard"] th{background:#FFE7A1;border-bottom:3px solid var(--ink)}
+html[data-lp-page="finance-dashboard"] .bar-track,
+html[data-lp-page="finance-dashboard"] .gauge-track{border:2px solid var(--ink)}
+
+/* Calendar, achievements and study planner share productivity.css */
+html[data-lp-page="productivity"] .sidebar{
+  background:var(--yellow);border-right:4px solid var(--ink);
+  padding:22px 15px;box-shadow:4px 0 0 var(--ink);
+}
+html[data-lp-page="productivity"] .sidebar img{width:54px;height:auto;object-fit:contain}
+html[data-lp-page="productivity"] .sidebar h2{font:900 20px/1.1 var(--font-display);overflow-wrap:anywhere;margin:12px 0}
+html[data-lp-page="productivity"] .sidebar a{
+  border:3px solid transparent;border-radius:0;margin:5px 0;
+  color:var(--ink);font-weight:900;text-decoration:none;transition:background .12s ease;
+}
+html[data-lp-page="productivity"] .sidebar a:hover{background:#FFF6D3;border-color:var(--ink)}
+html[data-lp-page="productivity"] .sidebar a.active{background:#fff;border-color:var(--ink);box-shadow:3px 3px 0 var(--ink)}
+html[data-lp-page="productivity"] .main{padding:clamp(16px,2.8vw,40px)}
+html[data-lp-page="productivity"] .head{border-bottom:4px solid var(--ink);padding-bottom:18px;margin-bottom:24px;gap:12px}
+html[data-lp-page="productivity"] .head h1{font-size:clamp(29px,4vw,50px)}
+html[data-lp-page="productivity"] .panel{
+  background:#fff;border:4px solid var(--ink);border-radius:0;
+  box-shadow:6px 6px 0 var(--ink);padding:clamp(14px,2vw,22px);
+}
+html[data-lp-page="productivity"] .badgecard{border:4px solid var(--ink);box-shadow:5px 5px 0 var(--ink);background:#fff}
+html[data-lp-page="productivity"] .stats .stat{border:4px solid var(--ink);background:var(--yellow);box-shadow:4px 4px var(--ink);font:900 15px var(--font-body)}
+html[data-lp-page="productivity"] .stats .stat:nth-child(2){background:var(--green)}
+html[data-lp-page="productivity"] .stats .stat:nth-child(3){background:var(--purple)}
+html[data-lp-page="productivity"] .main button,
+html[data-lp-page="productivity"] .main .btn{
+  background:var(--yellow);border:3px solid var(--ink);border-radius:0;
+  box-shadow:3px 3px 0 var(--ink);min-height:42px;font-weight:900;
+}
+html[data-lp-page="productivity"] .main button:hover,
+html[data-lp-page="productivity"] .main .btn:hover{background:var(--green)}
+html[data-lp-page="productivity"] .main input,
+html[data-lp-page="productivity"] .main select,
+html[data-lp-page="productivity"] .main textarea{border:3px solid var(--ink);background:#fff;border-radius:0}
+html[data-lp-page="productivity"] .weekday{background:var(--yellow);border-right:2px solid var(--ink);font-weight:900}
+html[data-lp-page="productivity"] .calgrid{border-left:3px solid var(--ink);border-top:3px solid var(--ink)}
+html[data-lp-page="productivity"] .day{border-right:2px solid var(--ink);border-bottom:2px solid var(--ink)}
+html[data-lp-page="productivity"] .day:hover,
+html[data-lp-page="productivity"] .day.selected{background:#FFF0B9}
+html[data-lp-page="productivity"] .event{border:1px solid var(--ink);border-radius:0;background:var(--purple);font-weight:800}
+html[data-lp-page="productivity"] .event.exam{background:var(--orange)}
+html[data-lp-page="productivity"] .event.personal{background:var(--green)}
+html[data-lp-page="productivity"] .event.class{background:#BED3FF}
+html[data-lp-page="productivity"] .pill{background:var(--purple);border:2px solid var(--ink)}
+html[data-lp-page="productivity"] dialog{border:4px solid var(--ink);border-radius:0;box-shadow:8px 8px var(--ink);background:var(--paper)}
+html[data-lp-page="productivity"] .task{border-bottom:2px solid var(--ink)}
+
+@media(max-width:700px){
+  html[data-lp-page="revision"] .dash .stat:nth-child(2),
+  html[data-lp-page="review"] .dash .stat:nth-child(2){border-right:0}
+  html[data-lp-page="revision"] .dash .stat:nth-child(1),
+  html[data-lp-page="revision"] .dash .stat:nth-child(2),
+  html[data-lp-page="review"] .dash .stat:nth-child(1),
+  html[data-lp-page="review"] .dash .stat:nth-child(2){border-bottom:3px solid var(--ink)}
+  html[data-lp-page="revision"] .wrap,
+  html[data-lp-page="review"] .wrap{padding-inline:18px}
+  html[data-lp-page="finance"] .wrap,
+  html[data-lp-page="finance-dashboard"] .wrap{padding-inline:16px}
+  html[data-lp-page="productivity"] .sidebar{width:auto;box-shadow:none;border-right:0;border-bottom:4px solid var(--ink)}
+  html[data-lp-page="productivity"] .sidebar a{display:inline-flex;margin:3px 2px;min-height:40px;align-items:center}
+  html[data-lp-page="productivity"] .main{padding:16px}
+}
+@media(max-width:500px){
+  html[data-lp-page="finance"] .summary,
+  html[data-lp-page="finance-dashboard"] .summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+  html[data-lp-page="finance"] .summary .stat,
+  html[data-lp-page="finance-dashboard"] .summary .stat{padding:12px}
+  html[data-lp-page="finance"] .summary .stat b,
+  html[data-lp-page="finance-dashboard"] .summary .stat b{font-size:clamp(16px,4.6vw,23px)}
+  html[data-lp-page="finance"] .formgrid{grid-template-columns:1fr}
+  html[data-lp-page="finance"] .row{grid-template-columns:1fr 1fr;gap:9px}
+  html[data-lp-page="finance"] .row .row-actions{grid-column:1/-1;justify-content:start}
+  html[data-lp-page="finance"] .tabs button{flex:1 1 auto}
+  html[data-lp-page="productivity"] .calgrid .day{min-height:66px}
+  html[data-lp-page="productivity"] .head{flex-wrap:wrap}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}
+ .marquee,.marquee-track,.mascot-stage,.mascot-stage img{animation:none!important}
+ :where(.site-back,.btn,.go,.addexam-btn,.flow-button,.finance-nav a,.tabs button,.auth-tabs button){transition:none!important}
+}
