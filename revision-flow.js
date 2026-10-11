@@ -79,21 +79,54 @@
     }
     return q.debrief?sanitize(q.debrief):'<p>Answer review is ready. Import the AI response to add reasoning, calculation and justification.</p>';
   }
+  // One request = topic classification and tutor feedback. Graphs, rankings, and
+  // strengths/weaknesses are derived from the ORIGINAL marked answers in LedgerPeer.
   function prompt(meta,questions,catalog){
-    var type=meta.testType==='set'?'Set':meta.testType==='pre'?'Progress Test':'Mock Test';
-    var header='Help me review this '+type+' attempt for '+meta.subject+'.\n'+
-      'Return ONE JSON response block using the exact format below. Do not generate website code.\n'+
-      'For EVERY question, assign its primary topic/chapter and explain the reasoning, calculation steps (or "Not applicable"), and why the correct answer is justified. Explain my mistake where relevant, and give a short practice focus.\n'+
-      'Use the supplied chapter names exactly when appropriate. Keep existing tags unless clearly wrong. If no list is supplied, use consistent descriptive names without inventing textbook chapter numbers. If the question is empty or cannot be classified, use an empty chapter.\n'+
-      'Report missing images or suspect answer keys in the explanation. Never change the original answer or mark. Results are binary full-credit accuracy, not a marks-weighted percentage.\n'+
-      'Also provide topic_rankings, highest accuracy first, calculated from the original results of all tagged questions. The website will verify its own ranking from question-level results. Use plain text in all explanation fields. Escape newlines and quotation marks for valid JSON.\n\n'+
-      'RESPONSE FORMAT (include every question, not only the example):\n'+JSON.stringify({schema:'personal-hub-debrief-v2',exam_id:meta.id,attempt_signature:signature(questions),questions:[{qno:questions[0].qno,chapter:'Exact topic name',reasoning:'Explanation',calculation:'Steps or Not applicable',justification:'Why this answer; why my choice was wrong if applicable',focus:'One action to practise'}],topic_rankings:[{chapter:'Exact topic name',correct:0,total:1}]},null,2)+
-      '\n\nATTEMPT\n'+meta.title+'\n'+(meta.setChapter?'Set chapter: '+meta.setChapter+'\n':'')+
-      'Chapter list: '+(catalog.length?catalog.join(' | '):'Not supplied')+'\n\nQUESTIONS\n';
-    return header+questions.map(function(q){
-      var options=(q.options||[]).map(function(o,i){return (i+1)+'. '+plain(o.text)+(o.checked?' [MY CHOICE]':'');}).join('\n');
-      return 'QUESTION '+q.qno+'\nResult: '+(q.is_correct===true?'Correct':q.is_correct===false?'Incorrect':'Unscored')+'\nCurrent chapter: '+(q.chapter||'Unassigned')+'\n'+plain(q.qtext)+'\n'+options+'\nMy answer: '+plain(q.your_answer||'Not captured; see choices above')+'\nCorrect answer: '+plain(q.correct_answer||'Not captured')+'\n';
-    }).join('\n---\n\n');
+    var type=meta.testType==='set'?'Chapter Set':meta.testType==='pre'?'Progress Test':'Mock Test';
+    var example={
+      schema:'personal-hub-debrief-v2',
+      exam_id:meta.id,
+      attempt_signature:signature(questions),
+      questions:[{
+        qno:questions[0].qno,
+        chapter:'Primary topic name',
+        reasoning:'Explain the concept and how to solve the question.',
+        calculation:'Show working and formulas, or Not applicable.',
+        justification:'Why the recorded correct answer is supported; identify the mistake if wrong.',
+        focus:'One specific thing to practise next.'
+      }]
+    };
+    var payload=questions.map(function(q){
+      var item={
+        qno:q.qno,
+        result:q.is_correct===true?'correct':q.is_correct===false?'incorrect':'unscored',
+        chapter:q.chapter||'',
+        question:plain(q.qtext),
+        options:(q.options||[]).map(function(o){return {text:plain(o.text),chosen:!!o.checked};}),
+        my_answer:plain(q.your_answer||''),
+        correct_answer:plain(q.correct_answer||'')
+      };
+      if(q.source_feedback)item.source_feedback=plain(q.source_feedback);
+      if(/<img\b/i.test(q.qtext||'')||(q.options||[]).some(function(o){return /<img\b/i.test(o.text||'');}))item.image_not_in_text_export=true;
+      return item;
+    });
+    var instruction=[
+      'Act as my FIA/ACCA exam debrief tutor for '+meta.subject+' ('+type+').',
+      'For EVERY numbered question: (1) choose one specific primary topic, (2) explain the reasoning, (3) show calculations or say Not applicable, (4) justify the recorded answer and explain my mistake if relevant, (5) suggest one practice focus.',
+      'Use a supplied topic name EXACTLY when it fits; otherwise use a consistent descriptive topic name. Do not invent textbook chapter numbers. An empty or unclassifiable question may have chapter "".',
+      'Respect the original marks and answers: never change the question, result or answer key. If a key appears suspect, or an image/context is missing, explain the uncertainty rather than inventing information.',
+      'Return ONLY one valid JSON object with every question once, in the format shown below. No Markdown or website code. All feedback fields must be strings. No graphs, rankings, averages or score totals: LedgerPeer calculates these from my marked answers.',
+      '',
+      'RESPONSE SHAPE (example first item only; complete ALL questions):',
+      JSON.stringify(example,null,2),
+      '',
+      'ATTEMPT: '+meta.title,
+      'SET CHAPTER: '+(meta.setChapter||'Not applicable'),
+      'TOPIC CATALOG: '+(catalog.length?catalog.join(' | '):'No prescribed list'),
+      'QUESTION DATA:',
+      JSON.stringify(payload)
+    ];
+    return instruction.join('\n');
   }
   function save(storage,key,value){
     var encoded=JSON.stringify(value);storage.setItem(key,encoded);
