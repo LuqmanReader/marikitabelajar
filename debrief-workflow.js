@@ -53,11 +53,9 @@
       F.save(localStorage,'tymba_exam_data:'+meta.id,merged);
       try{sessionStorage.setItem('personal_hub_ai_saved:'+meta.id,'1');}catch(e){}
       original=localStorage.getItem('tymba_exam_data:'+meta.id);
-      message('Saved in your browser. Checking cloud backup…');
-      if(root.PersonalHubAuth&&!await root.PersonalHubAuth.sync(true)){
-        message('Saved locally, but cloud backup failed. Keep this page open; check the cloud sync indicator before leaving.');
-        return;
-      }
+      message('Saved on this device. Cloud backup will run automatically.');
+      // Local data is saved immediately. Autosync keeps trying in the background;
+      // never block a learner's debrief on a remote network request.
       message('Debrief saved. Opening your updated review…');
       onSaved(merged);
     }

@@ -92,15 +92,7 @@
       F.save(localStorage,key,staged.questions);
       try{F.save(localStorage,'tymba_custom_exams',exams.concat([meta]));}catch(e){localStorage.removeItem(key);throw e;}
       this.disabled=true;
-      message('Attempt saved locally. Verifying cloud backup before opening debrief…');
-      // Await the remote write before navigating: the destination page hydrates
-      // from Supabase and could otherwise replace this new local attempt.
-      const synced=await PersonalHubAuth.sync(true);
-      if(!synced){
-        this.disabled=false;
-        message('Attempt saved on this device, but cloud sync is not confirmed. Stay on this page; do not retry the import or switch devices. Check the cloud status message.');
-        return;
-      }
+      message('Attempt saved on this device. Cloud backup runs automatically in the background.');
       location.href=meta.file;
     }catch(e){message('Could not save: '+e.message);}
   });
