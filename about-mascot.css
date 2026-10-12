@@ -124,76 +124,82 @@ a:focus-visible,button:focus-visible{outline:4px solid var(--blue);outline-offse
   .site-footer{font-size:10px;flex-direction:column;gap:8px}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}*,*::before,*::after{animation:none!important;transition:none!important}}
-/* Extra mascot motion + bubble swap animation */
-.mascot-img{
-  transform-origin:center bottom;
-  animation:mascot-float 3s ease-in-out infinite, mascot-wiggle 2.1s ease-in-out infinite;
-}
 
-.mascot-img.pose-changed{
-  animation:
-    pose-pop .37s cubic-bezier(.2,1.1,.4,1) both,
-    mascot-float 3s ease-in-out .37s infinite,
-    mascot-wiggle 2.1s ease-in-out .37s infinite;
+/* Gentle, uninterrupted automatic left-to-right flight. */
+.mascot-board .mascot-img,
+.mascot-board .mascot-img.pose-changed {
+  animation:lp-happy-flight 7.2s ease-in-out infinite !important;
+  transform-origin:50% 85%;
+  will-change:transform,opacity;
+  backface-visibility:hidden;
+  transition:opacity 650ms cubic-bezier(.22,.61,.36,1);
 }
-
-.speech-bubble.bubble-changing{
-  animation:bubble-swap .28s ease;
+@keyframes lp-happy-flight {
+  0%,100% {transform:translate3d(-12%,7px,0) rotate(-4deg) scale(.96)}
+  50% {transform:translate3d(12%,-17px,0) rotate(4deg) scale(1.02)}
 }
-
-.mascot-board.board-pop .doodle-1{
-  animation:doodle-burst-left .45s ease;
+/* Fade only the message content, not the frame of the chat bubble. */
+.speech-bubble {animation:none !important;}
+.speech-bubble .bubble-caption,
+.speech-bubble p {
+  opacity:1;
+  transform:translateY(0);
+  transition:opacity 650ms cubic-bezier(.22,.61,.36,1), transform 650ms cubic-bezier(.22,.61,.36,1);
 }
-
-.mascot-board.board-pop .doodle-2{
-  animation:doodle-burst-right .45s ease;
+.speech-bubble.lp-cheer-switching .bubble-caption,
+.speech-bubble.lp-cheer-switching p {
+  opacity:0;
+  transform:translateY(6px);
 }
-
-@keyframes mascot-wiggle{
-  0%,100%{rotate:0deg}
-  20%{rotate:-1.6deg}
-  40%{rotate:1.2deg}
-  60%{rotate:-1deg}
-  80%{rotate:.9deg}
+.mascot-board .mascot-img.lp-pose-switching {opacity:0;}
+@media(max-width:950px) {
+  @keyframes lp-happy-flight {
+    0%,100% {transform:translate3d(-7%,5px,0) rotate(-3deg) scale(.97)}
+    50% {transform:translate3d(7%,-11px,0) rotate(3deg) scale(1.01)}
+  }
 }
-
-@keyframes bubble-swap{
-  0%{opacity:.2;transform:translateY(10px) scale(.96)}
-  100%{opacity:1;transform:translateY(0) scale(1)}
-}
-
-@keyframes doodle-burst-left{
-  0%{transform:rotate(-24deg) scale(.85)}
-  50%{transform:rotate(8deg) scale(1.08)}
-  100%{transform:rotate(-24deg) scale(1)}
-}
-
-@keyframes doodle-burst-right{
-  0%{transform:rotate(19deg) scale(.85)}
-  50%{transform:rotate(-8deg) scale(1.08)}
-  100%{transform:rotate(19deg) scale(1)}
-}
-
-/* Hide the duplicate mascot in the yellow homepage box */
-.intro .intro-companion {
-  display: none !important;
-}
-
-/* Allow the homepage headline to use the available space */
-@media (min-width: 651px) {
-  .intro .intro-copy {
-    max-width: 100%;
+@media(prefers-reduced-motion:reduce) {
+  .mascot-board .mascot-img,.mascot-board .mascot-img.pose-changed {
+    animation:none !important;
+    transform:none !important;
+    transition:none !important;
+    will-change:auto;
+  }
+  .speech-bubble .bubble-caption,.speech-bubble p {
+    transition:none !important;
+    transform:none !important;
   }
 }
 
-/* Remove the empty space on mobile */
-@media (max-width: 650px) {
-  .intro {
-    padding-bottom: 30px;
-    min-height: 0;
-  }
+
+/* ONE MASCOT ONLY:
+   Hide the duplicate mascot inside the yellow homepage hero.
+   Keep the animated mascot in the five-chapter story. */
+.intro .intro-companion { display:none !important; }
+@media (min-width:651px) {
+  .intro .intro-copy { max-width:100%; }
 }
-/* Hide only the mascot in the yellow hero */
-section.intro > .intro-companion {
+@media (max-width:650px) {
+  .intro { padding-bottom:30px; min-height:0; }
+}
+
+/* LEDGERPEER: CLEAN LOGGED-IN WORKSPACE
+   Keep the story for visitors, but do not show onboarding prose/chapters
+   once the existing authentication code reveals #hubView.
+   Works on refresh and immediately after sign-in; no auth changes required. */
+html:has(#hubView:not([hidden])) .intro,
+html:has(#hubView:not([hidden])) .story,
+html:has(#hubView:not([hidden])) .outro,
+html:has(#hubView:not([hidden])) .discover,
+html:has(#hubView:not([hidden])) .site-footer {
   display: none !important;
+}
+/* A Story nav link is no longer relevant inside the authenticated dashboard. */
+html:has(#hubView:not([hidden])) .lp-header .quiet-link {
+  display: none !important;
+}
+/* The signed-in area flows up the page rather than following blank story space. */
+html:has(#hubView:not([hidden])) .workspace-access,
+html:has(#hubView:not([hidden])) .student-access {
+  scroll-margin-top: 20px;
 }
