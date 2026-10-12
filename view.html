@@ -394,6 +394,14 @@
     font-size:12px;font-weight:700;color:var(--grey);
     text-transform:uppercase;letter-spacing:.04em;
   }
+  /* The AI debrief must remain obvious and never be an invisible empty div. */
+  #claudeSyncPanel.ai-visible-panel {margin:22px 0 20px; padding:20px;
+    border:4px solid #111; background:#fff; box-shadow:7px 7px 0 #111;}
+  #claudeSyncPanel.ai-visible-panel h2 {font-family:"Arial Black","Helvetica Neue",Impact,sans-serif;
+    text-transform:uppercase;font-size:clamp(19px,2.6vw,29px);letter-spacing:-.025em;}
+  #claudeSyncPanel.ai-visible-panel .flow-path:first-of-type {border-left:8px solid #ffcf24;}
+  #claudeSyncPanel.ai-visible-panel .flow-notice {border:3px solid #111;padding:12px;background:#ffefc2;}
+  @media(max-width:600px){#claudeSyncPanel.ai-visible-panel{padding:14px;margin:16px 0;box-shadow:5px 5px 0 #111}}
 </style>
 <script src="subject-catalog.js"></script>
 <script src="exam-model.js"></script>
@@ -401,9 +409,9 @@
 <script src="chapter-ui.js"></script>
 <link rel="stylesheet" href="chapter-analysis.css">
 <link rel="stylesheet" href="revision-flow.css">
-<script src="revision-flow.js"></script>
+<script src="revision-flow.js?v=20261011-ai-button-fix"></script>
 <script src="gemini-analysis.js"></script>
-<script src="debrief-workflow.js"></script>
+<script src="debrief-workflow.js?v=20261011-ai-button-fix"></script>
 <link rel="stylesheet" href="site-nav.css">
 <link rel="stylesheet" href="ledgerpeer-theme.css?v=20261011">
 </head>
@@ -442,6 +450,13 @@
     </div>
   </div>
 
+  <!-- AI section appears BEFORE optional confidence calibration. Visible static
+       fallback prevents a missing script from silently hiding Gemini. -->
+  <div id="claudeSyncPanel" class="flow-panel ai-visible-panel" role="region" aria-label="AI analysis and topic classification">
+    <h2>Gemini AI Analysis · Every Question</h2>
+    <p id="aiBootMessage" role="status">Loading your topic classification tools…</p>
+  </div>
+
   <div class="learning-panel" id="learningTools">
     <div class="learning-title">Learning Calibration</div>
     <div style="font-size:11.5px;line-height:1.55;margin-bottom:10px;">How confident were you in this paper <strong>before seeing the result?</strong> Save a 1–10 rating and the hub will compare perception with performance.</div>
@@ -460,7 +475,6 @@
     </div>
   </div>
 
-  <div id="claudeSyncPanel"></div>
 
   <div class="filters" id="filters">
     <button class="filter-btn active" data-filter="all">All <span class="count" id="cAll"></span></button>
@@ -854,15 +868,30 @@
     document.getElementById('pageTitle').innerHTML = RevisionFlow.escape(META.title).replace(/ \u2014 /g, '<br>');
     document.getElementById('pageSubtitle').textContent = META.subject + ' \u00b7 ' + ExamModel.label(META) + ' \u00b7 ' + totalQ + ' questions \u00b7 deferred feedback \u00b7 debrief mode';
     document.title = META.title + ' \u00b7 LedgerPeer';
+    // Initialize AI FIRST. A failure elsewhere on the review page must not
+    // hide the debrief. Keep any error visible to the student, not the console only.
+    var aiPanel=document.getElementById('claudeSyncPanel');
+    try {
+      if(!window.DebriefWorkflow || typeof window.DebriefWorkflow.mount!=='function') {
+        throw new Error('The debrief-workflow.js file did not load. Upload the AI Button Fix files into the GitHub repository root and refresh.');
+      }
+      if(!window.RevisionFlow || !window.ChapterAnalysis) {
+        throw new Error('A required AI analysis script did not load. Check revision-flow.js and chapter-analysis.js.');
+      }
+      DebriefWorkflow.mount(aiPanel,DATA,META,localStorageSaved);
+    } catch(aiError) {
+      console.error('LedgerPeer AI debrief initialization failed:',aiError);
+      aiPanel.innerHTML='<h2>Gemini AI Analysis</h2><p class="flow-notice" role="alert">AI tools could not start: '+
+        String(aiError&&aiError.message||aiError).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+
+        '</p><button class="flow-button primary" type="button" onclick="location.reload()">Retry loading AI tools</button>';
+    }
+    function localStorageSaved(){location.reload();}
     renderMarquee();
     render();
     renderConfidence();
     document.getElementById('saveConfidenceBtn').addEventListener('click', saveConfidence);
     document.getElementById('startRetryBtn').addEventListener('click', renderRetry);
     document.getElementById('submitRetryBtn').addEventListener('click', submitRetry);
-
-    DebriefWorkflow.mount(document.getElementById('claudeSyncPanel'),DATA,META,localStorageSaved);
-    function localStorageSaved(){ location.reload(); }
 
   }
 })();

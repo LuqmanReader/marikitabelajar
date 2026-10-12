@@ -72,7 +72,7 @@
     if(missing)warnings.push(missing+' incorrect questions still need an explanation.');
     return {questions:merged,count:accepted.length,warnings:Array.from(new Set(warnings)),coverage:coverage,changed:accepted};
   }
-  function hasFeedback(q){return fields.slice(0,3).some(function(k){return typeof q[k]==='string'&&q[k].trim();})||!!(q.debrief&&q.debrief.trim());}
+  function hasFeedback(q){return fields.slice(0,3).some(function(k){return typeof q[k]==='string'&&!!q[k].trim();})||(typeof q.debrief==='string'&&!!q.debrief.trim());}
   function feedback(q){
     if(fields.slice(0,3).some(function(k){return q[k]&&q[k].trim();})){
       return [['reasoning','Reasoning'],['calculation','Calculation'],['justification','Justification']].map(function(p){return '<section class="feedback-part"><h4>'+p[1]+'</h4><div>'+esc(q[p[0]]||'Not provided yet.').replace(/\n/g,'<br>')+'</div></section>';}).join('')+(q.focus?'<div class="focus-note"><strong>Practise next:</strong> '+esc(q.focus)+'</div>':'');

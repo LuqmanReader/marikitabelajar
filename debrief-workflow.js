@@ -22,7 +22,7 @@
     el.innerHTML='<nav class="flow-steps" aria-label="Revision workflow"><span>1 · Attempt saved</span><span class="current">2 · Generate AI debrief</span><span>3 · Analyze progress</span></nav>'+
       '<h2>One AI debrief · Every question</h2><p>One response assigns topics, explains answers and suggests what to practise. LedgerPeer uses <strong>your original marks</strong> to update topic rankings, graphs, strengths and weaknesses automatically.</p>'+
       '<p class="flow-muted">'+data.length+' questions saved · '+explained+' already explained · '+summary.coverage.tagged+' graded questions have topic tags.</p>'+
-      '<section class="flow-path"><h3>A · Analyze inside LedgerPeer</h3><p>Classifies every question using the subject's topic catalog, then explains it. Requires the updated Supabase <code>analyze-attempt</code> function; your questions and answers are sent securely to that AI service.</p>'+
+      '<section class="flow-path"><h3>A · Analyze inside LedgerPeer</h3><p>Classifies every question using the subject’s topic catalog, then explains it. Requires the updated Supabase <code>analyze-attempt</code> function; your questions and answers are sent securely to that AI service.</p>'+
       '<div class="flow-actions"><button type="button" id="analyzeGemini" class="flow-button primary">Analyze all questions with AI</button><button type="button" id="cancelGemini" class="flow-button secondary" hidden>Cancel analysis</button></div><p id="geminiMessage" role="status" aria-live="polite"></p></section>'+
       '<section class="flow-path"><h3>B · Or use ChatGPT</h3><p>Just copy the prepared request, get the JSON response, paste it back here, and click Apply. No manual chapter tagging, rankings or calculations required.</p>'+
       '<div class="flow-actions"><button type="button" id="copyAIRequest" class="flow-button">1 · Copy AI request</button><a class="flow-button secondary" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT ↗</a></div>'+
@@ -37,7 +37,11 @@
     function message(text){$('aiResponseMessage').textContent=text;}
     function makePrompt(){return F.prompt(meta,data,M.catalog(localStorage,meta.subject));}
     function fillRequest(){var content=makePrompt();$('requestText').value=content;return content;}
-    fillRequest();
+    try {fillRequest();} catch(promptError) {
+      console.warn('AI request preview unavailable:',promptError);
+      $('requestText').value='Could not prepare manual AI prompt: '+promptError.message;
+      $('aiResponseMessage').textContent='The manual prompt could not be prepared. Gemini analysis may still be available.';
+    }
     function renderPreview(result){
       var coverage=M.summary(result.questions).coverage;
       var preview='<h3>Debrief preview · '+result.count+'/'+data.length+' questions</h3>'+
