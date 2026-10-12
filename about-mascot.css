@@ -193,3 +193,7 @@ a:focus-visible,button:focus-visible{outline:4px solid var(--blue);outline-offse
     min-height: 0;
   }
 }
+/* Hide only the mascot in the yellow hero */
+section.intro > .intro-companion {
+  display: none !important;
+}
