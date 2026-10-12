@@ -124,3 +124,52 @@ a:focus-visible,button:focus-visible{outline:4px solid var(--blue);outline-offse
   .site-footer{font-size:10px;flex-direction:column;gap:8px}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}*,*::before,*::after{animation:none!important;transition:none!important}}
+/* Extra mascot motion + bubble swap animation */
+.mascot-img{
+  transform-origin:center bottom;
+  animation:mascot-float 3s ease-in-out infinite, mascot-wiggle 2.1s ease-in-out infinite;
+}
+
+.mascot-img.pose-changed{
+  animation:
+    pose-pop .37s cubic-bezier(.2,1.1,.4,1) both,
+    mascot-float 3s ease-in-out .37s infinite,
+    mascot-wiggle 2.1s ease-in-out .37s infinite;
+}
+
+.speech-bubble.bubble-changing{
+  animation:bubble-swap .28s ease;
+}
+
+.mascot-board.board-pop .doodle-1{
+  animation:doodle-burst-left .45s ease;
+}
+
+.mascot-board.board-pop .doodle-2{
+  animation:doodle-burst-right .45s ease;
+}
+
+@keyframes mascot-wiggle{
+  0%,100%{rotate:0deg}
+  20%{rotate:-1.6deg}
+  40%{rotate:1.2deg}
+  60%{rotate:-1deg}
+  80%{rotate:.9deg}
+}
+
+@keyframes bubble-swap{
+  0%{opacity:.2;transform:translateY(10px) scale(.96)}
+  100%{opacity:1;transform:translateY(0) scale(1)}
+}
+
+@keyframes doodle-burst-left{
+  0%{transform:rotate(-24deg) scale(.85)}
+  50%{transform:rotate(8deg) scale(1.08)}
+  100%{transform:rotate(-24deg) scale(1)}
+}
+
+@keyframes doodle-burst-right{
+  0%{transform:rotate(19deg) scale(.85)}
+  50%{transform:rotate(-8deg) scale(1.08)}
+  100%{transform:rotate(19deg) scale(1)}
+}
