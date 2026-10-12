@@ -173,3 +173,23 @@ a:focus-visible,button:focus-visible{outline:4px solid var(--blue);outline-offse
   50%{transform:rotate(-8deg) scale(1.08)}
   100%{transform:rotate(19deg) scale(1)}
 }
+
+/* Hide the duplicate mascot in the yellow homepage box */
+.intro .intro-companion {
+  display: none !important;
+}
+
+/* Allow the homepage headline to use the available space */
+@media (min-width: 651px) {
+  .intro .intro-copy {
+    max-width: 100%;
+  }
+}
+
+/* Remove the empty space on mobile */
+@media (max-width: 650px) {
+  .intro {
+    padding-bottom: 30px;
+    min-height: 0;
+  }
+}
