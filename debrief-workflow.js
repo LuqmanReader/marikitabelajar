@@ -22,7 +22,7 @@
     el.innerHTML='<nav class="flow-steps" aria-label="Revision workflow"><span>1 · Attempt saved</span><span class="current">2 · Generate AI debrief</span><span>3 · Analyze progress</span></nav>'+
       '<h2>One AI debrief · Every question</h2><p>One response assigns topics, explains answers and suggests what to practise. LedgerPeer uses <strong>your original marks</strong> to update topic rankings, graphs, strengths and weaknesses automatically.</p>'+
       '<p class="flow-muted">'+data.length+' questions saved · '+explained+' already explained · '+summary.coverage.tagged+' graded questions have topic tags.</p>'+
-      '<section class="flow-path"><h3>A · Analyze inside LedgerPeer</h3><p>Classifies every question using the subject’s topic catalog, then explains it. Requires the updated Supabase <code>analyze-attempt</code> function; your questions and answers are sent securely to that AI service.</p>'+
+      '<section class="flow-path"><h3>A · Analyze inside LedgerPeer</h3><p>Classifies and fully explains every question in small batches. Completed questions save automatically and are skipped when you resume. This may take several minutes. Requires the updated Supabase <code>analyze-attempt</code> function.</p>'+
       '<div class="flow-actions"><button type="button" id="analyzeGemini" class="flow-button primary">Analyze all questions with AI</button><button type="button" id="cancelGemini" class="flow-button secondary" hidden>Cancel analysis</button></div><p id="geminiMessage" role="status" aria-live="polite"></p></section>'+
       '<section class="flow-path"><h3>B · Or use ChatGPT</h3><p>Just copy the prepared request, get the JSON response, paste it back here, and click Apply. No manual chapter tagging, rankings or calculations required.</p>'+
       '<div class="flow-actions"><button type="button" id="copyAIRequest" class="flow-button">1 · Copy AI request</button><a class="flow-button secondary" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT ↗</a></div>'+
@@ -105,12 +105,19 @@
       try{
         if(!root.GeminiAnalysis)throw new Error('gemini-analysis.js is missing. Use the manual AI workflow below.');
         var response=await root.GeminiAnalysis.analyze(meta,data,function(text){$('geminiMessage').textContent=text;},geminiController.signal);
-        if(geminiController.signal.aborted)throw new Error('Analysis cancelled.');
+        if(geminiController.signal.aborted)throw new Error('Analysis stopped. Your completed questions remain saved.');
+        // The new Gemini worker saves each successful batch immediately. Do not
+        // reject its own saves as a second-tab conflict or overwrite them here.
+        var current=JSON.parse(localStorage.getItem('tymba_exam_data:'+meta.id)||'null');
+        if(!Array.isArray(current)||F.signature(current)!==F.signature(data))
+          throw new Error('The attempt changed during AI analysis. Reload to review what was saved.');
         staged=F.review(response,data,meta);
         renderPreview(staged);
-        if(!confirmCoverage(staged)){$('geminiMessage').textContent='Not saved. You can preview the results or try again.';return;}
-        await saveResult(staged);
-      }catch(e){$('geminiMessage').textContent=e.message||'Analysis failed. Use the manual workflow below.';}
+        if(!confirmCoverage(staged)){$('geminiMessage').textContent='Your completed batches are saved. Review the warning and reload before resuming.';return;}
+        try{sessionStorage.setItem('personal_hub_ai_saved:'+meta.id,'1');}catch(e){}
+        $('geminiMessage').textContent='All debriefs saved. Refreshing your graphs…';
+        onSaved(current);
+      }catch(e){$('geminiMessage').textContent=(e.message||'Analysis failed.')+' Any completed batches remain saved. Reload to see progress, or try Analyze again to resume.';}
       finally{geminiBusy=false;geminiController=null;$('analyzeGemini').disabled=false;$('cancelGemini').hidden=true;}
     });
     if(M&&root.ChapterUI)root.ChapterUI.mountEditor($('chapterEditor'),data,meta,localStorage,function(merged){
