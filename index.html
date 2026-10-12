@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 
-<html lang="en" data-lp-page="home"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1.0" name="viewport"/><title>LedgerPeer | FIA &amp; ACCA Revision, Study Planner &amp; Finance</title>
-<meta name="description" content="LedgerPeer helps FIA and ACCA learners review exam attempts, plan study sessions, track achievements and manage personal finances in one student workspace."/>
-<link rel="canonical" href="https://luqmanreader.github.io/marikitabelajar/"/>
-<meta property="og:type" content="website"/>
-<meta property="og:site_name" content="LedgerPeer"/>
-<meta property="og:title" content="LedgerPeer | FIA &amp; ACCA Revision, Study Planner &amp; Finance"/>
-<meta property="og:description" content="LedgerPeer helps FIA and ACCA learners review exam attempts, plan study sessions, track achievements and manage personal finances in one student workspace."/>
-<meta property="og:url" content="https://luqmanreader.github.io/marikitabelajar/"/>
-<meta property="og:image" content="https://luqmanreader.github.io/marikitabelajar/ledgerpeer-idle.png"/>
-<meta name="twitter:card" content="summary_large_image"/>
+<html data-lp-page="home" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1.0" name="viewport"/><title>LedgerPeer | FIA &amp; ACCA Revision, Study Planner &amp; Finance</title>
+<meta content="LedgerPeer helps FIA and ACCA learners review exam attempts, plan study sessions, track achievements and manage personal finances in one student workspace." name="description"/>
+<link href="https://luqmanreader.github.io/marikitabelajar/" rel="canonical"/>
+<meta content="website" property="og:type"/>
+<meta content="LedgerPeer" property="og:site_name"/>
+<meta content="LedgerPeer | FIA &amp; ACCA Revision, Study Planner &amp; Finance" property="og:title"/>
+<meta content="LedgerPeer helps FIA and ACCA learners review exam attempts, plan study sessions, track achievements and manage personal finances in one student workspace." property="og:description"/>
+<meta content="https://luqmanreader.github.io/marikitabelajar/" property="og:url"/>
+<meta content="https://luqmanreader.github.io/marikitabelajar/ledgerpeer-idle.png" property="og:image"/>
+<meta content="summary_large_image" name="twitter:card"/>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "LedgerPeer", "url": "https://luqmanreader.github.io/marikitabelajar/", "description": "LedgerPeer helps FIA and ACCA learners review exam attempts, plan study sessions, track achievements and manage personal finances in one student workspace."}</script><link href="favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="apple-touch-icon.png" rel="apple-touch-icon"/><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="supabase-config.js"></script><script src="auth.js"></script><style>
 /* LEDGERPEER — VIBRANT NEOBRUTALISM / v2
    Typeface is copied from the original Revision Hub CSS:
@@ -227,20 +227,128 @@ footer{font-size:11px;text-align:center;text-transform:uppercase;font-weight:900
 .discover .discover-link{display:inline-flex;align-items:center;justify-content:center;background:var(--blue);color:white;border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);font-family:"Arial Black","Helvetica Neue",Impact,sans-serif;text-transform:uppercase;text-decoration:none;padding:10px 15px;margin-top:18px;font-size:12px}
 .discover .discover-link:hover{background:var(--ink)}
 @media(max-width:650px){.discover{padding:18px}.discover-grid{grid-template-columns:1fr}.discover-card{padding:13px}}
-</style><meta content="#FFCF24" name="theme-color"/><link rel="stylesheet" href="ledgerpeer-theme.css?v=20261011">
-</head><body><div aria-hidden="true" class="marquee-strip top"><div class="marquee-track"><span class="marquee-copy">STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦</span><span class="marquee-copy">STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦ STUDY SMARTER ✦ SPEND WISER ✦ GROW FURTHER ✦ LEDGERPEER™ ✦</span></div></div>
+</style><meta content="#FFCF24" name="theme-color"/><link href="ledgerpeer-theme.css?v=20261011" rel="stylesheet"/>
+<link href="about-mascot.css?v=2" rel="stylesheet"/><script defer="True" src="about-mascot.js?v=2"></script><style>
+/* Public homepage / account entry: keep the existing student app and auth scripts intact. */
+.lp-header{position:sticky;top:0;z-index:50;background:var(--paper);border-bottom:4px solid var(--ink)}
+.intro{isolation:isolate}
+.intro-copy{position:relative;z-index:2;max-width:min(780px,72%)}
+.intro h1{font-size:clamp(46px,7.5vw,112px);max-width:780px}
+.intro-links{display:flex;flex-wrap:wrap;gap:15px;align-items:center}
+.intro-signin{display:inline-flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 18px;border:4px solid var(--ink);box-shadow:5px 5px 0 var(--ink);background:#fff;color:var(--ink);text-decoration:none;font-size:12px;font-weight:900}
+.intro-signin:hover{background:var(--green);transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink)}
+.intro-companion{position:absolute;right:-3%;bottom:-2%;width:clamp(220px,34%,450px);display:flex;justify-content:center;pointer-events:none;z-index:1}
+.intro-companion img{width:100%;object-fit:contain;object-position:bottom;animation:mascot-float 3.5s ease-in-out infinite}
+.intro-companion-bubble{position:absolute;right:9%;top:5%;max-width:180px;background:#fff;border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);padding:8px 10px;font-size:11px;font-weight:900;transform:rotate(5deg)}
+#access{scroll-margin-top:110px}
+.portal-zone{max-width:1325px;margin:55px auto 85px;padding:27px 27px 40px;background:var(--purple);border:4px solid var(--ink);box-shadow:10px 10px 0 var(--ink)}
+.portal-zone .wrap{padding:0;margin:0 auto;width:min(100%,1060px)}
+.portal-heading{display:flex;justify-content:space-between;align-items:end;gap:15px;flex-wrap:wrap;margin:0 auto 18px;max-width:1060px}
+.portal-heading h2{font-size:clamp(32px,4.8vw,59px);margin:8px 0 0;line-height:1}
+.portal-heading p{font-weight:800;font-size:12px;max-width:320px;margin:0}
+.portal-zone .lockbox{margin:18px auto;padding:27px 33px}
+.portal-zone .grid{margin-top:15px}
+.portal-zone .quick-links{margin-bottom:15px}
+.portal-zone .wrap footer{margin:17px auto 0;text-align:center}
+.story{scroll-margin-top:100px}
+/* Keep a link to the account entry visible without forcing users through the story. */
+.header-actions .nav-login{white-space:nowrap}
+@media(max-width:1385px){.portal-zone{margin-left:24px;margin-right:34px}}
+@media(max-width:950px){.intro-copy{max-width:76%}.intro-companion{width:35%}.intro-companion-bubble{font-size:9px;top:0}}
+@media(max-width:650px){
+ .lp-header{position:sticky;top:0}
+ .intro-copy{max-width:100%}
+ .intro{padding-bottom:118px;min-height:420px}
+ .intro h1{font-size:clamp(43px,10.5vw,67px)}
+ .intro-companion{width:185px;right:-20px;bottom:-12px}
+ .intro-companion-bubble{right:20px;top:-9px;max-width:110px;font-size:9px}
+ .intro-links{gap:10px}
+ .start-story,.intro-signin{padding:10px 11px;font-size:10px;border-width:3px;box-shadow:3px 3px var(--ink)}
+ .portal-zone{margin:30px 20px 50px 14px;padding:20px 14px 24px;box-shadow:6px 6px var(--ink)}
+ .portal-heading{gap:8px}
+ .portal-heading h2{font-size:32px}
+ .portal-zone .lockbox{padding:20px 15px}
+}
+@media(prefers-reduced-motion:reduce){.intro-companion img{animation:none}}
+</style></head><body><div aria-hidden="true" class="colour-ribbon"></div><header class="lp-header">
+<a aria-label="LedgerPeer homepage" class="brand" href="#top">
+<img alt="" height="45" src="ledgerpeer-sidebar-logo.png" width="45"/>
+<span>LEDGER<span class="brand-accent">PEER</span></span>
+</a>
+<nav aria-label="About page navigation" class="header-actions">
+<a class="quiet-link" href="#story">THE STORY</a>
+<a class="nav-login" href="#access" id="headerPortalLink">LOG IN / MY WORKSPACE ↗</a>
+</nav>
+</header><main id="top"><section aria-labelledby="intro-title" class="intro"><div class="intro-copy"><div class="intro-topline"><span class="pill">THE LEDGERPEER EXPERIENCE</span><span>FIA · ACCA · STUDENT LIFE</span></div><h1 id="intro-title">STUDY SMARTER.<br/><em>GROW BOLDER.</em></h1><p>Meet your LedgerPeer study buddy. Follow his story to discover how exam debriefs, study planning, progress tracking and money tools work together.</p><div class="intro-links"><a class="start-story" href="#story">MEET YOUR GUIDE ↓</a><a class="intro-signin" href="#access">LOG IN NOW ↗</a></div></div>
 
-<main class="wrap"><div class="top"><div class="hero-copy"><span class="eyebrow">THE STUDENT COMMAND CENTRE</span><h1>LedgerPeer</h1><p class="sub" id="subtitle">Private student beta</p></div><div aria-label="LedgerPeer's friendly balance-scale mascot waving, studying, explaining and celebrating" class="mascot-stage" role="img"><img alt="" decoding="async" src="ledgerpeer-idle.png"/><img alt="" decoding="async" src="ledgerpeer-wave.png"/><img alt="" decoding="async" src="ledgerpeer-study.png"/><img alt="" decoding="async" src="ledgerpeer-explain.png"/><img alt="" decoding="async" src="ledgerpeer-celebrate.png"/></div></div><section class="lockbox" hidden="" id="authView"><span class="locktag">Student account · Private beta</span><h2 id="authTitle">Student Log In</h2><div class="auth-tabs" id="authTabs"><button class="active" id="loginTab" type="button">Log In</button><button id="signupTab" type="button">Sign Up</button></div><p id="authCopy"></p><label class="field-label" for="email">Email address</label><input autocomplete="off" id="email" placeholder="Student email address" required="" type="email"/><label class="field-label" for="password">Password</label><input autocomplete="off" id="password" placeholder="Password" type="password"/><label class="field-label" for="confirm">Confirm new password</label><input autocomplete="new-password" hidden="" id="confirm" placeholder="Confirm password" type="password"/><button class="btn" id="authButton">Log In →</button><div class="auth-links"><button class="auth-link" id="forgotButton" type="button">Forgot password?</button><button class="auth-link" hidden="" id="backButton" type="button">← Back to log in</button></div><p class="notice" id="notice" role="status"></p><div class="error" id="error" role="alert"></div></section><section hidden="" id="hubView"><div class="topbar"><button class="lockbtn" id="lockButton">Lock hub</button></div><div class="grid"><a class="card dashboard" href="hub.html"><span class="tag">Section 01 · Academic</span><h2>Revision Dashboard</h2><p><strong>Academic performance &amp; revision section.</strong> Turn exam attempts into useful revision decisions and see what to work on next.</p><div class="features">EXAM DEBRIEFS · CONFIDENCE CALIBRATION<br/>TOPIC MASTERY · RETRY MISTAKES · PROGRESS</div><span class="go">Enter academic section →</span></a><a class="card finance" href="financial-manager.html"><span class="tag">Section 02 · Finance</span><h2>Financial Manager</h2><p><strong>Personal money management section.</strong> Record cash flow, savings, investments and gold contributions in one place.</p><div class="features">INCOME · EXPENSES · SAVINGS<br/>INVESTMENTS · GOLD · GOAL HORIZONS<br/>FINANCIAL TRACKER · FINANCIAL DASHBOARD</div><span class="go">Enter finance section →</span></a></div><nav class="quick-links"><a class="go" href="calendar.html">▦ Calendar →</a><a class="go" href="study-planner.html">☑ Study Planner →</a><a class="go" href="achievements.html">★ Achievements →</a></nav></section><section class="discover" aria-labelledby="discover-title">
-<span class="discover-kicker">Inside LedgerPeer</span>
-<h2 id="discover-title">Your FIA &amp; ACCA revision companion</h2>
-<p>LedgerPeer is a student-focused workspace that connects <strong>ACCA and Foundations in Accountancy (FIA) exam revision</strong>, study planning and personal finance tools. Review test attempts, identify topics that need more practice, organise your study schedule and track financial goals from one place. Student workspaces require an account; this overview is public.</p>
-<div class="discover-grid">
-<article class="discover-card"><h3>Revision dashboard</h3><p>Organise chapter sets, progress tests and mock exams. Review mistakes and focus on weaker accounting topics.</p></article>
-<article class="discover-card"><h3>Calendar &amp; study planner</h3><p>Plan your FIA or ACCA revision sessions, organise exam preparation and track learning milestones.</p></article>
-<article class="discover-card"><h3>Student finance</h3><p>Record income, expenses, savings and investments with a personal financial tracker and dashboard.</p></article>
+
+
+
+
+<div aria-hidden="true" class="intro-companion"><img alt="" decoding="async" height="989" src="ledgerpeer-wave.png" width="1591"/><span class="intro-companion-bubble">HEY! I’LL SHOW YOU AROUND ✳</span></div></section><section aria-label="Explore LedgerPeer's features with its mascot" class="story" id="story">
+<div class="mascot-column">
+<div class="mascot-sticky">
+<div class="mascot-label"><span class="on-air"></span> YOUR LEDGERPEER GUIDE <span id="storyCounter">01 / 05</span></div>
+<div class="mascot-board">
+<div aria-hidden="true" class="speech-bubble">
+<span class="bubble-caption" id="bubbleCaption">SAY HELLO</span>
+<p id="mascotSpeech">Hey! Welcome to LedgerPeer. I'll show you around.</p>
 </div>
-<a class="discover-link" href="about.html">Learn more about LedgerPeer →</a>
-</section><footer>LedgerPeer beta · Cloud-backed student accounts</footer></main><script>
+<img alt="LedgerPeer's friendly balance-scale mascot waving" class="mascot-img" fetchpriority="high" height="989" id="mascotPose" src="ledgerpeer-wave.png" width="1591"/>
+<span aria-hidden="true" class="doodle doodle-1">✳</span><span aria-hidden="true" class="doodle doodle-2">★</span>
+</div>
+<div class="mascot-controls">
+<button class="control-btn" id="listenBtn" type="button"><span aria-hidden="true">♫</span> <span id="listenLabel">HEAR THIS PART</span></button>
+<a class="control-btn secondary" href="#chapter-1">↺ RESTART</a>
+</div>
+<div aria-label="Story progress" class="story-progress"><span id="storyProgressBar"></span></div>
+<p class="sound-note" id="soundNote">The mascot follows your scroll. Sound is optional.</p>
+</div>
+</div>
+<div class="chapters">
+<section aria-labelledby="chapter-title-1" class="chapter chapter-yellow is-current" data-caption="SAY HELLO" data-pose="wave" data-speech="Hey! I'm your LedgerPeer study buddy. Think of this as a home for your learning, not just another website." id="chapter-1">
+<div class="chapter-index">CHAPTER 01 <span>HELLO THERE!</span></div>
+<span aria-hidden="true" class="chapter-emoji">👋</span>
+<h2 id="chapter-title-1">HI, I'M HERE<br/>TO HELP.</h2>
+<p>LedgerPeer is a student workspace designed to help FIA and ACCA learners organise their revision, understand mistakes, and keep track of their growth.</p>
+<span class="chapter-foot">A SMARTER STUDY ROUTINE <span aria-hidden="true">↘</span></span>
+</section>
+<section aria-labelledby="chapter-title-2" class="chapter chapter-blue" data-caption="LET'S REVIEW" data-pose="explain" data-speech="Finished a progress test or mock? Bring the attempt to LedgerPeer. Review each question, see why an answer works, and find the topic behind the mistake." id="chapter-2">
+<div class="chapter-index">CHAPTER 02 <span>EXAM DEBRIEFS</span></div>
+<span aria-hidden="true" class="chapter-emoji">✏️</span>
+<h2 id="chapter-title-2">EVERY MISTAKE<br/>HAS A LESSON.</h2>
+<p>Upload an attempt and review your questions in one place. AI-assisted debriefs can explain the reasoning, calculations, and related topics when the analysis workflow is available.</p>
+<span class="chapter-foot">QUESTIONS → EXPLANATIONS → NEXT STEPS <span aria-hidden="true">↘</span></span>
+</section>
+<section aria-labelledby="chapter-title-3" class="chapter chapter-green" data-caption="YOUR PROGRESS" data-pose="study" data-speech="Now the interesting part. Your saved answers feed topic-level insights, graphs, and strengths and weaknesses, so you can see what needs more practice." id="chapter-3">
+<div class="chapter-index">CHAPTER 03 <span>REVISION INTELLIGENCE</span></div>
+<span aria-hidden="true" class="chapter-emoji">📈</span>
+<h2 id="chapter-title-3">TURN RESULTS<br/>INTO DIRECTION.</h2>
+<p>Track exam performance, spot stronger and weaker topics, and use visual progress summaries to choose your next revision session.</p>
+<span class="chapter-foot">MAKE EVERY ATTEMPT COUNT <span aria-hidden="true">↘</span></span>
+</section>
+<section aria-labelledby="chapter-title-4" class="chapter chapter-purple" data-caption="BEYOND REVISION" data-pose="idle" data-speech="There's more. Your calendar, study planner, achievements, and personal finance tools live together, so your academic life and money goals are easier to manage." id="chapter-4">
+<div class="chapter-index">CHAPTER 04 <span>ONE STUDENT WORKSPACE</span></div>
+<span aria-hidden="true" class="chapter-emoji">🗓️</span>
+<h2 id="chapter-title-4">MORE THAN<br/>AN EXAM TRACKER.</h2>
+<p>Plan study sessions, organise your calendar, celebrate achievements, and manage expenses, savings, investments and financial goals alongside your studies.</p>
+<span class="chapter-foot">PLAN • TRACK • CELEBRATE <span aria-hidden="true">↘</span></span>
+</section>
+<section aria-labelledby="chapter-title-5" class="chapter chapter-red" data-caption="YOU'VE GOT THIS" data-pose="celebrate" data-speech="That's LedgerPeer! One space for getting better, one attempt at a time. Ready? Let's get started." id="chapter-5">
+<div class="chapter-index">CHAPTER 05 <span>YOUR NEXT MOVE</span></div>
+<span aria-hidden="true" class="chapter-emoji">★</span>
+<h2 id="chapter-title-5">READY FOR<br/>YOUR NEXT WIN?</h2>
+<p>LedgerPeer is in student beta. Sign in to access the tools available to your account. Your personal attempts and records aren't shown on this public page.</p>
+<a class="chapter-cta" href="#access">ENTER LEDGERPEER <span aria-hidden="true">↗</span></a>
+<span class="chapter-foot">ONE STEP AT A TIME <span aria-hidden="true">★</span></span>
+</section>
+</div>
+</section><section aria-label="Start with LedgerPeer" class="outro">
+<div aria-hidden="true" class="outro-star">✳</div>
+<p>LESS GUESSWORK. MORE PROGRESS.</p>
+<h2>STUDY SMARTER.<br/><span>GROW BOLDER.</span></h2>
+<a class="outro-cta" href="#access">LET'S GET STARTED ↗</a>
+</section><section aria-label="Student access" class="portal-zone"><div class="portal-heading"><div><span class="pill">STUDENT ACCESS</span><h2>YOUR SPACE STARTS HERE.</h2></div><p>No forced intro. Log in anytime—or return straight to your workspace when you are signed in.</p></div><main class="wrap" id="access"><section class="lockbox" hidden="" id="authView"><span class="locktag">Student account · Private beta</span><h2 id="authTitle">Student Log In</h2><div class="auth-tabs" id="authTabs"><button class="active" id="loginTab" type="button">Log In</button><button id="signupTab" type="button">Sign Up</button></div><p id="authCopy"></p><label class="field-label" for="email">Email address</label><input autocomplete="off" id="email" placeholder="Student email address" required="" type="email"/><label class="field-label" for="password">Password</label><input autocomplete="off" id="password" placeholder="Password" type="password"/><label class="field-label" for="confirm">Confirm new password</label><input autocomplete="new-password" hidden="" id="confirm" placeholder="Confirm password" type="password"/><button class="btn" id="authButton">Log In →</button><div class="auth-links"><button class="auth-link" id="forgotButton" type="button">Forgot password?</button><button class="auth-link" hidden="" id="backButton" type="button">← Back to log in</button></div><p class="notice" id="notice" role="status"></p><div class="error" id="error" role="alert"></div></section><section hidden="" id="hubView"><div class="topbar"><button class="lockbtn" id="lockButton">Lock hub</button></div><div class="grid"><a class="card dashboard" href="hub.html"><span class="tag">Section 01 · Academic</span><h2>Revision Dashboard</h2><p><strong>Academic performance &amp; revision section.</strong> Turn exam attempts into useful revision decisions and see what to work on next.</p><div class="features">EXAM DEBRIEFS · CONFIDENCE CALIBRATION<br/>TOPIC MASTERY · RETRY MISTAKES · PROGRESS</div><span class="go">Enter academic section →</span></a><a class="card finance" href="financial-manager.html"><span class="tag">Section 02 · Finance</span><h2>Financial Manager</h2><p><strong>Personal money management section.</strong> Record cash flow, savings, investments and gold contributions in one place.</p><div class="features">INCOME · EXPENSES · SAVINGS<br/>INVESTMENTS · GOLD · GOAL HORIZONS<br/>FINANCIAL TRACKER · FINANCIAL DASHBOARD</div><span class="go">Enter finance section →</span></a></div><nav class="quick-links"><a class="go" href="ai-tutor.html">✦ AI Tutor →</a><a class="go" href="calendar.html">▦ Calendar →</a><a class="go" href="study-planner.html">☑ Study Planner →</a><a class="go" href="achievements.html">★ Achievements →</a></nav></section><footer>LedgerPeer beta · Cloud-backed student accounts</footer></main></section></main><footer class="site-footer"><span>© LEDGERPEER · STUDENT WORKSPACE</span><a href="#top">BACK TO HOME ↗</a><span>MADE TO MAKE PROGRESS VISIBLE.</span></footer><script>
 const A=PersonalHubAuth,authView=document.getElementById('authView'),hubView=document.getElementById('hubView'),error=document.getElementById('error');
 const password=document.getElementById('password'),email=document.getElementById('email'),button=document.getElementById('authButton'),confirmInput=document.getElementById('confirm'),notice=document.getElementById('notice');
 const tabs=document.getElementById('authTabs'),forgot=document.getElementById('forgotButton'),back=document.getElementById('backButton');
@@ -268,5 +376,16 @@ const hash=new URLSearchParams(location.hash.slice(1));const query=new URLSearch
 if(hash.get('type')==='recovery'||query.get('type')==='recovery'){recovering=true;show('setpassword');}
 if(!recovering){const yes=await A.isSignedIn();if(yes&&!recovering){const ok=await A.ready();if(ok&&!recovering){authView.hidden=true;hubView.hidden=false;}}}
 }catch(e){error.textContent=e.message||'Unable to connect to authentication.';}})();
-</script>
-</body></html>
+</script><script>
+/* Shortcut to the existing portal; password-reset links also reveal the form. */
+(function(){
+ const link=document.getElementById('headerPortalLink'),auth=document.getElementById('authView'),hub=document.getElementById('hubView');
+ if(!link||!auth||!hub)return;
+ function label(){link.textContent=hub.hidden?'LOG IN / MY WORKSPACE ↗':'OPEN MY WORKSPACE ↗'}
+ new MutationObserver(label).observe(hub,{attributes:true,attributeFilter:['hidden']});
+ label();
+ if(/(?:^|[&#?])(?:access_token|type=recovery|error_description)=/.test(location.hash+location.search)){
+   document.getElementById('access').scrollIntoView({behavior:'instant'});
+ }
+})();
+</script></body></html>
