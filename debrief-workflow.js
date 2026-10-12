@@ -117,7 +117,7 @@
         try{sessionStorage.setItem('personal_hub_ai_saved:'+meta.id,'1');}catch(e){}
         $('geminiMessage').textContent='All debriefs saved. Refreshing your graphs…';
         onSaved(current);
-      }catch(e){$('geminiMessage').textContent=(e.message||'Analysis failed.')+' Any completed batches remain saved. Reload to see progress, or try Analyze again to resume.';}
+      }catch(e){$('geminiMessage').textContent=(e.message||'Analysis failed.')+' Any completed batches remain saved. You can retry later.';$('analyzeGemini').hidden=false;}
       finally{geminiBusy=false;geminiController=null;$('analyzeGemini').disabled=false;$('cancelGemini').hidden=true;}
     });
     if(M&&root.ChapterUI)root.ChapterUI.mountEditor($('chapterEditor'),data,meta,localStorage,function(merged){
@@ -126,6 +126,27 @@
     });
     el.addEventListener('click',function(e){if(e.target.id==='saveChapterCatalog')setTimeout(fillRequest,0);});
     try{if(sessionStorage.getItem('personal_hub_ai_saved:'+meta.id)){message('Saved! Your question explanations, topic rankings, graphs and strengths/weaknesses have been refreshed.');$('aiResponseMessage').className='flow-success';sessionStorage.removeItem('personal_hub_ai_saved:'+meta.id);}}catch(e){}
+    // PDF-only attempts have one automatic workflow, not a manual debrief menu.
+    if(meta.sourceFormat==='pdf'){
+      const panels=el.querySelectorAll('section.flow-path');
+      if(panels[1])panels[1].remove(); // no ChatGPT copy/paste or file upload
+      const editor=el.querySelector('#chapterEditor'),advanced=editor?editor.closest('details'):null;
+      if(advanced)advanced.remove();
+      const steps=el.querySelector('nav.flow-steps');if(steps)steps.remove();
+      const title=el.querySelector('h2');if(title)title.textContent='Automatic PDF topic analysis';
+      const intro=title&&title.nextElementSibling;
+      if(intro)intro.textContent='LedgerPeer saved your questions and marks from the PDF. Topic classification, full explanations and graphs are generated automatically when Gemini is available.';
+      const action=$('analyzeGemini');
+      action.textContent='Resume unfinished analysis';
+      const url=new URL(location.href);
+      if(url.searchParams.get('auto_analyze')==='1'){
+        url.searchParams.delete('auto_analyze');
+        try{history.replaceState(null,'',url.pathname+url.search+url.hash);}catch(e){}
+        action.hidden=true;
+        $('geminiMessage').textContent='PDF saved. Starting topic analysis and full explanations automatically…';
+        setTimeout(function(){action.click();},800);
+      }
+    }
   }
   root.DebriefWorkflow={mount:mount,rankTable:rankTable,insights:insights};
 })(window);

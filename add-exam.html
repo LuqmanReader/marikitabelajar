@@ -1,26 +1,15 @@
-<!DOCTYPE html>
-<html lang="en" data-lp-page="attempt"><head>
-<meta name="robots" content="noindex,follow"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Add an Attempt · LedgerPeer</title><link rel="icon" href="favicon-32.png"><link rel="stylesheet" href="revision-flow.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="supabase-config.js"></script><script src="auth.js"></script><script>if(!PersonalHubAuth.guard())throw new Error('Locked');</script>
-<script src="subject-catalog.js"></script><script src="exam-model.js"></script><script src="topic-taxonomy.js"></script><script src="chapter-analysis.js"></script><script src="revision-flow.js"></script>
-<link rel="stylesheet" href="site-nav.css">
-<link rel="stylesheet" href="ledgerpeer-theme.css?v=20261011">
-</head><body class="flow-page">
-<div class="flow-topbar">LEDGERPEER · REVISION WORKFLOW</div>
-<main class="flow-wrap"><header class="flow-hero"><a href="hub.html" class="site-back">← LedgerPeer</a><h1>Add an attempt</h1><p>Start with your answers. Build your understanding. Track your progress.</p></header>
-<nav class="flow-steps" aria-label="Revision workflow"><span class="current">1 · Add attempt</span><span>2 · Generate AI debrief</span><span>3 · Analyze progress</span></nav>
-<section class="flow-panel"><h2>Which attempt is this?</h2><div class="flow-form-grid">
-<label>Subject<select id="subjectSelect"></select></label>
-<label>Attempt type<select id="testType"><option value="set">Chapter set</option><option value="pre">Progress Test</option><option value="mock">Mock Test</option></select></label>
-<label><span id="numberLabel">Set number</span><input type="number" id="testNumber" min="1" step="1" value="1"></label>
-<label>Attempt date &amp; time<input id="attemptDate" type="datetime-local"></label>
-</div><div id="setFields" class="flow-form-grid">
-<label>Chapter for this set<input id="setChapter" list="setChapterNames" placeholder="Chapter 4 · Accruals and prepayments" maxlength="120"><datalist id="setChapterNames"></datalist></label>
-<label>Total sets in this chapter (optional)<input id="setTotal" type="number" min="1" step="1" placeholder="e.g. 8"><small>Each chapter can have a different number of sets.</small></label>
-</div><label class="flow-field">Attempt label (optional)<input id="titleInput" maxlength="180" placeholder="e.g. Second attempt after revision"></label>
-<label class="flow-upload">Upload your marked attempt review<input id="sourceFile" type="file" accept=".html,.htm,.json,.txt,text/html,application/json,text/plain"><small>Save the completed attempt-review page as HTML, or choose an exported questions JSON file.</small></label>
-<button id="parseAttempt" class="flow-button" disabled>Build answer review</button><p id="entryMessage" role="status" aria-live="polite"></p></section>
-<section class="flow-panel"><h2>Check &amp; save</h2><div id="entryPreview"><p>Your result will appear here after you upload the attempt.</p></div><button id="saveAttempt" class="flow-button primary" disabled>Save attempt &amp; open debrief →</button></section>
-<p class="flow-muted">Your attempts save in this browser. Retaking the same set creates a new attempt; it does not increase the number of distinct sets completed.</p>
-</main><script src="attempt-entry.js"></script><script>PersonalHubAuth.addLockButton();</script></body></html>
+<!DOCTYPE html><html lang="en" data-lp-page="attempt"><head>
+<meta name="robots" content="noindex,follow"><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Upload Attempt PDF · LedgerPeer</title><link rel="icon" href="favicon-32.png"><link rel="stylesheet" href="revision-flow.css"><link rel="stylesheet" href="site-nav.css"><link rel="stylesheet" href="ledgerpeer-theme.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="supabase-config.js"></script><script src="auth.js"></script><script>if(!PersonalHubAuth.guard())throw Error('Locked');</script>
+<script src="subject-catalog.js"></script><script src="exam-model.js"></script><script src="chapter-analysis.js"></script><script src="revision-flow.js"></script>
+<style>
+.pdf-only-layout{max-width:850px;margin:0 auto}.pdf-drop{display:block;border:4px solid #111;background:#ffcf24;box-shadow:8px 8px 0 #111;padding:28px 22px;margin:22px 10px 20px 0;cursor:pointer}.pdf-drop strong{display:block;font-family:'Arial Black',Impact,sans-serif;font-size:clamp(1.3rem,3vw,2rem);text-transform:uppercase;margin-bottom:12px}.pdf-drop input{width:100%;padding:12px;background:#fff;border:3px solid #111;font:700 14px ui-monospace,monospace}.pdf-drop small{display:block;margin-top:12px;font-weight:750;line-height:1.6}#pdfStatus{white-space:pre-wrap;overflow-wrap:anywhere;font-size:14px;font-weight:700;line-height:1.6}#pdfProgress{width:100%;height:20px;accent-color:#216d41}.flow-hero p{max-width:620px}
+</style></head><body class="flow-page">
+<div class="flow-topbar">LEDGERPEER · PDF ATTEMPT READER</div>
+<main class="flow-wrap pdf-only-layout"><header class="flow-hero"><a href="hub.html" class="site-back">← Revision Dashboard</a><h1>Upload your attempt PDF</h1><p>One PDF. LedgerPeer reads the questions, saves your marks, and prepares topic analysis and explanations automatically.</p></header>
+<section class="flow-panel"><h2>Upload your marked attempt</h2>
+<label class="pdf-drop"><strong>Choose your attempt review PDF</strong><input id="pdfFile" type="file" accept=".pdf,application/pdf" aria-describedby="pdfDescription"><small id="pdfDescription">PDF only. No HTML files, pasted AI prompts, or separate debrief upload. Image-based PDFs are read on this device and can take several minutes.</small></label>
+<progress id="pdfProgress" value="0" max="1" hidden></progress><p id="pdfStatus" role="status" aria-live="polite">Choose the completed exam review PDF. Reading and saving will start automatically.</p></section>
+<p class="flow-muted">Answers and original marks are stored on this device first. Cloud backup runs through your LedgerPeer account. AI explanations are requested after the PDF is imported; if the Gemini service is rate-limited, the saved attempt remains available.</p>
+</main><script src="pdf-attempt.js"></script><script>PersonalHubAuth.addLockButton();</script></body></html>
