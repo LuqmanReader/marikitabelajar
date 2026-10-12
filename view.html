@@ -409,9 +409,9 @@
 <script src="chapter-ui.js"></script>
 <link rel="stylesheet" href="chapter-analysis.css">
 <link rel="stylesheet" href="revision-flow.css">
-<script src="revision-flow.js?v=20261011-ai-button-fix"></script>
-<script src="gemini-analysis.js"></script>
-<script src="debrief-workflow.js?v=20261011-ai-button-fix"></script>
+<script src="revision-flow.js?v=20261012-chatgpt-manual"></script>
+
+<script src="debrief-workflow.js?v=20261012-chatgpt-manual"></script>
 <link rel="stylesheet" href="site-nav.css">
 <link rel="stylesheet" href="ledgerpeer-theme.css?v=20261011">
 </head>
@@ -453,7 +453,7 @@
   <!-- AI section appears BEFORE optional confidence calibration. Visible static
        fallback prevents a missing script from silently hiding Gemini. -->
   <div id="claudeSyncPanel" class="flow-panel ai-visible-panel" role="region" aria-label="AI analysis and topic classification">
-    <h2>Gemini AI Analysis · Every Question</h2>
+    <h2>ChatGPT JSON Analysis · Every Question</h2>
     <p id="aiBootMessage" role="status">Loading your topic classification tools…</p>
   </div>
 
@@ -873,15 +873,15 @@
     var aiPanel=document.getElementById('claudeSyncPanel');
     try {
       if(!window.DebriefWorkflow || typeof window.DebriefWorkflow.mount!=='function') {
-        throw new Error('The debrief-workflow.js file did not load. Upload the AI Button Fix files into the GitHub repository root and refresh.');
+        throw new Error('The debrief-workflow.js file did not load. Upload the manual ChatGPT debrief patch into the GitHub repository root and refresh.');
       }
       if(!window.RevisionFlow || !window.ChapterAnalysis) {
-        throw new Error('A required AI analysis script did not load. Check revision-flow.js and chapter-analysis.js.');
+        throw new Error('A required manual debrief script did not load. Check revision-flow.js and chapter-analysis.js.');
       }
       DebriefWorkflow.mount(aiPanel,DATA,META,localStorageSaved);
     } catch(aiError) {
       console.error('LedgerPeer AI debrief initialization failed:',aiError);
-      aiPanel.innerHTML='<h2>Gemini AI Analysis</h2><p class="flow-notice" role="alert">AI tools could not start: '+
+      aiPanel.innerHTML='<h2>ChatGPT JSON Analysis</h2><p class="flow-notice" role="alert">AI tools could not start: '+
         String(aiError&&aiError.message||aiError).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+
         '</p><button class="flow-button primary" type="button" onclick="location.reload()">Retry loading AI tools</button>';
     }

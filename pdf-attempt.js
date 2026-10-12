@@ -3,7 +3,7 @@
 (function(root){
  'use strict';
  const F=root.RevisionFlow, $=id=>document.getElementById(id);
- const state={busy:false,run:0};
+ const state={busy:false,run:0,pending:null};
  const KIND=/\b(FA1|MA1|FA2|MA2|FBT|FMA|FFA|FAU|FFM|FTX|SBL|SBR|AFM|APM|ATX|AAA|BT|MA|FA|LW|PM|TX|FR|AA|FM)\b[^\n]{0,90}?\b(Progress\s*Test|Pre\s*Test|Mock(?:\s*(?:Test|Exam))?|Set)\s*#?\s*(\d+)/i;
  function tidy(s){return String(s||'').replace(/\r/g,'').replace(/[\u00a0\u200b]/g,' ').replace(/[\t ]+$/gm,'').replace(/\n{3,}/g,'\n\n').trim();}
  function detectMetadata(s){
@@ -93,12 +93,78 @@
   F.save(localStorage,key,questions);
   try{F.save(localStorage,'tymba_custom_exams',current.concat([meta]));}
   catch(e){localStorage.removeItem(key);throw e;}
-  progress(pdf.pages,pdf.pages,'Saved '+questions.length+' questions locally. Opening automatic topic analysis…');
-  location.href=meta.file+'&auto_analyze=1';
+  progress(pdf.pages,pdf.pages,'Saved '+questions.length+' questions. Opening ChatGPT debrief workflow…');
+  location.href=meta.file+'#chatgpt-debrief';
+ }
+ function renderVerification(questions,detected){
+  const host=$('pdfVerify');host.hidden=false;host.replaceChildren();
+  const title=document.createElement('h2');title.textContent='Review the PDF scan';host.appendChild(title);
+  const explanation=document.createElement('p');explanation.textContent=detected.subject+' · '+questions.length+' questions detected. Confirm the original marks and question numbers below. LedgerPeer cannot infer choices not visible in the PDF.';host.appendChild(explanation);
+  const list=document.createElement('div');list.className='pdf-scan-list';host.appendChild(list);
+  for(const q of questions){
+   const card=document.createElement('details');card.className='pdf-scan-question';
+   const heading=document.createElement('summary');card.appendChild(heading);
+   function updateHeading(){
+     const award=q.original_marks==null?'marks unclear':q.original_marks+' / '+q.original_max_marks+' marks';
+     heading.textContent='Q'+q.qno+' · '+(q.source_result||'UNVERIFIED').toUpperCase()+' · '+award+' · PDF page '+q.pdf_page;
+   }
+   updateHeading();
+   const body=document.createElement('pre');body.textContent=q.qtext||'[OCR could not read this question. Attach the original PDF in ChatGPT.]';card.appendChild(body);
+   const label=document.createElement('label');label.textContent='Check marking status · ';card.appendChild(label);
+   const sel=document.createElement('select');sel.setAttribute('aria-label','Marking for question '+q.qno);
+   for(const [value,text] of [['correct','Correct'],['incorrect','Incorrect'],['partially correct','Partially correct'],['not answered','Not answered'],['unknown','Unreadable / not verified']]){
+     const op=document.createElement('option');op.value=value;op.textContent=text;sel.appendChild(op);
+   }
+   sel.value=q.source_result||'unknown';label.appendChild(sel);
+   sel.addEventListener('change',()=>{
+     if(!q.ocr_source_result)q.ocr_source_result=q.source_result;
+     q.source_result=sel.value;
+     q.is_correct=sel.value==='correct'?true:sel.value==='unknown'?null:false;
+     if(sel.value==='correct'&&q.original_max_marks!=null)q.original_marks=q.original_max_marks;
+     else if((sel.value==='incorrect'||sel.value==='not answered')&&q.original_max_marks!=null)q.original_marks=0;
+     updateHeading();
+   });
+   const marks=document.createElement('div');marks.className='pdf-scan-marks';card.appendChild(marks);
+   for(const [field,display] of [['original_marks','Awarded marks'],['original_max_marks','Maximum marks']]){
+     const markLabel=document.createElement('label');markLabel.textContent=display+' · ';
+     const inp=document.createElement('input');inp.type='number';inp.min='0';inp.step='0.5';inp.setAttribute('aria-label',display+' for question '+q.qno);
+     if(q[field]!=null)inp.value=q[field];markLabel.appendChild(inp);marks.appendChild(markLabel);
+     inp.addEventListener('change',()=>{
+       const value=inp.value.trim()===''?null:Number(inp.value);
+       if(value!==null&&(!Number.isFinite(value)||value<0)){inp.value=q[field]==null?'':String(q[field]);return;}
+       if(!q.ocr_marks_recorded){q.ocr_original_marks=q.original_marks;q.ocr_original_max_marks=q.original_max_marks;q.ocr_marks_recorded=true;}
+       q[field]=value;
+       if(q.original_marks!==null&&q.original_max_marks>0){
+         q.is_correct=q.original_marks===q.original_max_marks;
+         q.source_result=q.is_correct?'correct':q.original_marks>0?'partially correct':'incorrect';
+         sel.value=q.source_result;
+       }
+       updateHeading();
+     });
+   }
+   const keyLabel=document.createElement('label');keyLabel.textContent='Recorded correct answer (editable if OCR misread)';card.appendChild(keyLabel);
+   const answer=document.createElement('textarea');answer.rows=2;answer.setAttribute('aria-label','Correct answer for question '+q.qno);answer.value=q.correct_answer||'';keyLabel.appendChild(answer);
+   answer.addEventListener('change',()=>{if(!q.ocr_correct_answer)q.ocr_correct_answer=q.correct_answer;q.correct_answer=answer.value.trim();});
+   list.appendChild(card);
+  }
+  const row=document.createElement('div');row.className='flow-actions';
+  const approve=document.createElement('button');approve.type='button';approve.className='flow-button primary';approve.textContent='Confirm scan & prepare ChatGPT request';
+  approve.addEventListener('click',async function(){
+   if(!state.pending)return;
+   const unknown=state.pending.questions.filter(q=>q.is_correct===null).map(q=>q.qno);
+   if(unknown.length){note('Verify the grading for questions '+unknown.join(', ')+' before saving.');return;}
+   approve.disabled=true;
+   try{await save(state.pending.questions,state.pending.detected,state.pending.result);}
+   catch(e){note('Could not save the attempt: '+(e.message||e));approve.disabled=false;}
+  });
+  const retry=document.createElement('button');retry.type='button';retry.className='flow-button secondary';retry.textContent='Choose a different PDF';
+  retry.addEventListener('click',function(){state.pending=null;host.hidden=true;host.replaceChildren();$('pdfFile').value='';note('Choose another completed attempt-review PDF.');});
+  row.append(approve,retry);host.appendChild(row);
  }
  async function onPdf(file){
   if(!file)return;
   if(state.busy)return;
+  $('pdfVerify').hidden=true;$('pdfVerify').replaceChildren();state.pending=null;
   if(!/\.pdf$/i.test(file.name)&&file.type!=='application/pdf'){note('Only completed attempt-review PDF files are supported.');return;}
   state.busy=true;$('pdfFile').disabled=true;$('pdfProgress').hidden=false;
   try{
@@ -107,7 +173,7 @@
    const check=inspect(result.questions);const detected=detectMetadata(result.header);
    if(!detected)throw Error('Could not determine the paper and attempt number from this PDF. No attempt was saved.');
    if(!check.ordered.length)throw Error('No numbered questions found. Make sure this is the completed attempt-review PDF.');
-   if(check.duplicates.length||check.missing.length||check.ungraded.length||check.unreadable.length){
+   if(check.duplicates.length||check.missing.length){
     const details=[];
     if(check.duplicates.length)details.push('duplicate numbers '+check.duplicates.join(', '));
     if(check.missing.length)details.push('missing numbers '+check.missing.join(', '));
@@ -115,8 +181,9 @@
     if(check.unreadable.length)details.push('unreadable question text '+check.unreadable.join(', '));
     throw Error('Some pages need a clearer PDF ('+details.join('; ')+'). No incomplete attempt was saved.');
    }
-   note(detected.subject+' · '+check.ordered.length+' questions · saving…');
-   await save(check.ordered,detected,result);
+   state.pending={questions:check.ordered,detected:detected,result:result};
+   renderVerification(check.ordered,detected);
+   note('Extracted '+check.ordered.length+' questions. Check the grades and correct answers. Expand any question to fix OCR mistakes.'+(check.ungraded.length?' Marking needs confirmation for questions '+check.ungraded.join(', ')+'.':'')+(check.unreadable.length?' Some question text is unclear; attach the original PDF in ChatGPT for verification.':''));
   }catch(e){note('Could not import PDF: '+(e&&e.message?e.message:String(e)));}
   finally{state.busy=false;$('pdfFile').disabled=false;}
  }

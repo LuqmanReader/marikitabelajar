@@ -1,152 +1,119 @@
+/* LedgerPeer manual, zero-API-cost ChatGPT debrief.
+   PDF -> original marks saved -> user copies one request -> JSON validated and merged ->
+   ChapterAnalysis produces graphs/strengths/weaknesses from the original grades. */
 (function(root){
-  'use strict';
-  var F=RevisionFlow, M=ChapterAnalysis;
-  function rankTable(questions){
-    var rows=M.summary(questions).chapters.sort(function(a,b){return b.correct/b.total-a.correct/a.total||b.total-a.total;});
-    if(!rows.length)return '<p>No graded questions have topic tags yet. AI will assign them.</p>';
-    return '<div class="flow-table-scroll"><table class="flow-rank-table"><thead><tr><th>Rank</th><th>Topic</th><th>Correct</th><th>Accuracy</th></tr></thead><tbody>'+rows.map(function(r,i){return '<tr><td>'+(i+1)+'</td><td>'+F.escape(r.chapter)+'</td><td>'+r.correct+'/'+r.total+'</td><td>'+Math.round(r.correct/r.total*1000)/10+'%</td></tr>';}).join('')+'</tbody></table></div>';
+ 'use strict';
+ const F=root.RevisionFlow, M=root.ChapterAnalysis;
+ const requireFields=['reasoning','calculation','justification','focus'];
+ const escape=F.escape;
+ function incomplete(q){return !String(q.chapter||'').trim()||requireFields.some(k=>!String(q[k]||'').trim());}
+ function catalog(meta){
+  const saved=M.catalog(localStorage,meta.subject);
+  return saved.length?saved:(root.LedgerTopicTaxonomy?root.LedgerTopicTaxonomy.names(meta.subject):[]);
+ }
+ function rankTable(questions){
+  const rows=M.summary(questions).chapters.sort((a,b)=>b.correct/b.total-a.correct/a.total||b.total-a.total);
+  if(!rows.length)return '<p class="flow-muted">Import the AI topics to populate topic accuracy.</p>';
+  return '<div class="flow-table-scroll"><table class="flow-rank-table"><thead><tr><th>Topic</th><th>Correct</th><th>Accuracy</th></tr></thead><tbody>'+rows.map(x=>'<tr><td>'+escape(x.chapter)+'</td><td>'+x.correct+'/'+x.total+'</td><td>'+Math.round(x.correct/x.total*1000)/10+'%</td></tr>').join('')+'</tbody></table></div>';
+ }
+ function insights(questions){
+  const rows=M.summary(questions).chapters.filter(x=>x.total>=3);
+  if(!rows.length)return '<p class="flow-muted">Strengths and weaknesses become available when a topic has at least three graded questions.</p>';
+  const strong=rows.filter(x=>x.correct/x.total>=.8).sort((a,b)=>b.correct/b.total-a.correct/a.total).slice(0,3);
+  const weak=rows.filter(x=>x.correct/x.total<.6).sort((a,b)=>a.correct/a.total-b.correct/b.total).slice(0,3);
+  function group(title,items){return '<div class="flow-insight-card"><strong>'+title+'</strong>'+(items.length?'<ul>'+items.map(x=>'<li>'+escape(x.chapter)+' — '+x.correct+'/'+x.total+' correct</li>').join('')+'</ul>':'<p>More evidence needed.</p>')+'</div>';}
+  return '<div class="flow-insights">'+group('Strengths',strong)+group('Needs work',weak)+'</div>';
+ }
+ function mount(el,initial,meta,onSaved){
+  if(!el||!F||!M)return;
+  let data=initial,expected=localStorage.getItem('tymba_exam_data:'+meta.id),staged=null;
+  const isPdf=meta.sourceFormat==='pdf';
+  el.className='flow-panel';el.id='chatgpt-debrief';
+  el.innerHTML=`
+    <div class="flow-steps"><span>1 · PDF saved</span><span class="current">2 · Ask ChatGPT</span><span>3 · Update graphs</span></div>
+    <h2>AI Question Analysis · ChatGPT JSON</h2>
+    <p>Your original exam marks stay unchanged. ChatGPT explains each question and assigns one topic; LedgerPeer calculates the accuracy, graphs, strengths and weaknesses automatically.</p>
+    <p id="debriefProgress" class="flow-muted"></p>
+    <section class="flow-path"><h3>Step 1 · Copy the question request</h3>
+      <p>Click Copy Request, open ChatGPT, and paste it. <strong>${isPdf?'Attach the same original PDF in ChatGPT':'Attach the original marked exam PDF if available'}</strong> so figures, tables and answers can be verified against the source rather than unreliable OCR. Ask ChatGPT to return the <strong>complete JSON</strong>.</p>
+      <div class="flow-actions"><button type="button" class="flow-button primary" id="copyAIRequest">Copy complete request</button><a class="flow-button secondary" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT ↗</a><button type="button" class="flow-button secondary" id="downloadAIRequest">Download request .txt</button></div>
+      <details><summary>View / manually copy your AI request</summary><textarea id="requestText" rows="7" readonly aria-label="Prepared request"></textarea></details>
+    </section>
+    <section class="flow-path"><h3>Step 2 · Bring the JSON back to LedgerPeer</h3>
+      <p>Paste ChatGPT's JSON below, or upload its saved <code>.json</code> / <code>.txt</code>. LedgerPeer checks the question IDs, original marks and topic labels before saving anything.</p>
+      <label class="flow-field">ChatGPT JSON response<textarea id="aiResponse" class="flow-response" rows="9" placeholder='Paste the complete JSON response here, starting with {'></textarea></label>
+      <label class="flow-field">Or select the response file<input type="file" id="aiResponseFile" accept=".json,.txt,application/json,text/plain"></label>
+      <div class="flow-actions"><button type="button" class="flow-button secondary" id="previewAIResponse">Preview classification</button><button type="button" class="flow-button primary" id="applyAIResponse">Apply JSON &amp; update graphs</button></div>
+      <p role="status" aria-live="polite" id="aiResponseMessage"></p><div id="aiResponsePreview" class="flow-preview" hidden></div>
+    </section>
+    <section class="flow-path"><h3>Step 3 · Your topic analysis</h3><div id="aiCurrentAnalysis"></div>
+      <div class="flow-actions"><a class="flow-button secondary" href="hub.html#analysis">View dashboard graphs →</a><button type="button" class="flow-button secondary" id="downloadAttemptData">Download attempt backup</button></div>
+      <p class="flow-muted">Partial-credit questions retain their awarded marks. The existing correct/incorrect graph counts only fully correct answers as correct.</p>
+    </section>
+    <details><summary>Advanced · Edit topic names and the topic catalog</summary><div id="chapterEditor"></div></details>`;
+  const $=id=>el.querySelector('#'+id);
+  function missing(){return data.filter(incomplete);}
+  function updateInfo(){
+   const left=missing();const info=M.summary(data);
+   $('debriefProgress').textContent=data.length+' questions saved · '+(data.length-left.length)+' with complete explanations and topics · '+left.length+' still pending · '+info.coverage.tagged+' tagged for graphs.';
+   $('aiCurrentAnalysis').innerHTML=insights(data)+rankTable(data);
+   $('copyAIRequest').textContent=left.length&&left.length<data.length?'Copy request for '+left.length+' unfinished questions':'Copy complete request';
   }
-  function insights(questions){
-    var sum=M.summary(questions),rows=sum.chapters.filter(function(r){return r.total>=3;});
-    if(!rows.length)return '<p class="flow-muted">At least 3 graded questions in a topic are needed before it is labelled a strength or weakness. The chart still uses every graded, tagged question.</p>';
-    var strong=rows.filter(function(r){return r.correct/r.total>=.8;}).sort(function(a,b){return b.correct/b.total-a.correct/a.total;}).slice(0,3);
-    var weak=rows.filter(function(r){return r.correct/r.total<.6;}).sort(function(a,b){return a.correct/a.total-b.correct/b.total;}).slice(0,3);
-    function group(title,items){return '<div class="flow-insight-card"><strong>'+title+'</strong>'+(items.length?'<ul>'+items.map(function(x){return '<li>'+F.escape(x.chapter)+' — '+x.correct+'/'+x.total+' correct</li>';}).join('')+'</ul>':'<p>Not enough evidence yet.</p>')+'</div>';}
-    return '<div class="flow-insights">'+group('Strengths · 80%+',strong)+group('Needs work · under 60%',weak)+'</div>';
+  function makePrompt(){
+    const pending=missing();const selected=pending.length?pending:data;
+    return F.prompt(meta,selected,catalog(meta),data);
   }
-  function mount(el,data,meta,onSaved){
-    var staged=null,geminiBusy=false,geminiController=null;
-    var original=localStorage.getItem('tymba_exam_data:'+meta.id);
-    var summary=M.summary(data),explained=data.filter(F.hasFeedback).length;
-    el.className='flow-panel';
-    el.innerHTML='<nav class="flow-steps" aria-label="Revision workflow"><span>1 · Attempt saved</span><span class="current">2 · Generate AI debrief</span><span>3 · Analyze progress</span></nav>'+
-      '<h2>One AI debrief · Every question</h2><p>One response assigns topics, explains answers and suggests what to practise. LedgerPeer uses <strong>your original marks</strong> to update topic rankings, graphs, strengths and weaknesses automatically.</p>'+
-      '<p class="flow-muted">'+data.length+' questions saved · '+explained+' already explained · '+summary.coverage.tagged+' graded questions have topic tags.</p>'+
-      '<section class="flow-path"><h3>A · Analyze inside LedgerPeer</h3><p>Classifies and fully explains every question in small batches. Completed questions save automatically and are skipped when you resume. This may take several minutes. Requires the updated Supabase <code>analyze-attempt</code> function.</p>'+
-      '<div class="flow-actions"><button type="button" id="analyzeGemini" class="flow-button primary">Analyze all questions with AI</button><button type="button" id="cancelGemini" class="flow-button secondary" hidden>Cancel analysis</button></div><p id="geminiMessage" role="status" aria-live="polite"></p></section>'+
-      '<section class="flow-path"><h3>B · Or use ChatGPT</h3><p>Just copy the prepared request, get the JSON response, paste it back here, and click Apply. No manual chapter tagging, rankings or calculations required.</p>'+
-      '<div class="flow-actions"><button type="button" id="copyAIRequest" class="flow-button">1 · Copy AI request</button><a class="flow-button secondary" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT ↗</a></div>'+
-      '<label class="flow-field">2 · Paste the AI response<textarea id="aiResponse" class="flow-response" rows="7" placeholder="Paste one complete JSON response from your AI here."></textarea></label>'+
-      '<label class="flow-field">Or upload the AI response (.json or .txt)<input type="file" id="aiResponseFile" accept=".json,.txt,application/json,text/plain"></label>'+
-      '<div class="flow-actions"><button type="button" id="applyAIResponse" class="flow-button primary">3 · Apply debrief &amp; update graphs</button><button type="button" id="previewAIResponse" class="flow-button secondary">Preview first</button></div>'+
-      '<details id="requestFallback"><summary>Manual copy / save AI request</summary><textarea id="requestText" rows="7" readonly aria-label="AI request to copy"></textarea><div class="flow-actions"><button type="button" id="downloadAIRequest" class="flow-button secondary">Download request (.txt)</button></div></details></section>'+
-      '<p id="aiResponseMessage" role="status" aria-live="polite"></p><div id="aiResponsePreview" hidden class="flow-preview"></div>'+
-      '<section class="flow-path"><h3>Topic analysis</h3>'+insights(data)+'<details><summary>Current topic ranking · strongest to weakest</summary>'+rankTable(data)+'</details><div class="flow-actions"><a class="flow-button secondary" href="hub.html#analysis">See graphs and strengths/weaknesses →</a><button type="button" id="downloadAttemptData" class="flow-button secondary">Download attempt backup</button></div></section>'+
-      '<details><summary>Advanced · Edit question topics or the topic catalog</summary><div id="chapterEditor"></div></details>';
-    var $=function(id){return el.querySelector('#'+id);};
-    function message(text){$('aiResponseMessage').textContent=text;}
-    function makePrompt(){return F.prompt(meta,data,M.catalog(localStorage,meta.subject));}
-    function fillRequest(){var content=makePrompt();$('requestText').value=content;return content;}
-    try {fillRequest();} catch(promptError) {
-      console.warn('AI request preview unavailable:',promptError);
-      $('requestText').value='Could not prepare manual AI prompt: '+promptError.message;
-      $('aiResponseMessage').textContent='The manual prompt could not be prepared. Gemini analysis may still be available.';
-    }
-    function renderPreview(result){
-      var coverage=M.summary(result.questions).coverage;
-      var preview='<h3>Debrief preview · '+result.count+'/'+data.length+' questions</h3>'+
-        '<p>'+coverage.tagged+' graded questions tagged · '+coverage.untagged+' still untagged. These statistics come from the original marked answers.</p>'+
-        result.warnings.map(function(w){return '<p class="flow-notice">'+F.escape(w)+'</p>';}).join('')+
-        insights(result.questions)+rankTable(result.questions)+
-        '<details><summary>See each explanation</summary>'+result.changed.map(function(p){var q=result.questions.find(function(x){return String(x.qno)===String(p.qno);});return '<section class="flow-preview"><strong>Q'+F.escape(q.qno)+' · '+F.escape(q.chapter||'Unassigned')+'</strong><p>'+F.escape(F.plain(q.qtext).slice(0,200))+'</p>'+F.feedback(q)+'</section>';}).join('')+'</details>';
-      $('aiResponsePreview').innerHTML=preview;$('aiResponsePreview').hidden=false;
-    }
-    async function saveResult(result){
-      if(localStorage.getItem('tymba_exam_data:'+meta.id)!==original)throw new Error('The attempt changed in another tab. Reload before importing.');
-      var merged=result.questions.map(function(q){var x=Object.assign({},q);if(typeof x.debrief==='string')x.debrief=F.sanitize(x.debrief);return x;});
-      F.save(localStorage,'tymba_exam_data:'+meta.id,merged);
-      try{sessionStorage.setItem('personal_hub_ai_saved:'+meta.id,'1');}catch(e){}
-      original=localStorage.getItem('tymba_exam_data:'+meta.id);
-      message('Saved on this device. Cloud backup will run automatically.');
-      // Local data is saved immediately. Autosync keeps trying in the background;
-      // never block a learner's debrief on a remote network request.
-      message('Debrief saved. Opening your updated review…');
-      onSaved(merged);
-    }
-    function confirmCoverage(result){
-      var incomplete=result.count<data.length;
-      var untagged=M.summary(result.questions).coverage.untagged;
-      var missing=result.questions.filter(function(q){return q.is_correct===false&&!F.hasFeedback(q);}).length;
-      if(incomplete||untagged||missing){
-        var summary=[];
-        if(incomplete)summary.push('Only '+result.count+' of '+data.length+' question updates were returned.');
-        if(untagged)summary.push(untagged+' graded questions have no topic tag.');
-        if(missing)summary.push(missing+' incorrect questions have no explanation.');
-        return confirm('This response is incomplete:\n\n'+summary.join('\n')+'\n\nSave the partial debrief anyway? You can import more feedback later.');
-      }
-      return true;
-    }
-    $('copyAIRequest').addEventListener('click',async function(){
-      var content=fillRequest();try{if(!navigator.clipboard)throw new Error('Clipboard unavailable');await navigator.clipboard.writeText(content);message('Request copied. Paste it into ChatGPT, then bring the JSON answer back here.');}
-      catch(e){$('requestFallback').open=true;$('requestText').focus();$('requestText').select();message('Request selected. Press Ctrl+C to copy it.');}
-    });
-    $('downloadAIRequest').addEventListener('click',function(){F.download('ai-request-'+meta.id+'.txt',fillRequest(),'text/plain');});
-    $('downloadAttemptData').addEventListener('click',function(){F.download('attempt-'+meta.id+'.json',JSON.stringify({subject:meta.subject,title:meta.title,testType:meta.testType,testNumber:meta.testNumber,setChapter:meta.setChapter,questions:data},null,2));});
-    $('aiResponseFile').addEventListener('change',async function(){
-      var file=this.files[0];if(!file)return;
-      try{$('aiResponse').value=await file.text();message('AI response loaded. Click Apply debrief & update graphs.');$('aiResponsePreview').hidden=true;}
-      catch(e){message('Could not read the AI response file.');}
-    });
-    $('aiResponse').addEventListener('input',function(){$('aiResponsePreview').hidden=true;});
-    $('previewAIResponse').addEventListener('click',function(){
-      try{staged=F.review($('aiResponse').value,data,meta);renderPreview(staged);message('Preview ready. When satisfied, click Apply debrief & update graphs.');}
-      catch(e){staged=null;message(e.message);}
-    });
-    $('applyAIResponse').addEventListener('click',async function(){
-      var button=this;button.disabled=true;
-      try{staged=F.review($('aiResponse').value,data,meta);renderPreview(staged);if(!confirmCoverage(staged))return;await saveResult(staged);}
-      catch(e){message('Import failed: '+e.message);}
-      finally{button.disabled=false;}
-    });
-    $('cancelGemini').addEventListener('click',function(){if(geminiController)geminiController.abort();});
-    $('analyzeGemini').addEventListener('click',async function(){
-      if(geminiBusy)return;geminiBusy=true;geminiController=new AbortController();
-      $('analyzeGemini').disabled=true;$('cancelGemini').hidden=false;
-      try{
-        if(!root.GeminiAnalysis)throw new Error('gemini-analysis.js is missing. Use the manual AI workflow below.');
-        var response=await root.GeminiAnalysis.analyze(meta,data,function(text){$('geminiMessage').textContent=text;},geminiController.signal);
-        if(geminiController.signal.aborted)throw new Error('Analysis stopped. Your completed questions remain saved.');
-        // The new Gemini worker saves each successful batch immediately. Do not
-        // reject its own saves as a second-tab conflict or overwrite them here.
-        var current=JSON.parse(localStorage.getItem('tymba_exam_data:'+meta.id)||'null');
-        if(!Array.isArray(current)||F.signature(current)!==F.signature(data))
-          throw new Error('The attempt changed during AI analysis. Reload to review what was saved.');
-        staged=F.review(response,data,meta);
-        renderPreview(staged);
-        if(!confirmCoverage(staged)){$('geminiMessage').textContent='Your completed batches are saved. Review the warning and reload before resuming.';return;}
-        try{sessionStorage.setItem('personal_hub_ai_saved:'+meta.id,'1');}catch(e){}
-        $('geminiMessage').textContent='All debriefs saved. Refreshing your graphs…';
-        onSaved(current);
-      }catch(e){$('geminiMessage').textContent=(e.message||'Analysis failed.')+' Any completed batches remain saved. You can retry later.';$('analyzeGemini').hidden=false;}
-      finally{geminiBusy=false;geminiController=null;$('analyzeGemini').disabled=false;$('cancelGemini').hidden=true;}
-    });
-    if(M&&root.ChapterUI)root.ChapterUI.mountEditor($('chapterEditor'),data,meta,localStorage,function(merged){
-      if(localStorage.getItem('tymba_exam_data:'+meta.id)!==original)throw new Error('This attempt changed elsewhere. Reload before saving.');
+  function fillPrompt(){const content=makePrompt();$('requestText').value=content;return content;}
+  function message(text,error=false){const node=$('aiResponseMessage');node.textContent=text;node.className=error?'flow-notice':'flow-success';}
+  function preview(result){
+   const coverage=M.summary(result.questions).coverage;
+   const next=result.questions.filter(incomplete);
+   $('aiResponsePreview').hidden=false;
+   $('aiResponsePreview').innerHTML='<h3>Import preview</h3><p>'+result.count+' question updates included · '+coverage.tagged+' topics assigned · '+next.length+' questions still need full feedback.</p>'+result.warnings.map(x=>'<p class="flow-notice">'+escape(x)+'</p>').join('')+insights(result.questions)+rankTable(result.questions)+'<details><summary>Preview explanations and classifications</summary>'+result.changed.map(change=>{const q=result.questions.find(x=>String(x.qno)===String(change.qno));return '<section class="flow-preview"><strong>Q'+escape(q.qno)+' · '+escape(q.chapter||'Topic not assigned')+'</strong><p>'+escape(F.plain(q.qtext).slice(0,160))+'</p>'+F.feedback(q)+'</section>';}).join('')+'</details>';
+  }
+  updateInfo();fillPrompt();
+  $('copyAIRequest').addEventListener('click',async()=>{
+   try{await navigator.clipboard.writeText(fillPrompt());message('Request copied. Attach the PDF to ChatGPT, paste the request and ask for the JSON.');}
+   catch(e){fillPrompt();$('requestText').parentElement.open=true;$('requestText').focus();$('requestText').select();message('Clipboard unavailable; the request is selected. Press Ctrl+C.');}
+  });
+  $('downloadAIRequest').addEventListener('click',()=>F.download('ledgerpeer-chatgpt-request-'+meta.id+'.txt',fillPrompt(),'text/plain'));
+  $('downloadAttemptData').addEventListener('click',()=>F.download('ledgerpeer-attempt-backup-'+meta.id+'.json',JSON.stringify({meta,questions:data},null,2)));
+  $('aiResponseFile').addEventListener('change',async function(){
+   const file=this.files[0];if(!file)return;
+   try{$('aiResponse').value=await file.text();$('aiResponsePreview').hidden=true;message('JSON file loaded. Preview or click Apply.');}
+   catch(e){message('Could not read the response file.',true);}
+  });
+  $('aiResponse').addEventListener('input',()=>{$('aiResponsePreview').hidden=true;staged=null;});
+  $('previewAIResponse').addEventListener('click',()=>{
+   try{staged=F.review($('aiResponse').value,data,meta);preview(staged);message('Preview ready. Check topics and explanations before applying.');}
+   catch(e){staged=null;message('Invalid AI response: '+e.message,true);}
+  });
+  $('applyAIResponse').addEventListener('click',()=>{
+   const btn=$('applyAIResponse');btn.disabled=true;
+   try{
+    staged=F.review($('aiResponse').value,data,meta);
+    preview(staged);
+    const left=staged.questions.filter(incomplete);
+    if(left.length&&!confirm('ChatGPT returned an incomplete debrief: '+left.length+' question(s) still need topics or explanations. Save valid parts now? LedgerPeer will prepare a continuation prompt for the missing parts.'))return;
+    if(localStorage.getItem('tymba_exam_data:'+meta.id)!==expected)throw Error('The saved attempt changed in another tab. Reload before importing so you do not overwrite newer work.');
+    const updated=staged.questions.map(q=>Object.assign({},q,{debrief:typeof q.debrief==='string'?F.sanitize(q.debrief):q.debrief}));
+    F.save(localStorage,'tymba_exam_data:'+meta.id,updated);
+    try{sessionStorage.setItem('personal_hub_ai_saved:'+meta.id,'1');}catch(e){}
+    data=updated;expected=localStorage.getItem('tymba_exam_data:'+meta.id);
+    updateInfo();fillPrompt();
+    message('Saved '+staged.count+' question updates. Refreshing questions and topic graphs…');
+    onSaved(updated);
+   }catch(e){message('Could not apply the JSON: '+e.message,true);}
+   finally{btn.disabled=false;}
+  });
+  if(root.ChapterUI){
+    root.ChapterUI.mountEditor($('chapterEditor'),data,meta,localStorage,function(merged){
+      if(localStorage.getItem('tymba_exam_data:'+meta.id)!==expected)throw Error('Your attempt has changed; reload before saving.');
       F.save(localStorage,'tymba_exam_data:'+meta.id,merged);onSaved(merged);
     });
-    el.addEventListener('click',function(e){if(e.target.id==='saveChapterCatalog')setTimeout(fillRequest,0);});
-    try{if(sessionStorage.getItem('personal_hub_ai_saved:'+meta.id)){message('Saved! Your question explanations, topic rankings, graphs and strengths/weaknesses have been refreshed.');$('aiResponseMessage').className='flow-success';sessionStorage.removeItem('personal_hub_ai_saved:'+meta.id);}}catch(e){}
-    // PDF-only attempts have one automatic workflow, not a manual debrief menu.
-    if(meta.sourceFormat==='pdf'){
-      const panels=el.querySelectorAll('section.flow-path');
-      if(panels[1])panels[1].remove(); // no ChatGPT copy/paste or file upload
-      const editor=el.querySelector('#chapterEditor'),advanced=editor?editor.closest('details'):null;
-      if(advanced)advanced.remove();
-      const steps=el.querySelector('nav.flow-steps');if(steps)steps.remove();
-      const title=el.querySelector('h2');if(title)title.textContent='Automatic PDF topic analysis';
-      const intro=title&&title.nextElementSibling;
-      if(intro)intro.textContent='LedgerPeer saved your questions and marks from the PDF. Topic classification, full explanations and graphs are generated automatically when Gemini is available.';
-      const action=$('analyzeGemini');
-      action.textContent='Resume unfinished analysis';
-      const url=new URL(location.href);
-      if(url.searchParams.get('auto_analyze')==='1'){
-        url.searchParams.delete('auto_analyze');
-        try{history.replaceState(null,'',url.pathname+url.search+url.hash);}catch(e){}
-        action.hidden=true;
-        $('geminiMessage').textContent='PDF saved. Starting topic analysis and full explanations automatically…';
-        setTimeout(function(){action.click();},800);
-      }
-    }
   }
-  root.DebriefWorkflow={mount:mount,rankTable:rankTable,insights:insights};
+  el.addEventListener('click',e=>{if(e.target.id==='saveChapterCatalog')setTimeout(fillPrompt,0);});
+  try{if(sessionStorage.getItem('personal_hub_ai_saved:'+meta.id)){message('Your imported feedback is saved. Graphs are calculated from your original marks.');sessionStorage.removeItem('personal_hub_ai_saved:'+meta.id);}}catch(e){}
+ }
+ root.DebriefWorkflow={mount,rankTable,insights};
 })(window);

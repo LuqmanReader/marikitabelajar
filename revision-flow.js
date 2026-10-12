@@ -53,7 +53,16 @@
       if(!original)throw new Error('Question '+n+' does not belong to this attempt.');
       if(seen.has(n))throw new Error('Duplicate feedback for question '+n+'.');seen.add(n);
       var item={qno:original.qno};
-      if(own(q,'chapter')||own(q,'topic'))item.chapter=root.ChapterAnalysis.label(own(q,'chapter')?q.chapter:q.topic);
+      if(own(q,'chapter')||own(q,'topic')){
+        item.chapter=root.ChapterAnalysis.label(own(q,'chapter')?q.chapter:q.topic);
+        var userCatalog=root.ChapterAnalysis.catalog(localStorage,meta.subject);
+        var allowed=userCatalog.length?userCatalog:(root.LedgerTopicTaxonomy?root.LedgerTopicTaxonomy.names(meta.subject):[]);
+        if(item.chapter&&allowed.length){
+          var matched=allowed.find(function(name){return name.toLowerCase()===item.chapter.toLowerCase();});
+          if(!matched)throw new Error('Q'+n+': unknown topic "'+item.chapter+'". Use an exact name from this paper\'s Topic Catalog.');
+          item.chapter=matched;
+        }
+      }
       fields.forEach(function(k){if(own(q,k))item[k]=textField(q[k],k);});
       if(own(q,'debrief'))item.debrief=textField(q.debrief,'debrief');
       ['is_correct','qtext','options','your_answer','correct_answer'].forEach(function(k){
@@ -72,7 +81,7 @@
     if(missing)warnings.push(missing+' incorrect questions still need an explanation.');
     return {questions:merged,count:accepted.length,warnings:Array.from(new Set(warnings)),coverage:coverage,changed:accepted};
   }
-  function hasFeedback(q){return fields.slice(0,3).some(function(k){return typeof q[k]==='string'&&!!q[k].trim();})||(typeof q.debrief==='string'&&!!q.debrief.trim());}
+  function hasFeedback(q){return fields.slice(0,3).some(function(k){return typeof q[k]==='string'&&q[k].trim();})||!!(q.debrief&&q.debrief.trim());}
   function feedback(q){
     if(fields.slice(0,3).some(function(k){return q[k]&&q[k].trim();})){
       return [['reasoning','Reasoning'],['calculation','Calculation'],['justification','Justification']].map(function(p){return '<section class="feedback-part"><h4>'+p[1]+'</h4><div>'+esc(q[p[0]]||'Not provided yet.').replace(/\n/g,'<br>')+'</div></section>';}).join('')+(q.focus?'<div class="focus-note"><strong>Practise next:</strong> '+esc(q.focus)+'</div>':'');
@@ -81,15 +90,15 @@
   }
   // One request = topic classification and tutor feedback. Graphs, rankings, and
   // strengths/weaknesses are derived from the ORIGINAL marked answers in LedgerPeer.
-  function prompt(meta,questions,catalog){
+  function prompt(meta,questions,catalog,signatureSource){
     var type=meta.testType==='set'?'Chapter Set':meta.testType==='pre'?'Progress Test':'Mock Test';
     var example={
       schema:'personal-hub-debrief-v2',
       exam_id:meta.id,
-      attempt_signature:signature(questions),
+      attempt_signature:signature(signatureSource||questions),
       questions:[{
         qno:questions[0].qno,
-        chapter:'Primary topic name',
+        chapter:catalog.length?catalog[0]:'Primary topic name',
         reasoning:'Explain the concept and how to solve the question.',
         calculation:'Show working and formulas, or Not applicable.',
         justification:'Why the recorded correct answer is supported; identify the mistake if wrong.',
@@ -104,25 +113,32 @@
         question:plain(q.qtext),
         options:(q.options||[]).map(function(o){return {text:plain(o.text),chosen:!!o.checked};}),
         my_answer:plain(q.your_answer||''),
-        correct_answer:plain(q.correct_answer||'')
+        correct_answer:plain(q.correct_answer||''),
+        original_marks:q.original_marks==null?null:q.original_marks,
+        original_max_marks:q.original_max_marks==null?null:q.original_max_marks,
+        pdf_page:q.pdf_page||null
       };
-      if(q.source_feedback)item.source_feedback=plain(q.source_feedback);
+      if(q.source_feedback){var sourceNote=plain(q.source_feedback);if(sourceNote&&sourceNote!==item.question)item.source_feedback=sourceNote.slice(0,800);}
+      if(q.source_result)item.source_grade=String(q.source_result);
       if(/<img\b/i.test(q.qtext||'')||(q.options||[]).some(function(o){return /<img\b/i.test(o.text||'');}))item.image_not_in_text_export=true;
       return item;
     });
     var instruction=[
       'Act as my FIA/ACCA exam debrief tutor for '+meta.subject+' ('+type+').',
       'For EVERY numbered question: (1) choose one specific primary topic, (2) explain the reasoning, (3) show calculations or say Not applicable, (4) justify the recorded answer and explain my mistake if relevant, (5) suggest one practice focus.',
-      'CLASSIFICATION IS THE FIRST PRIORITY. Assign ONE specific primary topic to EVERY scored question, correct or incorrect. When TOPIC CATALOG is supplied, choose ONLY a name verbatim from that list; do not invent synonyms, umbrella labels, or chapter numbers. Do not use Generic, Other, Miscellaneous, or the paper title as a topic. If a question lacks enough text/images to classify safely, use chapter "" and explain the missing information.',
-      'Respect the original marks and answers: never change the question, result or answer key. If a key appears suspect, or an image/context is missing, explain the uncertainty rather than inventing information.',
-      'Return ONLY one valid JSON object with every question once, in the format shown below. No Markdown or website code. All feedback fields must be strings. No graphs, rankings, averages or score totals: LedgerPeer calculates these from my marked answers.',
+      'TOPIC CLASSIFICATION: For EVERY question, assign exactly ONE specific primary topic. If an allowed topic list is supplied, use the exact supplied spelling. Do not invent generic categories or chapter numbers. If the source genuinely lacks enough content to classify, use chapter "" and explain why.',
+      'The PDF is an attempt-review export, often made of screenshots. Cross-check the ATTACHED ORIGINAL PDF for questions, images, tables, correct answers and grading. OCR QUESTION DATA is a guide, not proof for complex figures. If no PDF is attached, never invent missing figures; explicitly flag uncertain or unreadable questions.',
+      'Respect all recorded marks and grading. Never alter question number, score, original recorded correct answer or the marking decision. Some learner-selected choices were not captured by OCR. Never invent a learner choice or diagnose its specific mistake unless visible in the source.',
+      'Explain EVERY question, including correct ones, in full teaching detail. Give concept, calculations with steps where applicable, justification of the answer, and a specific practice focus. For uncertain source content, state the limitation in the relevant explanation instead of guessing.',
+      'Return ONLY one COMPLETE valid JSON object with every requested question exactly once. No Markdown fences or extra prose. All feedback fields must be strings; calculation must be "Not applicable" if none. If you cannot fit a complete response, return a valid partial JSON for the questions you finished (never malformed/truncated JSON). LedgerPeer will prepare a continuation request for missing questions.',
+      'Do not calculate scores, topic percentages, strengths, weaknesses or graphs. LedgerPeer calculates those from the ORIGINAL marks.',
       '',
-      'RESPONSE SHAPE (example first item only; complete ALL questions):',
+      'RESPONSE SHAPE (illustrative example first item only; use the ACTUAL matching topic for each question rather than repeating its example topic):',
       JSON.stringify(example,null,2),
       '',
       'ATTEMPT: '+meta.title,
       'SET CHAPTER: '+(meta.setChapter||'Not applicable'),
-      'ALLOWED TOPICS (exact labels for this paper): '+(catalog.length?JSON.stringify(catalog):'No validated topic list available — choose consistent descriptive primary topics'),
+      'ALLOWED TOPICS (broad suggestions from LedgerPeer, not verified textbook chapter numbers): '+(catalog.length?JSON.stringify(catalog):'No supplied topic list: use consistent descriptive primary topics'),
       'QUESTION DATA:',
       JSON.stringify(payload)
     ];
