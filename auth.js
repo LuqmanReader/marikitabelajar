@@ -194,3 +194,13 @@
   addLockButton(){if(document.getElementById('phLockButton'))return;const b=document.createElement('button');b.id='phLockButton';b.textContent='SIGN OUT';b.type='button';b.style.cssText='position:fixed;right:16px;bottom:16px;z-index:99999;border:3px solid #111;background:#E63B2E;color:#fff;padding:10px 14px;font:900 12px monospace;box-shadow:4px 4px 0 #111;cursor:pointer';b.onclick=logout;document.body.append(b);}
  };window.PersonalHubAuth=api;
 })();
+/* ADD THIS TO THE END OF YOUR EXISTING auth.js FILE.
+   Do not replace the rest of auth.js or touch the login functions. */
+;(() => {
+  if (document.querySelector('script[data-ledgerpeer-spotify="true"]')) return;
+  const script = document.createElement('script');
+  script.src = 'spotify-study-music.js';
+  script.async = true;
+  script.dataset.ledgerpeerSpotify = 'true';
+  document.head.appendChild(script);
+})();
