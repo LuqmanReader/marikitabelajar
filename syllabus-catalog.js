@@ -1,5 +1,5 @@
 /* ACCA syllabus headings (not invented AI categories).
-   Sources: ACCA PM 2025/26 syllabus, MA2 2025/26 syllabus, MA1 2025/26 syllabus.
+   Sources: ACCA PM 2026/27 syllabus, MA2 2025/26 syllabus, MA1 2025/26 syllabus.
    Always use the selected paper; never infer it from an uploaded PDF. */
 (function(root){
  'use strict';
@@ -27,7 +27,7 @@
   ]
  };
  const sources={
-  PM:'https://www.accaglobal.com/gb/en/student/exam-support-resources/fundamentals-exams-study-resources/f5/syllabus-study-guide.html',
+  PM:'https://www.accaglobal.com/content/dam/acca/global/PDF-students/acca/f5/studyguides/pm_s26_j27_syllabus_and_study_guide.pdf',
   MA2:'https://www.accaglobal.com/uk/en/student/exam-support-resources/foundation-level-study-resources/ma2/ma2-syllabus-study-guide.html',
   MA1:'https://www.accaglobal.com/middle-east/en/student/exam-support-resources/foundation-level-study-resources/ma1/ma1-syllabus-study-guide.html'
  };
