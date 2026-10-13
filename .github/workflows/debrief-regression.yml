@@ -23,3 +23,5 @@ jobs:
           node-version: '22'
       - name: Run 25-paper debrief regression
         run: node tests/debrief-regression.js
+      - name: Test FIA/ACCA PDF attempt import formats
+        run: node tests/pdf-parser-regression.js
