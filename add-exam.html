@@ -17,6 +17,7 @@
   <label for="pdfTestNumber">Attempt number<input id="pdfTestNumber" type="number" min="1" max="999" step="1" placeholder="e.g. 1" required></label>
   <label for="pdfSetChapter" id="pdfChapterWrap" hidden>Chapter Set target (approved syllabus topic)<input id="pdfSetChapter" type="text" maxlength="120" list="pdfTopicOptions" placeholder="Choose an approved topic if available"><datalist id="pdfTopicOptions"></datalist></label>
 </div>
+<p id="pdfFormatReference" class="flow-muted" role="status">Select a paper to see ACCA's published examination format and syllabus reference.</p>
 <label class="pdf-drop"><strong>Choose your attempt review PDF</strong><input id="pdfFile" type="file" accept=".pdf,application/pdf" aria-describedby="pdfDescription"><small id="pdfDescription">PDF only. Image-based PDFs are read on your device and can take several minutes. You will review the extracted results before copying the ChatGPT request.</small></label>
 <progress id="pdfProgress" value="0" max="1" hidden></progress><p id="pdfStatus" role="status" aria-live="polite">Choose a marked attempt-review PDF. LedgerPeer will read it locally and show the extracted results for confirmation.</p></section>
 <section id="pdfVerify" class="flow-panel" hidden></section>
