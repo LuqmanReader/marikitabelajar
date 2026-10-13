@@ -6,7 +6,12 @@
  const F=root.RevisionFlow, M=root.ChapterAnalysis;
  const requireFields=['reasoning','calculation','justification','focus','topic_reason'];
  const escape=F.escape;
- function incomplete(q){return !(String(q.chapter||'').trim()||q.topic_status==='outside'||q.topic_status==='unreadable')||requireFields.some(k=>!String(q[k]||'').trim());}
+ function incomplete(q,meta){
+  const allowed=catalog(meta);
+  const matched=allowed.some(t=>t.toLowerCase()===String(q.chapter||'').toLowerCase())&&(q.topic_status==='matched'||!q.topic_status);
+  const outside=(q.topic_status==='outside'||q.topic_status==='unreadable')&&!String(q.chapter||'').trim();
+  return !(matched||outside)||requireFields.some(k=>!String(q[k]||'').trim());
+ }
  function catalog(meta){
   return root.LedgerSyllabus?root.LedgerSyllabus.resolve(localStorage,meta.subject).topics:[];
  }
@@ -65,7 +70,7 @@
     </section>
     <details><summary>Advanced · Edit topic names and the topic catalog</summary><div id="chapterEditor"></div></details>`;
   const $=id=>el.querySelector('#'+id);
-  function missing(){return data.filter(incomplete);}
+  function missing(){return data.filter(q=>incomplete(q,meta));}
   function updateInfo(){
    const left=missing();const info=M.summary(data,meta.subject);
    $('debriefProgress').textContent=data.length+' questions saved · '+(data.length-left.length)+' explained and classified · '+left.length+' pending · '+info.coverage.tagged+' approved topic tags for graphs · '+info.coverage.outside+' outside/unreadable.';
@@ -86,7 +91,7 @@
   function message(text,error=false){const node=$('aiResponseMessage');node.textContent=text;node.className=error?'flow-notice':'flow-success';}
   function preview(result){
    const coverage=M.summary(result.questions,meta.subject).coverage;
-   const next=result.questions.filter(incomplete);
+   const next=result.questions.filter(q=>incomplete(q,meta));
    $('aiResponsePreview').hidden=false;
    $('aiResponsePreview').innerHTML='<h3>Import preview</h3><p>'+result.count+' question updates included · '+coverage.tagged+' topics assigned · '+next.length+' questions still need full feedback.</p>'+result.warnings.map(x=>'<p class="flow-notice">'+escape(x)+'</p>').join('')+insights(result.questions,meta.subject)+rankTable(result.questions,meta.subject)+'<details><summary>Preview explanations and classifications</summary>'+result.changed.map(change=>{const q=result.questions.find(x=>String(x.qno)===String(change.qno));return '<section class="flow-preview"><strong>Q'+escape(q.qno)+' · '+escape(q.chapter||'Topic not assigned')+'</strong><p>'+escape(F.plain(q.qtext).slice(0,160))+'</p>'+F.feedback(q)+'</section>';}).join('')+'</details>';
   }
@@ -204,7 +209,7 @@
    try{
     staged=F.review($('aiResponse').value,data,meta);
     preview(staged);
-    const left=staged.questions.filter(incomplete);
+    const left=staged.questions.filter(q=>incomplete(q,meta));
     if(left.length&&!confirm('ChatGPT returned an incomplete debrief: '+left.length+' question(s) still need topics or explanations. Save valid parts now? LedgerPeer will prepare a continuation prompt for the missing parts.'))return;
     if(localStorage.getItem('tymba_exam_data:'+meta.id)!==expected)throw Error('The saved attempt changed in another tab. Reload before importing so you do not overwrite newer work.');
     const updated=staged.questions.map(q=>Object.assign({},q,{debrief:typeof q.debrief==='string'?F.sanitize(q.debrief):q.debrief}));
