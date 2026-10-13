@@ -4,9 +4,9 @@
 (function(root){
  'use strict';
  const F=root.RevisionFlow, M=root.ChapterAnalysis;
- const requireFields=['reasoning','calculation','justification','focus'];
+ const requireFields=['reasoning','calculation','justification','focus','topic_reason'];
  const escape=F.escape;
- function incomplete(q){return !String(q.chapter||'').trim()||requireFields.some(k=>!String(q[k]||'').trim());}
+ function incomplete(q){return !(String(q.chapter||'').trim()||q.topic_status==='outside'||q.topic_status==='unreadable')||requireFields.some(k=>!String(q[k]||'').trim());}
  function catalog(meta){
   if(root.LedgerSyllabus&&root.LedgerSyllabus.official(meta.subject))
    return root.LedgerSyllabus.list(meta.subject);
@@ -122,7 +122,7 @@
     if(!confirm('Remove '+bad.length+' non-syllabus topic tags? Your recorded marks, original questions, and explanation text will remain.'))return;
     if(localStorage.getItem('tymba_exam_data:'+meta.id)!==expected){message('Saved attempt changed in another tab. Please reload.',true);return;}
     try{
-     const updated=data.map(q=>bad.includes(q)?Object.assign({},q,{chapter:'',topic_reason:''}):q);
+     const updated=data.map(q=>bad.includes(q)?Object.assign({},q,{chapter:'',topic_reason:'',topic_status:''}):q);
      F.save(localStorage,'tymba_exam_data:'+meta.id,updated);
      data=updated;expected=localStorage.getItem('tymba_exam_data:'+meta.id);
      onSaved(updated);
