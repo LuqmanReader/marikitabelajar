@@ -207,6 +207,8 @@ def main():
                                     excerpt=re.sub(r"\s+"," ",content[:540])
                                     print("PDF PAGE PREFIX",code,pi+1,repr(excerpt))
                         raise failure
+                    if code in ("MA1","MA2","FA2","LW","FMA","FAU","FTX"):
+                        print("SYLLABUS SAMPLE",code,repr(syllabus[:1400]))
                     topics=extract_topics(syllabus)
                     approach=find_approach(pages)
                     row.update(status="parsed",pdf_url=link,pdf_label=label,pages=len(pages),topics=len(topics),areas=len(set(t["area"] for t in topics)),exam_approach_evidence=approach)
