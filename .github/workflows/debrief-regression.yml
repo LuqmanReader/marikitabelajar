@@ -3,6 +3,8 @@ on:
   push:
     paths:
       - 'tests/**'
+      - 'auth.js'
+      - 'index.html'
       - 'subject-catalog.js'
       - 'syllabus-catalog.js'
       - 'official-exam-registry.js'
@@ -25,3 +27,5 @@ jobs:
         run: node tests/debrief-regression.js
       - name: Test FIA/ACCA PDF attempt import formats
         run: node tests/pdf-parser-regression.js
+      - name: Test email confirmation and callback safety
+        run: node tests/email-confirmation-regression.js
