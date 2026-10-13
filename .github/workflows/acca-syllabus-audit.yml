@@ -1,0 +1,39 @@
+name: Official ACCA syllabus source audit
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/audit_acca_syllabi.py'
+      - '.github/workflows/acca-syllabus-audit.yml'
+  schedule:
+    - cron: '20 2 1 * *'
+permissions:
+  contents: read
+jobs:
+  syllabus-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests beautifulsoup4 pymupdf
+      - name: Scrape and verify ACCA PDFs
+        id: audit
+        continue-on-error: true
+        run: python scripts/audit_acca_syllabi.py
+      - name: Upload reproducible audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: acca-syllabus-source-audit
+          path: |
+            acca-online-syllabus-audit.json
+            acca-online-syllabi.json
+          if-no-files-found: warn
+      - name: Require every paper to be verified before publication
+        if: steps.audit.outcome != 'success'
+        run: |
+          echo "Not publishing incomplete or inaccurate syllabus data."
+          exit 1
