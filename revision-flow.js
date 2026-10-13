@@ -1,7 +1,7 @@
 (function(root){
   'use strict';
   var own=function(o,k){return Object.prototype.hasOwnProperty.call(o,k);};
-  var fields=['reasoning','calculation','justification','focus'];
+  var fields=['reasoning','calculation','justification','focus','topic_reason'];
   function esc(value){return String(value==null?'':value).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
   function plain(html){
     if(typeof document!=='undefined'){
@@ -55,17 +55,19 @@
       var item={qno:original.qno};
       if(own(q,'chapter')||own(q,'topic')){
         item.chapter=root.ChapterAnalysis.label(own(q,'chapter')?q.chapter:q.topic);
-        // Enforce an exact topic list only if the student explicitly saved one.
-        // Descriptive AI tags are valid when no custom topic catalog exists.
-        var allowed=[];
-        try{
-          var savedCatalog=JSON.parse(localStorage.getItem('personal_hub_chapters_v1')||'{}');
-          if(savedCatalog&&Array.isArray(savedCatalog[meta.subject]))
-            allowed=savedCatalog[meta.subject].map(root.ChapterAnalysis.label).filter(Boolean);
-        }catch(e){}
-        if(item.chapter&&allowed.length){
+        // Only accept exact syllabus subtopics from the student-selected paper.
+        var syllabus=root.LedgerSyllabus;
+        var allowed=syllabus&&syllabus.official(meta.subject)?syllabus.list(meta.subject):[];
+        if(!allowed.length){
+          try{var savedCatalog=JSON.parse(localStorage.getItem('personal_hub_chapters_v1')||'{}');
+              if(savedCatalog&&Array.isArray(savedCatalog[meta.subject]))
+                 allowed=savedCatalog[meta.subject].map(root.ChapterAnalysis.label).filter(Boolean);
+          }catch(e){}
+        }
+        if(!allowed.length)throw new Error('No verified ACCA topic catalog for '+meta.subject+'. Supply official syllabus topics before importing.');
+        if(item.chapter){
           var matched=allowed.find(function(name){return name.toLowerCase()===item.chapter.toLowerCase();});
-          if(!matched)throw new Error('Q'+n+': unknown topic "'+item.chapter+'". Use an exact name from your saved Topic Catalog.');
+          if(!matched)throw new Error('Q'+n+': "'+item.chapter+'" is not an official topic for this paper. Use an exact syllabus label or chapter "" for an out-of-syllabus question.');
           item.chapter=matched;
         }
       }
@@ -90,7 +92,7 @@
   function hasFeedback(q){return fields.slice(0,3).some(function(k){return typeof q[k]==='string'&&q[k].trim();})||!!(q.debrief&&q.debrief.trim());}
   function feedback(q){
     if(fields.slice(0,3).some(function(k){return q[k]&&q[k].trim();})){
-      return [['reasoning','Reasoning'],['calculation','Calculation'],['justification','Justification']].map(function(p){return '<section class="feedback-part"><h4>'+p[1]+'</h4><div>'+esc(q[p[0]]||'Not provided yet.').replace(/\n/g,'<br>')+'</div></section>';}).join('')+(q.focus?'<div class="focus-note"><strong>Practise next:</strong> '+esc(q.focus)+'</div>':'');
+      return (q.topic_reason?'<section class="feedback-part"><h4>Why this ACCA syllabus topic?</h4><div>'+esc(q.topic_reason).replace(/\n/g,'<br>')+'</div></section>':'')+[ ['reasoning','Reasoning'],['calculation','Calculation'],['justification','Justification']].map(function(p){return '<section class="feedback-part"><h4>'+p[1]+'</h4><div>'+esc(q[p[0]]||'Not provided yet.').replace(/\n/g,'<br>')+'</div></section>';}).join('')+(q.focus?'<div class="focus-note"><strong>Practise next:</strong> '+esc(q.focus)+'</div>':'');
     }
     return q.debrief?sanitize(q.debrief):'<p>Answer review is ready. Import the AI response to add reasoning, calculation and justification.</p>';
   }
@@ -108,7 +110,8 @@
         reasoning:'Explain the concept and how to solve the question.',
         calculation:'Show working and formulas, or Not applicable.',
         justification:'Why the recorded correct answer is supported; identify the mistake if wrong.',
-        focus:'One specific thing to practise next.'
+        focus:'One specific thing to practise next.',
+        topic_reason:'Explain how the question matches this official syllabus heading, or why it is outside the selected syllabus.'
       }]
     };
     var payload=questions.map(function(q){
@@ -132,7 +135,9 @@
     var instruction=[
       'Act as my FIA/ACCA exam debrief tutor for '+meta.subject+' ('+type+').',
       'For EVERY numbered question: (1) choose one specific primary topic, (2) explain the reasoning, (3) show calculations or say Not applicable, (4) justify the recorded answer and explain my mistake if relevant, (5) suggest one practice focus.',
-      'TOPIC CLASSIFICATION: For EVERY question, assign exactly ONE specific primary topic. If an allowed topic list is supplied, use the exact supplied spelling. Do not invent generic categories or chapter numbers. If the source genuinely lacks enough content to classify, use chapter "" and explain why.',
+       'OFFICIAL ACCA SYLLABUS CLASSIFICATION: Use ONLY one exact subtopic label from the official syllabus list for the paper manually chosen by the student. Never invent a chapter, and never force a question under a loosely related topic. For out-of-syllabus, illegible or unclassifiable questions, use chapter "" and explain why in topic_reason. Such questions are excluded from topic graphs, but their recorded marks stay unchanged.',
+       'For EVERY question, explain WHY this official topic is the primary syllabus match in topic_reason. The topic_reason is separate from the working and justification. Questions sharing the same syllabus learning outcome MUST share the same official label.',
+       'PM examples: high-low method = D2 · Analytical techniques in budgeting and forecasting; break-even, margin of safety and target profit = C2 · Cost-volume-profit analysis (CVP); relevant and opportunity cost = C1 · Relevant cost analysis; cost-plus pricing = C4 · Pricing decisions. Do not classify standalone straight-line depreciation as a PM decision-making topic.',
       'The PDF is an attempt-review export, often made of screenshots. Cross-check the ATTACHED ORIGINAL PDF for questions, images, tables, correct answers and grading. OCR QUESTION DATA is a guide, not proof for complex figures. If no PDF is attached, never invent missing figures; explicitly flag uncertain or unreadable questions.',
       'Respect all recorded marks and grading. Never alter question number, score, original recorded correct answer or the marking decision. Some learner-selected choices were not captured by OCR. Never invent a learner choice or diagnose its specific mistake unless visible in the source.',
       'Explain EVERY question, including correct ones, in full teaching detail. Give concept, calculations with steps where applicable, justification of the answer, and a specific practice focus. For uncertain source content, state the limitation in the relevant explanation instead of guessing.',
@@ -144,7 +149,7 @@
       '',
       'ATTEMPT: '+meta.title,
       'SET CHAPTER: '+(meta.setChapter||'Not applicable'),
-      'ALLOWED TOPICS (broad suggestions from LedgerPeer, not verified textbook chapter numbers): '+(catalog.length?JSON.stringify(catalog):'No supplied topic list: use consistent descriptive primary topics'),
+       'OFFICIAL SYLLABUS SUBTOPICS FOR '+meta.subject+' (exact labels; no invented alternatives): '+(catalog.length?JSON.stringify(catalog):'VERIFIED SYLLABUS TOPICS NOT PROVIDED — DO NOT CLASSIFY'),
       'QUESTION DATA:',
       JSON.stringify(payload)
     ];
