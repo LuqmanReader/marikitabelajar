@@ -175,10 +175,13 @@
   return data;
  }
  async function verifySignUpOtp(email,code){
+  const token=String(code).trim();
+  if(!/^\d{6}$/.test(token))throw Error('Enter a valid 6-digit verification code.');
   await init();
-  const {data,error}=await client.auth.verifyOtp({email:email.trim(),token:String(code).trim(),type:'email'});
+  const {data,error}=await client.auth.verifyOtp({email:email.trim(),token,type:'email'});
   if(error)throw error;
   if(!data?.session||!data?.user)throw Error('Email verification did not create a valid session. Please try again.');
+  if(!data.user.email_confirmed_at&&!data.user.confirmed_at)throw Error('Supabase has not confirmed this email. Please request a new code.');
   return data;
  }
  // Supabase confirmation emails may return with token_hash in query, a PKCE
