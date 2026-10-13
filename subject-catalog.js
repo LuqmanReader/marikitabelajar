@@ -5,9 +5,10 @@
     var paper=match&&papers.find(function(p){return p.code===match[1];});
     return paper?paper.label:subject;
   }
-  function fill(select,extras){
+  function fill(select,extras,scope){
     select.innerHTML='';var currentStage='',group;
-    papers.forEach(function(p){
+    var visible=scope==='fia'?papers.filter(function(p){return p.stage.indexOf('FIA')===0;}):papers;
+    visible.forEach(function(p){
       if(p.stage!==currentStage){currentStage=p.stage;group=document.createElement('optgroup');group.label=currentStage;select.appendChild(group);}
       var option=document.createElement('option');option.value=p.label;option.textContent=p.label;group.appendChild(option);
     });
@@ -16,5 +17,6 @@
       extras.forEach(function(s){var option=document.createElement('option');option.value=s;option.textContent=s;custom.appendChild(option);});select.appendChild(custom);
     }
   }
-  window.SubjectCatalog={papers:papers,labels:papers.map(function(p){return p.label;}),canonical:canonical,fill:fill};
+  function fillFIA(select){fill(select,null,'fia');}
+  window.SubjectCatalog={papers:papers,labels:papers.map(function(p){return p.label;}),canonical:canonical,fill:fill,fillFIA:fillFIA};
 })();
