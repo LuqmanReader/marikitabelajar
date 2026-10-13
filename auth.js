@@ -181,6 +181,62 @@
   if(!data?.session||!data?.user)throw Error('Email verification did not create a valid session. Please try again.');
   return data;
  }
+ // Supabase confirmation emails may return with token_hash in query, a PKCE
+ // code, or an implicit access_token fragment after /auth/v1/verify.
+ // Treat a redirect as verified ONLY after Supabase returns a confirmed user.
+ function clearConfirmationURL(){
+  const path=location.pathname+(location.search&&!/token_hash=|(?:^|[?&])code=|error_code=|error_description=/i.test(location.search)?location.search:'')+'#access';
+  history.replaceState(null,document.title,path);
+ }
+ async function completeEmailLink(){
+  const query=new URLSearchParams(location.search);
+  const hash=new URLSearchParams(location.hash.replace(/^#/,''));
+  const tokenHash=query.get('token_hash')||hash.get('token_hash');
+  const incomingType=query.get('type')||hash.get('type')||'email';
+  const hasImplicitTokens=!!(hash.get('access_token')&&hash.get('refresh_token'));
+  const hasCode=!!query.get('code');
+  const errorCode=query.get('error_code')||hash.get('error_code')||query.get('error');
+  const authError=query.get('error_description')||hash.get('error_description');
+  if(incomingType==='recovery')return {handled:false};
+  if(errorCode||authError){
+   clearConfirmationURL();
+   throw Error('Supabase could not confirm this link: '+(authError||errorCode)+'. Request a fresh confirmation code or email.');
+  }
+  if(!tokenHash&&!hasImplicitTokens&&!hasCode)return {handled:false};
+  await init();
+  try{
+   if(tokenHash){
+    if(!['email','signup','invite','magiclink'].includes(incomingType))
+     throw Error('Unsupported email verification link type.');
+    const {error}=await client.auth.verifyOtp({token_hash:tokenHash,type:incomingType});
+    if(error)throw error;
+   }else if(hasCode){
+    const {error}=await client.auth.exchangeCodeForSession(query.get('code'));
+    if(error)throw error;
+   }else{
+    // Supabase normally reads and stores the implicit session on init.
+    const {data,error}=await client.auth.getSession();
+    if(error)throw error;
+    if(!data?.session){
+     const {error:sessionError}=await client.auth.setSession({
+      access_token:hash.get('access_token'),
+      refresh_token:hash.get('refresh_token')
+     });
+     if(sessionError)throw sessionError;
+    }
+   }
+   const {data,error}=await client.auth.getUser();
+   if(error)throw error;
+   if(!data?.user?.email_confirmed_at&&!data?.user?.confirmed_at)
+    throw Error('Supabase has not marked this email as confirmed yet.');
+   clearConfirmationURL();
+   return {handled:true,verified:true};
+  }catch(e){
+   // Remove one-time credentials from the address even if the link has expired.
+   clearConfirmationURL();
+   throw Error('Email confirmation failed: '+(e?.message||e)+'. Request a fresh confirmation email or enter its code.');
+  }
+ }
  async function resendSignUpOtp(email){
   await init();
   const {error}=await client.auth.resend({type:'signup',email:email.trim(),options:{emailRedirectTo:new URL('index.html',location.href).href}});
@@ -202,7 +258,7 @@
   // No manual Save to Cloud button: edits save locally at once and back up automatically.
   const obsolete=document.getElementById('rhManualSave');if(obsolete)obsolete.remove();
  }
- const api={login,logout,signUp,verifySignUpOtp,resendSignUpOtp,sendRecovery,updatePassword,onAuthChange,ready,sync,init,
+ const api={login,logout,signUp,verifySignUpOtp,completeEmailLink,resendSignUpOtp,sendRecovery,updatePassword,onAuthChange,ready,sync,init,
   async isSignedIn(){try{await loadUser();return true;}catch{return false;}},
   guard(){document.documentElement.style.visibility='hidden';ready().then(ok=>{
     if(!ok){location.replace('index.html');return;}
