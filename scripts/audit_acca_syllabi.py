@@ -161,7 +161,7 @@ def extract_topics(syllabus):
         heading=re.sub(r"\s+"," "," ".join(pending["text"])).strip(" .\t")
         heading=re.sub(r"(?i)\s*©\s*ACCA.*$","",heading).strip()
         # Remove references caused by ACCA's repeated page footer/header.
-        if len(heading)>=3 and len(heading)<=190 and not title_re.match(heading):
+        if len(heading)>=3 and len(heading)<=240 and not title_re.match(heading):
             rows.append({"code":pending["code"],"name":heading,"area":pending["area"]})
         pending=None
     for i,line in enumerate(lines):
@@ -208,7 +208,7 @@ def extract_topics(syllabus):
         if row["code"] in seen:continue
         # A heading which is actually a repeated document title must not be a topic.
         if title_re.match(row["name"]):continue
-        if not 3<=len(row["name"])<=119:continue
+        if not 3<=len(row["name"])<=240:continue
         topics.append(row)
         seen.add(row["code"])
     areas=len({t["area"] for t in topics})
