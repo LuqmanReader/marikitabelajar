@@ -31,7 +31,7 @@ PAGES={
 "MA1":F+"ma1/ma1-syllabus-study-guide.htm.html",
 "FA2":F+"fa2/fa2-syllabus-study-guide.html",
 "MA2":F+"ma2/ma2-syllabus-study-guide.html",
-"FBT":F+"fbt/fbt-syllabus-study-guide.html",
+"FBT":A+"f1/syllabus-study-guide.html",
 "FMA":F+"fma/fma-syllabus-study-guide.html",
 "FFA":F+"ffa/ffa-syllabus-study-guide.html",
 "FAU":F+"fau/fau-syllabus-study-guide.html",
@@ -78,8 +78,11 @@ def pdf_links(url,code):
             print("DOC LINK RAW",code,phrase,len(re.findall(re.escape(phrase),html,re.I)))
     choices=[]
     for a in soup.find_all("a",href=True):
-        u=urljoin(url,a["href"])
-        if not PDF_RE.search(urlparse(u).path) or "accaglobal.com" not in urlparse(u).hostname.lower():continue
+        onclick=a.get("onclick","")
+        inline=re.search(r"""window\.open\(\s*['"]([^'"]+\.pdf)['"]""",onclick,re.I)
+        href=inline.group(1) if inline else a["href"]
+        u=urljoin(url,href)
+        if not PDF_RE.search(urlparse(u).path) or "accaglobal.com" not in (urlparse(u).hostname or "").lower():continue
         label=" ".join(a.stripped_strings)
         target=(label+" "+u).lower()
         if not SYL_RE.search(target) and "study" not in label.lower():continue
