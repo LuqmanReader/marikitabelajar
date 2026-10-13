@@ -50,7 +50,7 @@
    const m=line.match(/^([A-Z]\d{1,2})\s*(?:[·:\-–.]\s*|\s+)(.{3,})$/);
    if(!m)throw Error('Use official syllabus codes, one per line, such as A1 · Exact topic heading. Invalid: '+line.slice(0,65));
    const normalized=m[1]+' · '+m[2].trim();
-   if(normalized.length>240)throw Error('Each syllabus heading must be 240 characters or less.');
+   if(normalized.length>420)throw Error('Each syllabus heading must be 420 characters or less.');
    if(seenCodes.has(m[1])||seenNames.has(normalized.toLowerCase()))throw Error('Duplicate syllabus topic or code: '+m[1]);
    seenCodes.add(m[1]);seenNames.add(normalized.toLowerCase());found.push(normalized);
   }
