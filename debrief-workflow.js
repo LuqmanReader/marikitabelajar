@@ -8,7 +8,8 @@
  const escape=F.escape;
  function incomplete(q){return !String(q.chapter||'').trim()||requireFields.some(k=>!String(q[k]||'').trim());}
  function catalog(meta){
-  // Only a chapter list the student explicitly saved is mandatory.
+  if(root.LedgerSyllabus&&root.LedgerSyllabus.official(meta.subject))
+   return root.LedgerSyllabus.list(meta.subject);
   try{
    const all=JSON.parse(localStorage.getItem('personal_hub_chapters_v1')||'{}');
    return all&&Array.isArray(all[meta.subject])?all[meta.subject].filter(x=>typeof x==='string'&&x.trim()).map(x=>x.trim()):[];
@@ -35,7 +36,8 @@
   el.innerHTML=`
     <div class="flow-steps"><span>1 · PDF saved</span><span class="current">2 · Ask ChatGPT</span><span>3 · Update graphs</span></div>
     <h2>AI Question Analysis · ChatGPT JSON</h2>
-    <p>Your original exam marks stay unchanged. ChatGPT explains each question and assigns one topic; LedgerPeer calculates the accuracy, graphs, strengths and weaknesses automatically.</p>
+    <p>Your marks stay unchanged. Each question must match an official ACCA syllabus topic for your selected paper or stay untagged when outside the syllabus.</p>
+    <p id="syllabusNotice" class="flow-muted"></p><div class="flow-actions" id="repairSyllabusActions"></div>
     <p id="debriefProgress" class="flow-muted"></p>
     <section class="flow-path"><h3>Step 1 · Copy the question request</h3>
       <p>Click Copy Request, open ChatGPT, and paste it. <strong>${isPdf?'Attach the same original PDF in ChatGPT':'Attach the original marked exam PDF if available'}</strong> so figures, tables and answers can be verified against the source rather than unreliable OCR. Ask ChatGPT to return the <strong>complete JSON</strong>.</p>
@@ -66,7 +68,13 @@
     const pending=missing();const selected=pending.length?pending:data;
     return F.prompt(meta,selected,catalog(meta),data);
   }
-  function fillPrompt(){const content=makePrompt();$('requestText').value=content;return content;}
+  function fillPrompt(){
+   if(!catalog(meta).length){
+    const msg='No official ACCA topic list is loaded for '+meta.subject+'. Enter exact official headings under Advanced → Topic Catalog before creating a request.';
+    $('requestText').value=msg;return msg;
+   }
+   const result=makePrompt();$('requestText').value=result;return result;
+  }
   function message(text,error=false){const node=$('aiResponseMessage');node.textContent=text;node.className=error?'flow-notice':'flow-success';}
   function preview(result){
    const coverage=M.summary(result.questions).coverage;
@@ -74,7 +82,35 @@
    $('aiResponsePreview').hidden=false;
    $('aiResponsePreview').innerHTML='<h3>Import preview</h3><p>'+result.count+' question updates included · '+coverage.tagged+' topics assigned · '+next.length+' questions still need full feedback.</p>'+result.warnings.map(x=>'<p class="flow-notice">'+escape(x)+'</p>').join('')+insights(result.questions)+rankTable(result.questions)+'<details><summary>Preview explanations and classifications</summary>'+result.changed.map(change=>{const q=result.questions.find(x=>String(x.qno)===String(change.qno));return '<section class="flow-preview"><strong>Q'+escape(q.qno)+' · '+escape(q.chapter||'Topic not assigned')+'</strong><p>'+escape(F.plain(q.qtext).slice(0,160))+'</p>'+F.feedback(q)+'</section>';}).join('')+'</details>';
   }
-  updateInfo();fillPrompt();
+  const isOfficial=root.LedgerSyllabus&&root.LedgerSyllabus.official(meta.subject);
+  const topicNames=catalog(meta);
+  if(isOfficial){
+   const source=root.LedgerSyllabus.source(meta.subject);
+   $('syllabusNotice').innerHTML='Official ACCA syllabus: '+escape(root.LedgerSyllabus.code(meta.subject))+' · '+topicNames.length+' exact syllabus topics. <a href="'+escape(source)+'" target="_blank" rel="noopener noreferrer">Read ACCA guide ↗</a>.';
+  }else{
+   $('syllabusNotice').textContent='Verified official topics are not preloaded for this paper. Paste its exact ACCA topic headings in Advanced → Topic Catalog before requesting classification.';
+  }
+  function refreshInvalidTags(){
+   $('repairSyllabusActions').replaceChildren();
+   if(!isOfficial)return;
+   const bad=data.filter(q=>q.chapter&&!topicNames.some(t=>t.toLowerCase()===String(q.chapter).toLowerCase()));
+   if(!bad.length)return;
+   const btn=document.createElement('button');btn.type='button';btn.className='flow-button secondary';
+   btn.textContent='Clear '+bad.length+' invalid old topic tags · keep all marks';
+   btn.addEventListener('click',()=>{
+    if(!confirm('Remove '+bad.length+' non-syllabus topic tags? Your recorded marks, original questions, and explanation text will remain.'))return;
+    if(localStorage.getItem('tymba_exam_data:'+meta.id)!==expected){message('Saved attempt changed in another tab. Please reload.',true);return;}
+    try{
+     const updated=data.map(q=>bad.includes(q)?Object.assign({},q,{chapter:'',topic_reason:''}):q);
+     F.save(localStorage,'tymba_exam_data:'+meta.id,updated);
+     data=updated;expected=localStorage.getItem('tymba_exam_data:'+meta.id);
+     onSaved(updated);
+    }catch(e){message('Could not clear invalid topics: '+e.message,true);}
+   });
+   $('repairSyllabusActions').appendChild(btn);
+  }
+  refreshInvalidTags();updateInfo();fillPrompt();
+  if(!topicNames.length){$('copyAIRequest').disabled=true;$('downloadAIRequest').disabled=true;}
   $('copyAIRequest').addEventListener('click',async()=>{
    try{await navigator.clipboard.writeText(fillPrompt());message('Request copied. Attach the PDF to ChatGPT, paste the request and ask for the JSON.');}
    catch(e){fillPrompt();$('requestText').parentElement.open=true;$('requestText').focus();$('requestText').select();message('Clipboard unavailable; the request is selected. Press Ctrl+C.');}
@@ -103,7 +139,7 @@
     F.save(localStorage,'tymba_exam_data:'+meta.id,updated);
     try{sessionStorage.setItem('personal_hub_ai_saved:'+meta.id,'1');}catch(e){}
     data=updated;expected=localStorage.getItem('tymba_exam_data:'+meta.id);
-    updateInfo();fillPrompt();
+    updateInfo();fillPrompt();refreshInvalidTags();
     message('Saved '+staged.count+' question updates. Refreshing questions and topic graphs…');
     onSaved(updated);
    }catch(e){message('Could not apply the JSON: '+e.message,true);}
