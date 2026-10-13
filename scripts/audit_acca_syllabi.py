@@ -189,7 +189,15 @@ def main():
                     raw=get(link)
                     if not raw.content.startswith(b"%PDF"):raise ValueError("Downloaded file is not PDF")
                     pages=extract_pages(raw.content)
-                    syllabus=find_syllabus(pages)
+                    try:
+                        syllabus=find_syllabus(pages)
+                    except Exception as failure:
+                        if code in ("FA1","FA2","FBT","PM","SBL"):
+                            for pi,content in enumerate(pages[:15]):
+                                if re.search(r"the syllabus|detailed study guide",content,re.I):
+                                    excerpt=re.sub(r"\s+"," ",content[:540])
+                                    print("PDF PAGE PREFIX",code,pi+1,repr(excerpt))
+                        raise failure
                     topics=extract_topics(syllabus)
                     approach=find_approach(pages)
                     row.update(status="parsed",pdf_url=link,pdf_label=label,pages=len(pages),topics=len(topics),areas=len(set(t["area"] for t in topics)),exam_approach_evidence=approach)
