@@ -85,7 +85,10 @@
  function cleanPageText(s){return tidy(s).replace(/^https?:\/{1,2}[^\s]+\s+(\d+)\/\d+\s*$/gm,'');}
  function parsePage(raw,pageNumber){
   const s=cleanPageText(raw);
-  const matcher=/^\s*Question\s+(\d{1,3})[.:\s]*$/gim;
+  // Match numbered questions in common FIA/ACCA attempt-review exports, including
+  // "Question 4", "Question 4:", "Question 4 of 50", "Question 4 (2 marks)".
+  // Never treat a subquestion (4a) as a separate full-exam question.
+  const matcher=/^\s*Question\s+(\d{1,3})(?:\s*(?:[.:]|of\s+\d{1,3}|\(\s*\d+(?:\.\d+)?\s*marks?\s*\)))?\s*$/gim;
   const anchors=[];let m;
   while((m=matcher.exec(s)))anchors.push({qno:Number(m[1]),at:m.index,end:matcher.lastIndex});
   const parts=[];
@@ -135,7 +138,7 @@
     const page=await pdf.getPage(i);
     const layer=await page.getTextContent();
     let txt=layer.items.map(x=>x.str+(x.hasEOL?'\n':' ')).join('');
-    if(txt.length<100||!/^\s*Question\s+\d+/im.test(txt)){
+    if(txt.length<100||!/^\s*Question\s+\d{1,3}\b/im.test(txt)){
      if(!root.Tesseract)await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js');
      if(!ocrWorker){note('Preparing on-device PDF image reader…');ocrWorker=await root.Tesseract.createWorker('eng');}
      const viewport=page.getViewport({scale:2});
