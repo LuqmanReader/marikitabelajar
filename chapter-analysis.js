@@ -41,6 +41,8 @@
     return existing.map(function(q){
       var patch=byNo.get(String(q.qno)), out=Object.assign({},q);if(!patch)return out;
       if(Object.prototype.hasOwnProperty.call(patch,'chapter'))out.chapter=label(patch.chapter);
+      if(Object.prototype.hasOwnProperty.call(patch,'topic_status'))out.topic_status=String(patch.topic_status||'');
+      if(Object.prototype.hasOwnProperty.call(patch,'topic_reason'))out.topic_reason=String(patch.topic_reason||'');
       if(Object.prototype.hasOwnProperty.call(patch,'debrief'))out.debrief=patch.debrief;
       return out;
     });
