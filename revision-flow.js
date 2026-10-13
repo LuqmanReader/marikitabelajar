@@ -156,6 +156,8 @@
       '',
       'ATTEMPT: '+meta.title,
       'STUDENT-SELECTED PAPER CODE: '+(root.LedgerSyllabus?root.LedgerSyllabus.code(meta.subject):'unknown'),
+      'APPROVED SYLLABUS SOURCE: '+(root.LedgerSyllabus?root.LedgerSyllabus.resolve(localStorage,meta.subject).source:'Not configured'),
+      'APPROVED SYLLABUS EDITION: '+(root.LedgerSyllabus?root.LedgerSyllabus.resolve(localStorage,meta.subject).version:'Not configured'),
       'SET TARGET SYLLABUS TOPIC: '+(meta.testType==='set'?(meta.setChapter||'Not selected'):'Not applicable'),
       'For a Chapter Set, use the selected target topic as context, not as a blind override: check each actual question before assigning it. For Progress/Mock, use the full paper syllabus below.',
       'APPROVED ACCA SYLLABUS FOR '+meta.subject+': '+(catalog.length?JSON.stringify(catalog):'NO APPROVED SYLLABUS LIST; DO NOT GENERATE TOPIC LABELS'),
