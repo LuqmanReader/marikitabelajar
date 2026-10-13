@@ -92,13 +92,22 @@
    $('saveAttemptSubject').addEventListener('click',()=>{
     const chosen=paper.value;
     if(!chosen||chosen===meta.subject){message('Paper unchanged.');return;}
-    if(!confirm('Move this saved attempt from '+meta.subject+' to '+chosen+'? Your original questions, scores, and answer records stay unchanged. Existing topic tags that do not match the new syllabus will be excluded from graphs.'))return;
+    if(!confirm('Move this saved attempt from '+meta.subject+' to '+chosen+'? Your original questions, scores, and answer records stay unchanged. Old topic assignments will be reset for reclassification under the new syllabus; all marks, questions and explanations remain.'))return;
     try{
      const all=JSON.parse(localStorage.getItem('tymba_custom_exams')||'[]');
      const row=Array.isArray(all)?all.find(e=>e.id===meta.id):null;
      if(!row)throw Error('Saved attempt metadata is missing.');
-     row.subject=chosen;
-     F.save(localStorage,'tymba_custom_exams',all);
+     const dataKey='tymba_exam_data:'+meta.id;
+     const previous=localStorage.getItem(dataKey);
+     const cleared=data.map(q=>Object.assign({},q,{chapter:'',topic_reason:'',topic_status:''}));
+     F.save(localStorage,dataKey,cleared);
+     try{
+      row.subject=chosen;
+      F.save(localStorage,'tymba_custom_exams',all);
+     }catch(error){
+      if(previous!==null)localStorage.setItem(dataKey,previous);
+      throw error;
+     }
      location.reload();
     }catch(e){message('Could not update the paper: '+e.message,true);}
    });
