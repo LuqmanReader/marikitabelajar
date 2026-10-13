@@ -54,6 +54,10 @@ PAGES={
 "AAA":P+"p7/syllabus-study-guide/p7-international-int-syllabus-study-guide.html"
 }
 ALIASES={"BT":"FBT","MA":"FMA","FA":"FFA"}
+DIRECT_PDFS={
+"SBL":"https://www.accaglobal.com/content/dam/acca/global/PDF-students/acca/SBL/sbl_s26_j27_syllabus_and_study_guide.pdf",
+"SBR":"https://www.accaglobal.com/content/dam/acca/global/PDF-students/acca/SBR/sbr_int_s26_j27_syllabus_and_study_guide.pdf"
+}
 VARIANTS={"LW":"MYS","TX":"MYS","ATX":"MYS","FTX":"UK","AAA":"INT","SBR":"INT"}
 YEAR_RE=re.compile(r"(2026|2027|26[-_ ]?J27|S26|J27)",re.I)
 PDF_RE=re.compile(r"\.pdf(?:$|\?)",re.I)
@@ -211,7 +215,7 @@ def main():
     for code,url in PAGES.items():
         row={"source_page":url,"variant":VARIANTS.get(code,"GLO"),"status":"failed","attempted":[]}
         try:
-            links=pdf_links(url,code)
+            links=[(200,DIRECT_PDFS[code],"Official ACCA September 2026 – June 2027 syllabus guide")] if code in DIRECT_PDFS else pdf_links(url,code)
             print("DEBUG",code,"candidate PDF anchors:",[(round(score),link[-130:],label[:100]) for score,link,label in links[:3]])
             if not links:raise ValueError("No PDF links found at official landing page")
             for score,link,label in links[:5]:
