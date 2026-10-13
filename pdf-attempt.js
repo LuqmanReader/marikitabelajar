@@ -4,13 +4,42 @@
  'use strict';
  const F=root.RevisionFlow, $=id=>document.getElementById(id);
  const state={busy:false,run:0,pending:null};
- const KIND=/\b(FA1|MA1|FA2|MA2|FBT|FMA|FFA|FAU|FFM|FTX|SBL|SBR|AFM|APM|ATX|AAA|BT|MA|FA|LW|PM|TX|FR|AA|FM)\b[^\n]{0,90}?\b(Progress\s*Test|Pre\s*Test|Mock(?:\s*(?:Test|Exam))?|Set)\s*#?\s*(\d+)/i;
+
  function tidy(s){return String(s||'').replace(/\r/g,'').replace(/[\u00a0\u200b]/g,' ').replace(/[\t ]+$/gm,'').replace(/\n{3,}/g,'\n\n').trim();}
- function detectMetadata(s){
-  const m=String(s).match(KIND); if(!m)return null;
-  const p=root.SubjectCatalog.papers.find(x=>x.code===m[1].toUpperCase());
-  if(!p)return null;
-  return {subject:p.label,testType:/set/i.test(m[2])?'set':/mock/i.test(m[2])?'mock':'pre',testNumber:Number(m[3])};
+
+
+ function selectedMetadata(){
+  const subject=$('pdfSubject').value;
+  const testType=$('pdfTestType').value;
+  const rawNumber=$('pdfTestNumber').value.trim();
+  const testNumber=Number(rawNumber);
+  if(!root.SubjectCatalog.labels.includes(subject))throw Error('Choose the FIA or ACCA paper before uploading.');
+  if(!['set','pre','mock'].includes(testType))throw Error('Choose Chapter Set, Progress Test or Mock Test.');
+  if(!/^\d+$/.test(rawNumber)||!Number.isSafeInteger(testNumber)||testNumber<1||testNumber>999)throw Error('Enter an attempt number between 1 and 999.');
+  const setChapter=testType==='set'?$('pdfSetChapter').value.trim():'';
+  if(setChapter.length>120)throw Error('The chapter name is too long.');
+  return {subject,testType,testNumber,setChapter};
+ }
+ function refreshMetadata(){
+  let ready=true;
+  try{selectedMetadata();}catch(e){ready=false;}
+  $('pdfFile').disabled=state.busy||!ready;
+  $('pdfChapterWrap').hidden=$('pdfTestType').value!=='set';
+  return ready;
+ }
+ function setupMetadata(){
+  const paper=$('pdfSubject');
+  root.SubjectCatalog.fill(paper);
+  const empty=document.createElement('option');empty.value='';empty.textContent='Choose your paper';
+  paper.insertBefore(empty,paper.firstChild);paper.value='';
+  ['pdfSubject','pdfTestType','pdfTestNumber','pdfSetChapter'].forEach(id=>{
+   $(id).addEventListener('change',()=>{
+    const ready=refreshMetadata();
+    if(!state.busy&&!state.pending)note(ready?'Details ready. Select your marked attempt PDF.':'Choose the paper, attempt type and attempt number first.');
+   });
+  });
+  refreshMetadata();
+  note('Choose the paper, attempt type and attempt number first, then upload the marked PDF.');
  }
  function cleanPageText(s){return tidy(s).replace(/^https?:\/{1,2}[^\s]+\s+(\d+)\/\d+\s*$/gm,'');}
  function parsePage(raw,pageNumber){
@@ -58,7 +87,7 @@
   if(!root.pdfjsLib)await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
   root.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
   const pdf=await root.pdfjsLib.getDocument({data:new Uint8Array(await file.arrayBuffer())}).promise;
-  const combined=[];let header='',ocrWorker=null;
+  const combined=[];let ocrWorker=null;
   try{
    for(let i=1;i<=pdf.numPages;i++){
     progress(i-1,pdf.numPages,'Reading PDF page '+i+' of '+pdf.numPages+'…');
@@ -75,18 +104,17 @@
      const result=await ocrWorker.recognize(canvas);txt=result.data.text;
      canvas.width=canvas.height=0;
     }
-    if(i===1)header=txt;
     combined.push(...parsePage(txt,i));
     progress(i,pdf.numPages,'Read page '+i+'/'+pdf.numPages+' · '+combined.length+' questions detected.');
    }
   }finally{if(ocrWorker)await ocrWorker.terminate();}
-  return {questions:combined,header,pages:pdf.numPages};
+  return {questions:combined,pages:pdf.numPages};
  }
  async function save(questions,detected,pdf){
   const graded=questions.filter(x=>typeof x.is_correct==='boolean');
   const correct=graded.filter(x=>x.is_correct).length;
   const id='attempt-'+Date.now()+'-'+Math.random().toString(36).slice(2,9);
-  const meta={id,subject:detected.subject,testType:detected.testType,testNumber:detected.testNumber,setChapter:'',setTotal:null,attemptedAt:new Date().toISOString(),createdAt:new Date().toISOString(),sourceFormat:'pdf',total:graded.length,correct,totalQuestions:questions.length,title:(detected.testType==='set'?'Set':detected.testType==='pre'?'Progress Test':'Mock Test')+' '+detected.testNumber,file:'view.html?id='+encodeURIComponent(id),topics:{}};
+  const meta={id,subject:detected.subject,testType:detected.testType,testNumber:detected.testNumber,setChapter:detected.setChapter||'',setTotal:null,attemptedAt:new Date().toISOString(),createdAt:new Date().toISOString(),sourceFormat:'pdf',total:graded.length,correct,totalQuestions:questions.length,title:(detected.testType==='set'?'Set':detected.testType==='pre'?'Progress Test':'Mock Test')+' '+detected.testNumber,file:'view.html?id='+encodeURIComponent(id),topics:{}};
   const current=JSON.parse(localStorage.getItem('tymba_custom_exams')||'[]');
   if(!Array.isArray(current))throw Error('Saved attempt list is unavailable.');
   const key='tymba_exam_data:'+id;
@@ -99,7 +127,7 @@
  function renderVerification(questions,detected){
   const host=$('pdfVerify');host.hidden=false;host.replaceChildren();
   const title=document.createElement('h2');title.textContent='Review the PDF scan';host.appendChild(title);
-  const explanation=document.createElement('p');explanation.textContent=detected.subject+' · '+questions.length+' questions detected. Confirm the original marks and question numbers below. LedgerPeer cannot infer choices not visible in the PDF.';host.appendChild(explanation);
+  const explanation=document.createElement('p');explanation.textContent='Selected paper: '+detected.subject+' · '+questions.length+' questions detected. Confirm the marks and questions below. LedgerPeer uses your selected paper, not an automatic guess from the PDF.';host.appendChild(explanation);
   const list=document.createElement('div');list.className='pdf-scan-list';host.appendChild(list);
   for(const q of questions){
    const card=document.createElement('details');card.className='pdf-scan-question';
@@ -154,7 +182,7 @@
    const unknown=state.pending.questions.filter(q=>q.is_correct===null).map(q=>q.qno);
    if(unknown.length){note('Verify the grading for questions '+unknown.join(', ')+' before saving.');return;}
    approve.disabled=true;
-   try{await save(state.pending.questions,state.pending.detected,state.pending.result);}
+   try{await save(state.pending.questions,selectedMetadata(),state.pending.result);}
    catch(e){note('Could not save the attempt: '+(e.message||e));approve.disabled=false;}
   });
   const retry=document.createElement('button');retry.type='button';retry.className='flow-button secondary';retry.textContent='Choose a different PDF';
@@ -164,14 +192,14 @@
  async function onPdf(file){
   if(!file)return;
   if(state.busy)return;
+  try{selectedMetadata();}catch(e){note(e.message);$('pdfFile').value='';return;}
   $('pdfVerify').hidden=true;$('pdfVerify').replaceChildren();state.pending=null;
   if(!/\.pdf$/i.test(file.name)&&file.type!=='application/pdf'){note('Only completed attempt-review PDF files are supported.');return;}
   state.busy=true;$('pdfFile').disabled=true;$('pdfProgress').hidden=false;
   try{
    progress(0,1,'Opening your PDF…');
    const result=await readPdf(file);
-   const check=inspect(result.questions);const detected=detectMetadata(result.header);
-   if(!detected)throw Error('Could not determine the paper and attempt number from this PDF. No attempt was saved.');
+   const check=inspect(result.questions);const detected=selectedMetadata();
    if(!check.ordered.length)throw Error('No numbered questions found. Make sure this is the completed attempt-review PDF.');
    if(check.duplicates.length||check.missing.length){
     const details=[];
@@ -185,8 +213,8 @@
    renderVerification(check.ordered,detected);
    note('Extracted '+check.ordered.length+' questions. Check the grades and correct answers. Expand any question to fix OCR mistakes.'+(check.ungraded.length?' Marking needs confirmation for questions '+check.ungraded.join(', ')+'.':'')+(check.unreadable.length?' Some question text is unclear; attach the original PDF in ChatGPT for verification.':''));
   }catch(e){note('Could not import PDF: '+(e&&e.message?e.message:String(e)));}
-  finally{state.busy=false;$('pdfFile').disabled=false;}
+  finally{state.busy=false;refreshMetadata();}
  }
- root.LedgerPeerPdfImport={parsePage,inspect,detectMetadata};
- if($('pdfFile'))$('pdfFile').addEventListener('change',function(){onPdf(this.files[0]);});
+ root.LedgerPeerPdfImport={parsePage,inspect,selectedMetadata};
+ if($('pdfFile')){setupMetadata();$('pdfFile').addEventListener('change',function(){onPdf(this.files[0]);});}
 })(window);
