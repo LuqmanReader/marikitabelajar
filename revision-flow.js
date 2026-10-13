@@ -83,7 +83,7 @@
     if(incoming.length<questions.length)warnings.push('Partial response: '+incoming.length+' of '+questions.length+' questions supplied. Other questions will keep their saved feedback.');
     var merged=root.ChapterAnalysis.merge(questions,accepted);
     merged.forEach(function(q){var change=accepted.find(function(p){return String(p.qno)===String(q.qno);});if(change)fields.forEach(function(k){if(own(change,k))q[k]=change[k];});});
-    var coverage=root.ChapterAnalysis.summary(merged).coverage;
+    var coverage=root.ChapterAnalysis.summary(merged,meta.subject).coverage;
     if(coverage.untagged)warnings.push(coverage.untagged+' scored questions still need a topic tag. They will not count toward topic accuracy.');
     var missing=merged.filter(function(q){return q.is_correct===false&&!hasFeedback(q);}).length;
     if(missing)warnings.push(missing+' incorrect questions still need an explanation.');
