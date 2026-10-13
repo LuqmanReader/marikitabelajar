@@ -55,11 +55,17 @@
       var item={qno:original.qno};
       if(own(q,'chapter')||own(q,'topic')){
         item.chapter=root.ChapterAnalysis.label(own(q,'chapter')?q.chapter:q.topic);
-        var userCatalog=root.ChapterAnalysis.catalog(localStorage,meta.subject);
-        var allowed=userCatalog.length?userCatalog:(root.LedgerTopicTaxonomy?root.LedgerTopicTaxonomy.names(meta.subject):[]);
+        // Enforce an exact topic list only if the student explicitly saved one.
+        // Descriptive AI tags are valid when no custom topic catalog exists.
+        var allowed=[];
+        try{
+          var savedCatalog=JSON.parse(localStorage.getItem('personal_hub_chapters_v1')||'{}');
+          if(savedCatalog&&Array.isArray(savedCatalog[meta.subject]))
+            allowed=savedCatalog[meta.subject].map(root.ChapterAnalysis.label).filter(Boolean);
+        }catch(e){}
         if(item.chapter&&allowed.length){
           var matched=allowed.find(function(name){return name.toLowerCase()===item.chapter.toLowerCase();});
-          if(!matched)throw new Error('Q'+n+': unknown topic "'+item.chapter+'". Use an exact name from this paper\'s Topic Catalog.');
+          if(!matched)throw new Error('Q'+n+': unknown topic "'+item.chapter+'". Use an exact name from your saved Topic Catalog.');
           item.chapter=matched;
         }
       }
