@@ -239,6 +239,7 @@ def main():
                     approach=find_approach(pages)
                     row.update(status="parsed",pdf_url=link,pdf_label=label,pages=len(pages),topics=len(topics),areas=len(set(t["area"] for t in topics)),exam_approach_evidence=approach)
                     data["papers"][code]={"topics":[t["code"]+" · "+t["name"] for t in topics],"source":link,"source_page":url,"variant":row["variant"],"edition":label,"approach_evidence":approach}
+                    print("LEDGERPEER_TOPIC_RECORD "+json.dumps({"code":code,**data["papers"][code]},separators=(",",":"),ensure_ascii=False))
                     count+=1;break
                 except Exception as exc:
                     row["attempted"].append({"url":link,"error":str(exc)[:170]})
