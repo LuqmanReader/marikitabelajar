@@ -11,12 +11,13 @@
   function key(value){return label(value).toLowerCase();}
   function bucket(){return {correct:0,total:0};}
   function status(x){var pct=x.total?x.correct/x.total*100:0;return x.total<3?'More evidence needed':pct>=80?'Strong':pct<60?'Needs Work':'Developing';}
-  function summary(questions){
+  function summary(questions,subject){
     var chapters=new Map(), coverage={tagged:0,untagged:0,unscored:0,total:questions.length};
+    var valid=root.LedgerSyllabus&&root.LedgerSyllabus.official(subject)?root.LedgerSyllabus.list(subject):null;
     questions.forEach(function(q){
       if(typeof q.is_correct!=='boolean'){coverage.unscored++;return;}
       var name;try{name=label(q.chapter);}catch(e){name='';}
-      if(!name){coverage.untagged++;return;}
+      if(!name||(valid&&!valid.some(function(t){return t.toLowerCase()===name.toLowerCase();}))){coverage.untagged++;return;}
       coverage.tagged++;
       var k=key(name);if(!chapters.has(k))chapters.set(k,{chapter:name,correct:0,total:0});
       var x=chapters.get(k);x.total++;if(q.is_correct)x.correct++;
@@ -49,7 +50,7 @@
       var s=subjects.get(subject), questions;
       try{questions=JSON.parse(storage.getItem('tymba_exam_data:'+e.id)||'null');}catch(err){questions=null;}
       if(!Array.isArray(questions)){s.unavailable++;return;}
-      var exam=summary(questions);s.tagged+=exam.coverage.tagged;s.untagged+=exam.coverage.untagged;s.unscored+=exam.coverage.unscored;
+      var exam=summary(questions,e.subject);s.tagged+=exam.coverage.tagged;s.untagged+=exam.coverage.untagged;s.unscored+=exam.coverage.unscored;
       exam.chapters.forEach(function(c){
         var k=key(c.chapter);if(!s.chapters.has(k))s.chapters.set(k,{chapter:c.chapter,correct:0,total:0,progress:bucket(),mock:bucket(),sets:bucket(),attempts:0,focus:[]});
         var x=s.chapters.get(k), b=e.testType==='set'?x.sets:e.testType==='pre'||e.testType==='progress'?x.progress:x.mock;
@@ -77,7 +78,7 @@
     ordered(exams).filter(function(e){return e.subject===subject;}).forEach(function(e){
       var questions;try{questions=JSON.parse(storage.getItem('tymba_exam_data:'+e.id)||'null');}catch(err){return;}
       if(!Array.isArray(questions))return;
-      var parts=summary(questions).chapters.filter(function(x){return !chapter||key(x.chapter)===key(chapter);});
+      var parts=summary(questions,subject).chapters.filter(function(x){return !chapter||key(x.chapter)===key(chapter);});
       var total=parts.reduce(function(n,x){return n+x.total;},0),correct=parts.reduce(function(n,x){return n+x.correct;},0);
       if(total)points.push({id:e.id,title:e.title,date:e.attemptedAt||e.createdAt||'',type:e.testType||'mock',number:e.testNumber,chapter:e.setChapter||'',total:total,correct:correct,pct:Math.round(correct/total*1000)/10});
     });return points;
