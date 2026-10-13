@@ -1,7 +1,7 @@
 (function(root){
   'use strict';
   var own=function(o,k){return Object.prototype.hasOwnProperty.call(o,k);};
-  var fields=['reasoning','calculation','justification','focus','topic_reason'];
+  var fields=['reasoning','calculation','justification','focus','topic_reason','topic_status'];
   function esc(value){return String(value==null?'':value).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
   function plain(html){
     if(typeof document!=='undefined'){
@@ -71,6 +71,11 @@
           item.chapter=matched;
         }
       }
+      if(own(q,'topic_status')){
+        if(!['matched','outside','unreadable'].includes(q.topic_status))throw new Error('Q'+n+': topic_status must be matched, outside, or unreadable.');
+        if(q.topic_status==='matched'&&!item.chapter)throw new Error('Q'+n+': matched questions need an official syllabus label.');
+        if(q.topic_status!=='matched'&&item.chapter)throw new Error('Q'+n+': outside/unreadable questions must have chapter "".');
+      }
       fields.forEach(function(k){if(own(q,k))item[k]=textField(q[k],k);});
       if(own(q,'debrief'))item.debrief=textField(q.debrief,'debrief');
       ['is_correct','qtext','options','your_answer','correct_answer'].forEach(function(k){
@@ -111,7 +116,8 @@
         calculation:'Show working and formulas, or Not applicable.',
         justification:'Why the recorded correct answer is supported; identify the mistake if wrong.',
         focus:'One specific thing to practise next.',
-        topic_reason:'Explain how the question matches this official syllabus heading, or why it is outside the selected syllabus.'
+        topic_reason:'Explain how this question matches this official syllabus heading, or why it is outside the selected syllabus.',
+        topic_status:'matched'
       }]
     };
     var payload=questions.map(function(q){
@@ -135,7 +141,7 @@
     var instruction=[
       'Act as my FIA/ACCA exam debrief tutor for '+meta.subject+' ('+type+').',
       'For EVERY numbered question: (1) choose one specific primary topic, (2) explain the reasoning, (3) show calculations or say Not applicable, (4) justify the recorded answer and explain my mistake if relevant, (5) suggest one practice focus.',
-       'OFFICIAL ACCA SYLLABUS CLASSIFICATION: Use ONLY one exact subtopic label from the official syllabus list for the paper manually chosen by the student. Never invent a chapter, and never force a question under a loosely related topic. For out-of-syllabus, illegible or unclassifiable questions, use chapter "" and explain why in topic_reason. Such questions are excluded from topic graphs, but their recorded marks stay unchanged.',
+       'OFFICIAL ACCA SYLLABUS CLASSIFICATION: Use ONLY one exact subtopic label from the official syllabus list for the paper manually chosen by the student. Never invent a chapter, and never force a question under a loosely related topic. For out-of-syllabus questions use chapter "", topic_status "outside", and explain why in topic_reason. For illegible questions use chapter "", topic_status "unreadable". For valid syllabus matches use topic_status "matched". Such questions are excluded from topic graphs, but their recorded marks stay unchanged.',
        'For EVERY question, explain WHY this official topic is the primary syllabus match in topic_reason. The topic_reason is separate from the working and justification. Questions sharing the same syllabus learning outcome MUST share the same official label.',
        'PM examples: high-low method = D2 · Analytical techniques in budgeting and forecasting; break-even, margin of safety and target profit = C2 · Cost-volume-profit analysis (CVP); relevant and opportunity cost = C1 · Relevant cost analysis; cost-plus pricing = C4 · Pricing decisions. Do not classify standalone straight-line depreciation as a PM decision-making topic.',
       'The PDF is an attempt-review export, often made of screenshots. Cross-check the ATTACHED ORIGINAL PDF for questions, images, tables, correct answers and grading. OCR QUESTION DATA is a guide, not proof for complex figures. If no PDF is attached, never invent missing figures; explicitly flag uncertain or unreadable questions.',
