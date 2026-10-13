@@ -106,23 +106,20 @@ def pdf_links(url,code):
     return choices[:12]
 
 def extract_pages(pdf):
+    """Extract ACCA's two-column syllabus pages with physical PDF clip regions.
+
+    Several pages contain one text block spanning two printed columns; sorting text
+    blocks by their origin incorrectly mixes separate headings. Clip rectangles
+    preserve the actual left-to-right printed column order.
+    """
     doc=fitz.open(stream=pdf,filetype="pdf")
     page_list=[]
     for page in doc:
-        blocks=page.get_text("blocks")
-        left,right=[],[]
-        middle=page.rect.width/2
-        for block in blocks:
-            if len(block)<7 or block[6]!=0:continue
-            x0,y0,x1,y1,txt,*rest=block
-            if not str(txt).strip():continue
-            # Preserve the two-column reading order. The normal PDF sort interleaves
-            # financial syllabus headings from columns on the same Y coordinate.
-            if x0<middle:left.append((y0,x0,str(txt)))
-            else:right.append((y0,x0,str(txt)))
-        left.sort(key=lambda b:(round(b[0]/3),b[1]))
-        right.sort(key=lambda b:(round(b[0]/3),b[1]))
-        page_list.append("\n".join(t for _,_,t in left)+"\n"+"\n".join(t for _,_,t in right))
+        width,height=page.rect.width,page.rect.height
+        midpoint=width/2
+        left=page.get_text("text",sort=True,clip=fitz.Rect(0,0,midpoint,height))
+        right=page.get_text("text",sort=True,clip=fitz.Rect(midpoint,0,width,height))
+        page_list.append(left+"\n"+right)
     return page_list
 
 def find_syllabus(pages):
