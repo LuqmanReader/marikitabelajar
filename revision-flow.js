@@ -44,6 +44,8 @@
     if(data.exam_id!=null&&data.exam_id!==meta.id)throw new Error('This AI response belongs to another attempt. Copy the prompt from this attempt again.');
     if(data.attempt_signature!=null&&data.attempt_signature!==signature(questions))throw new Error('This response was made for a different question set.');
     if(!Array.isArray(data)&&data.schema&&data.schema!=='personal-hub-debrief-v2')throw new Error('This response format is not supported. Use Copy AI request on this page.');
+    if(data.paper&&root.SubjectCatalog&&root.SubjectCatalog.canonical(data.paper)!==root.SubjectCatalog.canonical(meta.subject))throw new Error('This response was classified for '+data.paper+', not '+meta.subject+'. Regenerate the request for the selected paper.');
+    if(data.paper_code&&root.LedgerSyllabus&&data.paper_code!==root.LedgerSyllabus.code(meta.subject))throw new Error('This response belongs to a different ACCA paper ('+data.paper_code+').');
     var incoming=Array.isArray(data)?data:data.questions;
     if(!Array.isArray(incoming)||!incoming.length)throw new Error('No question feedback was found in the response.');
     var known=new Map(questions.map(function(q){return [String(q.qno),q];})), seen=new Set(), accepted=[];
@@ -55,19 +57,13 @@
       var item={qno:original.qno};
       if(own(q,'chapter')||own(q,'topic')){
         item.chapter=root.ChapterAnalysis.label(own(q,'chapter')?q.chapter:q.topic);
-        // Only accept exact syllabus subtopics from the student-selected paper.
-        var syllabus=root.LedgerSyllabus;
-        var allowed=syllabus&&syllabus.official(meta.subject)?syllabus.list(meta.subject):[];
-        if(!allowed.length){
-          try{var savedCatalog=JSON.parse(localStorage.getItem('personal_hub_chapters_v1')||'{}');
-              if(savedCatalog&&Array.isArray(savedCatalog[meta.subject]))
-                 allowed=savedCatalog[meta.subject].map(root.ChapterAnalysis.label).filter(Boolean);
-          }catch(e){}
-        }
-        if(!allowed.length)throw new Error('No verified ACCA topic catalog for '+meta.subject+'. Supply official syllabus topics before importing.');
+        // The source of truth is the published or student-confirmed ACCA syllabus for THIS paper.
+        var resolved=root.LedgerSyllabus&&root.LedgerSyllabus.resolve(localStorage,meta.subject);
+        var allowed=resolved&&resolved.topics||[];
+        if(!allowed.length)throw new Error('The ACCA syllabus for '+meta.subject+' has not been configured. Use Set Up Syllabus on this attempt before importing.');
         if(item.chapter){
           var matched=allowed.find(function(name){return name.toLowerCase()===item.chapter.toLowerCase();});
-          if(!matched)throw new Error('Q'+n+': "'+item.chapter+'" is not an official topic for this paper. Use an exact syllabus label or chapter "" for an out-of-syllabus question.');
+          if(!matched)throw new Error('Q'+n+': "'+item.chapter+'" is not in the approved syllabus for '+meta.subject+'. Choose an exact syllabus heading or leave blank with topic_status "outside" or "unreadable".');
           item.chapter=matched;
         }
       }
@@ -105,9 +101,12 @@
   // strengths/weaknesses are derived from the ORIGINAL marked answers in LedgerPeer.
   function prompt(meta,questions,catalog,signatureSource){
     var type=meta.testType==='set'?'Chapter Set':meta.testType==='pre'?'Progress Test':'Mock Test';
+    if(!Array.isArray(catalog)||!catalog.length)throw new Error('Configure the approved ACCA syllabus for '+meta.subject+' before generating this request.');
     var example={
       schema:'personal-hub-debrief-v2',
       exam_id:meta.id,
+      paper:meta.subject,
+      paper_code:root.LedgerSyllabus?root.LedgerSyllabus.code(meta.subject):'',
       attempt_signature:signature(signatureSource||questions),
       questions:[{
         qno:questions[0].qno,
@@ -139,11 +138,13 @@
       return item;
     });
     var instruction=[
-      'Act as my FIA/ACCA exam debrief tutor for '+meta.subject+' ('+type+').',
+      'PAPER SELECTED BY STUDENT (AUTHORITATIVE): '+meta.subject+'. DO NOT deduce, replace or rename the paper from question content or the PDF.',
+      'ATTEMPT TYPE: '+type+'; number '+meta.testNumber+'.',
+      'Act as my FIA/ACCA exam debrief tutor and ACCA syllabus topic classifier.',
       'For EVERY numbered question: (1) choose one specific primary topic, (2) explain the reasoning, (3) show calculations or say Not applicable, (4) justify the recorded answer and explain my mistake if relevant, (5) suggest one practice focus.',
        'OFFICIAL ACCA SYLLABUS CLASSIFICATION: Use ONLY one exact subtopic label from the official syllabus list for the paper manually chosen by the student. Never invent a chapter, and never force a question under a loosely related topic. For out-of-syllabus questions use chapter "", topic_status "outside", and explain why in topic_reason. For illegible questions use chapter "", topic_status "unreadable". For valid syllabus matches use topic_status "matched". Such questions are excluded from topic graphs, but their recorded marks stay unchanged.',
        'For EVERY question, explain WHY this official topic is the primary syllabus match in topic_reason. The topic_reason is separate from the working and justification. Questions sharing the same syllabus learning outcome MUST share the same official label.',
-       'PM examples: high-low method = D2 · Analytical techniques in budgeting and forecasting; break-even, margin of safety and target profit = C2 · Cost-volume-profit analysis (CVP); relevant and opportunity cost = C1 · Relevant cost analysis; cost-plus pricing = C4 · Pricing decisions. Do not classify standalone straight-line depreciation as a PM decision-making topic.',
+       'Do NOT use examples from another paper as topic labels. The exact allowed syllabus labels below are the single source of truth; choose the same heading for every question testing the same learning outcome.',
       'The PDF is an attempt-review export, often made of screenshots. Cross-check the ATTACHED ORIGINAL PDF for questions, images, tables, correct answers and grading. OCR QUESTION DATA is a guide, not proof for complex figures. If no PDF is attached, never invent missing figures; explicitly flag uncertain or unreadable questions.',
       'Respect all recorded marks and grading. Never alter question number, score, original recorded correct answer or the marking decision. Some learner-selected choices were not captured by OCR. Never invent a learner choice or diagnose its specific mistake unless visible in the source.',
       'Explain EVERY question, including correct ones, in full teaching detail. Give concept, calculations with steps where applicable, justification of the answer, and a specific practice focus. For uncertain source content, state the limitation in the relevant explanation instead of guessing.',
@@ -154,8 +155,10 @@
       JSON.stringify(example,null,2),
       '',
       'ATTEMPT: '+meta.title,
-      'SET CHAPTER: '+(meta.setChapter||'Not applicable'),
-       'OFFICIAL SYLLABUS SUBTOPICS FOR '+meta.subject+' (exact labels; no invented alternatives): '+(catalog.length?JSON.stringify(catalog):'VERIFIED SYLLABUS TOPICS NOT PROVIDED — DO NOT CLASSIFY'),
+      'STUDENT-SELECTED PAPER CODE: '+(root.LedgerSyllabus?root.LedgerSyllabus.code(meta.subject):'unknown'),
+      'SET TARGET SYLLABUS TOPIC: '+(meta.testType==='set'?(meta.setChapter||'Not selected'):'Not applicable'),
+      'For a Chapter Set, use the selected target topic as context, not as a blind override: check each actual question before assigning it. For Progress/Mock, use the full paper syllabus below.',
+      'APPROVED ACCA SYLLABUS FOR '+meta.subject+': '+(catalog.length?JSON.stringify(catalog):'NO APPROVED SYLLABUS LIST; DO NOT GENERATE TOPIC LABELS'),
       'QUESTION DATA:',
       JSON.stringify(payload)
     ];
