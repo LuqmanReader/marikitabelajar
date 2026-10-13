@@ -188,9 +188,10 @@
   const path=location.pathname+(location.search&&!/token_hash=|(?:^|[?&])code=|error_code=|error_description=/i.test(location.search)?location.search:'')+'#access';
   history.replaceState(null,document.title,path);
  }
- async function completeEmailLink(){
-  const query=new URLSearchParams(location.search);
-  const hash=new URLSearchParams(location.hash.replace(/^#/,''));
+ async function completeEmailLink(incomingUrl){
+  const callback=new URL(incomingUrl||location.href,location.href);
+  const query=new URLSearchParams(callback.search);
+  const hash=new URLSearchParams(callback.hash.replace(/^#/,''));
   const tokenHash=query.get('token_hash')||hash.get('token_hash');
   const incomingType=query.get('type')||hash.get('type')||'email';
   const hasImplicitTokens=!!(hash.get('access_token')&&hash.get('refresh_token'));
