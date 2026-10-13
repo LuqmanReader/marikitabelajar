@@ -7,21 +7,44 @@
   function count(b){return b.total?Math.round(b.correct/b.total*100)+'% ('+b.correct+'/'+b.total+')':'Not attempted';}
   function color(x){return x.level==='Strong'?'#1F6B39':x.level==='Needs Work'?'#E63B2E':x.level==='Developing'?'#9a7400':'#777';}
   function mountEditor(el,data,meta,storage,onSave){
-    var official=root.LedgerSyllabus&&root.LedgerSyllabus.official(meta.subject);
-    var names=official?root.LedgerSyllabus.list(meta.subject):M.catalog(storage,meta.subject);
-    if(!official)data.forEach(function(q){if(q.chapter&&names.indexOf(q.chapter)<0)names.push(q.chapter);});
-    var sum=M.summary(data,meta.subject);
-    el.innerHTML='<h3>Chapter tags</h3><p class="chapter-note">'+coverage({tagged:sum.coverage.tagged,untagged:sum.coverage.untagged,outside:sum.coverage.outside,unscored:sum.coverage.unscored})+'. Tag correct and incorrect questions. These tags update the chapter graph and strengths/weaknesses automatically.</p>'+
-      (official?'<p class="chapter-note">Official ACCA topics are locked to the syllabus for this paper. Out-of-syllabus questions can be left blank.</p><div hidden>':'<details><summary>Set this subject’s chapter list</summary>')+'<p>Use your textbook’s actual names or numbers, one per line. Example: Chapter 4 · Accruals and prepayments. This is a reusable suggestion list; saving it does not retag existing questions.</p><textarea id="chapterCatalog" rows="5">'+esc(names.join('\n'))+'</textarea><button type="button" id="saveChapterCatalog" class="btn secondary">Save chapter list</button>'+(official?'</div>':'</details>')+
-      '<datalist id="chapterNames">'+names.map(function(n){return '<option value="'+esc(n)+'"></option>';}).join('')+'</datalist>'+
-      '<div class="chapter-tools"><input id="bulkChapter" list="chapterNames" placeholder="Chapter for selected questions"><button type="button" id="applyBulkChapter" class="btn secondary">Apply to selected</button></div>'+
-      '<div class="chapter-table-scroll"><table class="chapter-table"><thead><tr><th><input type="checkbox" id="selectAllChapters" aria-label="Select all questions"></th><th>Question / result</th><th>Chapter</th></tr></thead><tbody>'+data.map(function(q,i){return '<tr><td><input class="chapter-pick" data-index="'+i+'" type="checkbox" aria-label="Select question '+esc(q.qno)+'"></td><td><strong>Q'+esc(q.qno)+' · '+(q.is_correct===true?'Correct':q.is_correct===false?'Incorrect':'Unscored')+'</strong><br>'+esc(plain(q.qtext).slice(0,110)||'Question text missing')+'</td><td><input class="chapter-value" data-index="'+i+'" list="chapterNames" value="'+esc(q.chapter||'')+'" placeholder="Unassigned" aria-label="Chapter for question '+esc(q.qno)+'"></td></tr>';}).join('')+'</tbody></table></div>'+
-      '<button type="button" id="saveQuestionChapters" class="btn secondary">Save question chapters</button><p id="chapterEditMsg" role="status"></p>';
+    var syllabus=root.LedgerSyllabus&&root.LedgerSyllabus.resolve(storage,meta.subject);
+    var names=syllabus&&syllabus.topics||[];
+    var sum=M.summary(data,meta.subject,storage);
+    var options='<option value="">— Unassigned / outside this syllabus —</option>'+names.map(function(n){return '<option value="'+esc(n)+'">'+esc(n)+'</option>';}).join('');
+    el.innerHTML='<h3>Official ACCA syllabus topic assignments</h3>'+
+      '<p class="chapter-note">'+coverage(sum.coverage)+'. Only the approved syllabus for '+esc(meta.subject)+' may be used. Manual topic changes clear the old rationale so ChatGPT can explain the new match.</p>'+
+      (names.length?'':'<p class="chapter-note">Set up this paper’s official ACCA syllabus above before assigning topics.</p>')+
+      '<div class="chapter-tools"><select id="bulkChapter" aria-label="Topic to assign to selected questions">'+options+'</select><button type="button" id="applyBulkChapter" class="btn secondary">Apply to selected</button></div>'+
+      '<div class="chapter-table-scroll"><table class="chapter-table"><thead><tr><th><input type="checkbox" id="selectAllChapters" aria-label="Select all questions"></th><th>Question / result</th><th>Official syllabus topic</th></tr></thead><tbody>'+
+      data.map(function(q,i){var current=names.some(function(n){return n.toLowerCase()===String(q.chapter||'').toLowerCase();})?q.chapter:'';
+        return '<tr><td><input class="chapter-pick" data-index="'+i+'" type="checkbox" aria-label="Select question '+esc(q.qno)+'"></td><td><strong>Q'+esc(q.qno)+' · '+(q.is_correct===true?'Correct':q.is_correct===false?'Incorrect':'Unscored')+'</strong><br>'+esc(plain(q.qtext).slice(0,110)||'Question text missing')+'</td><td><select class="chapter-value" data-index="'+i+'" aria-label="Official ACCA topic for question '+esc(q.qno)+'">'+options+'</select></td></tr>';}).join('')+
+      '</tbody></table></div><button type="button" id="saveQuestionChapters" class="btn secondary">Save approved topic assignments</button><p id="chapterEditMsg" role="status"></p>';
     function message(s){el.querySelector('#chapterEditMsg').textContent=s;}
-    el.querySelector('#selectAllChapters').addEventListener('change',function(){var checked=this.checked;el.querySelectorAll('.chapter-pick').forEach(function(p){p.checked=checked;});});
-    el.querySelector('#applyBulkChapter').addEventListener('click',function(){try{var name=M.label(el.querySelector('#bulkChapter').value), n=0;el.querySelectorAll('.chapter-pick:checked').forEach(function(p){el.querySelector('.chapter-value[data-index="'+p.dataset.index+'"]').value=name;n++;});message(n?'Applied to '+n+' questions. Save question chapters to confirm.':'Select questions first.');}catch(e){message(e.message);}});
-    if(!official)el.querySelector('#saveChapterCatalog').addEventListener('click',function(){try{var list=M.saveCatalog(storage,meta.subject,el.querySelector('#chapterCatalog').value.split('\n'));el.querySelector('#chapterNames').innerHTML=list.map(function(n){return '<option value="'+esc(n)+'"></option>';}).join('');message('Chapter list saved.');}catch(e){message(e.message);}});
-    el.querySelector('#saveQuestionChapters').addEventListener('click',function(){try{var patch=data.map(function(q,i){var chapter=M.label(el.querySelector('.chapter-value[data-index="'+i+'"]').value);if(official&&chapter&&!names.some(function(n){return n.toLowerCase()===chapter.toLowerCase();}))throw Error('Q'+q.qno+': not an official '+meta.subject+' syllabus topic. Choose a listed topic or leave blank.');return {qno:q.qno,chapter:chapter};});onSave(M.merge(data,patch));}catch(e){message('Could not save: '+e.message);}});
+    el.querySelectorAll('.chapter-value').forEach(function(select){
+      var q=data[Number(select.dataset.index)];
+      var found=names.find(function(n){return n.toLowerCase()===String(q.chapter||'').toLowerCase();});
+      select.value=found||'';
+      if(!names.length)select.disabled=true;
+    });
+    el.querySelector('#selectAllChapters').addEventListener('change',function(){var check=this.checked;el.querySelectorAll('.chapter-pick').forEach(function(p){p.checked=check;});});
+    el.querySelector('#applyBulkChapter').addEventListener('click',function(){
+      if(!names.length){message('The official syllabus must be configured before assigning topics.');return;}
+      var name=el.querySelector('#bulkChapter').value,n=0;
+      el.querySelectorAll('.chapter-pick:checked').forEach(function(p){el.querySelector('.chapter-value[data-index="'+p.dataset.index+'"]').value=name;n++;});
+      message(n?'Updated '+n+' unsaved assignments. Press Save to confirm.':'Select one or more questions first.');
+    });
+    var saveButton=el.querySelector('#saveQuestionChapters');saveButton.disabled=!names.length;
+    saveButton.addEventListener('click',function(){
+      try{
+        var patch=data.map(function(q,i){
+          var chapter=el.querySelector('.chapter-value[data-index="'+i+'"]').value;
+          if(chapter&&!names.includes(chapter))throw Error('Q'+q.qno+': not in the approved syllabus for '+meta.subject);
+          if(chapter===String(q.chapter||''))return {qno:q.qno,chapter:chapter};
+          return {qno:q.qno,chapter:chapter,topic_status:chapter?'matched':'',topic_reason:''};
+        });
+        onSave(M.merge(data,patch));
+      }catch(e){message('Could not save topic assignments: '+e.message);}
+    });
   }
   function graphHtml(s){
     if(!s.chapters.length)return '<p class="chapter-note">No chapter results yet. Open a saved test, copy its GPT prompt, import the returned chapter tags, or assign them manually.</p>';
