@@ -15,13 +15,13 @@
    return all&&Array.isArray(all[meta.subject])?all[meta.subject].filter(x=>typeof x==='string'&&x.trim()).map(x=>x.trim()):[];
   }catch(e){return [];}
  }
- function rankTable(questions){
-  const rows=M.summary(questions).chapters.sort((a,b)=>b.correct/b.total-a.correct/a.total||b.total-a.total);
+ function rankTable(questions,subject){
+  const rows=M.summary(questions,subject).chapters.sort((a,b)=>b.correct/b.total-a.correct/a.total||b.total-a.total);
   if(!rows.length)return '<p class="flow-muted">Import the AI topics to populate topic accuracy.</p>';
   return '<div class="flow-table-scroll"><table class="flow-rank-table"><thead><tr><th>Topic</th><th>Correct</th><th>Accuracy</th></tr></thead><tbody>'+rows.map(x=>'<tr><td>'+escape(x.chapter)+'</td><td>'+x.correct+'/'+x.total+'</td><td>'+Math.round(x.correct/x.total*1000)/10+'%</td></tr>').join('')+'</tbody></table></div>';
  }
- function insights(questions){
-  const rows=M.summary(questions).chapters.filter(x=>x.total>=3);
+ function insights(questions,subject){
+  const rows=M.summary(questions,subject).chapters.filter(x=>x.total>=3);
   if(!rows.length)return '<p class="flow-muted">Strengths and weaknesses become available when a topic has at least three graded questions.</p>';
   const strong=rows.filter(x=>x.correct/x.total>=.8).sort((a,b)=>b.correct/b.total-a.correct/a.total).slice(0,3);
   const weak=rows.filter(x=>x.correct/x.total<.6).sort((a,b)=>a.correct/a.total-b.correct/b.total).slice(0,3);
@@ -59,9 +59,9 @@
   const $=id=>el.querySelector('#'+id);
   function missing(){return data.filter(incomplete);}
   function updateInfo(){
-   const left=missing();const info=M.summary(data);
+   const left=missing();const info=M.summary(data,meta.subject);
    $('debriefProgress').textContent=data.length+' questions saved · '+(data.length-left.length)+' with complete explanations and topics · '+left.length+' still pending · '+info.coverage.tagged+' tagged for graphs.';
-   $('aiCurrentAnalysis').innerHTML=insights(data)+rankTable(data);
+   $('aiCurrentAnalysis').innerHTML=insights(data,meta.subject)+rankTable(data,meta.subject);
    $('copyAIRequest').textContent=left.length&&left.length<data.length?'Copy request for '+left.length+' unfinished questions':'Copy complete request';
   }
   function makePrompt(){
@@ -77,10 +77,10 @@
   }
   function message(text,error=false){const node=$('aiResponseMessage');node.textContent=text;node.className=error?'flow-notice':'flow-success';}
   function preview(result){
-   const coverage=M.summary(result.questions).coverage;
+   const coverage=M.summary(result.questions,meta.subject).coverage;
    const next=result.questions.filter(incomplete);
    $('aiResponsePreview').hidden=false;
-   $('aiResponsePreview').innerHTML='<h3>Import preview</h3><p>'+result.count+' question updates included · '+coverage.tagged+' topics assigned · '+next.length+' questions still need full feedback.</p>'+result.warnings.map(x=>'<p class="flow-notice">'+escape(x)+'</p>').join('')+insights(result.questions)+rankTable(result.questions)+'<details><summary>Preview explanations and classifications</summary>'+result.changed.map(change=>{const q=result.questions.find(x=>String(x.qno)===String(change.qno));return '<section class="flow-preview"><strong>Q'+escape(q.qno)+' · '+escape(q.chapter||'Topic not assigned')+'</strong><p>'+escape(F.plain(q.qtext).slice(0,160))+'</p>'+F.feedback(q)+'</section>';}).join('')+'</details>';
+   $('aiResponsePreview').innerHTML='<h3>Import preview</h3><p>'+result.count+' question updates included · '+coverage.tagged+' topics assigned · '+next.length+' questions still need full feedback.</p>'+result.warnings.map(x=>'<p class="flow-notice">'+escape(x)+'</p>').join('')+insights(result.questions,meta.subject)+rankTable(result.questions,meta.subject)+'<details><summary>Preview explanations and classifications</summary>'+result.changed.map(change=>{const q=result.questions.find(x=>String(x.qno)===String(change.qno));return '<section class="flow-preview"><strong>Q'+escape(q.qno)+' · '+escape(q.chapter||'Topic not assigned')+'</strong><p>'+escape(F.plain(q.qtext).slice(0,160))+'</p>'+F.feedback(q)+'</section>';}).join('')+'</details>';
   }
   const isOfficial=root.LedgerSyllabus&&root.LedgerSyllabus.official(meta.subject);
   const topicNames=catalog(meta);
