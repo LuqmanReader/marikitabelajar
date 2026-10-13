@@ -104,30 +104,39 @@ def pdf_links(url,code):
 def extract_pages(pdf):
     doc=fitz.open(stream=pdf,filetype="pdf")
     page_list=[]
-    for p in doc:
-        # Default text reading order is sufficient for ACCA's one-column syllabus page.
-        page_list.append(p.get_text(sort=True))
+    for page in doc:
+        blocks=page.get_text("blocks")
+        left,right=[],[]
+        middle=page.rect.width/2
+        for block in blocks:
+            if len(block)<7 or block[6]!=0:continue
+            x0,y0,x1,y1,txt,*rest=block
+            if not str(txt).strip():continue
+            # Preserve the two-column reading order. The normal PDF sort interleaves
+            # financial syllabus headings from columns on the same Y coordinate.
+            if x0<middle:left.append((y0,x0,str(txt)))
+            else:right.append((y0,x0,str(txt)))
+        left.sort(key=lambda b:(round(b[0]/3),b[1]))
+        right.sort(key=lambda b:(round(b[0]/3),b[1]))
+        page_list.append("\n".join(t for _,_,t in left)+"\n"+"\n".join(t for _,_,t in right))
     return page_list
 
 def find_syllabus(pages):
-    blocks=[]
-    for i,text in enumerate(pages):
-        clean=text.replace("\u00a0"," ")
-        # The contents page usually has dotted leaders; reject those.
-        if re.search(r"^\s*(?:4|5|6)\.\s+(?:The )?syllabus\s*$",clean,re.I|re.M):
-            blocks.append((i,clean))
-    if not blocks:raise ValueError("No unambiguous 'The syllabus' section page found")
-    # Avoid table-of-contents false positives by selecting a page with A and 1. sections.
-    for i,text in blocks:
-        joined="\n".join(pages[i:i+3])
-        start=re.search(r"^\s*(?:4|5|6)\.\s+(?:The )?syllabus\s*$",joined,re.I|re.M)
+    # Inspect body pages only; page 2's table of contents advertises the syllabus
+    # without containing any of its actual official topic entries.
+    for i,doc_text in enumerate(pages):
+        if i<3:continue
+        m=re.search(r"\b(?:4|5|6|7)\.\s+The\s+syllabus\b",doc_text,re.I)
+        if not m:continue
+        combined="\n".join(pages[i:i+3])
+        start=re.search(r"\b(?:4|5|6|7)\.\s+The\s+syllabus\b",combined,re.I)
         if not start:continue
-        tail=joined[start.end():]
-        end=re.search(r"^\s*(?:5|6|7)\.\s+(?:Detailed )?study guide\s*$",tail,re.I|re.M)
+        tail=combined[start.end():]
+        end=re.search(r"\b(?:5|6|7|8)\.\s+Detailed\s+study\s+guide\b",tail,re.I)
         if end:tail=tail[:end.start()]
-        if re.search(r"(?m)^\s*A\s+[A-Z]",tail) and len(re.findall(r"(?m)^\s*\d{1,2}\.\s+\S",tail))>=4:
+        if len(re.findall(r"(?m)^\s*\d{1,2}\.\s+\S",tail))>=3:
             return tail
-    raise ValueError("Cannot isolate complete main syllabus headings from PDF; manual review required")
+    raise ValueError("Could not isolate a complete syllabus section; manual verification required")
 
 def extract_topics(syllabus):
     text=re.sub(r"\u00a0"," ",syllabus)
