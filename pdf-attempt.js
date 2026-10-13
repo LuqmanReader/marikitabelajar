@@ -18,7 +18,24 @@
   if(!/^\d+$/.test(rawNumber)||!Number.isSafeInteger(testNumber)||testNumber<1||testNumber>999)throw Error('Enter an attempt number between 1 and 999.');
   const setChapter=testType==='set'?$('pdfSetChapter').value.trim():'';
   if(setChapter.length>120)throw Error('The chapter name is too long.');
+  if(setChapter&&root.LedgerSyllabus){
+   const resolved=root.LedgerSyllabus.resolve(localStorage,subject);
+   if(resolved.verified&&!resolved.topics.some(x=>x.toLowerCase()===setChapter.toLowerCase()))
+    throw Error('Choose an exact ACCA syllabus topic from the Chapter Set suggestions.');
+  }
   return {subject,testType,testNumber,setChapter};
+ }
+ function updateTopicOptions(){
+  const chosen=$('pdfSubject').value;
+  const syllabus=root.LedgerSyllabus&&root.LedgerSyllabus.resolve(localStorage,chosen);
+  const options=$('pdfTopicOptions');
+  options.replaceChildren();
+  if(syllabus&&syllabus.topics.length){
+   for(const name of syllabus.topics){const option=document.createElement('option');option.value=name;options.appendChild(option);}
+   $('pdfSetChapter').placeholder='Choose from '+syllabus.topics.length+' approved syllabus topics';
+  }else{
+   $('pdfSetChapter').placeholder='Syllabus setup required after PDF upload';
+  }
  }
  function refreshMetadata(){
   let ready=true;
@@ -34,11 +51,12 @@
   paper.insertBefore(empty,paper.firstChild);paper.value='';
   ['pdfSubject','pdfTestType','pdfTestNumber','pdfSetChapter'].forEach(id=>{
    $(id).addEventListener('change',()=>{
+    if(id==='pdfSubject'){ $('pdfSetChapter').value='';updateTopicOptions(); }
     const ready=refreshMetadata();
     if(!state.busy&&!state.pending)note(ready?'Details ready. Select your marked attempt PDF.':'Choose the paper, attempt type and attempt number first.');
    });
   });
-  refreshMetadata();
+  updateTopicOptions();refreshMetadata();
   note('Choose the paper, attempt type and attempt number first, then upload the marked PDF.');
  }
  function cleanPageText(s){return tidy(s).replace(/^https?:\/{1,2}[^\s]+\s+(\d+)\/\d+\s*$/gm,'');}
