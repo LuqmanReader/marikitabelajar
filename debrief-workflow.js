@@ -40,7 +40,7 @@
       <label class="flow-field">Syllabus edition<input type="text" id="syllabusEdition" placeholder="e.g. September 2026–June 2027"></label>
       <label class="flow-field">Official subtopics, one per line<textarea id="syllabusTopics" rows="8" placeholder="A1 · Exact ACCA syllabus heading&#10;A2 · Next exact syllabus heading"></textarea></label>
       <label class="flow-field"><input id="syllabusConfirm" type="checkbox"> I verified these headings against the chosen paper's official ACCA guide.</label>
-      <div class="flow-actions"><button type="button" class="flow-button primary" id="saveVerifiedSyllabus">Save syllabus for this paper</button></div>
+      <div class="flow-actions"><button type="button" class="flow-button secondary" id="copySyllabusRequest">Copy syllabus extraction request</button><button type="button" class="flow-button primary" id="saveVerifiedSyllabus">Save syllabus for this paper</button></div>
       <p role="status" id="syllabusSetupMessage"></p>
     </section>
     <div class="flow-controls"><label>Change paper for this saved attempt
@@ -126,6 +126,27 @@
   }else{
    $('syllabusNotice').textContent='The selected paper needs a syllabus catalog before topic analysis can begin. Your PDF and marks are already saved.';
    $('syllabusSetup').hidden=false;
+   $('copySyllabusRequest').addEventListener('click',async()=>{
+    const prompt=[
+      'I am configuring LedgerPeer for the FIA/ACCA paper: '+meta.subject+'.',
+      'I will attach the OFFICIAL ACCA syllabus and study guide PDF for this exact paper and edition.',
+      'Read the syllabus section of the ATTACHED GUIDE, not general web summaries.',
+      'Return ONLY the exact numbered subtopics from the official syllabus in this format, one per line:',
+      'A1 · Exact official heading',
+      'A2 · Exact official heading',
+      'B1 · Exact official heading',
+      'Continue through all syllabus areas and topic numbers. DO NOT invent a heading, create an extra topic, or substitute broad paraphrases.',
+      'If the attachment is missing/unreadable, reply "NO VERIFIED SYLLABUS" and do not guess.',
+      'Do not include explanatory paragraphs, Markdown bullets, code blocks, or unrelated exams.',
+      'The student will check these lines against the official PDF before saving them in LedgerPeer.'
+    ].join('\n');
+    try{
+     await navigator.clipboard.writeText(prompt);
+     $('syllabusSetupMessage').textContent='Syllabus extraction request copied. Open ChatGPT, attach the official syllabus PDF, paste the request, then verify and paste the headings here.';
+    }catch(error){
+     $('syllabusSetupMessage').textContent='Clipboard access failed. Use your browser clipboard permissions or copy from the syllabus prompt provided by LedgerPeer.';
+    }
+   });
    $('saveVerifiedSyllabus').addEventListener('click',()=>{
     const status=$('syllabusSetupMessage');
     try{
