@@ -25,6 +25,29 @@
   }
   return {subject,testType,testNumber,setChapter};
  }
+ function updateFormatReference(){
+  const host=$('pdfFormatReference');if(!host)return;
+  const paper=$('pdfSubject').value;
+  const ref=root.LedgerOfficialExamRegistry&&root.LedgerOfficialExamRegistry.get(paper);
+  host.replaceChildren();
+  if(!ref){host.textContent='Choose your FIA or ACCA paper to view the official exam structure.';return;}
+  const format=ref.format,descriptions=format.sections.map(s=>s.name+': '+s.count+' '+s.kind+' ('+(s.marks||s.count*s.marksEach)+' marks)').join(' · ');
+  const note=document.createElement('strong');
+  note.textContent=ref.code+' · '+(format.mode==='on-demand'?'On-demand CBE':'Session-based CBE')+
+    (format.durationMinutes?' · '+format.durationMinutes+' minutes':'')+
+    ' · '+format.marks+' marks';
+  host.appendChild(note);
+  const detail=document.createElement('span');
+  detail.textContent=descriptions?'. Full-exam pattern: '+descriptions+'. Chapter sets and progress tests may contain fewer questions.':'. Detailed full-exam section breakdown still needs verification from ACCA.';
+  host.appendChild(detail);
+  const source=document.createElement('a');source.href=ref.formatSource;source.target='_blank';source.rel='noopener noreferrer';source.textContent=' Official ACCA reference ↗';
+  host.appendChild(source);
+  if(['LW','TX','ATX','FTX','AAA','SBR'].includes(ref.code)){
+   const variant=document.createElement('em');
+   variant.textContent=' · Reference version: '+ref.variant+'. The actual syllabus must match your registered examination variant.';
+   host.appendChild(variant);
+  }
+ }
  function updateTopicOptions(){
   const chosen=$('pdfSubject').value;
   const syllabus=root.LedgerSyllabus&&root.LedgerSyllabus.resolve(localStorage,chosen);
@@ -51,12 +74,12 @@
   paper.insertBefore(empty,paper.firstChild);paper.value='';
   ['pdfSubject','pdfTestType','pdfTestNumber','pdfSetChapter'].forEach(id=>{
    $(id).addEventListener('change',()=>{
-    if(id==='pdfSubject'){ $('pdfSetChapter').value='';updateTopicOptions(); }
+    if(id==='pdfSubject'){ $('pdfSetChapter').value='';updateTopicOptions();updateFormatReference(); }
     const ready=refreshMetadata();
     if(!state.busy&&!state.pending)note(ready?'Details ready. Select your marked attempt PDF.':'Choose the paper, attempt type and attempt number first.');
    });
   });
-  updateTopicOptions();refreshMetadata();
+  updateTopicOptions();updateFormatReference();refreshMetadata();
   note('Choose the paper, attempt type and attempt number first, then upload the marked PDF.');
  }
  function cleanPageText(s){return tidy(s).replace(/^https?:\/{1,2}[^\s]+\s+(\d+)\/\d+\s*$/gm,'');}
