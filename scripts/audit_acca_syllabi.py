@@ -143,35 +143,42 @@ def find_syllabus(pages):
     raise ValueError("Could not isolate a complete syllabus section; manual verification required")
 
 def extract_topics(syllabus):
-    """Read numbered ACCA headings even when the PDF places numbers on their own lines."""
+    """Read numbered ACCA headings in a two-column PDF, then resolve column collisions.
+
+    Never substitute guessed textbook headings: each label must appear in ACCA PDF.
+    """
     lines=[re.sub(r"\s+"," ",s).strip() for s in syllabus.replace("\u00a0"," ").splitlines()]
-    rows,seen=[],set()
+    rows=[]
     current=None
     pending=None
+    title_re=re.compile(r"^(?:Recording Financial Transactions|Maintaining Financial Records|Management Information|Managing Costs and Finance|Business and Technology|Management Accounting|Financial Accounting|Foundations in Audit|Foundations in Financial Management|Foundations in Taxation|Performance Management|Financial Reporting|Audit and Assurance|Financial Management|Corporate and Business Law|Strategic Business Leader|Strategic Business Reporting|Advanced (?:Audit|Taxation|Financial|Performance))\s*\([A-Z0-9/ -]+\)\s*$")
+    digital=[
+       "Use computer technology to efficiently",
+       "Work on relevant response options",
+       "Navigate windows and computer screens",
+       "Present data and information effectively"
+    ]
     def commit():
         nonlocal pending
         if not pending:return
         heading=re.sub(r"\s+"," "," ".join(pending["text"])).strip(" .\t")
         heading=re.sub(r"(?i)\s*©\s*ACCA.*$","",heading).strip()
-        if len(heading)>=7 and len(heading)<=119 and pending["code"] not in seen:
+        # Remove references caused by ACCA's repeated page footer/header.
+        if len(heading)>=3 and len(heading)<=190 and not title_re.match(heading):
             rows.append({"code":pending["code"],"name":heading,"area":pending["area"]})
-            seen.add(pending["code"])
         pending=None
-    for line in lines:
-        if not line or line.startswith("© ACCA") or re.match(r"^\d{1,3}$",line) and not current:
-            continue
-        if "All rights reserved" in line:continue
-        if re.match(r"^(?:Recording Financial Transactions|Maintaining Financial Records|Management Information|Managing Costs and Finance|Business and Technology|Management Accounting|Financial Accounting|Foundations in Audit|Foundations in Financial Management|Foundations in Taxation|Performance Management|Financial Reporting|Audit and Assurance|Financial Management|Corporate and Business Law|Strategic Business Leader|Strategic Business Reporting|Advanced (?:Audit|Taxation|Financial|Performance))\s*\([A-Z0-9/ -]+\)\s*$",line):
-            continue
-        # Line may be just "A", "A.", "B", or "C. Name of syllabus area".
-        area=re.match(r"^([A-J])(?:\.|\s+([A-Za-z].+))?$",line)
-        if area and (len(line)==1 or line[1:2]=='.' or line[1:2]==' '):
-            commit()
-            current=area.group(1)
-            continue
+    for i,line in enumerate(lines):
+        if not line or "© ACCA" in line or "All rights reserved" in line:continue
+        if title_re.match(line):continue
+        if re.fullmatch(r"\d{1,3}",line):
+            following="\n".join(lines[i+1:i+4])
+            if "© ACCA" in following:continue
+        # The syllabus is sometimes printed as "C. Income tax liabilities" on one line.
+        area=re.match(r"^([A-J])(?:\.?(?:\s+[A-Za-z].*)?|\.)$",line)
+        if area:
+            commit();current=area.group(1);continue
         if not current:continue
-        # ACCA places the numeric topic on one line or breaks it across lines.
-        item=re.match(r"^(\d{1,2})(?:[.]|\s{2,})(?:\s+(.+))?$",line)
+        item=re.match(r"^(\d{1,2})(?:\.{1,2}|\s{2,})(?:\s+(.+))?$",line)
         if not item and re.fullmatch(r"\d{1,2}",line):item=re.match(r"^(\d{1,2})$",line)
         if item:
             num=int(item.group(1))
@@ -180,18 +187,38 @@ def extract_topics(syllabus):
                 pending={"code":current+str(num),"area":current,"text":([item.group(2)] if item.re.groups>=2 and item.group(2) else [])}
                 continue
         if pending:
-            # Suppress pagination/header lines. Letter headings are handled above.
             if re.fullmatch(r"\d{1,3}",line):continue
-            if len(" ".join(pending["text"]))<123:
+            if len(" ".join(pending["text"]))<193:
                 pending["text"].append(line)
     commit()
-    areas=len({v["area"] for v in rows})
-    if len(rows)<8 or len(rows)>100 or areas<2:
-        raise ValueError(f"Unreliable topic extraction: {len(rows)} topics across {areas} areas")
-    # Require area codes to be ordered without corruption by column mixing.
-    codes=[r["code"] for r in rows]
-    if len(codes)!=len(set(codes)):raise ValueError("Duplicated ACCA syllabus code")
-    return rows
+    if not rows:raise ValueError("No numbered official topics parsed")
+
+    # Some ACCA two-column layouts interleave employability/digital skill headings
+    # with a subject's technical headings. The digital section is always the final
+    # main area, so relocate its *verbatim heading* to that final section.
+    digital_area=max((r["area"] for r in rows))
+    for row in rows:
+        for index,heading in enumerate(digital,1):
+            if row["name"].lower().startswith(heading.lower()):
+                row["area"]=digital_area
+                row["code"]=digital_area+str(index)
+                row["name"]=re.sub(r"\s+a range of entities$","",row["name"])
+                break
+    ordered=sorted(rows,key=lambda r:(r["code"][0],int(r["code"][1:])))
+    topics=[]
+    seen=set()
+    for row in ordered:
+        if row["code"] in seen:continue
+        # A heading which is actually a repeated document title must not be a topic.
+        if title_re.match(row["name"]):continue
+        if not 3<=len(row["name"])<=119:continue
+        topics.append(row)
+        seen.add(row["code"])
+    areas=len({t["area"] for t in topics})
+    if len(topics)<8 or len(topics)>100 or areas<2:
+        raise ValueError(f"Unreliable topic extraction: {len(topics)} topics across {areas} areas")
+    if len(topics)!=len({t["code"] for t in topics}):raise ValueError("Repeated topic codes")
+    return topics
 
 def find_approach(pages):
     joined="\n".join(pages)
