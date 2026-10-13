@@ -3,7 +3,7 @@
   var M=root.ChapterAnalysis;
   function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
   function plain(s){var d=document.createElement('div');d.innerHTML=s||'';return (d.textContent||'').replace(/\s+/g,' ').trim();}
-  function coverage(s){return s.tagged+' tagged answers · '+s.untagged+' awaiting chapter tags'+(s.unscored?' · '+s.unscored+' unscored':'')+(s.unavailable?' · '+s.unavailable+' unavailable exam records':'');}
+  function coverage(s){return s.tagged+' tagged answers · '+s.untagged+' awaiting chapter tags'+(s.outside?' · '+s.outside+' outside/unreadable syllabus':'')+(s.unscored?' · '+s.unscored+' unscored':'')+(s.unavailable?' · '+s.unavailable+' unavailable exam records':'');}
   function count(b){return b.total?Math.round(b.correct/b.total*100)+'% ('+b.correct+'/'+b.total+')':'Not attempted';}
   function color(x){return x.level==='Strong'?'#1F6B39':x.level==='Needs Work'?'#E63B2E':x.level==='Developing'?'#9a7400':'#777';}
   function mountEditor(el,data,meta,storage,onSave){
@@ -11,7 +11,7 @@
     var names=official?root.LedgerSyllabus.list(meta.subject):M.catalog(storage,meta.subject);
     if(!official)data.forEach(function(q){if(q.chapter&&names.indexOf(q.chapter)<0)names.push(q.chapter);});
     var sum=M.summary(data,meta.subject);
-    el.innerHTML='<h3>Chapter tags</h3><p class="chapter-note">'+coverage({tagged:sum.coverage.tagged,untagged:sum.coverage.untagged,unscored:sum.coverage.unscored})+'. Tag correct and incorrect questions. These tags update the chapter graph and strengths/weaknesses automatically.</p>'+
+    el.innerHTML='<h3>Chapter tags</h3><p class="chapter-note">'+coverage({tagged:sum.coverage.tagged,untagged:sum.coverage.untagged,outside:sum.coverage.outside,unscored:sum.coverage.unscored})+'. Tag correct and incorrect questions. These tags update the chapter graph and strengths/weaknesses automatically.</p>'+
       (official?'<p class="chapter-note">Official ACCA topics are locked to the syllabus for this paper. Out-of-syllabus questions can be left blank.</p><div hidden>':'<details><summary>Set this subject’s chapter list</summary>')+'<p>Use your textbook’s actual names or numbers, one per line. Example: Chapter 4 · Accruals and prepayments. This is a reusable suggestion list; saving it does not retag existing questions.</p><textarea id="chapterCatalog" rows="5">'+esc(names.join('\n'))+'</textarea><button type="button" id="saveChapterCatalog" class="btn secondary">Save chapter list</button>'+(official?'</div>':'</details>')+
       '<datalist id="chapterNames">'+names.map(function(n){return '<option value="'+esc(n)+'"></option>';}).join('')+'</datalist>'+
       '<div class="chapter-tools"><input id="bulkChapter" list="chapterNames" placeholder="Chapter for selected questions"><button type="button" id="applyBulkChapter" class="btn secondary">Apply to selected</button></div>'+
