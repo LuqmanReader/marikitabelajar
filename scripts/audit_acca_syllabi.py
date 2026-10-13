@@ -169,6 +169,7 @@ def main():
         row={"source_page":url,"variant":VARIANTS.get(code,"GLO"),"status":"failed","attempted":[]}
         try:
             links=pdf_links(url,code)
+            print("DEBUG",code,"candidate PDF anchors:",[(round(score),link[-130:],label[:100]) for score,link,label in links[:3]])
             if not links:raise ValueError("No PDF links found at official landing page")
             for score,link,label in links[:5]:
                 try:
@@ -187,6 +188,7 @@ def main():
             if row["status"]!="parsed":raise ValueError("No PDF passed structural checks")
         except Exception as exc:
             row["error"]=str(exc)[:250]
+        if row["attempted"]:print("DEBUG",code,"failed candidates:",row["attempted"][:2])
         out["papers"][code]=row
         print(code,row["status"],row.get("topics",""),row.get("pdf_label","")[:100],row.get("error",""))
         sys.stdout.flush()
