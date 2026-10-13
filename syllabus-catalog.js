@@ -69,9 +69,9 @@
   if(saved&&Array.isArray(saved.topics)&&saved.source){
    try{
     const normalized=validateEntries(saved.topics);
-    const link=new URL(saved.source);
-    if(link.protocol==='https:'&&(link.hostname==='accaglobal.com'||link.hostname.endsWith('.accaglobal.com')))
-     return {status:'student-verified',subject:key,topics:normalized,source:saved.source,version:saved.version||'Student-confirmed ACCA syllabus',verified:true};
+    const source=String(saved.source||'').trim();
+    if(/^https:\/\/(?:[a-z0-9-]+\.)*accaglobal\.com(?:[/:?#]|$)/i.test(source))
+     return {status:'student-verified',subject:key,topics:normalized,source:source,version:saved.version||'Student-confirmed ACCA syllabus',verified:true};
    }catch(e){}
   }
   return {status:'missing',subject:key,topics:[],source:'',version:'',verified:false};
@@ -80,11 +80,11 @@
   const key=code(subject);
   if(!root.SubjectCatalog||!root.SubjectCatalog.papers.some(p=>p.code===key))throw Error('Select a supported FIA/ACCA paper.');
   if(official(key))throw Error('This paper already has a built-in syllabus catalog.');
-  const link=new URL(String(source||'').trim());
-  if(link.protocol!=='https:'||(link.hostname!=='accaglobal.com'&&!link.hostname.endsWith('.accaglobal.com')))throw Error('Provide the official ACCA syllabus source URL (accaglobal.com).');
+  const link=String(source||'').trim();
+  if(!/^https:\/\/(?:[a-z0-9-]+\.)*accaglobal\.com(?:[/:?#]|$)/i.test(link))throw Error('Provide an official ACCA syllabus source URL (accaglobal.com).');
   const topics=validateEntries(rawLines);
   const all=readAll(storage);
-  all[key]={topics,source:link.href,version:String(version||'').trim().slice(0,120),confirmedAt:new Date().toISOString()};
+  all[key]={topics,source:link,version:String(version||'').trim().slice(0,120),confirmedAt:new Date().toISOString()};
   storage.setItem(STORAGE_KEY,JSON.stringify(all));
   return resolve(storage,subject);
  }
