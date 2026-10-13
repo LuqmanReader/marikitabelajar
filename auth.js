@@ -163,6 +163,7 @@
   }
  }
  async function login(email,password){await init();const {error}=await client.auth.signInWithPassword({email,password});if(error)throw error;await hydrate();location.href='index.html';}
+ async function signUp(email,password){await init();const {data,error}=await client.auth.signUp({email:email.trim(),password,options:{emailRedirectTo:new URL('index.html',location.href).href}});if(error)throw error;return data;}
  async function sendRecovery(email){await init();const {error}=await client.auth.resetPasswordForEmail(email,{redirectTo:new URL('index.html',location.href).href});if(error)throw error;}
  async function updatePassword(password){await init();const {error}=await client.auth.updateUser({password});if(error)throw error;}
  async function onAuthChange(callback){await init();return client.auth.onAuthStateChange((event,session)=>callback(event,session));}
@@ -179,7 +180,7 @@
   // No manual Save to Cloud button: edits save locally at once and back up automatically.
   const obsolete=document.getElementById('rhManualSave');if(obsolete)obsolete.remove();
  }
- const api={login,logout,sendRecovery,updatePassword,onAuthChange,ready,sync,init,
+ const api={login,logout,signUp,sendRecovery,updatePassword,onAuthChange,ready,sync,init,
   async isSignedIn(){try{await loadUser();return true;}catch{return false;}},
   guard(){document.documentElement.style.visibility='hidden';ready().then(ok=>{
     if(!ok){location.replace('index.html');return;}
