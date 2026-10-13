@@ -40,14 +40,14 @@ a:focus-visible,button:focus-visible{outline:4px solid var(--blue);outline-offse
 .doodle{position:absolute;z-index:1;font-family:var(--display-font);font-size:64px;line-height:1;pointer-events:none}
 .doodle-1{left:5%;top:44%;color:var(--red);transform:rotate(-24deg)}
 .doodle-2{right:6%;top:43%;color:var(--blue);transform:rotate(19deg)}
-.mascot-controls{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.mascot-controls{display:none!important;gap:10px;margin-top:16px;flex-wrap:wrap}
 .control-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;flex:1;background:var(--blue);color:#fff;border:3px solid var(--ink);box-shadow:4px 4px 0 var(--ink);padding:12px 10px;text-decoration:none;font-weight:900;font-size:11px;min-height:49px;cursor:pointer}
 .control-btn.secondary{background:white;color:var(--ink)}
 .control-btn:hover{background:var(--orange);color:var(--ink)}
 .control-btn:disabled{opacity:.55;cursor:default}
 .story-progress{height:15px;margin-top:18px;border:3px solid var(--ink);background:#fff}
 .story-progress span{display:block;width:20%;height:100%;background:var(--green);transition:width .3s ease}
-.sound-note{font-size:11px;font-weight:700;margin:11px 0 0;color:#454545}
+.sound-note{display:none!important;font-size:11px;font-weight:700;margin:11px 0 0;color:#454545}
 .chapters{display:flex;flex-direction:column;gap:35px;min-width:0}
 .chapter{position:relative;display:flex;flex-direction:column;justify-content:center;min-height:615px;padding:clamp(26px,3.6vw,56px);border:4px solid var(--ink);box-shadow:9px 9px 0 var(--ink);transition:transform .2s ease,box-shadow .2s ease}
 .chapter.is-current{box-shadow:12px 12px 0 var(--ink)}
@@ -203,3 +203,13 @@ html:has(#hubView:not([hidden])) .workspace-access,
 html:has(#hubView:not([hidden])) .student-access {
   scroll-margin-top: 20px;
 }
+
+/* Homepage cleanup: hide old narration controls, keep the green progress bar.
+   Specific selectors avoid relying on any particular container ID. */
+.mascot-controls, #listenBtn, #soundNote, .sound-note {
+  display: none !important;
+}
+.story-progress {
+  margin-top: 14px;
+}
+/* Intentionally preserve #storyProgressBar and all mascot animations. */
