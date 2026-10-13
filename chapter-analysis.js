@@ -12,10 +12,11 @@
   function bucket(){return {correct:0,total:0};}
   function status(x){var pct=x.total?x.correct/x.total*100:0;return x.total<3?'More evidence needed':pct>=80?'Strong':pct<60?'Needs Work':'Developing';}
   function summary(questions,subject){
-    var chapters=new Map(), coverage={tagged:0,untagged:0,unscored:0,total:questions.length};
+    var chapters=new Map(), coverage={tagged:0,untagged:0,outside:0,unscored:0,total:questions.length};
     var valid=root.LedgerSyllabus&&root.LedgerSyllabus.official(subject)?root.LedgerSyllabus.list(subject):null;
     questions.forEach(function(q){
       if(typeof q.is_correct!=='boolean'){coverage.unscored++;return;}
+      if(q.topic_status==='outside'||q.topic_status==='unreadable'){coverage.outside++;return;}
       var name;try{name=label(q.chapter);}catch(e){name='';}
       if(!name||(valid&&!valid.some(function(t){return t.toLowerCase()===name.toLowerCase();}))){coverage.untagged++;return;}
       coverage.tagged++;
@@ -46,11 +47,11 @@
     var subjects=new Map();
     ordered(exams).forEach(function(e){
       var subject=String(e.subject||'Unknown subject');
-      if(!subjects.has(subject))subjects.set(subject,{subject:subject,chapters:new Map(),tagged:0,untagged:0,unscored:0,unavailable:0});
+      if(!subjects.has(subject))subjects.set(subject,{subject:subject,chapters:new Map(),tagged:0,untagged:0,outside:0,unscored:0,unavailable:0});
       var s=subjects.get(subject), questions;
       try{questions=JSON.parse(storage.getItem('tymba_exam_data:'+e.id)||'null');}catch(err){questions=null;}
       if(!Array.isArray(questions)){s.unavailable++;return;}
-      var exam=summary(questions,e.subject);s.tagged+=exam.coverage.tagged;s.untagged+=exam.coverage.untagged;s.unscored+=exam.coverage.unscored;
+      var exam=summary(questions,e.subject);s.tagged+=exam.coverage.tagged;s.untagged+=exam.coverage.untagged;s.outside+=exam.coverage.outside;s.unscored+=exam.coverage.unscored;
       exam.chapters.forEach(function(c){
         var k=key(c.chapter);if(!s.chapters.has(k))s.chapters.set(k,{chapter:c.chapter,correct:0,total:0,progress:bucket(),mock:bucket(),sets:bucket(),attempts:0,focus:[]});
         var x=s.chapters.get(k), b=e.testType==='set'?x.sets:e.testType==='pre'||e.testType==='progress'?x.progress:x.mock;
