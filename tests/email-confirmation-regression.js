@@ -77,6 +77,10 @@ async function main(){
  assert(homepage.includes('completeEmailLink(incomingAuthCallback)'),'home page did not await confirmation');
  assert(homepage.includes('email not confirmed'),'unconfirmed account path missing');
  assert(homepage.includes("Sign Up & Verify"),'signup UI not updated');
+ assert(homepage.includes('We sent a confirmation LINK'),'default confirmation-link wording missing');
+ assert(homepage.includes('Resend confirmation email'),'resend-button label missing');
+ assert(homepage.includes('Supabase email limit reached'),'rate-limit recovery missing');
+ assert(homepage.includes('newest confirmation email'),'old-link guidance missing');
  const scripts=[...homepage.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(x=>x[1]);
  for(const js of scripts)new Function(js);
  console.log(JSON.stringify({result:'PASS',cases:['confirmed-token-hash','plain-homepage-does-not-fake-confirmation','expired-link','server-still-unconfirmed','implicit-session-redirect','PKCE-code','recovery-preserved','Supabase-error-surfaced','login-callback-integration'],count:9},null,2));
