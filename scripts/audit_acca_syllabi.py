@@ -177,7 +177,7 @@ def extract_topics(syllabus):
             num=int(item.group(1))
             if 1<=num<=25:
                 commit()
-                pending={"code":current+str(num),"area":current,"text":([item.group(2)] if item.lastindex and item.group(2) else [])}
+                pending={"code":current+str(num),"area":current,"text":([item.group(2)] if item.re.groups>=2 and item.group(2) else [])}
                 continue
         if pending:
             # Suppress pagination/header lines. Letter headings are handled above.
