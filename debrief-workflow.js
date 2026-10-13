@@ -38,6 +38,9 @@
     <h2>AI Question Analysis · ChatGPT JSON</h2>
     <p>Your marks stay unchanged. Each question must match an official ACCA syllabus topic for your selected paper or stay untagged when outside the syllabus.</p>
     <p id="syllabusNotice" class="flow-muted"></p><div class="flow-actions" id="repairSyllabusActions"></div>
+    <div class="flow-controls"><label>Change paper for this saved attempt
+      <select id="correctAttemptSubject" aria-label="Correct the FIA or ACCA paper for this saved attempt"></select>
+    </label><button type="button" class="flow-button secondary" id="saveAttemptSubject">Save paper change</button></div>
     <p id="debriefProgress" class="flow-muted"></p>
     <section class="flow-path"><h3>Step 1 · Copy the question request</h3>
       <p>Click Copy Request, open ChatGPT, and paste it. <strong>${isPdf?'Attach the same original PDF in ChatGPT':'Attach the original marked exam PDF if available'}</strong> so figures, tables and answers can be verified against the source rather than unreliable OCR. Ask ChatGPT to return the <strong>complete JSON</strong>.</p>
@@ -81,6 +84,24 @@
    const next=result.questions.filter(incomplete);
    $('aiResponsePreview').hidden=false;
    $('aiResponsePreview').innerHTML='<h3>Import preview</h3><p>'+result.count+' question updates included · '+coverage.tagged+' topics assigned · '+next.length+' questions still need full feedback.</p>'+result.warnings.map(x=>'<p class="flow-notice">'+escape(x)+'</p>').join('')+insights(result.questions,meta.subject)+rankTable(result.questions,meta.subject)+'<details><summary>Preview explanations and classifications</summary>'+result.changed.map(change=>{const q=result.questions.find(x=>String(x.qno)===String(change.qno));return '<section class="flow-preview"><strong>Q'+escape(q.qno)+' · '+escape(q.chapter||'Topic not assigned')+'</strong><p>'+escape(F.plain(q.qtext).slice(0,160))+'</p>'+F.feedback(q)+'</section>';}).join('')+'</details>';
+  }
+  if(root.SubjectCatalog){
+   const paper=$('correctAttemptSubject');
+   root.SubjectCatalog.fill(paper);
+   paper.value=meta.subject;
+   $('saveAttemptSubject').addEventListener('click',()=>{
+    const chosen=paper.value;
+    if(!chosen||chosen===meta.subject){message('Paper unchanged.');return;}
+    if(!confirm('Move this saved attempt from '+meta.subject+' to '+chosen+'? Your original questions, scores, and answer records stay unchanged. Existing topic tags that do not match the new syllabus will be excluded from graphs.'))return;
+    try{
+     const all=JSON.parse(localStorage.getItem('tymba_custom_exams')||'[]');
+     const row=Array.isArray(all)?all.find(e=>e.id===meta.id):null;
+     if(!row)throw Error('Saved attempt metadata is missing.');
+     row.subject=chosen;
+     F.save(localStorage,'tymba_custom_exams',all);
+     location.reload();
+    }catch(e){message('Could not update the paper: '+e.message,true);}
+   });
   }
   const isOfficial=root.LedgerSyllabus&&root.LedgerSyllabus.official(meta.subject);
   const topicNames=catalog(meta);
