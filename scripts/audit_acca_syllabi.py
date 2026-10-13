@@ -139,33 +139,55 @@ def find_syllabus(pages):
     raise ValueError("Could not isolate a complete syllabus section; manual verification required")
 
 def extract_topics(syllabus):
-    text=re.sub(r"\u00a0"," ",syllabus)
-    lines=[re.sub(r"\s+"," ",x).strip() for x in text.splitlines()]
-    topics=[]
+    """Read numbered ACCA headings even when the PDF places numbers on their own lines."""
+    lines=[re.sub(r"\s+"," ",s).strip() for s in syllabus.replace("\u00a0"," ").splitlines()]
+    rows,seen=[],set()
     current=None
-    seen=set()
-    for i,line in enumerate(lines):
-        if not line or line.startswith("© ACCA") or line.startswith("All rights reserved"):continue
-        a=re.match(r"^([A-I])\s{1,}([A-Za-z][\w\s,()&/\-–]+)$",line)
-        if a and not re.match(r"^\d",a.group(2)):
-            current=a.group(1)
+    pending=None
+    def commit():
+        nonlocal pending
+        if not pending:return
+        heading=re.sub(r"\s+"," "," ".join(pending["text"])).strip(" .\t")
+        heading=re.sub(r"(?i)\s*©\s*ACCA.*$","",heading).strip()
+        if len(heading)>=7 and len(heading)<=119 and pending["code"] not in seen:
+            rows.append({"code":pending["code"],"name":heading,"area":pending["area"]})
+            seen.add(pending["code"])
+        pending=None
+    for line in lines:
+        if not line or line.startswith("© ACCA") or re.match(r"^\d{1,3}$",line) and not current:
             continue
-        if re.fullmatch(r"[A-I]",line):
-            current=line
+        if "All rights reserved" in line:continue
+        if re.match(r"^(?:Recording Financial Transactions|Maintaining Financial Records|Management Information|Managing Costs and Finance|Business and Technology|Management Accounting|Financial Accounting|Foundations in Audit|Foundations in Financial Management|Foundations in Taxation|Performance Management|Financial Reporting|Audit and Assurance|Financial Management|Corporate and Business Law|Strategic Business Leader|Strategic Business Reporting|Advanced (?:Audit|Taxation|Financial|Performance))\s*\([A-Z0-9/ -]+\)\s*$",line):
             continue
-        item=re.match(r"^(\d{1,2})\s*[.]\s+(.+)$",line)
-        if not item or not current:continue
-        num=int(item.group(1))
-        if num<1 or num>25:continue
-        topic=re.sub(r"\s+"," ",item.group(2)).strip(" .")
-        key=f"{current}{num}"
-        if key not in seen and len(topic)>=8 and len(topic)<=119:
-            topics.append({"code":key,"name":topic,"area":current})
-            seen.add(key)
-    count_area=len(set(item["area"] for item in topics))
-    if len(topics)<8 or len(topics)>100 or count_area<2:
-        raise ValueError(f"Unreliable topic extraction: {len(topics)} topics across {count_area} areas")
-    return topics
+        # Line may be just "A", "A.", "B", or "C. Name of syllabus area".
+        area=re.match(r"^([A-J])(?:\.|\s+([A-Za-z].+))?$",line)
+        if area and (len(line)==1 or line[1:2]=='.' or line[1:2]==' '):
+            commit()
+            current=area.group(1)
+            continue
+        if not current:continue
+        # ACCA places the numeric topic on one line or breaks it across lines.
+        item=re.match(r"^(\d{1,2})(?:[.]|\s{2,})(?:\s+(.+))?$",line)
+        if not item and re.fullmatch(r"\d{1,2}",line):item=re.match(r"^(\d{1,2})$",line)
+        if item:
+            num=int(item.group(1))
+            if 1<=num<=25:
+                commit()
+                pending={"code":current+str(num),"area":current,"text":([item.group(2)] if item.lastindex and item.group(2) else [])}
+                continue
+        if pending:
+            # Suppress pagination/header lines. Letter headings are handled above.
+            if re.fullmatch(r"\d{1,3}",line):continue
+            if len(" ".join(pending["text"]))<123:
+                pending["text"].append(line)
+    commit()
+    areas=len({v["area"] for v in rows})
+    if len(rows)<8 or len(rows)>100 or areas<2:
+        raise ValueError(f"Unreliable topic extraction: {len(rows)} topics across {areas} areas")
+    # Require area codes to be ordered without corruption by column mixing.
+    codes=[r["code"] for r in rows]
+    if len(codes)!=len(set(codes)):raise ValueError("Duplicated ACCA syllabus code")
+    return rows
 
 def find_approach(pages):
     joined="\n".join(pages)
