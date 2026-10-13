@@ -101,6 +101,7 @@
   // strengths/weaknesses are derived from the ORIGINAL marked answers in LedgerPeer.
   function prompt(meta,questions,catalog,signatureSource){
     var type=meta.testType==='set'?'Chapter Set':meta.testType==='pre'?'Progress Test':'Mock Test';
+    var fullFormat=root.LedgerOfficialExamRegistry&&root.LedgerOfficialExamRegistry.get(meta.subject);
     if(!Array.isArray(catalog)||!catalog.length)throw new Error('Configure the approved ACCA syllabus for '+meta.subject+' before generating this request.');
     var example={
       schema:'personal-hub-debrief-v2',
@@ -140,6 +141,9 @@
     var instruction=[
       'PAPER SELECTED BY STUDENT (AUTHORITATIVE): '+meta.subject+'. DO NOT deduce, replace or rename the paper from question content or the PDF.',
       'ATTEMPT TYPE: '+type+'; number '+meta.testNumber+'.',
+      'OFFICIAL FULL EXAM FORMAT (REFERENCE ONLY; chapter sets and progress tests may be shorter): '+(fullFormat?JSON.stringify(fullFormat.format):'Not yet verified'),
+      'SYLLABUS JURISDICTION / VARIANT REFERENCE: '+(fullFormat?fullFormat.variant:'Not specified')+'. Do not silently substitute another jurisdiction (especially for law or taxation).',
+      'OFFICIAL ACCA EXAM FORMAT REFERENCE: '+(fullFormat?fullFormat.formatSource:'Not available'),
       'Act as my FIA/ACCA exam debrief tutor and ACCA syllabus topic classifier.',
       'For EVERY numbered question: (1) choose one specific primary topic, (2) explain the reasoning, (3) show calculations or say Not applicable, (4) justify the recorded answer and explain my mistake if relevant, (5) suggest one practice focus.',
        'OFFICIAL ACCA SYLLABUS CLASSIFICATION: Use ONLY one exact subtopic label from the official syllabus list for the paper manually chosen by the student. Never invent a chapter, and never force a question under a loosely related topic. For out-of-syllabus questions use chapter "", topic_status "outside", and explain why in topic_reason. For illegible questions use chapter "", topic_status "unreadable". For valid syllabus matches use topic_status "matched". Such questions are excluded from topic graphs, but their recorded marks stay unchanged.',
