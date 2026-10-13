@@ -8,12 +8,7 @@
  const escape=F.escape;
  function incomplete(q){return !(String(q.chapter||'').trim()||q.topic_status==='outside'||q.topic_status==='unreadable')||requireFields.some(k=>!String(q[k]||'').trim());}
  function catalog(meta){
-  if(root.LedgerSyllabus&&root.LedgerSyllabus.official(meta.subject))
-   return root.LedgerSyllabus.list(meta.subject);
-  try{
-   const all=JSON.parse(localStorage.getItem('personal_hub_chapters_v1')||'{}');
-   return all&&Array.isArray(all[meta.subject])?all[meta.subject].filter(x=>typeof x==='string'&&x.trim()).map(x=>x.trim()):[];
-  }catch(e){return [];}
+  return root.LedgerSyllabus?root.LedgerSyllabus.resolve(localStorage,meta.subject).topics:[];
  }
  function rankTable(questions,subject){
   const rows=M.summary(questions,subject).chapters.sort((a,b)=>b.correct/b.total-a.correct/a.total||b.total-a.total);
@@ -38,6 +33,16 @@
     <h2>AI Question Analysis · ChatGPT JSON</h2>
     <p>Your marks stay unchanged. Each question must match an official ACCA syllabus topic for your selected paper or stay untagged when outside the syllabus.</p>
     <p id="syllabusNotice" class="flow-muted"></p><div class="flow-actions" id="repairSyllabusActions"></div>
+    <section id="syllabusSetup" class="flow-path" hidden>
+      <h3>One-time ACCA syllabus setup for this paper</h3>
+      <p>No verified syllabus headings are preloaded for this paper. Copy the exact numbered topic headings from your current <strong>ACCA Syllabus and Study Guide</strong>. LedgerPeer saves this list for future attempts on this device; invented AI categories are not accepted.</p>
+      <label class="flow-field">Official ACCA syllabus source URL<input type="url" id="syllabusSource" placeholder="https://www.accaglobal.com/..."></label>
+      <label class="flow-field">Syllabus edition<input type="text" id="syllabusEdition" placeholder="e.g. September 2026–June 2027"></label>
+      <label class="flow-field">Official subtopics, one per line<textarea id="syllabusTopics" rows="8" placeholder="A1 · Exact ACCA syllabus heading&#10;A2 · Next exact syllabus heading"></textarea></label>
+      <label class="flow-field"><input id="syllabusConfirm" type="checkbox"> I verified these headings against the chosen paper's official ACCA guide.</label>
+      <div class="flow-actions"><button type="button" class="flow-button primary" id="saveVerifiedSyllabus">Save syllabus for this paper</button></div>
+      <p role="status" id="syllabusSetupMessage"></p>
+    </section>
     <div class="flow-controls"><label>Change paper for this saved attempt
       <select id="correctAttemptSubject" aria-label="Correct the FIA or ACCA paper for this saved attempt"></select>
     </label><button type="button" class="flow-button secondary" id="saveAttemptSubject">Save paper change</button></div>
@@ -63,7 +68,7 @@
   function missing(){return data.filter(incomplete);}
   function updateInfo(){
    const left=missing();const info=M.summary(data,meta.subject);
-   $('debriefProgress').textContent=data.length+' questions saved · '+(data.length-left.length)+' with complete explanations and topics · '+left.length+' still pending · '+info.coverage.tagged+' tagged for graphs.';
+   $('debriefProgress').textContent=data.length+' questions saved · '+(data.length-left.length)+' explained and classified · '+left.length+' pending · '+info.coverage.tagged+' approved topic tags for graphs · '+info.coverage.outside+' outside/unreadable.';
    $('aiCurrentAnalysis').innerHTML=insights(data,meta.subject)+rankTable(data,meta.subject);
    $('copyAIRequest').textContent=left.length&&left.length<data.length?'Copy request for '+left.length+' unfinished questions':'Copy complete request';
   }
@@ -73,7 +78,7 @@
   }
   function fillPrompt(){
    if(!catalog(meta).length){
-    const msg='No official ACCA topic list is loaded for '+meta.subject+'. Enter exact official headings under Advanced → Topic Catalog before creating a request.';
+    const msg='No verified syllabus topics are configured for '+meta.subject+'. Complete one-time ACCA syllabus setup above, then copy the question request.';
     $('requestText').value=msg;return msg;
    }
    const result=makePrompt();$('requestText').value=result;return result;
@@ -112,13 +117,24 @@
     }catch(e){message('Could not update the paper: '+e.message,true);}
    });
   }
-  const isOfficial=root.LedgerSyllabus&&root.LedgerSyllabus.official(meta.subject);
-  const topicNames=catalog(meta);
+  const syllabus=root.LedgerSyllabus.resolve(localStorage,meta.subject);
+  const isOfficial=syllabus.verified;
+  const topicNames=syllabus.topics;
   if(isOfficial){
-   const source=root.LedgerSyllabus.source(meta.subject);
-   $('syllabusNotice').innerHTML='Official ACCA syllabus: '+escape(root.LedgerSyllabus.code(meta.subject))+' · '+topicNames.length+' exact syllabus topics. <a href="'+escape(source)+'" target="_blank" rel="noopener noreferrer">Read ACCA guide ↗</a>.';
+   const description=syllabus.status==='built-in'?'Preloaded ACCA syllabus':'Student-confirmed ACCA syllabus';
+   $('syllabusNotice').innerHTML=escape(description)+': '+escape(syllabus.subject)+' · '+topicNames.length+' approved subtopics. <a href="'+escape(syllabus.source)+'" target="_blank" rel="noopener noreferrer">View syllabus ↗</a>.';
   }else{
-   $('syllabusNotice').textContent='Verified official topics are not preloaded for this paper. Paste its exact ACCA topic headings in Advanced → Topic Catalog before requesting classification.';
+   $('syllabusNotice').textContent='The selected paper needs a syllabus catalog before topic analysis can begin. Your PDF and marks are already saved.';
+   $('syllabusSetup').hidden=false;
+   $('saveVerifiedSyllabus').addEventListener('click',()=>{
+    const status=$('syllabusSetupMessage');
+    try{
+     if(!$('syllabusConfirm').checked)throw Error('Confirm the official ACCA syllabus headings were checked.');
+     const saved=root.LedgerSyllabus.saveVerified(localStorage,meta.subject,$('syllabusTopics').value.split(/\r?\n/),$('syllabusSource').value,$('syllabusEdition').value);
+     status.textContent='Saved '+saved.topics.length+' approved syllabus topics. Reloading…';
+     location.reload();
+    }catch(error){status.textContent='Syllabus not saved: '+(error.message||error);}
+   });
   }
   function refreshInvalidTags(){
    $('repairSyllabusActions').replaceChildren();
@@ -140,7 +156,12 @@
    $('repairSyllabusActions').appendChild(btn);
   }
   refreshInvalidTags();updateInfo();fillPrompt();
-  if(!topicNames.length){$('copyAIRequest').disabled=true;$('downloadAIRequest').disabled=true;}
+  if(!topicNames.length){
+   $('copyAIRequest').disabled=true;
+   $('downloadAIRequest').disabled=true;
+   $('previewAIResponse').disabled=true;
+   $('applyAIResponse').disabled=true;
+  }
   $('copyAIRequest').addEventListener('click',async()=>{
    try{await navigator.clipboard.writeText(fillPrompt());message('Request copied. Attach the PDF to ChatGPT, paste the request and ask for the JSON.');}
    catch(e){fillPrompt();$('requestText').parentElement.open=true;$('requestText').focus();$('requestText').select();message('Clipboard unavailable; the request is selected. Press Ctrl+C.');}
