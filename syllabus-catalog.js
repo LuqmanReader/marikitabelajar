@@ -1,5 +1,5 @@
-/* ACCA syllabus headings (not invented AI categories).
-   Sources: ACCA PM 2026/27 syllabus, MA2 2025/26 syllabus, MA1 2025/26 syllabus.
+/* Syllabus topic headings transcribed from ACCA published study guides.
+   PM 2026/27 verified against published syllabus; MA1/MA2 labels must be reviewed for each new exam year.
    Always use the selected paper; never infer it from an uploaded PDF. */
 (function(root){
  'use strict';
@@ -7,9 +7,10 @@
   PM:[
    ['A1','Management information systems'],['A2','Uses and control of information'],['A3','Big data and data analytics'],
    ['B1','Activity-based costing'],['B2','Target costing'],['B3','Life-cycle costing'],['B4','Throughput accounting'],['B5','Accounting for environmental and sustainability factors'],
-   ['C1','Relevant cost analysis'],['C2','Cost-volume-profit analysis (CVP)'],['C3','Limiting factors'],['C4','Pricing decisions'],['C5','Make-or-buy and other short-term decisions'],['C6','Dealing with risk and uncertainty in decision-making'],
+   ['C1','Relevant cost analysis'],['C2','Cost-volume-profit-analysis (CVP)'],['C3','Limiting factors'],['C4','Pricing decisions'],['C5','Make-or-buy and other short-term decisions'],['C6','Dealing with risk and uncertainty in decision-making'],
    ['D1','Budgetary systems and types of budget'],['D2','Analytical techniques in budgeting and forecasting'],['D3','Standard costing'],['D4','Material mix and yield variances'],['D5','Sales mix and quantity variances'],['D6','Planning and operational variances'],['D7','Performance analysis'],
-   ['E1','Performance analysis in private sector, public sector and not-for-profit organisations'],['E2','Divisional performance and transfer pricing'],['E3','Specific performance analysis issues in not-for-profit organisations and the public sector']
+   ['E1','Performance analysis in private sector, public sector and not-for-profit organisations'],['E2','Divisional performance and transfer pricing'],['E3','Specific performance analysis issues in not-for-profit organisations and the public sector'],
+   ['F1','Use computer technology to efficiently access and manipulate relevant information.'],['F2','Work on relevant response options, using available functions and technology, as would be required in the workplace.'],['F3','Navigate windows and computer screens to create and amend responses to exam requirements, using the appropriate tools.'],['F4','Present data and information effectively, using the appropriate tools.']
   ],
   MA2:[
    ['A1','Management information requirements'],['A2','Cost accounting systems'],['A3','Cost classification'],['A4','Information for comparison'],['A5','Reporting management information'],
@@ -19,7 +20,7 @@
    ['E1','Nature of cash and cash flow'],['E2','Cash management'],['E3','Cash budgets'],['E4','Investing and financing']
   ],
   MA1:[
-   ['A1','Nature of business organisation and accounting systems'],['A2','Nature and purpose of management information'],
+   ['A1','Nature of business organisation and the accounting systems'],['A2','Nature and purpose of management information'],
    ['B1','Transaction processing systems'],['B2','Coding system'],
    ['C1','Cost classification and behaviour'],['C2','Cost units, cost centres, profit centres and investment centres'],
    ['D1','Accounting for materials'],['D2','Accounting for labour'],['D3','Accounting for other expenses'],['D4','Accounting for product costs'],
