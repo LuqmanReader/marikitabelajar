@@ -10,7 +10,7 @@
 <meta content="https://luqmanreader.github.io/marikitabelajar/" property="og:url"/>
 <meta content="https://luqmanreader.github.io/marikitabelajar/ledgerpeer-idle.png" property="og:image"/>
 <meta content="summary_large_image" name="twitter:card"/>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "LedgerPeer", "url": "https://luqmanreader.github.io/marikitabelajar/", "description": "LedgerPeer helps FIA and ACCA learners review exam attempts, plan study sessions, track achievements and manage personal finances in one student workspace."}</script><link href="favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="apple-touch-icon.png" rel="apple-touch-icon"/><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="supabase-config.js"></script><script src="auth.js"></script><style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "LedgerPeer", "url": "https://luqmanreader.github.io/marikitabelajar/", "description": "LedgerPeer helps FIA and ACCA learners review exam attempts, plan study sessions, track achievements and manage personal finances in one student workspace."}</script><link href="favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="apple-touch-icon.png" rel="apple-touch-icon"/><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="supabase-config.js"></script><script src="auth.js?v=20261013-confirm-links"></script><style>
 /* LEDGERPEER — VIBRANT NEOBRUTALISM / v2
    Typeface is copied from the original Revision Hub CSS:
    headings: Arial Black -> Helvetica Neue -> Impact
@@ -349,7 +349,8 @@ footer{font-size:11px;text-align:center;text-transform:uppercase;font-weight:900
 <h2>STUDY SMARTER.<br/><span>GROW BOLDER.</span></h2>
 <a class="outro-cta" href="#access">LET'S GET STARTED ↗</a>
 </section><section aria-label="Student access" class="portal-zone"><div class="portal-heading"><div><span class="pill">STUDENT ACCESS</span><h2>YOUR SPACE STARTS HERE.</h2></div><p>No forced intro. Log in anytime—or return straight to your workspace when you are signed in.</p></div><main class="wrap" id="access"><section class="lockbox" hidden="" id="authView"><span class="locktag">Student account · Self-registration</span><h2 id="authTitle">Student Log In</h2><div class="auth-tabs" id="authTabs"><button class="active" id="loginTab" type="button">Log In</button><button id="signupTab" type="button">Sign Up</button></div><p id="authCopy"></p><label class="field-label" for="email">Email address</label><input autocomplete="off" id="email" placeholder="Student email address" required="" type="email"/><label class="field-label" for="password">Password</label><input autocomplete="off" id="password" placeholder="Password" type="password"/><label class="field-label" for="confirm" id="confirmLabel" hidden>Confirm password</label><input autocomplete="new-password" hidden="" id="confirm" placeholder="Confirm password" type="password"/><label class="field-label" for="verifyCode" id="verifyLabel" hidden>Email verification code</label><input id="verifyCode" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6,8}" maxlength="8" placeholder="Enter email code" hidden/><button class="btn" id="authButton">Log In →</button><div class="auth-links"><button class="auth-link" id="forgotButton" type="button">Forgot password?</button><button class="auth-link" hidden="" id="resendCodeButton" type="button">Resend code</button><button class="auth-link" hidden="" id="backButton" type="button">← Back to log in</button></div><p class="notice" id="notice" role="status"></p><div class="error" id="error" role="alert"></div></section><section hidden="" id="hubView"><div class="topbar"><button class="lockbtn" id="lockButton">Lock hub</button></div><div class="grid"><a class="card dashboard" href="hub.html"><span class="tag">Section 01 · Academic</span><h2>Revision Dashboard</h2><p><strong>Academic performance &amp; revision section.</strong> Turn exam attempts into useful revision decisions and see what to work on next.</p><div class="features">EXAM DEBRIEFS · CONFIDENCE CALIBRATION<br/>TOPIC MASTERY · RETRY MISTAKES · PROGRESS</div><span class="go">Enter academic section →</span></a><a class="card finance" href="financial-manager.html"><span class="tag">Section 02 · Finance</span><h2>Financial Manager</h2><p><strong>Personal money management section.</strong> Record cash flow, savings, investments and gold contributions in one place.</p><div class="features">INCOME · EXPENSES · SAVINGS<br/>INVESTMENTS · GOLD · GOAL HORIZONS<br/>FINANCIAL TRACKER · FINANCIAL DASHBOARD</div><span class="go">Enter finance section →</span></a></div><nav class="quick-links"><a class="go" href="ai-tutor.html">✦ AI Tutor →</a><a class="go" href="calendar.html">▦ Calendar →</a><a class="go" href="study-planner.html">☑ Study Planner →</a><a class="go" href="achievements.html">★ Achievements →</a></nav></section><footer>LedgerPeer · Cloud-backed student accounts</footer></main></section></main><footer class="site-footer"><span>© LEDGERPEER · STUDENT WORKSPACE</span><a href="#top">BACK TO HOME ↗</a><span>MADE TO MAKE PROGRESS VISIBLE.</span></footer><script>
-const A=PersonalHubAuth,authView=document.getElementById('authView'),hubView=document.getElementById('hubView'),error=document.getElementById('error');
+const incomingAuthCallback=location.href;
+ const A=PersonalHubAuth,authView=document.getElementById('authView'),hubView=document.getElementById('hubView'),error=document.getElementById('error');
 const password=document.getElementById('password'),email=document.getElementById('email'),button=document.getElementById('authButton'),confirmInput=document.getElementById('confirm'),notice=document.getElementById('notice');
 const tabs=document.getElementById('authTabs'),forgot=document.getElementById('forgotButton'),back=document.getElementById('backButton');
 const verifyCode=document.getElementById('verifyCode'),verifyLabel=document.getElementById('verifyLabel'),resendCodeButton=document.getElementById('resendCodeButton');
@@ -361,9 +362,9 @@ window.addEventListener('pageshow',clearLoginFields);
 function show(next){clearLoginFields();mode=next;error.textContent='';notice.textContent='';const isReset=next==='setpassword',isLogin=next==='login',isSignup=next==='signup',isForgot=next==='forgot',isVerify=next==='verify';
  tabs.hidden=!(isLogin||isSignup);document.getElementById('loginTab').classList.toggle('active',isLogin);document.getElementById('signupTab').classList.toggle('active',isSignup);
  document.getElementById('authTitle').textContent=isReset?'Set New Password':isSignup?'Join LedgerPeer':isVerify?'Verify Your Email':isForgot?'Recover Password':'Student Log In';
- document.getElementById('authCopy').textContent=isReset?'Choose a new password for your account.':isSignup?'Create your own account. We will email you a code to verify your address.':isVerify?'Enter the code sent to '+pendingEmail+'. Your account cannot be used until your email is verified.':isForgot?'Enter your account email. We will email you a password reset link.':'Log in with your student email and password.';
+ document.getElementById('authCopy').textContent=isReset?'Choose a new password for your account.':isSignup?'Create your account. Click the confirmation email link or enter the email code.':isVerify?'Enter the code sent to '+pendingEmail+'. Your account cannot be used until your email is verified.':isForgot?'Enter your account email. We will email you a password reset link.':'Log in with your student email and password.';
  password.hidden=isForgot||isVerify;confirmInput.hidden=!(isReset||isSignup);document.getElementById('confirmLabel').hidden=!(isReset||isSignup);email.hidden=isReset||isVerify;verifyCode.hidden=!isVerify;verifyLabel.hidden=!isVerify;forgot.hidden=!isLogin;resendCodeButton.hidden=!isVerify;back.hidden=isLogin;
- password.autocomplete=(isReset||isSignup)?'new-password':'current-password';confirmInput.autocomplete='new-password';document.getElementById('confirmLabel').textContent=isSignup?'Confirm your password':'Confirm password';button.textContent=isReset?'Save New Password →':isSignup?'Email My Code →':isVerify?'Verify Email →':isForgot?'Send Reset Link →':'Log In →';
+ password.autocomplete=(isReset||isSignup)?'new-password':'current-password';confirmInput.autocomplete='new-password';document.getElementById('confirmLabel').textContent=isSignup?'Confirm your password':'Confirm password';button.textContent=isReset?'Save New Password →':isSignup?'Sign Up & Verify →':isVerify?'Verify Email →':isForgot?'Send Reset Link →':'Log In →';
 }
 async function submit(){error.textContent='';notice.textContent='';button.disabled=true;const label=button.textContent;button.textContent='Please wait…';try{
  if(mode==='login'){if(!email.value.trim()||!password.value)throw Error('Enter your email and password.');await A.login(email.value.trim(),password.value);clearLoginFields();return;}
@@ -383,11 +384,18 @@ async function submit(){error.textContent='';notice.textContent='';button.disabl
    if(password.value!==confirmInput.value)throw Error('Passwords do not match.');
    await A.signUp(email.value.trim(),password.value);
    pendingEmail=email.value.trim();sessionStorage.setItem(pendingSignupKey,pendingEmail);
-   show('verify');notice.textContent='Check your inbox for your LedgerPeer verification code. Enter it here to activate your account.';
+   show('verify');notice.textContent='Check your inbox. Click Confirm Email in the message, or enter its verification code here.';
    return;
  }
  await A.sendRecovery(email.value.trim());notice.textContent='If this email is registered, check its inbox for a recovery link.';
- }catch(e){error.textContent=e.message||'Something went wrong.';}finally{button.disabled=false;button.textContent=mode==='setpassword'?'Save New Password →':mode==='signup'?'Email My Code →':mode==='verify'?'Verify Email →':mode==='forgot'?'Send Reset Link →':'Log In →';}}
+  }catch(e){
+  if(mode==='login'&&/email not confirmed/i.test(e.message||'')){
+   pendingEmail=email.value.trim();sessionStorage.setItem(pendingSignupKey,pendingEmail);
+   show('verify');
+   notice.textContent='Supabase has not confirmed this email. Click its confirmation link, enter the code here, or press Resend code.';
+  }
+  error.textContent=e.message||'Something went wrong.';
+ }finally{button.disabled=false;button.textContent=mode==='setpassword'?'Save New Password →':mode==='signup'?'Sign Up & Verify →':mode==='verify'?'Verify Email →':mode==='forgot'?'Send Reset Link →':'Log In →';}}
 button.onclick=submit;[email,password,confirmInput,verifyCode].forEach(el=>el.addEventListener('keydown',e=>{if(e.key==='Enter')submit()}));
 resendCodeButton.onclick=async()=>{
  if(!pendingEmail)return;
@@ -401,11 +409,41 @@ resendCodeButton.onclick=async()=>{
 document.getElementById('loginTab').onclick=()=>show('login');document.getElementById('signupTab').onclick=()=>show('signup');forgot.onclick=()=>show('forgot');back.onclick=()=>{if(mode==='verify'){sessionStorage.removeItem(pendingSignupKey);pendingEmail='';}show('login');};
 document.getElementById('lockButton').onclick=()=>A.logout();
 authView.hidden=false;hubView.hidden=true;
-(async()=>{try{await A.onAuthChange((event)=>{if(event==='PASSWORD_RECOVERY'){recovering=true;authView.hidden=false;hubView.hidden=true;show('setpassword');}});
-const hash=new URLSearchParams(location.hash.slice(1));const query=new URLSearchParams(location.search);
-if(hash.get('type')==='recovery'||query.get('type')==='recovery'){recovering=true;show('setpassword');}
-if(!recovering){const yes=await A.isSignedIn();if(yes&&!recovering){sessionStorage.removeItem(pendingSignupKey);pendingEmail='';const ok=await A.ready();if(ok&&!recovering){authView.hidden=true;hubView.hidden=false;}}else if(pendingEmail){show('verify');}}
-}catch(e){error.textContent=e.message||'Unable to connect to authentication.';}})();
+(async()=>{
+ try{
+  const initial=new URL(incomingAuthCallback);
+  const h=new URLSearchParams(initial.hash.slice(1)),q=new URLSearchParams(initial.search);
+  const isRecovery=h.get('type')==='recovery'||q.get('type')==='recovery';
+  await A.onAuthChange(event=>{
+   if(event==='PASSWORD_RECOVERY'){recovering=true;authView.hidden=false;hubView.hidden=true;show('setpassword');}
+  });
+  if(isRecovery){recovering=true;show('setpassword');}
+  if(!recovering){
+   // Supabase may return with a token hash, PKCE code, or implicit session.
+   // Only its API response can establish that the address is confirmed.
+   const result=await A.completeEmailLink(incomingAuthCallback);
+   const confirmed=!!(result&&result.verified);
+   if(confirmed){
+    sessionStorage.removeItem(pendingSignupKey);pendingEmail='';
+    notice.textContent='Email confirmed successfully. Opening LedgerPeer…';
+   }
+   const signedIn=await A.isSignedIn();
+   if(signedIn){
+    sessionStorage.removeItem(pendingSignupKey);pendingEmail='';
+    const ok=await A.ready();
+    if(ok){authView.hidden=true;hubView.hidden=false;}
+    else{authView.hidden=false;hubView.hidden=true;show('login');error.textContent='Email confirmed, but the workspace could not load. Please sign in again.';}
+   }else if(pendingEmail){
+    show('verify');
+   }else if(confirmed){
+    show('login');notice.textContent='Email confirmed. Log in using your email and password.';
+   }
+  }
+ }catch(e){
+  if(pendingEmail){show('verify');notice.textContent='Your email still needs confirmation. Enter its code or request a new one.';}
+  error.textContent=e.message||'Could not complete email verification.';
+ }
+})();
 </script><script>
 /* Shortcut to the existing portal; password-reset links also reveal the form. */
 (function(){
@@ -414,7 +452,7 @@ if(!recovering){const yes=await A.isSignedIn();if(yes&&!recovering){sessionStora
  function label(){link.textContent=hub.hidden?'LOG IN / MY WORKSPACE ↗':'OPEN MY WORKSPACE ↗'}
  new MutationObserver(label).observe(hub,{attributes:true,attributeFilter:['hidden']});
  label();
- if(/(?:^|[&#?])(?:access_token|type=recovery|error_description)=/.test(location.hash+location.search)){
+ if(/(?:^|[&#?])(?:access_token|token_hash|code|type=recovery|error_description)=/.test(location.hash+location.search)){
    document.getElementById('access').scrollIntoView({behavior:'instant'});
  }
 })();
