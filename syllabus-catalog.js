@@ -33,8 +33,13 @@
   MA1:'https://www.accaglobal.com/middle-east/en/student/exam-support-resources/foundation-level-study-resources/ma1/ma1-syllabus-study-guide.html'
  };
  function code(subject){const match=String(subject||'').match(/^([A-Z]+[0-9]*)(?:\s|·|$)/);return match?match[1]:'';}
- function list(subject){return (syllabus[code(subject)]||[]).map(row=>row[0]+' · '+row[1]);}
- function official(subject){return Object.prototype.hasOwnProperty.call(syllabus,code(subject));}
+ function published(subject){
+  const data=root.LedgerPublishedSyllabi&&root.LedgerPublishedSyllabi.papers;
+  const row=data&&data[code(subject)];
+  return row&&Array.isArray(row.topics)&&row.topics.length>=8&&/^https:\/\/www\.accaglobal\.com\/.*\.pdf/i.test(row.source)?row:null;
+ }
+ function list(subject){const source=published(subject);return source?source.topics.slice():(syllabus[code(subject)]||[]).map(row=>row[0]+' · '+row[1]);}
+ function official(subject){return !!published(subject)||Object.prototype.hasOwnProperty.call(syllabus,code(subject));}
  function match(subject,value){
   const target=String(value||'').trim().toLowerCase();
   return list(subject).find(x=>x.toLowerCase()===target)||null;
@@ -65,6 +70,8 @@
  }
  function resolve(storage,subject){
   const key=code(subject);
+  const online=published(key);
+  if(online)return {status:'ACCA-published',subject:key,topics:online.topics.slice(),source:online.source,version:online.edition||'Official ACCA syllabus',variant:online.variant||'GLO',verified:true};
   if(official(key))return {status:'built-in',subject:key,topics:list(key),source:sources[key]||'',version:'ACCA syllabus catalog (check applicable exam-year)',verified:true};
   const saved=readAll(storage)[key];
   if(saved&&Array.isArray(saved.topics)&&saved.source){
@@ -89,6 +96,6 @@
   storage.setItem(STORAGE_KEY,JSON.stringify(all));
   return resolve(storage,subject);
  }
- root.LedgerSyllabus={code,list,official,match,source:function(subject){return sources[code(subject)]||'';},resolve,saveVerified,validateEntries};
+ root.LedgerSyllabus={code,list,official,match,source:function(subject){const x=published(subject);return x?x.source:sources[code(subject)]||'';},resolve,saveVerified,validateEntries};
 
 })(typeof window!=='undefined'?window:globalThis);
