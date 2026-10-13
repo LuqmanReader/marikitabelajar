@@ -5,7 +5,7 @@
     if(value==null)return '';
     if(typeof value!=='string')throw new Error('Chapter must be a name, such as Chapter 4 · Accruals.');
     var s=value.replace(/\s+/g,' ').trim();
-    if(s.length>240)throw new Error('Chapter names must be 240 characters or fewer.');
+    if(s.length>420)throw new Error('Chapter names must be 420 characters or fewer.');
     return s;
   }
   function key(value){return label(value).toLowerCase();}
