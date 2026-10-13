@@ -9,7 +9,7 @@ const storage={
 };
 const world={localStorage:storage,console};world.window=world;world.globalThis=world;
 const context=vm.createContext(world);
-for(const file of ['subject-catalog.js','official-exam-registry.js','syllabus-catalog.js','chapter-analysis.js','revision-flow.js']){
+for(const file of ['subject-catalog.js','official-exam-registry.js','acca-published-data.js','syllabus-catalog.js','chapter-analysis.js','revision-flow.js']){
  vm.runInContext(fs.readFileSync(path.join(dir,file),'utf8'),context,{filename:file});
 }
 const {SubjectCatalog:subjects,LedgerOfficialExamRegistry:registry,LedgerSyllabus:syllabus,ChapterAnalysis:chapters,RevisionFlow:debrief}=world;
@@ -30,12 +30,18 @@ function tryCase(code){
   assert.strictEqual(markTotal,record.format.marks,'bad paper exam format mark allocation: '+code);
  }
  let verified=syllabus.resolve(storage,label);
- if(!verified.verified){
-  assert.strictEqual(verified.topics.length,0,'No fabricated topics when paper is not preloaded: '+code);
-  const setup=syllabus.saveVerified(storage,label,['A1 · Verified synthetic syllabus heading one','A2 · Verified synthetic syllabus heading two'],goodSource,'TEST-FIXTURE');
-  assert.strictEqual(setup.status,'student-verified');
-  verified=syllabus.resolve(storage,label);
+ assert.strictEqual(verified.status,'ACCA-published','Every paper must have ACCA 2026/27 topics: '+code);
+ assert.strictEqual(verified.verified,true,'Paper requires no manual syllabus setup: '+code);
+ assert(verified.topics.length>=8,'Syllabus too small for '+code);
+ assert(verified.source.startsWith('https://www.accaglobal.com/')&&verified.source.includes('.pdf'),'Official guide source missing for '+code);
+ const codes=verified.topics.map(s=>s.split(' · ')[0]),seen=new Set();
+ for(const topic of verified.topics){
+  const match=topic.match(/^([A-J])(\\d{1,2}) · (.{3,})$/);
+  assert(match,'Invalid official syllabus heading '+code+': '+topic);
+  assert(!seen.has(match[0].split(' · ')[0]),'Duplicated syllabus code '+code+': '+topic);
+  seen.add(match[0].split(' · ')[0]);
  }
+
  const questions=[q(1),q(2)];
  const meta={id:'exam-'+code,subject:label,testType:'set',testNumber:2,title:'Set 2',setChapter:verified.topics[0]};
  const prompt=debrief.prompt(meta,questions,verified.topics,questions);
@@ -75,4 +81,4 @@ assert.notStrictEqual(registry.get('LW').variant,'UK');
 assert.strictEqual(registry.get('TX').variant,'MYS');
 assert.strictEqual(registry.get('AAA').variant,'INT');
 assert.strictEqual(registry.get('FTX').variant,'UK');
-console.log(JSON.stringify({result:'PASS',papers:papers.length,formatsVerified:trace.filter(x=>x.formatVerified).length,syntheticTestsPerPaper:10,tests:'paper context, proper topics, wrong paper, wrong attempt, signature, duplicate, invented topic, outside, existing bogus, grade/marks unchanged',perPaper:trace},null,2));
+console.log(JSON.stringify({result:'PASS',papers:papers.length,formatsVerified:trace.filter(x=>x.formatVerified).length,debriefCasesPerPaper:10,tests:'real 2026/27 syllabus papers, paper context, proper topics, wrong paper, wrong attempt, signature, duplicate, invented topic, outside, existing bogus, unchanged marks',perPaper:trace},null,2));
