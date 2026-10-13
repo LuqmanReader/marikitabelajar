@@ -17,7 +17,7 @@
   if(!['set','pre','mock'].includes(testType))throw Error('Choose Chapter Set, Progress Test or Mock Test.');
   if(!/^\d+$/.test(rawNumber)||!Number.isSafeInteger(testNumber)||testNumber<1||testNumber>999)throw Error('Enter an attempt number between 1 and 999.');
   const setChapter=testType==='set'?$('pdfSetChapter').value.trim():'';
-  if(setChapter.length>240)throw Error('The chapter name is too long.');
+  if(setChapter.length>420)throw Error('The chapter name is too long.');
   if(setChapter&&root.LedgerSyllabus){
    const resolved=root.LedgerSyllabus.resolve(localStorage,subject);
    if(resolved.verified&&!resolved.topics.some(x=>x.toLowerCase()===setChapter.toLowerCase()))
