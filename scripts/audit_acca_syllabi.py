@@ -73,7 +73,7 @@ def pdf_links(url,code):
             print("HTML SAMPLE",code,phrase,html[max(0,at-280):at+400].replace("\n"," ")[:680] if at>=0 else "NOT PRESENT")
         print("HTML links matching ACCA",[(a.get("href","")[:130],a.get_text(" ",strip=True)[:90]) for a in soup.find_all("a",href=True) if "syllabus" in a.get_text(" ",strip=True).lower() or "studyguides" in a.get("href","").lower()][:8])
         for tag in soup.find_all(string=re.compile("September 2026|MA1 Management Information|Performance Management - syllabus",re.I))[:3]:
-            print("DOWNLOAD MARKUP",code,re.sub(r"\\s+"," ",str(tag.parent.parent))[:1900])
+            print("DOWNLOAD MARKUP",code,re.sub(r"\s+"," ",str(tag.parent.parent))[:1900])
         for phrase in ('.pdf','/content/dam','rf-download-panel'):
             print("DOC LINK RAW",code,phrase,len(re.findall(re.escape(phrase),html,re.I)))
     choices=[]
