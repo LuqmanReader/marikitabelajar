@@ -36,7 +36,7 @@ function tryCase(code){
  assert(verified.source.startsWith('https://www.accaglobal.com/')&&verified.source.includes('.pdf'),'Official guide source missing for '+code);
  const codes=verified.topics.map(s=>s.split(' · ')[0]),seen=new Set();
  for(const topic of verified.topics){
-  const match=topic.match(/^([A-J])(\\d{1,2}) · (.{3,})$/);
+  const match=topic.match(/^([A-J])(\d{1,2}) · (.{3,})$/);
   assert(match,'Invalid official syllabus heading '+code+': '+topic);
   assert(!seen.has(match[0].split(' · ')[0]),'Duplicated syllabus code '+code+': '+topic);
   seen.add(match[0].split(' · ')[0]);
