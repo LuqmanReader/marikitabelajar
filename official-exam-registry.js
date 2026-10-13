@@ -12,7 +12,7 @@
   MA1:[foundation+'ma1/ma1-syllabus-study-guide.htm.html','GLO'],
   FA2:[foundation+'fa2/fa2-syllabus-study-guide.html','GLO'],
   MA2:[foundation+'ma2/ma2-syllabus-study-guide.html','GLO'],
-  FBT:[foundation+'fbt/fbt-syllabus-study-guide.html','GLO'],
+  FBT:[skills+'f1/syllabus-study-guide.html','GLO'],
   FMA:[foundation+'fma/fma-syllabus-study-guide.html','GLO'],
   FFA:[foundation+'ffa/ffa-syllabus-study-guide.html','GLO'],
   FAU:[foundation+'fau/fau-syllabus-study-guide.html','GLO'],
