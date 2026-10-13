@@ -38,5 +38,56 @@
   const target=String(value||'').trim().toLowerCase();
   return list(subject).find(x=>x.toLowerCase()===target)||null;
  }
- root.LedgerSyllabus={code,list,official,match,source:function(subject){return sources[code(subject)]||'';}};
+
+ const STORAGE_KEY='ledgerpeer_verified_syllabi_v2';
+ function validateEntries(lines){
+  if(!Array.isArray(lines))throw Error('Syllabus topics must be a list.');
+  const found=[],seenCodes=new Set(),seenNames=new Set();
+  for(const raw of lines){
+   const line=String(raw||'').replace(/\s+/g,' ').trim();
+   if(!line)continue;
+   const m=line.match(/^([A-Z]\d{1,2})\s*(?:[·:\-–.]\s*|\s+)(.{3,})$/);
+   if(!m)throw Error('Use official syllabus codes, one per line, such as A1 · Exact topic heading. Invalid: '+line.slice(0,65));
+   const normalized=m[1]+' · '+m[2].trim();
+   if(normalized.length>120)throw Error('Each syllabus heading must be 120 characters or less.');
+   if(seenCodes.has(m[1])||seenNames.has(normalized.toLowerCase()))throw Error('Duplicate syllabus topic or code: '+m[1]);
+   seenCodes.add(m[1]);seenNames.add(normalized.toLowerCase());found.push(normalized);
+  }
+  if(found.length<2)throw Error('Enter at least two different official syllabus subtopics.');
+  return found;
+ }
+ function readAll(storage){
+  try{
+   const out=JSON.parse(storage.getItem(STORAGE_KEY)||'{}');
+   return out&&!Array.isArray(out)&&typeof out==='object'?out:{};
+  }catch(e){return {};}
+ }
+ function resolve(storage,subject){
+  const key=code(subject);
+  if(official(key))return {status:'built-in',subject:key,topics:list(key),source:sources[key]||'',version:'ACCA syllabus catalog (check applicable exam-year)',verified:true};
+  const saved=readAll(storage)[key];
+  if(saved&&Array.isArray(saved.topics)&&saved.source){
+   try{
+    const normalized=validateEntries(saved.topics);
+    const link=new URL(saved.source);
+    if(link.protocol==='https:'&&(link.hostname==='accaglobal.com'||link.hostname.endsWith('.accaglobal.com')))
+     return {status:'student-verified',subject:key,topics:normalized,source:saved.source,version:saved.version||'Student-confirmed ACCA syllabus',verified:true};
+   }catch(e){}
+  }
+  return {status:'missing',subject:key,topics:[],source:'',version:'',verified:false};
+ }
+ function saveVerified(storage,subject,rawLines,source,version){
+  const key=code(subject);
+  if(!root.SubjectCatalog||!root.SubjectCatalog.papers.some(p=>p.code===key))throw Error('Select a supported FIA/ACCA paper.');
+  if(official(key))throw Error('This paper already has a built-in syllabus catalog.');
+  const link=new URL(String(source||'').trim());
+  if(link.protocol!=='https:'||(link.hostname!=='accaglobal.com'&&!link.hostname.endsWith('.accaglobal.com')))throw Error('Provide the official ACCA syllabus source URL (accaglobal.com).');
+  const topics=validateEntries(rawLines);
+  const all=readAll(storage);
+  all[key]={topics,source:link.href,version:String(version||'').trim().slice(0,120),confirmedAt:new Date().toISOString()};
+  storage.setItem(STORAGE_KEY,JSON.stringify(all));
+  return resolve(storage,subject);
+ }
+ root.LedgerSyllabus={code,list,official,match,source:function(subject){return sources[code(subject)]||'';},resolve,saveVerified,validateEntries};
+
 })(typeof window!=='undefined'?window:globalThis);
