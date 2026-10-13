@@ -67,6 +67,11 @@ def get(url):
 def pdf_links(url,code):
     html=get(url).text
     soup=BeautifulSoup(html,"html.parser")
+    if code in ("FA1","PM"):
+        for phrase in ("2026 to June 2027","September 2026","S26","syllabus and study guide"):
+            at=html.lower().find(phrase.lower())
+            print("HTML SAMPLE",code,phrase,html[max(0,at-280):at+400].replace("\n"," ")[:680] if at>=0 else "NOT PRESENT")
+        print("HTML links matching ACCA",[(a.get("href","")[:130],a.get_text(" ",strip=True)[:90]) for a in soup.find_all("a",href=True) if "syllabus" in a.get_text(" ",strip=True).lower() or "studyguides" in a.get("href","").lower()][:8])
     choices=[]
     for a in soup.find_all("a",href=True):
         u=urljoin(url,a["href"])
