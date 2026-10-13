@@ -8,8 +8,11 @@
  const escape=F.escape;
  function incomplete(q){return !String(q.chapter||'').trim()||requireFields.some(k=>!String(q[k]||'').trim());}
  function catalog(meta){
-  const saved=M.catalog(localStorage,meta.subject);
-  return saved.length?saved:(root.LedgerTopicTaxonomy?root.LedgerTopicTaxonomy.names(meta.subject):[]);
+  // Only a chapter list the student explicitly saved is mandatory.
+  try{
+   const all=JSON.parse(localStorage.getItem('personal_hub_chapters_v1')||'{}');
+   return all&&Array.isArray(all[meta.subject])?all[meta.subject].filter(x=>typeof x==='string'&&x.trim()).map(x=>x.trim()):[];
+  }catch(e){return [];}
  }
  function rankTable(questions){
   const rows=M.summary(questions).chapters.sort((a,b)=>b.correct/b.total-a.correct/a.total||b.total-a.total);
