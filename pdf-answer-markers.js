@@ -86,19 +86,30 @@
   const words=wordsFromTsv(tsv),anchors=questionAnchors(words,questions);
   if(!words.length||!anchors.length)return;
   const markers=colorMarkers(canvas);
-  for(const mark of markers){
+  // Multiple-response questions may have several selected lines, including
+  // both red and green markers. Preserve all; never stop after the first answer.
+  const found=new Map();
+  for(const mark of markers.sort((a,b)=>a.mid-b.mid)){
    const owner=anchors.filter(a=>a.y<mark.mid-12).at(-1);
    if(!owner)continue;
    const next=anchors.find(a=>a.y>owner.y);
    if(next&&mark.mid>=next.y-5)continue;
    const q=questions.find(q=>q.qno===owner.qno);
-   if(!q||q.your_answer)continue;
-   if(mark.color==="correct"&&q.is_correct===false)continue;
-   if(mark.color==="incorrect"&&q.is_correct===true)continue;
+   if(!q)continue;
    const answer=markedLine(words,mark);
    if(!answer)continue;
-   q.your_answer=answer;q.answer_capture="colored-marker-ocr";
-   q.answer_marker=mark.color;
+   const key=q.qno,entries=found.get(key)||[];
+   if(!entries.some(e=>e.answer===answer))entries.push({answer,marker:mark.color,y:mark.mid});
+   found.set(key,entries);
+  }
+  for(const q of questions){
+   const entries=found.get(q.qno)||[];
+   if(!entries.length)continue;
+   q.your_answer=entries.map(e=>e.answer).join(" | ");
+   q.selected_answers=entries.map(e=>e.answer);
+   q.answer_markers=entries.map(e=>e.marker);
+   q.answer_capture="colored-marker-ocr";
+   q.answer_capture_status="review";
   }
  }
  function attachInformation(questions,pages){
@@ -123,7 +134,9 @@
      targets=ordered.filter(q=>q.qno>=nums[0]&&q.qno<=nums[1]);
     else if(nums)targets=ordered.filter(q=>nums.includes(q.qno));
     else {
-     const qty=/\b(?:following|next|to)\s+(?:two|2)\s+questions\b/i.test(chunk)?2:1;
+     const countMatch=chunk.match(/\b(?:following|next|relates?\s+to|for)\b[\s\S]{0,80}?\b(two|three|four|2|3|4)\s+questions\b/i)||chunk.match(/\b(two|three|four|2|3|4)\s+questions\b/i);
+     const countWord=countMatch&&countMatch[1]&&countMatch[1].toLowerCase();
+     const qty=countWord=== "four"||countWord==="4"?4:countWord==="three"||countWord==="3"?3:countWord==="two"||countWord==="2"?2:1;
      targets=ordered.filter(q=>q.qno>priorNo).slice(0,qty);
     }
     for(const q of targets){
