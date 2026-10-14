@@ -14,7 +14,7 @@
     el.innerHTML='<h3>Official ACCA syllabus topic assignments</h3>'+
       '<p class="chapter-note">'+coverage(sum.coverage)+'. Only the approved syllabus for '+esc(meta.subject)+' may be used. Manual topic changes clear the old rationale so ChatGPT can explain the new match.</p>'+
       (names.length?'':'<p class="chapter-note">Set up this paper’s official ACCA syllabus above before assigning topics.</p>')+
-      '<div class="chapter-tools"><select id="bulkChapter" aria-label="Topic to assign to selected questions">'+options+'</select><button type="button" id="applyBulkChapter" class="btn secondary">Apply to selected</button></div>'+
+      '<div class="chapter-tools"><select id="bulkChapter" aria-label="Topic to assign to selected questions">'+options+'</select><button type="button" id="applyBulkChapter" class="btn secondary">Apply to selected</button>'+((root.LedgerTopicSuggest&&root.LedgerSyllabus&&root.LedgerSyllabus.code(meta.subject)==='MA2')?'<button type="button" id="autoSuggestChapters" class="btn secondary">Suggest missing MA2 topics</button>':'')+'</div>'+
       '<div class="chapter-table-scroll"><table class="chapter-table"><thead><tr><th><input type="checkbox" id="selectAllChapters" aria-label="Select all questions"></th><th>Question / result</th><th>Official syllabus topic</th></tr></thead><tbody>'+
       data.map(function(q,i){var current=names.some(function(n){return n.toLowerCase()===String(q.chapter||'').toLowerCase();})?q.chapter:'';
         return '<tr><td><input class="chapter-pick" data-index="'+i+'" type="checkbox" aria-label="Select question '+esc(q.qno)+'"></td><td><strong>Q'+esc(q.qno)+' · '+(q.is_correct===true?'Correct':q.is_correct===false?'Incorrect':'Unscored')+'</strong><br>'+esc(plain(q.qtext).slice(0,110)||'Question text missing')+'</td><td><select class="chapter-value" data-index="'+i+'" aria-label="Official ACCA topic for question '+esc(q.qno)+'">'+options+'</select></td></tr>';}).join('')+
@@ -32,6 +32,16 @@
       var name=el.querySelector('#bulkChapter').value,n=0;
       el.querySelectorAll('.chapter-pick:checked').forEach(function(p){el.querySelector('.chapter-value[data-index="'+p.dataset.index+'"]').value=name;n++;});
       message(n?'Updated '+n+' unsaved assignments. Press Save to confirm.':'Select one or more questions first.');
+    });
+    var suggestionButton=el.querySelector('#autoSuggestChapters');
+    if(suggestionButton)suggestionButton.addEventListener('click',function(){
+      try{
+       var copy=data.map(function(q){return Object.assign({},q);});
+       var assigned=root.LedgerTopicSuggest.apply(copy,meta.subject,storage);
+       if(!assigned){message('No high-confidence suggestions for the remaining questions. Use the ChatGPT debrief to classify them.');return;}
+       if(!confirm('Apply '+assigned+' provisional MA2 topic suggestions? They use the approved syllabus but must be checked against the original questions.'))return;
+       onSave(copy);
+      }catch(e){message('Topic suggestions failed: '+e.message);}
     });
     var saveButton=el.querySelector('#saveQuestionChapters');saveButton.disabled=!names.length;
     saveButton.addEventListener('click',function(){
