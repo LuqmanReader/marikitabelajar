@@ -123,7 +123,7 @@
      targets=ordered.filter(q=>q.qno>=nums[0]&&q.qno<=nums[1]);
     else if(nums)targets=ordered.filter(q=>nums.includes(q.qno));
     else {
-     const qty=/\b(?:following|next)\s+(?:two|2)\s+questions\b/i.test(chunk)?2:1;
+     const qty=/\b(?:following|next|to)\s+(?:two|2)\s+questions\b/i.test(chunk)?2:1;
      targets=ordered.filter(q=>q.qno>priorNo).slice(0,qty);
     }
     for(const q of targets){
