@@ -94,7 +94,10 @@
   const parts=[];
   for(let i=0;i<anchors.length;i++){
    const a=anchors[i],b=anchors[i+1];
-   const block=tidy(s.slice(a.end,b?b.at:undefined));
+   const rawBlock=tidy(s.slice(a.end,b?b.at:undefined));
+   // An Information panel between questions belongs to the NEXT question(s).
+   const infoBoundary=rawBlock.search(/(?:^|\n)\s*Information\s*(?:\n|$)/i);
+   const block=infoBoundary>=0?rawBlock.slice(0,infoBoundary):rawBlock;
    if(block.length<30)continue;
    const first=block.slice(0,220);
    const label=first.match(/(?:^|\n)\s*(Partially\s+correct|Not\s+answered|Incorrect|Correct)\b/i);
@@ -131,13 +134,14 @@
   if(!root.pdfjsLib)await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
   root.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
   const pdf=await root.pdfjsLib.getDocument({data:new Uint8Array(await file.arrayBuffer())}).promise;
-  const combined=[];let ocrWorker=null;
+  const combined=[],pageTexts=[];let ocrWorker=null;
   try{
    for(let i=1;i<=pdf.numPages;i++){
     progress(i-1,pdf.numPages,'Reading PDF page '+i+' of '+pdf.numPages+'…');
     const page=await pdf.getPage(i);
     const layer=await page.getTextContent();
     let txt=layer.items.map(x=>x.str+(x.hasEOL?'\n':' ')).join('');
+    let pageQuestions=null;
     if(txt.length<100||!/^\s*Question\s+\d{1,3}\b/im.test(txt)){
      if(!root.Tesseract)await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js');
      if(!ocrWorker){note('Preparing on-device PDF image reader…');ocrWorker=await root.Tesseract.createWorker('eng');}
@@ -145,13 +149,20 @@
      const canvas=document.createElement('canvas');canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
      const ctx=canvas.getContext('2d',{willReadFrequently:true});
      await page.render({canvasContext:ctx,viewport}).promise;
-     const result=await ocrWorker.recognize(canvas);txt=result.data.text;
+     const result=await ocrWorker.recognize(canvas,{}, {text:true,tsv:true});
+     txt=result.data.text;
+     pageQuestions=parsePage(txt,i);
+     if(root.LedgerPeerPdfMarkers&&result.data.tsv){
+      root.LedgerPeerPdfMarkers.capture(canvas,result.data.tsv,pageQuestions);
+     }
      canvas.width=canvas.height=0;
     }
-    combined.push(...parsePage(txt,i));
+    combined.push(...(pageQuestions||parsePage(txt,i)));
+    pageTexts.push({page:i,text:txt});
     progress(i,pdf.numPages,'Read page '+i+'/'+pdf.numPages+' · '+combined.length+' questions detected.');
    }
   }finally{if(ocrWorker)await ocrWorker.terminate();}
+  if(root.LedgerPeerPdfMarkers)root.LedgerPeerPdfMarkers.attachInformation(combined,pageTexts);
   return {questions:combined,pages:pdf.numPages};
  }
  async function save(questions,detected,pdf){
@@ -214,6 +225,11 @@
        updateHeading();
      });
    }
+   const yourLabel=document.createElement('label');yourLabel.textContent='YOUR selected answer (check against the red X / green tick)';card.appendChild(yourLabel);
+   const yourAnswer=document.createElement('textarea');yourAnswer.rows=2;yourAnswer.setAttribute('aria-label','Your submitted answer for question '+q.qno);
+   yourAnswer.placeholder='Not captured: enter your selected answer from the PDF';
+   yourAnswer.value=q.your_answer||'';yourLabel.appendChild(yourAnswer);
+   yourAnswer.addEventListener('change',()=>{if(!('ocr_your_answer' in q))q.ocr_your_answer=q.your_answer;q.your_answer=yourAnswer.value.trim()||null;q.answer_capture='manual-confirmed';});
    const keyLabel=document.createElement('label');keyLabel.textContent='Recorded correct answer (editable if OCR misread)';card.appendChild(keyLabel);
    const answer=document.createElement('textarea');answer.rows=2;answer.setAttribute('aria-label','Correct answer for question '+q.qno);answer.value=q.correct_answer||'';keyLabel.appendChild(answer);
    answer.addEventListener('change',()=>{if(!q.ocr_correct_answer)q.ocr_correct_answer=q.correct_answer;q.correct_answer=answer.value.trim();});
@@ -255,7 +271,7 @@
    }
    state.pending={questions:check.ordered,detected:detected,result:result};
    renderVerification(check.ordered,detected);
-   note('Extracted '+check.ordered.length+' questions. Check the grades and correct answers. Expand any question to fix OCR mistakes.'+(check.ungraded.length?' Marking needs confirmation for questions '+check.ungraded.join(', ')+'.':'')+(check.unreadable.length?' Some question text is unclear; attach the original PDF in ChatGPT for verification.':''));
+   note('Extracted '+check.ordered.length+' questions. '+check.ordered.filter(q=>q.your_answer).length+' submitted answers detected. Check the selected answers, grades and correct answers. Expand any question to correct OCR mistakes.'+(check.ungraded.length?' Marking needs confirmation for questions '+check.ungraded.join(', ')+'.':'')+(check.unreadable.length?' Some question text is unclear; attach the original PDF in ChatGPT for verification.':''));
   }catch(e){note('Could not import PDF: '+(e&&e.message?e.message:String(e)));}
   finally{state.busy=false;refreshMetadata();}
  }
