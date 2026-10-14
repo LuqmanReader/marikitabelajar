@@ -38,6 +38,17 @@
     try{return JSON.parse(text);}catch(e){throw new Error('The response is incomplete or not valid JSON. Copy the whole AI response block, or choose its downloaded JSON file.');}
   }
   function textField(value,name){if(typeof value!=='string'||value.length>24000)throw new Error(name+' must be text (up to 24,000 characters).');return value.trim();}
+  function resolveApprovedTopic(input,allowed,paperCode){
+    const raw=String(input||'').trim(),code=String(paperCode||'').trim();
+    if(!raw)return '';
+    const normalize=s=>String(s).normalize('NFKC').replace(new RegExp('^'+code+'\\s+(?=[A-Z]\\d+\\b)','i'),'').replace(/[·:–—._-]/g,' ').replace(/\s+/g,' ').trim().toLowerCase();
+    const clean=normalize(raw);
+    return allowed.find(name=>normalize(name)===clean)
+      ||(allowed.filter(name=>name.split('·').slice(1).join('·').trim().toLowerCase()===clean).length===1
+          ?allowed.find(name=>name.split('·').slice(1).join('·').trim().toLowerCase()===clean):'')
+      ||(allowed.filter(name=>name.match(/^[A-Z]\d+/)&&name.match(/^[A-Z]\d+/)[0].toLowerCase()===clean).length===1
+          ?allowed.find(name=>name.match(/^[A-Z]\d+/)&&name.match(/^[A-Z]\d+/)[0].toLowerCase()===clean):'');
+  }
   function review(raw,questions,meta){
     var data=typeof raw==='string'?parse(raw):raw, warnings=[];
     if(!data||typeof data!=='object')throw new Error('Expected an AI response object or question array.');
@@ -62,7 +73,7 @@
         var allowed=resolved&&resolved.topics||[];
         if(!allowed.length)throw new Error('The ACCA syllabus for '+meta.subject+' has not been configured. Use Set Up Syllabus on this attempt before importing.');
         if(item.chapter){
-          var matched=allowed.find(function(name){return name.toLowerCase()===item.chapter.toLowerCase();});
+          var matched=resolveApprovedTopic(item.chapter,allowed,root.LedgerSyllabus&&root.LedgerSyllabus.code(meta.subject));
           if(!matched)throw new Error('Q'+n+': "'+item.chapter+'" is not in the approved syllabus for '+meta.subject+'. Choose an exact syllabus heading or leave blank with topic_status "outside" or "unreadable".');
           item.chapter=matched;
         }
@@ -131,7 +142,9 @@
         correct_answer:plain(q.correct_answer||''),
         original_marks:q.original_marks==null?null:q.original_marks,
         original_max_marks:q.original_max_marks==null?null:q.original_max_marks,
-        pdf_page:q.pdf_page||null
+        pdf_page:q.pdf_page||null,
+        context_information:plain(q.information||''),
+        answer_capture_status:q.answer_capture_status||'not_captured'
       };
       if(q.source_feedback){var sourceNote=plain(q.source_feedback);if(sourceNote&&sourceNote!==item.question)item.source_feedback=sourceNote.slice(0,800);}
       if(q.source_result)item.source_grade=String(q.source_result);
