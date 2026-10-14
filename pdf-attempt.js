@@ -116,7 +116,7 @@
    const correct=block.match(/(?:The\s+correct\s+answers?\s+(?:is|are)\s*:?|The\s+correct\s+answer\s*:)\s*([\s\S]*?)(?=\n\s*https?:\/{1,2}|$)/i);
    const endOfQuestion=block.search(/(?:^|\n)\s*(?:Your answer is|The correct answers? (?:is|are))\b/i);
    const before=endOfQuestion>=0?block.slice(0,endOfQuestion):block;
-   const qtext=tidy(before.replace(/^[\s\S]*?\b\d{1,3}[.,]\d{2}\s+out\s+of\s+100[.,]00\s*\n/i,'').replace(/^\s*(?:Partially\s+correct|Not\s+answered|Incorrect|Correct)\s*\n/i,'').replace(/^\s*[‘'\"]?Mar[k]?\s*[:\s]*[\d.,]+\s+out\s+of\s+[\d.,]+\s*\n/i,'').replace(/^\s*\d{1,2}\/\d{1,2}\/\d{2,4}.*?(?:TYMBAFlex)?\s*\n/i,'').replace(/^\s*[‘'\"]?Mar[k]?\s*[:\s]*[\d.,]+\s+out\s+of\s+[\d.,]+\s*\n/i,''));
+   const qtext=tidy(before.replace(/^[\s\S]*?\b\d{1,3}[.,]\d{2}\s+out\s+of\s+100[.,]00\s*\n/i,'').replace(/^\s*(?:Partially\s+correct|Not\s+answered|Incorrect|Correct)\s*\n/i,'').replace(/^\s*[‘'\"]?Mar[k]?\s*[:\s]*[\d.,]+\s+out\s+of\s+[\d.,]+\s*\n/i,'').replace(/^\s*Marked\s+out\s+of\s+[\d.,]+\s*\n/i,'').replace(/^\s*\d{1,2}\/\d{1,2}\/\d{2,4}.*?(?:TYMBAFlex)?\s*\n/i,'').replace(/^\s*[‘'\"]?Mar[k]?\s*[:\s]*[\d.,]+\s+out\s+of\s+[\d.,]+\s*\n/i,''));
    const feedback=block.slice(Math.max(0,endOfQuestion));
    parts.push({qno:a.qno,is_correct:graded,qtext:qtext,options:[],your_answer:null,correct_answer:correct?tidy(correct[1]).slice(0,2500):'',debrief:'',chapter:'',pdf_page:pageNumber,source_format:'pdf',source_result:result||'unknown',original_marks:Number.isFinite(mark)?mark:null,original_max_marks:Number.isFinite(possible)?possible:null,source_feedback:tidy(feedback).slice(0,3500)});
   }
