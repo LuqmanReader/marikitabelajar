@@ -31,7 +31,8 @@
   if(!syllabus||!syllabus.verified||!Array.isArray(syllabus.topics)||!syllabus.topics.length)return null;
   const code=(root.LedgerSyllabus.code(subject)||"").toUpperCase();
   if(code!=="MA2")return null;
-  const full=plain(q.qtext),stem=full.includes("INFORMATION FOR THIS QUESTION:")?full.slice(full.lastIndexOf("\n\n")+2):full;
+  const raw=String(q.qtext||"");
+  const stem=plain(raw.includes("INFORMATION FOR THIS QUESTION:")?raw.slice(raw.lastIndexOf("\n\n")+2):raw);
   const information=plain(q.information||"");
   const found=[];
   for(const [tag,patterns] of rules){
