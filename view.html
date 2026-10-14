@@ -514,6 +514,14 @@
         LOAD_ERROR = 'No saved exam found for id "' + examId + '" in this browser. It may have been saved on a different device/browser, or storage was cleared.';
       } else {
         DATA = JSON.parse(rawData);
+        // Recover clearly identifiable syllabus topics for existing attempts.
+        // Never overwrite a manually assigned topic or a ChatGPT debrief.
+        if(window.LedgerTopicSuggest&&Array.isArray(DATA)){
+          var suggestedCount=LedgerTopicSuggest.apply(DATA,META.subject,localStorage);
+          if(suggestedCount){
+            localStorage.setItem('tymba_exam_data:'+examId,JSON.stringify(DATA));
+          }
+        }
       }
     }catch(e){
       LOAD_ERROR = 'Could not read saved exam data from this browser (' + e.message + ').';
