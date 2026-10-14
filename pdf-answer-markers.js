@@ -85,7 +85,12 @@
   if(!tsv||!questions.length)return;
   const words=wordsFromTsv(tsv),anchors=questionAnchors(words,questions);
   if(!words.length||!anchors.length)return;
-  const markers=colorMarkers(canvas);
+  const allMarkers=colorMarkers(canvas);
+  // Matrix questions can place a second green status tick at the far right
+  // of the same row. It is feedback, not an additional selected option.
+  const markers=allMarkers.filter(mark=>!allMarkers.some(other=>
+   other!==mark&&other.color===mark.color&&Math.abs(other.mid-mark.mid)<8
+   &&other.x<mark.x-20&&mark.x-other.x<130));
   // Multiple-response questions may have several selected lines, including
   // both red and green markers. Preserve all; never stop after the first answer.
   const found=new Map();
