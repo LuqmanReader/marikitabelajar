@@ -67,7 +67,7 @@
  }
  function markedLine(words,marker){
   // The answer's final word sits immediately to the left of the status icon.
-  const left=words.filter(w=>w.x+w.w<=marker.x+5&&w.x+w.w>=marker.x-85
+  const left=words.filter(w=>w.x+w.w<=marker.x+5&&w.x+w.w>=marker.x-200
      &&Math.abs(w.mid-marker.mid)<=13
      &&!/^[@✓✗×]$/.test(w.t))
     .sort((a,b)=>b.x+b.w-(a.x+a.w));
