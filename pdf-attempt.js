@@ -102,12 +102,17 @@
    const first=block.slice(0,220);
    const label=first.match(/(?:^|\n)\s*(Partially\s+correct|Not\s+answered|Incorrect|Correct)\b/i);
    let result=label?label[1].toLowerCase().replace(/\s+/g,' '):'';
-   const award=first.match(/Mar[k]?\s*[:\s]*(\d+(?:[.,]\d{1,2})?)\s+out\s+of\s+(\d+(?:[.,]\d{1,2})?)/i);
-   const mark=award?Number(award[1].replace(',','.')):null;
-   const possible=award?Number(award[2].replace(',','.')):null;
+   const award=first.match(/(?:Mark|Score)\s*[:\s]*(\d+(?:[.,]\d{1,2})?)\s+out\s+of\s+(\d+(?:[.,]\d{1,2})?)/i);
+   const recordedMax=first.match(/\bMarked\s+out\s+of\s+(\d+(?:[.,]\d{1,2})?)/i);
+   let mark=award?Number(award[1].replace(',','.')):null;
+   const possible=award?Number(award[2].replace(',','.')):recordedMax?Number(recordedMax[1].replace(',','.')):null;
    if(!result&&/Your answer is (?:in)?correct/i.test(block))result=(/Your answer is incorrect/i.test(block)?'incorrect':'correct');
    if(!result&&Number.isFinite(mark)&&Number.isFinite(possible)&&possible>0)result=mark===possible?'correct':mark===0?'incorrect':'partially correct';
    const graded=result==='correct'?true:['incorrect','partially correct','not answered'].includes(result)?false:null;
+   if(mark===null&&Number.isFinite(possible)) {
+    if(result==='correct')mark=possible;
+    if(result==='incorrect'||result==='not answered')mark=0;
+   }
    const correct=block.match(/(?:The\s+correct\s+answers?\s+(?:is|are)\s*:?|The\s+correct\s+answer\s*:)\s*([\s\S]*?)(?=\n\s*https?:\/{1,2}|$)/i);
    const endOfQuestion=block.search(/(?:^|\n)\s*(?:Your answer is|The correct answers? (?:is|are))\b/i);
    const before=endOfQuestion>=0?block.slice(0,endOfQuestion):block;
@@ -230,6 +235,15 @@
    yourAnswer.placeholder='Not captured: enter your selected answer from the PDF';
    yourAnswer.value=q.your_answer||'';yourLabel.appendChild(yourAnswer);
    yourAnswer.addEventListener('change',()=>{if(!('ocr_your_answer' in q))q.ocr_your_answer=q.your_answer;q.your_answer=yourAnswer.value.trim()||null;q.answer_capture='manual-confirmed';});
+   const topicSyllabus=root.LedgerSyllabus&&root.LedgerSyllabus.resolve(localStorage,detected.subject);
+   if(topicSyllabus&&topicSyllabus.topics&&topicSyllabus.topics.length){
+    const topicLabel=document.createElement('label');topicLabel.textContent='Official ACCA syllabus topic (suggestion; please verify)';
+    const topicSelect=document.createElement('select');topicSelect.setAttribute('aria-label','Syllabus topic for question '+q.qno);
+    for(const name of ['',...topicSyllabus.topics]){const opt=document.createElement('option');opt.value=name;opt.textContent=name||'Pending classification';topicSelect.appendChild(opt);}
+    topicSelect.value=q.chapter||'';
+    topicSelect.addEventListener('change',()=>{q.chapter=topicSelect.value;q.topic_status=q.chapter?'matched':'';q.topic_origin='manual';q.topic_reason='';});
+    topicLabel.appendChild(topicSelect);card.appendChild(topicLabel);
+   }
    const keyLabel=document.createElement('label');keyLabel.textContent='Recorded correct answer (editable if OCR misread)';card.appendChild(keyLabel);
    const answer=document.createElement('textarea');answer.rows=2;answer.setAttribute('aria-label','Correct answer for question '+q.qno);answer.value=q.correct_answer||'';keyLabel.appendChild(answer);
    answer.addEventListener('change',()=>{if(!q.ocr_correct_answer)q.ocr_correct_answer=q.correct_answer;q.correct_answer=answer.value.trim();});
@@ -259,7 +273,9 @@
   try{
    progress(0,1,'Opening your PDF…');
    const result=await readPdf(file);
-   const check=inspect(result.questions);const detected=selectedMetadata();
+   const detected=selectedMetadata();
+   const autoTopics=root.LedgerTopicSuggest?root.LedgerTopicSuggest.apply(result.questions,detected.subject,localStorage):0;
+   const check=inspect(result.questions);
    if(!check.ordered.length)throw Error('No numbered questions found. Make sure this is the completed attempt-review PDF.');
    if(check.duplicates.length||check.missing.length){
     const details=[];
@@ -271,7 +287,7 @@
    }
    state.pending={questions:check.ordered,detected:detected,result:result};
    renderVerification(check.ordered,detected);
-   note('Extracted '+check.ordered.length+' questions. '+check.ordered.filter(q=>q.your_answer).length+' submitted answers detected. Check the selected answers, grades and correct answers. Expand any question to correct OCR mistakes.'+(check.ungraded.length?' Marking needs confirmation for questions '+check.ungraded.join(', ')+'.':'')+(check.unreadable.length?' Some question text is unclear; attach the original PDF in ChatGPT for verification.':''));
+   note('Extracted '+check.ordered.length+' questions. '+check.ordered.filter(q=>q.your_answer).length+' submitted answers detected; '+autoTopics+' provisional topic suggestions. Check selected answers, grades, and topics. Expand any question to correct OCR mistakes.'+(check.ungraded.length?' Marking needs confirmation for questions '+check.ungraded.join(', ')+'.':'')+(check.unreadable.length?' Some question text is unclear; attach the original PDF in ChatGPT for verification.':''));
   }catch(e){note('Could not import PDF: '+(e&&e.message?e.message:String(e)));}
   finally{state.busy=false;refreshMetadata();}
  }
