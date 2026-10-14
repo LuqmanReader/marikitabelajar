@@ -18,12 +18,12 @@
   ["E2",[/\b(cash management|cash surplus|cash deficit|cash float|bank overdraft management|liquidity management|receivables collection period|payables payment period|working capital cycle)\b/ig]],
   ["E4",[/\b(source of finance|financing decision|equity finance|debt finance|loan finance|bank loan|share capital finance|interest on borrowings|investment of surplus funds)\b/ig]],
   ["E1",[/\b(cash flow statement|operating cash flow|cash inflow|cash outflow|nature of cash|cash versus profit)\b/ig]],
-  ["A5",[/\b(management report|reporting management information|management accounts|presentation of management information|performance report)\b/ig]],
+  ["A5",[/\b(management report|reporting management information|management accounts|presentation of management information|performance report|profit cent(?:re|er)|responsibility cent(?:re|er)|profitability performance)\b/ig]],
   ["A4",[/\b(comparison of costs|comparative information|high[\s-]?low method|scattergraph|regression analysis|index numbers|cost estimation)\b/ig]],
-  ["A2",[/\b(cost accounting system|integrated accounts|interlocking accounts|cost ledger|cost accounts)\b/ig]],
-  ["A1",[/\b(management information needs|information requirements|planning control information|strategic information|tactical information|operational information)\b/ig]],
+  ["A2",[/\b(cost accounting system|integrated accounts|interlocking accounts|cost ledger|cost accounts|sequential coding|hierarchical coding|coding system|optical character recognition|\bocr\b|computerised cost|automated information processing)\b/ig]],
+  ["A1",[/\b(management information needs|information requirements|planning control information|strategic information|tactical information|operational information|management control system|definition of information|information is data|objective of management)\b/ig]],
   ["A3",[/\b(cost classification|direct (?:cost|expense|labou?r|material)|indirect (?:cost|expense)|fixed cost|variable cost|semi[\s-]?variable|mixed cost|step[\s-]?fixed|cost behaviour|cost center|cost centre|cost unit|product cost|period cost)\b/ig]],
-  ["B3",[/\b(accounting for (?:other )?expenses|indirect expenses|rental expense|utility expenses|expenses allocation)\b/ig]]
+  ["B3",[/\b(accounting for (?:other )?expenses|indirect expenses|rental expense|utility expenses|expenses allocation|depreciation charge|depreciation method|reducing balance depreciation|straight line depreciation|depreciation expense)\b/ig]]
  ];
  function plain(value){return String(value||"").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();}
  function pick(q,subject,storage){
