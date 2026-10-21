@@ -1,117 +1,81 @@
-<!DOCTYPE html>
-<html lang="en" data-lp-page="quant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex,nofollow"><title>Quant Intelligence | LedgerPeer</title>
+<!DOCTYPE html><html lang="en" data-lp-page="quant"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#080d17">
+<title>Quant Intelligence Research Lab | LedgerPeer</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script><script src="auth.js"></script>
-<style>
-:root{--ink:#111;--paper:#fff4db;--yellow:#ffcf24;--red:#f65a43;--blue:#2956ff;--green:#38dca0}
-*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.6 ui-monospace,Consolas,monospace}
-.wrap{max-width:1100px;margin:auto;padding:25px 20px 80px}a{color:inherit}
-h1,h2,h3,button,.brand{font-family:Impact,"Arial Black",sans-serif;text-transform:uppercase;letter-spacing:.02em}
-h1{font-size:clamp(38px,7vw,86px);line-height:1;margin:15px 0}
-h2{font-size:27px}.top{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
-.nav{display:inline-block;font-weight:900;background:#fff;border:3px solid #111;box-shadow:4px 4px #111;padding:8px 12px;text-decoration:none}
-.card{background:white;border:4px solid #111;box-shadow:7px 7px #111;padding:23px;margin:22px 0}
-.tag{display:inline-block;background:var(--yellow);border:3px solid #111;padding:4px 10px;font-weight:bold;font-size:12px}
-.hero{background:#f3ba92;position:relative;overflow:hidden}
-.tape{background:repeating-linear-gradient(125deg,#111 0 24px,var(--yellow) 24px 48px);height:21px;border:3px solid #111;transform:rotate(-3deg);margin:25px -40px}
-.brick{display:inline-block;font-size:54px;filter:drop-shadow(3px 4px 0 #111)}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:15px}
-.metric{background:var(--paper);border:3px solid #111;padding:18px}
-.metric strong{font:900 31px Impact,Arial,sans-serif;display:block}
-button{font-size:16px;background:var(--blue);color:#fff;border:3px solid #111;box-shadow:4px 4px #111;padding:13px 18px;cursor:pointer}
-button:disabled{opacity:.55;cursor:wait}input{font:inherit;border:3px solid #111;padding:12px;max-width:100%;width:340px}
-small,.muted{color:#555}#model[hidden],#gate[hidden]{display:none}
-.lesson{background:#fff;border:3px solid #111;padding:17px;margin:12px 0}details summary{font-weight:900;cursor:pointer}
-.notice{border-left:6px solid var(--red);padding:12px;background:#fff5e7}
-.status{min-height:28px;font-weight:900}
-@media(max-width:600px){.wrap{padding:15px 12px 65px}.card{padding:15px}.brick{font-size:37px}}
-</style></head><body><main class="wrap">
-<div class="top"><a class="nav" href="financial-manager.html">← Financial Manager</a><span class="tag">LEDGERPEER / RESEARCH LAB / BETA</span></div>
-<section class="card hero"><div class="tag">🔒 EXPERIMENTAL ACCESS</div><h1>QUANT<br>INTELLIGENCE</h1>
-<p>Financial modelling, statistical research and probability. Built for curious students.</p><div aria-hidden="true"><span class="brick">🧱</span><span class="brick">👷</span><span class="brick">🏗️</span><span class="brick">🧱</span></div><div class="tape" aria-hidden="true"></div><strong>UNDER CONSTRUCTION — PLEASE BE PATIENT</strong></section>
-<section id="worksiteNotice" class="card" hidden><span class="tag">🚧 SITE CLOSED TO PUBLIC</span><h2>Builders at work</h2><p>Quant is not released. Only authorised project builders can access its research tools. No public release key is available yet.</p><p>We'll open the doors when the model passes our checks and we cut the ribbon.</p></section><section id="gate" class="card" hidden><h2>Enter your release key</h2><p>Quant is in limited testing. Unlock access with a release key supplied by the LedgerPeer administrator.</p>
-<form id="keyForm"><label for="releaseKey">Release key</label><p><input id="releaseKey" maxlength="100" autocomplete="off" required placeholder="LPQ-XXXX-XXXX-XXXX"></p><button type="submit">UNLOCK QUANT →</button></form><p id="gateStatus" class="status" role="status"></p></section>
-<section id="quantLogin" class="card" hidden><h2>Construction crew sign-in</h2><p>Authorised builders may sign in here. This does not grant access to ordinary students.</p><form id="quantLoginForm"><p><label for="quantEmail">LedgerPeer email</label><br><input id="quantEmail" type="email" autocomplete="username" required placeholder="Your registered email"></p><p><label for="quantPassword">Password</label><br><input id="quantPassword" type="password" autocomplete="current-password" required placeholder="Your LedgerPeer password"></p><button type="submit">SIGN IN &amp; CONTINUE →</button></form><p id="loginStatus" class="status" role="status"></p><small>Your password is sent directly to Supabase Auth, never to the Quant forecasting engine.</small></section>
-<div id="loading" class="card" role="status">Checking signed-in account and access permissions…</div>
-<div id="model" hidden>
-<section class="card"><span class="tag">LIVE RESEARCH • NOT INVESTMENT ADVICE</span><h2>S&P 500 six-month downside probability</h2>
-<p>This experimental model estimates the probability that the S&P 500 closes at least 10% below its current level after approximately 126 trading days.</p>
-<div class="grid"><div class="metric">Estimated probability<strong id="prob">—</strong></div><div class="metric">Annualised volatility<strong id="vol">—</strong></div><div class="metric">Latest index level<strong id="level">—</strong></div></div>
-<p id="forecastStatus" class="status" role="status">No forecast requested.</p><button id="refreshForecast">RUN QUANT FORECAST</button>
-<p class="muted" id="stamp"></p><div class="notice"><b>Experimental:</b> Uses a lognormal price model based on historical returns, not a validated trading signal. Regime changes, extreme events and data gaps can make these probabilities inaccurate.</div>
+<link rel="stylesheet" href="quant-cockpit.css?v=20261022b">
+<script defer src="quant-cockpit.js?v=20261022b"></script></head>
+<body class="quant-body"><main class="q-shell">
+<header class="q-header">
+  <div class="q-brand">LEDGERPEER <span>/ QUANT</span><div class="q-eyebrow" style="margin-top:6px">RESEARCH DIVISION • CONSTRUCTION ACCESS</div></div>
+  <div class="q-head-right"><span class="q-status">EXPERIMENTAL SYSTEM</span><a class="q-link" href="financial-manager.html">← FINANCIAL MANAGER</a></div>
+</header>
+<div id="loading" class="q-section q-pad" role="status">INITIALISING RESEARCH TERMINAL / VERIFYING ACCESS…</div>
+<section id="denied" class="q-section q-pad" hidden><div class="q-eyebrow">SECURITY / RESTRICTED</div><h2>CONSTRUCTION SITE IS CLOSED</h2><p>Only the designated Quant builder can enter. This research laboratory has not been released to students.</p><a class="q-link" href="financial-manager.html">RETURN TO FINANCIAL MANAGER</a></section>
+<section id="crewLogin" class="q-section q-pad" hidden><div class="q-eyebrow">AUTHORIZED PERSONNEL ONLY</div><h2>BUILDER SIGN-IN</h2><p>Sign in to the Quant construction site. The ordinary LedgerPeer sign-in may live in a different tab, so this page supports its own authenticated session.</p><form id="crewForm" class="q-form">
+<label>Account email<input id="crewEmail" class="q-input" type="email" autocomplete="username" required></label>
+<label>Password<input id="crewPassword" class="q-input" type="password" autocomplete="current-password" required></label>
+<button id="crewSubmit" class="q-button" type="submit">ENTER RESEARCH DIVISION ↗</button></form>
+<p id="crewError" role="status" class="q-feedback">Only designated builder accounts have access. No release key is required while we're building.</p></section>
+<div id="workspace" hidden>
+<section class="q-top"><div><div class="q-eyebrow">LPQ / EXPERIMENTAL QUANTITATIVE RESEARCH ENVIRONMENT</div>
+<h1>THE FUTURE IS <em>A DISTRIBUTION.</em></h1>
+<p class="q-lede">An interactive financial uncertainty laboratory. Explore simulated market trajectories, stress the assumptions, and challenge the mathematics behind every probability.</p></div>
+<div class="q-version">LAB BUILD 0.2<br>ACCESS: BUILDER ONLY<br>RELEASE: NOT AUTHORIZED</div></section>
+<div class="q-warning"><b>RESEARCH MODE:</b> This is not a trading signal or a validated prediction engine. Simulated scenarios are educational; real-market calibration is explicitly marked when a data feed succeeds.</div>
+<section class="q-metrics" aria-label="Quant readout">
+ <article class="q-metric"><div class="q-metric-label">Terminal downside probability</div><div class="q-metric-value q-red" id="riskValue">—</div><div class="q-metric-sub" id="riskDetail">Six-month terminal decline</div></article>
+ <article class="q-metric"><div class="q-metric-label">Annualised volatility</div><div class="q-metric-value" id="volValue">—</div><div class="q-metric-sub">Model parameter σ</div></article>
+ <article class="q-metric"><div class="q-metric-label">Annualised log-return mean</div><div class="q-metric-value q-green" id="driftValue">—</div><div class="q-metric-sub">Model drift input</div></article>
+ <article class="q-metric"><div class="q-metric-label">Reference S&P 500 index</div><div class="q-metric-value" id="levelValue">—</div><div class="q-metric-sub" id="activeSource">Waiting for market feed</div></article>
 </section>
-<section class="card"><h2>Quant Academy</h2><p>Open each lesson to understand the mathematics behind your results.</p>
-<div class="lesson"><details open><summary>01 — What is quantitative finance?</summary><p>Quantitative finance uses mathematics, programming and data to investigate pricing, risk and market behaviour. It does not eliminate uncertainty.</p></details></div>
-<div class="lesson"><details><summary>02 — Returns and logarithms</summary><p>For consecutive prices P(t) and P(t−1), the log return is ln(P(t)/P(t−1)). Log returns are convenient because they add across time periods.</p></details></div>
-<div class="lesson"><details><summary>03 — Volatility</summary><p>Volatility is the standard deviation of returns. With daily observations, annualised volatility is approximately daily standard deviation multiplied by √252.</p></details></div>
-<div class="lesson"><details><summary>04 — Forecast probability</summary><p>Our starter model assumes future log returns are normally distributed. Using estimated drift and volatility, it calculates the probability of a future price below 90% of today's level.</p></details></div>
-<div class="lesson"><details><summary>05 — Why backtesting matters</summary><p>Historical fit does not prove predictive skill. Before relying on forecasts, compare them with simple baselines using chronologically separated test periods and evaluate calibration.</p></details></div>
-</section></div></main>
-<script>
-(async function(){
-const $=id=>document.getElementById(id),status=(id,s)=>$(id).textContent=s;
-try{
- if(!window.PersonalHubAuth)throw Error('LedgerPeer authentication is unavailable. Refresh this page.');
- const sb=await PersonalHubAuth.init(); // Always use same sessionStorage client as main site.
- let activeUser=null;
- async function check(){
-  if(!activeUser)throw Error('Sign in before checking Quant access');
-  const {data,error}=await sb.rpc('lp_quant_status');
-  if(error)throw error;
-  const permitted=!!(data?.builder||(data?.released&&data?.unlocked));
-  $('gate').hidden=!(data?.released&&!permitted);
-  $('model').hidden=!permitted;
-  $('worksiteNotice').hidden=!!(data?.released||permitted);
-  $('loading').hidden=true;
-  if(!permitted && !data?.released){
-    $('quantLogin').hidden=true;
-  }
-  return permitted;
- }
- async function updateAuth(){
-  const {data:{user},error}=await sb.auth.getUser();
-  activeUser=(!error&&user)?user:null;
-  $('loading').hidden=true;
-  $('quantLogin').hidden=!!activeUser;
-  if(activeUser){await check()}
-  else{$('gate').hidden=true;$('model').hidden=true;$('worksiteNotice').hidden=false}
- }
- $('quantLoginForm').addEventListener('submit',async ev=>{
-  ev.preventDefault();const btn=$('quantLoginForm').querySelector('button');btn.disabled=true;status('loginStatus','Signing in securely…');
-  try{
-   const {error}=await sb.auth.signInWithPassword({email:$('quantEmail').value.trim(),password:$('quantPassword').value});
-   if(error)throw error;
-   $('quantPassword').value='';
-   await updateAuth();
-   status('loginStatus','Signed in.');
-  }catch(e){status('loginStatus','Sign in failed: '+e.message)}
-  finally{btn.disabled=false}
- });
- await updateAuth();
- $('keyForm').addEventListener('submit',async ev=>{
-  ev.preventDefault();const button=$('keyForm').querySelector('button');button.disabled=true;
-  try{const {data,error}=await sb.rpc('lp_quant_redeem',{p_key:$('releaseKey').value});
-   if(error)throw error;status('gateStatus',data.message||'Unable to unlock.');
-   if(data.ok){$('releaseKey').value='';await check()}
-  }catch(e){status('gateStatus','Unlock failed: '+e.message)}finally{button.disabled=false}
- });
- $('refreshForecast').addEventListener('click',async()=>{
-  const btn=$('refreshForecast');btn.disabled=true;status('forecastStatus','Fetching fresh observations and computing the model…');
-  try{
-   const {data:{session}}=await sb.auth.getSession();if(!session)throw Error('Your session expired; sign in again.');
-   const res=await fetch(window.RH_SUPABASE_URL+'/functions/v1/ledgerpeer-quant-forecast',{
-     method:'POST',headers:{'Authorization':'Bearer '+session.access_token,'apikey':window.RH_SUPABASE_PUBLISHABLE_KEY,'Content-Type':'application/json'},body:'{}'});
-   const result=await res.json();if(!res.ok)throw Error(result.error||'Forecast unavailable');
-   $('prob').textContent=(result.downside_probability*100).toFixed(1)+'%';
-   $('vol').textContent=(result.annual_volatility*100).toFixed(1)+'%';
-   $('level').textContent=Number(result.market_level).toLocaleString('en-US',{maximumFractionDigits:2});
-   status('forecastStatus','Completed using '+result.observations+' price observations. Source: '+result.source_name);
-   status('stamp','Data ending '+result.sample_end+'. Model '+result.model_version+'. Calculated '+new Date(result.generated_at).toLocaleString()+'.');
-  }catch(e){status('forecastStatus','Data or model temporarily unavailable: '+e.message)}finally{btn.disabled=false}
- });
- if(!$('model').hidden)$('refreshForecast').click();
- setInterval(()=>{if(!$('model').hidden&&!document.hidden)$('refreshForecast').click()},6*60*60*1000);
-}catch(e){status('loading','Unable to initialise Quant: '+e.message)}
-})();
-</script></body></html>
+<div class="q-columns">
+<section class="q-section"><div class="q-section-head"><h2>01 / Stochastic Scenario Field</h2><span class="q-micro" id="dataMode">VERIFYING DATA</span></div>
+<div class="q-stage"><canvas id="quantCanvas" aria-label="Interactive perspective-projected 3D financial scenario paths; drag to rotate"></canvas>
+<div class="q-stage-overlay"><div class="q-eyebrow">3D RESEARCH VIEW / INTERACTIVE</div><div class="q-stage-title">POSSIBLE FUTURES</div><div class="q-overlay-caption">Drag to orbit • Depth separates stochastic paths</div></div>
+<div class="q-stage-badge" id="sampleOutput">Simulating scenario trajectories…</div>
+<div class="q-legend"><span class="q-band"><i></i>Paths</span><span class="q-risk"><i></i>Downside</span><span class="q-live"><i></i>Reference</span></div>
+</div><div class="q-pad" style="padding-top:12px"><button class="q-ghost" id="rotateScene">ROTATE VIEW ↻</button></div></section>
+<section class="q-section"><div class="q-section-head"><h2>02 / Stress-Test Console</h2><span class="q-micro">INTERACTIVE PARAMETERS</span></div>
+<div class="q-console"><h3>Modify the mathematical assumptions</h3>
+<div class="q-field"><div class="q-field-head"><label for="volControl">Annualised volatility (σ)</label><output id="volOut">21%</output></div><input type="range" id="volControl" min="5" max="65" step=".5" value="21"></div>
+<div class="q-field"><div class="q-field-head"><label for="driftControl">Annualised log-return mean (μ)</label><output id="driftOut">6.5%</output></div><input type="range" id="driftControl" min="-30" max="35" step=".5" value="6.5"></div>
+<div class="q-field"><div class="q-field-head"><label for="termControl">Forecast horizon</label><output id="termOut">126 trading days</output></div><input type="range" id="termControl" min="21" max="252" step="21" value="126"></div>
+<div class="q-field"><div class="q-field-head"><label for="thresholdControl">Decline threshold</label><output id="thresholdOut">10%</output></div><input type="range" id="thresholdControl" min="5" max="40" step="1" value="10"></div>
+<div class="q-actions"><button id="runForecast" class="q-button">RECALIBRATE FROM DATA ↗</button><button id="resetScenario" class="q-ghost">RESET LAB</button></div>
+<p class="q-micro">Changes immediately recalculate probabilities and redraw scenarios. Reset switches to teaching assumptions. Data refresh attempts to calibrate from observations.</p></div></section>
+</div>
+<section class="q-section"><div class="q-section-head"><h2>03 / Data & Computation Diagnostics</h2><span id="pipelineStatus" class="q-pill">PENDING</span></div><div class="q-pad">
+<div class="q-system-grid">
+<div class="q-system"><div class="q-eyebrow">SOURCE</div><strong id="sourceValue">Awaiting feed</strong><p>Historical market-data provider</p></div>
+<div class="q-system"><div class="q-eyebrow">INPUT COVERAGE</div><strong id="obsValue">—</strong><p>Accepted closing-price observations</p></div>
+<div class="q-system"><div class="q-eyebrow">LATEST OBSERVATION</div><strong id="asofValue">—</strong><p>Index observation date, not a live quote</p></div></div>
+<p id="modelMessage" class="q-feedback" data-type="info" role="status">Checking Quant data pipeline…</p>
+</div></section>
+<div class="q-data">
+<section class="q-section"><div class="q-section-head"><h2>04 / Mathematical Kernel</h2><span class="q-micro">MODEL TRANSPARENCY</span></div><div class="q-pad">
+<div class="q-eyebrow">LOGNORMAL TERMINAL THRESHOLD</div><p>Assume independent log returns. Approximate cumulative log return by a normal distribution with a constant mean and volatility.</p>
+<div class="q-system" style="overflow-wrap:anywhere"><strong id="formulaText">Loading formula…</strong></div>
+<p class="q-micro">Φ is the standard normal CDF. This is a parametric estimate, not measured future probability. Correlations, regime shifts and fat tails are omitted.</p></div></section>
+<section class="q-section"><div class="q-section-head"><h2>05 / Research Protocol</h2><span class="q-micro">MODEL RISK</span></div><div class="q-pad">
+<table class="q-table"><thead><tr><th>Test</th><th>Current status</th></tr></thead><tbody>
+<tr><td>Authenticated builder gate</td><td class="q-green">ENFORCED</td></tr>
+<tr><td>Data freshness validation</td><td class="q-amber">AT REQUEST TIME</td></tr>
+<tr><td>Walk-forward backtesting</td><td class="q-red">NOT IMPLEMENTED</td></tr>
+<tr><td>Probability calibration</td><td class="q-red">NOT VALIDATED</td></tr>
+<tr><td>Model stress testing</td><td class="q-green">INTERACTIVE</td></tr>
+<tr><td>Public release</td><td class="q-red">CLOSED</td></tr>
+</tbody></table></div></section>
+</div>
+<section class="q-section"><div class="q-section-head"><h2>06 / Quant Academy — Decode the Engine</h2><span class="q-micro">LEARN BY INTERROGATING THE MODEL</span></div>
+<div class="q-pad q-lessons">
+<details class="q-lesson" open><summary>01 — What is a quant?</summary><p>Quantitative researchers develop mathematical models of risk, pricing and markets. Their output is useful only when assumptions, data quality and out-of-sample performance are scrutinised.</p></details>
+<details class="q-lesson"><summary>02 — Log returns and price ratios</summary><p>Daily log return rₜ = ln(Pₜ/Pₜ₋₁). Log returns add across time, unlike ordinary percentage returns. Historical means should not be mistaken for stable future returns.</p></details>
+<details class="q-lesson"><summary>03 — Distribution, variance and tails</summary><p>Standard deviation describes dispersion, but it does not capture every kind of financial risk. The normal distribution tends to underestimate certain extreme market moves.</p></details>
+<details class="q-lesson"><summary>04 — The simulator's mechanics</summary><p>Each path draws independent random shocks and compounds log returns over the horizon. The path cloud illustrates dispersion. The headline percentage is calculated analytically, not estimated from just 100 visual paths.</p></details>
+<details class="q-lesson"><summary>05 — What is a meaningful backtest?</summary><p>Freeze all information at each historical forecast date, score predictions against later outcomes, and compare them with simple alternatives. Avoid using future revisions and tuning to test data.</p></details>
+<details class="q-lesson"><summary>06 — Build a testable hypothesis</summary><p>Example: Does higher realised volatility improve forecasting of a six-month 10% decline? Specify the target, predictor, training window, evaluation window and metric before looking at results.</p></details>
+</div></section>
+<footer class="q-foot">LEDGERPEER QUANT / INTERNAL RESEARCH BUILD • EXPERIMENTAL ESTIMATES ARE NOT FINANCIAL ADVICE • DO NOT TRADE ON UNVALIDATED OUTPUT</footer>
+</div></main></body></html>
