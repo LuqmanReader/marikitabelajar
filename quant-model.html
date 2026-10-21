@@ -83,6 +83,8 @@ try{
    status('stamp','Data ending '+result.sample_end+'. Model '+result.model_version+'. Calculated '+new Date(result.generated_at).toLocaleString()+'.');
   }catch(e){status('forecastStatus','Data or model temporarily unavailable: '+e.message)}finally{btn.disabled=false}
  });
+ if(!$('model').hidden)$('refreshForecast').click();
+ setInterval(()=>{if(!$('model').hidden&&!document.hidden)$('refreshForecast').click()},6*60*60*1000);
 }catch(e){status('loading','Unable to initialise Quant: '+e.message)}
 })();
 </script></body></html>
