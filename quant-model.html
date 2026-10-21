@@ -52,7 +52,7 @@ small,.muted{color:#555}#model[hidden],#gate[hidden]{display:none}
 const $=id=>document.getElementById(id),status=(id,s)=>$(id).textContent=s;
 try{
  if(!window.PersonalHubAuth||!PersonalHubAuth.guard())return;
- const sb=window.supabase.createClient(window.RH_SUPABASE_URL,window.RH_SUPABASE_PUBLISHABLE_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});
+ const sb=await PersonalHubAuth.init(); // Reuse LedgerPeer's sessionStorage-backed authentication client.
  const {data:{user},error:uerr}=await sb.auth.getUser();
  if(uerr||!user){status('loading','Sign in to LedgerPeer first.');return}
  async function check(){
