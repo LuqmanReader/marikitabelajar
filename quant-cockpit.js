@@ -12,12 +12,12 @@ function pathData(){
  const random=rand(state.seed);const paths=[];let negative=0;
  for(let p=0;p<n;p++){
    const arr=[0];let log=0;
-   for(let t=1;t<=126;t++){log+=(drift-.5*state.vol**2)*dt/126+state.vol*Math.sqrt(dt/126)*gaussian(random);arr.push(log)}
+   for(let t=1;t<=126;t++){log+=drift*dt/126+state.vol*Math.sqrt(dt/126)*gaussian(random);arr.push(log)}
    if(log<=Math.log(1-state.threshold))negative++;
    paths.push({log:arr,tail:log,bad:log<=Math.log(1-state.threshold)});
  }
  state.paths=paths;
- const mu=(state.drift-.5*state.vol**2)*dt;
+ const mu=state.drift*dt;
  const sd=Math.max(1e-9,state.vol*Math.sqrt(dt));
  const analytic=norm((Math.log(1-state.threshold)-mu)/sd);
  el('riskValue').textContent=fmt(analytic*100,1)+'%';
@@ -26,7 +26,7 @@ function pathData(){
  el('levelValue').textContent=state.live?state.level.toLocaleString('en-US',{maximumFractionDigits:2}):'SIMULATED';
  el('riskDetail').textContent='Probability at '+state.term+' trading days; terminal decline ≥ '+fmt(state.threshold*100,0)+'%';
  el('sampleOutput').textContent='Monte Carlo visualisation: '+n+' paths • '+negative+' negative outcomes in this seeded draw';
- el('formulaText').textContent='Φ[(ln('+(1-state.threshold).toFixed(2)+') − (μ − ½σ²)·T) / (σ√T)] = '+fmt(analytic*100,2)+'%';
+ el('formulaText').textContent='Φ[(ln('+(1-state.threshold).toFixed(2)+') − μ·T) / (σ√T)] = '+fmt(analytic*100,2)+'%';
  el('dataMode').textContent=state.live?'CALIBRATED FROM OBSERVATIONS':'ILLUSTRATIVE / NOT MARKET CALIBRATED';
  el('dataMode').style.color=state.live?'#6bf4c4':'#ffca66';
  el('activeSource').textContent=state.live?state.source+' · '+state.date:'Educational assumptions only';
@@ -110,7 +110,7 @@ async function requestForecast(client){
   const {data:{session}}=await client.auth.getSession();if(!session)throw Error('Builder session expired');
   const response=await fetch(window.RH_SUPABASE_URL+'/functions/v1/ledgerpeer-quant-forecast',{method:'POST',
     headers:{Authorization:'Bearer '+session.access_token,apikey:window.RH_SUPABASE_PUBLISHABLE_KEY,'Content-Type':'application/json'},body:'{}'});
-  const result=await response.json();if(!response.ok)throw Error(result.error||'Computation service failed');
+  const result=await response.json();if(!response.ok)throw Error((result.error||'Computation service failed')+(Array.isArray(result.diagnostics)?' — '+result.diagnostics.join(' | '):''));
   if(!Number.isFinite(result.annual_volatility)||!Number.isFinite(result.annual_drift)||!Number.isFinite(result.market_level))throw Error('Malformed quantitative result');
   state.live=true;state.level=result.market_level;state.vol=Math.max(.01,Math.min(.8,result.annual_volatility));state.drift=Math.max(-.8,Math.min(.8,result.annual_drift));
   state.source=result.source_name||'Unknown data provider';state.date=result.sample_end;
