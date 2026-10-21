@@ -32,6 +32,7 @@ small,.muted{color:#555}#model[hidden],#gate[hidden]{display:none}
 <p>Financial modelling, statistical research and probability. Built for curious students.</p><div aria-hidden="true"><span class="brick">🧱</span><span class="brick">👷</span><span class="brick">🏗️</span><span class="brick">🧱</span></div><div class="tape" aria-hidden="true"></div><strong>UNDER CONSTRUCTION — PLEASE BE PATIENT</strong></section>
 <section id="gate" class="card" hidden><h2>Enter your release key</h2><p>Quant is in limited testing. Unlock access with a release key supplied by the LedgerPeer administrator.</p>
 <form id="keyForm"><label for="releaseKey">Release key</label><p><input id="releaseKey" maxlength="100" autocomplete="off" required placeholder="LPQ-XXXX-XXXX-XXXX"></p><button type="submit">UNLOCK QUANT →</button></form><p id="gateStatus" class="status" role="status"></p></section>
+<section id="quantLogin" class="card" hidden><h2>Sign in to unlock Quant</h2><p>LedgerPeer keeps your login session within each browser tab. Sign in here to continue in this tab.</p><form id="quantLoginForm"><p><label for="quantEmail">LedgerPeer email</label><br><input id="quantEmail" type="email" autocomplete="username" required placeholder="Your registered email"></p><p><label for="quantPassword">Password</label><br><input id="quantPassword" type="password" autocomplete="current-password" required placeholder="Your LedgerPeer password"></p><button type="submit">SIGN IN &amp; CONTINUE →</button></form><p id="loginStatus" class="status" role="status"></p><small>Your password is sent directly to Supabase Auth, never to the Quant forecasting engine.</small></section>
 <div id="loading" class="card" role="status">Checking signed-in account and access permissions…</div>
 <div id="model" hidden>
 <section class="card"><span class="tag">LIVE RESEARCH • NOT INVESTMENT ADVICE</span><h2>S&P 500 six-month downside probability</h2>
@@ -51,17 +52,35 @@ small,.muted{color:#555}#model[hidden],#gate[hidden]{display:none}
 (async function(){
 const $=id=>document.getElementById(id),status=(id,s)=>$(id).textContent=s;
 try{
- if(!window.PersonalHubAuth||!PersonalHubAuth.guard())return;
- const sb=await PersonalHubAuth.init(); // Reuse LedgerPeer's sessionStorage-backed authentication client.
- const {data:{user},error:uerr}=await sb.auth.getUser();
- if(uerr||!user){status('loading','Sign in to LedgerPeer first.');return}
+ if(!window.PersonalHubAuth)throw Error('LedgerPeer authentication is unavailable. Refresh this page.');
+ const sb=await PersonalHubAuth.init(); // Always use same sessionStorage client as main site.
+ let activeUser=null;
  async function check(){
-  const {data,error}=await sb.from('lp_quant_access').select('user_id').eq('user_id',user.id).maybeSingle();
+  if(!activeUser)throw Error('Sign in before checking Quant access');
+  const {data,error}=await sb.from('lp_quant_access').select('user_id').eq('user_id',activeUser.id).maybeSingle();
   if(error)throw error;
   const unlocked=!!data;$('gate').hidden=unlocked;$('model').hidden=!unlocked;$('loading').hidden=true;
   return unlocked;
  }
- await check();
+ async function updateAuth(){
+  const {data:{user},error}=await sb.auth.getUser();
+  activeUser=(!error&&user)?user:null;
+  $('loading').hidden=true;
+  $('quantLogin').hidden=!!activeUser;
+  if(activeUser){await check()}else{$('gate').hidden=true;$('model').hidden=true}
+ }
+ $('quantLoginForm').addEventListener('submit',async ev=>{
+  ev.preventDefault();const btn=$('quantLoginForm').querySelector('button');btn.disabled=true;status('loginStatus','Signing in securely…');
+  try{
+   const {error}=await sb.auth.signInWithPassword({email:$('quantEmail').value.trim(),password:$('quantPassword').value});
+   if(error)throw error;
+   $('quantPassword').value='';
+   await updateAuth();
+   status('loginStatus','Signed in.');
+  }catch(e){status('loginStatus','Sign in failed: '+e.message)}
+  finally{btn.disabled=false}
+ });
+ await updateAuth();
  $('keyForm').addEventListener('submit',async ev=>{
   ev.preventDefault();const button=$('keyForm').querySelector('button');button.disabled=true;
   try{const {data,error}=await sb.rpc('lp_quant_redeem',{p_key:$('releaseKey').value});
