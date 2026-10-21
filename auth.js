@@ -176,7 +176,7 @@
  }
  async function verifySignUpOtp(email,code){
   const token=String(code).trim();
-  if(!/^\d{6}$/.test(token))throw Error('Enter a valid 6-digit verification code.');
+  if(!/^\d{8}$/.test(token))throw Error('Enter a valid 8-digit verification code.');
   await init();
   const {data,error}=await client.auth.verifyOtp({email:email.trim(),token,type:'email'});
   if(error)throw error;
