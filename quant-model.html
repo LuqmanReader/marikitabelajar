@@ -30,9 +30,9 @@ small,.muted{color:#555}#model[hidden],#gate[hidden]{display:none}
 <div class="top"><a class="nav" href="financial-manager.html">← Financial Manager</a><span class="tag">LEDGERPEER / RESEARCH LAB / BETA</span></div>
 <section class="card hero"><div class="tag">🔒 EXPERIMENTAL ACCESS</div><h1>QUANT<br>INTELLIGENCE</h1>
 <p>Financial modelling, statistical research and probability. Built for curious students.</p><div aria-hidden="true"><span class="brick">🧱</span><span class="brick">👷</span><span class="brick">🏗️</span><span class="brick">🧱</span></div><div class="tape" aria-hidden="true"></div><strong>UNDER CONSTRUCTION — PLEASE BE PATIENT</strong></section>
-<section id="gate" class="card" hidden><h2>Enter your release key</h2><p>Quant is in limited testing. Unlock access with a release key supplied by the LedgerPeer administrator.</p>
+<section id="worksiteNotice" class="card" hidden><span class="tag">🚧 SITE CLOSED TO PUBLIC</span><h2>Builders at work</h2><p>Quant is not released. Only authorised project builders can access its research tools. No public release key is available yet.</p><p>We'll open the doors when the model passes our checks and we cut the ribbon.</p></section><section id="gate" class="card" hidden><h2>Enter your release key</h2><p>Quant is in limited testing. Unlock access with a release key supplied by the LedgerPeer administrator.</p>
 <form id="keyForm"><label for="releaseKey">Release key</label><p><input id="releaseKey" maxlength="100" autocomplete="off" required placeholder="LPQ-XXXX-XXXX-XXXX"></p><button type="submit">UNLOCK QUANT →</button></form><p id="gateStatus" class="status" role="status"></p></section>
-<section id="quantLogin" class="card" hidden><h2>Sign in to unlock Quant</h2><p>LedgerPeer keeps your login session within each browser tab. Sign in here to continue in this tab.</p><form id="quantLoginForm"><p><label for="quantEmail">LedgerPeer email</label><br><input id="quantEmail" type="email" autocomplete="username" required placeholder="Your registered email"></p><p><label for="quantPassword">Password</label><br><input id="quantPassword" type="password" autocomplete="current-password" required placeholder="Your LedgerPeer password"></p><button type="submit">SIGN IN &amp; CONTINUE →</button></form><p id="loginStatus" class="status" role="status"></p><small>Your password is sent directly to Supabase Auth, never to the Quant forecasting engine.</small></section>
+<section id="quantLogin" class="card" hidden><h2>Construction crew sign-in</h2><p>Authorised builders may sign in here. This does not grant access to ordinary students.</p><form id="quantLoginForm"><p><label for="quantEmail">LedgerPeer email</label><br><input id="quantEmail" type="email" autocomplete="username" required placeholder="Your registered email"></p><p><label for="quantPassword">Password</label><br><input id="quantPassword" type="password" autocomplete="current-password" required placeholder="Your LedgerPeer password"></p><button type="submit">SIGN IN &amp; CONTINUE →</button></form><p id="loginStatus" class="status" role="status"></p><small>Your password is sent directly to Supabase Auth, never to the Quant forecasting engine.</small></section>
 <div id="loading" class="card" role="status">Checking signed-in account and access permissions…</div>
 <div id="model" hidden>
 <section class="card"><span class="tag">LIVE RESEARCH • NOT INVESTMENT ADVICE</span><h2>S&P 500 six-month downside probability</h2>
@@ -57,17 +57,25 @@ try{
  let activeUser=null;
  async function check(){
   if(!activeUser)throw Error('Sign in before checking Quant access');
-  const {data,error}=await sb.from('lp_quant_access').select('user_id').eq('user_id',activeUser.id).maybeSingle();
+  const {data,error}=await sb.rpc('lp_quant_status');
   if(error)throw error;
-  const unlocked=!!data;$('gate').hidden=unlocked;$('model').hidden=!unlocked;$('loading').hidden=true;
-  return unlocked;
+  const permitted=!!(data?.builder||(data?.released&&data?.unlocked));
+  $('gate').hidden=!(data?.released&&!permitted);
+  $('model').hidden=!permitted;
+  $('worksiteNotice').hidden=!!(data?.released||permitted);
+  $('loading').hidden=true;
+  if(!permitted && !data?.released){
+    $('quantLogin').hidden=true;
+  }
+  return permitted;
  }
  async function updateAuth(){
   const {data:{user},error}=await sb.auth.getUser();
   activeUser=(!error&&user)?user:null;
   $('loading').hidden=true;
   $('quantLogin').hidden=!!activeUser;
-  if(activeUser){await check()}else{$('gate').hidden=true;$('model').hidden=true}
+  if(activeUser){await check()}
+  else{$('gate').hidden=true;$('model').hidden=true;$('worksiteNotice').hidden=false}
  }
  $('quantLoginForm').addEventListener('submit',async ev=>{
   ev.preventDefault();const btn=$('quantLoginForm').querySelector('button');btn.disabled=true;status('loginStatus','Signing in securely…');
