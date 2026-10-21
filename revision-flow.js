@@ -152,7 +152,7 @@
       return item;
     });
     var instruction=[
-      'PAPER SELECTED BY STUDENT (AUTHORITATIVE): '+meta.subject+'. DO NOT deduce, replace or rename the paper from question content or the PDF.',
+      'PAPER SELECTED BY STUDENT (AUTHORITATIVE): '+meta.subject+'. DO NOT deduce, replace or rename the paper from question content or the HTML attempt review.',
       'ATTEMPT TYPE: '+type+'; number '+meta.testNumber+'.',
       'OFFICIAL FULL EXAM FORMAT (REFERENCE ONLY; chapter sets and progress tests may be shorter): '+(fullFormat?JSON.stringify(fullFormat.format):'Not yet verified'),
       'SYLLABUS JURISDICTION / VARIANT REFERENCE: '+(fullFormat?fullFormat.variant:'Not specified')+'. Do not silently substitute another jurisdiction (especially for law or taxation).',
@@ -162,8 +162,8 @@
        'OFFICIAL ACCA SYLLABUS CLASSIFICATION: Use ONLY one exact subtopic label from the official syllabus list for the paper manually chosen by the student. Never invent a chapter, and never force a question under a loosely related topic. For out-of-syllabus questions use chapter "", topic_status "outside", and explain why in topic_reason. For illegible questions use chapter "", topic_status "unreadable". For valid syllabus matches use topic_status "matched". Such questions are excluded from topic graphs, but their recorded marks stay unchanged.',
        'For EVERY question, explain WHY this official topic is the primary syllabus match in topic_reason. The topic_reason is separate from the working and justification. Questions sharing the same syllabus learning outcome MUST share the same official label.',
        'Do NOT use examples from another paper as topic labels. The exact allowed syllabus labels below are the single source of truth; choose the same heading for every question testing the same learning outcome.',
-      'The PDF is an attempt-review export, often made of screenshots. Cross-check the ATTACHED ORIGINAL PDF for questions, images, tables, correct answers and grading. OCR QUESTION DATA is a guide, not proof for complex figures. If no PDF is attached, never invent missing figures; explicitly flag uncertain or unreadable questions.',
-      'Respect all recorded marks and grading. Never alter question number, score, original recorded correct answer or the marking decision. Some learner-selected choices were not captured by OCR. Never invent a learner choice or diagnose its specific mistake unless visible in the source.',
+      'The question data comes from the saved HTML attempt-review page. Treat its recorded questions, selected answers, correct answers, marks and grading as the source of truth. If an image or figure is unavailable in the HTML export, never invent it; explicitly flag the question as unreadable or uncertain.',
+      'Respect all recorded marks and grading. Never alter question number, score, original recorded correct answer or the marking decision. If a learner-selected choice was not captured from the HTML, never invent it or diagnose its specific mistake.',
       'Explain EVERY question, including correct ones, in full teaching detail. Give concept, calculations with steps where applicable, justification of the answer, and a specific practice focus. For uncertain source content, state the limitation in the relevant explanation instead of guessing.',
       'Return ONLY one COMPLETE valid JSON object with every requested question exactly once. No Markdown fences or extra prose. All feedback fields must be strings; calculation must be "Not applicable" if none. If you cannot fit a complete response, return a valid partial JSON for the questions you finished (never malformed/truncated JSON). LedgerPeer will prepare a continuation request for missing questions.',
       'Do not calculate scores, topic percentages, strengths, weaknesses or graphs. LedgerPeer calculates those from the ORIGINAL marks.',
