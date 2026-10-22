@@ -5,9 +5,18 @@ OUT=pathlib.Path("data/quant-sp500.json")
 SOURCES=[
  ("FRED SP500","https://fred.stlouisfed.org/graph/fredgraph.csv?id=SP500"),
  ("FRED download","https://fred.stlouisfed.org/graph/fredgraph.csv?id=SP500&cosd=2022-01-01"),
+ ("FRED table data","https://fred.stlouisfed.org/data/SP500.txt"),
  ("Stooq ^SPX","https://stooq.com/q/d/l/?s=%5Espx&i=d"),
  ("Stooq PL ^SPX","https://stooq.pl/q/d/l/?s=%5Espx&i=d"),
 ]
+def parse_fred_table(body):
+ import re
+ points=[]
+ for line in body.splitlines():
+  match=re.match(r"^\\s*(\\d{4}-\\d{2}-\\d{2})\\s+([\\d.]+)\\s*$",line)
+  if match and match.group(2)!=".": points.append({"date":match.group(1),"close":float(match.group(2))})
+ return points
+
 def parse_csv(body):
  if body.lstrip().startswith("<"): raise ValueError("provider returned HTML, not price data")
  reader=csv.DictReader(io.StringIO(body))
@@ -55,7 +64,7 @@ errors=[]
 for name,url in SOURCES:
  try:
   body=download(url)
-  points=validate(parse_yahoo(body) if name=="Yahoo chart JSON" else parse_csv(body))
+  points=validate(parse_yahoo(body) if name=="Yahoo chart JSON" else parse_fred_table(body) if name=="FRED table data" else parse_csv(body))
   OUT.parent.mkdir(parents=True,exist_ok=True)
   OUT.write_text(json.dumps({"source_name":name,"retrieved_at":datetime.datetime.now(datetime.timezone.utc).isoformat(),"points":points},separators=(",",":"))+"\n")
   print("Verified",name,len(points),points[-1]["date"])
