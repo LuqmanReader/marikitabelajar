@@ -14,7 +14,7 @@ def parse_fred_table(body):
  import re
  points=[]
  for line in body.splitlines():
-  match=re.match(r"^\\s*(\\d{4}-\\d{2}-\\d{2})\\s+([\\d.]+)\\s*$",line)
+  match=re.match(r"^\s*(\d{4}-\d{2}-\d{2})\s+([\d.]+)\s*$",line)
   if match and match.group(2)!=".": points.append({"date":match.group(1),"close":float(match.group(2))})
  return points
 
