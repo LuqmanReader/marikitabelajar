@@ -408,7 +408,7 @@
     <nav class="flow-steps" aria-label="Revision workflow"><span class="current">1 · Add attempt</span><span>2 · Generate AI debrief</span><span>3 · Analyze progress</span></nav>
   </header>
 
-  <nav style="display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 24px"><a class="site-back" href="ai-tutor.html">✦ AI Tutor</a><a class="site-back" href="study-planner.html">☑ Study Planner</a><a class="site-back" href="calendar.html">▦ Calendar</a><a class="site-back" href="achievements.html">★ Achievements</a></nav><div id="subjectDash"></div>
+  <nav style="display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 24px"><a class="site-back" href="ai-tutor.html">✦ AI Tutor</a><a class="site-back" href="study-planner.html">☑ Study Planner</a><a class="site-back" href="calendar.html">▦ Calendar</a><a class="site-back" href="notes.html">▤ FIA–ACCA Notes</a></nav><div id="subjectDash"></div>
 
   <div class="current-subject-banner">
     <div>
@@ -514,7 +514,7 @@
   try{ANALYSIS_EXAMS=ExamModel.analysisExams(EXAMS,localStorage);}catch(e){ANALYSIS_EXAMS=EXAMS.slice();}
   function escapeText(value){return String(value).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
   document.getElementById('resetAnalysis').addEventListener('click',function(){
-    if(!confirm('Reset all analysis history, including score trends, confidence ratings, retry history and chapter mastery? Saved exams, debrief review progress, finances, countdowns and your password will be kept. New attempts will start a fresh analysis.'))return;
+    if(!confirm('Reset all analysis history, including score trends, confidence ratings, retry history and chapter mastery? Saved exams, debrief review progress, study plans, countdowns and your password will be kept. New attempts will start a fresh analysis.'))return;
     try{ExamModel.resetAnalysis(EXAMS,localStorage);location.reload();}catch(e){alert('Could not reset analysis: '+e.message);}
   });
 
