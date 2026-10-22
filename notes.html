@@ -3,12 +3,13 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,follow"><meta name="theme-color" content="#f4eedd">
 <title>FIA–ACCA Notes Library · LedgerPeer</title><link rel="icon" href="favicon-32.png">
-<link rel="stylesheet" href="notes.css?v=20261022library1">
+<link rel="stylesheet" href="notes.css?v=20261022acca25v2">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script><script src="auth.js"></script>
+<script defer src="subject-catalog.js?v=20261022acca25v2"></script>
 <script defer src="acca-published-data.js?v=20261013-online-25-syllabi"></script>
-<script defer src="notes-data.js?v=20261022library1"></script>
-<script defer src="notes-page.js?v=20261022library1"></script>
+<script defer src="notes-data.js?v=20261022acca25v2"></script>
+<script defer src="notes-page.js?v=20261022acca25v2"></script>
 </head><body>
 <header class="notes-top">
   <a class="notes-brand" href="index.html"><img src="ledgerpeer-sidebar-logo.png" width="52" height="52" alt=""><span>LEDGERPEER <small>/ STUDY LIBRARY</small></span></a>
@@ -17,24 +18,36 @@
 <main class="notes-shell" id="notesApp">
   <a class="notes-back" href="hub.html">← BACK TO REVISION</a>
   <section class="notes-hero">
-    <span class="notes-eyebrow">ACCA FOUNDATION / 2026–27 SYLLABUS</span>
+    <span class="notes-eyebrow">FIA FOUNDATION + ACCA QUALIFICATION / 2026–27 SYLLABUSES</span>
     <h1>KNOW IT.<br><em>DON'T JUST MEMORISE IT.</em></h1>
-    <p>Original FIA–ACCA revision notes, worked examples, common exam traps and self-checks. Organised using the current ACCA syllabus codes so you can move directly from a weak topic in your debrief to an explanation.</p>
+    <p>Browse all 25 FIA and ACCA papers in one searchable syllabus library. Learn with original worked lessons where available; follow official syllabus links for subjects whose detailed notes are still being developed.</p>
     <div class="notes-hero-actions"><a href="#library" class="notes-primary">EXPLORE TOPICS ↓</a><a href="https://www.accaglobal.com/my/en/student/your-study-options/studyhub.html" target="_blank" rel="noopener noreferrer" class="notes-secondary">OFFICIAL ACCA STUDY HUB ↗</a></div>
   </section>
   <section class="notes-orientation" aria-label="Library principles">
-    <p><strong>CURRICULUM-ALIGNED</strong><span>Mapped to ACCA's published 2026–27 paper syllabus and topic codes.</span></p>
+    <p><strong>CURRICULUM-ALIGNED</strong><span>Includes 10 FIA papers and 15 ACCA papers, using published paper-specific syllabus codes.</span></p>
     <p><strong>ORIGINAL LEARNING NOTES</strong><span>Clear explanations and worked examples written for LedgerPeer, not reproduced textbooks.</span></p>
-    <p><strong>TRANSPARENT COVERAGE</strong><span>Detailed notes are labelled. Topics without a lesson link to the official study resources.</span></p>
+    <p><strong>TRANSPARENT COVERAGE</strong><span>Full lessons are labelled. Other topics link to official study resources instead of claiming to be complete notes.</span></p>
   </section>
   <section class="notes-main" id="library" aria-labelledby="libraryTitle">
     <div class="notes-title-line"><div><span class="notes-eyebrow">THE STUDENT'S WORKBENCH</span><h2 id="libraryTitle">NOTES LIBRARY.</h2></div><span id="notesCount" class="notes-count">LOADING...</span></div>
+    <section class="notes-qualification" aria-label="Choose FIA or ACCA qualification">
+      <div class="notes-qualification-head"><span class="notes-eyebrow">START WITH YOUR QUALIFICATION</span><span class="notes-count" id="qualificationBadge">FIA / FOUNDATION</span></div>
+      <div class="notes-qualification-options" role="group" aria-label="Filter study papers by qualification">
+        <button type="button" class="notes-qualification-card active" data-notes-qualification="fia" aria-pressed="true">
+          <span class="notes-qualification-label">FOUNDATIONS IN ACCOUNTANCY</span><strong>FIA</strong><span>10 FOUNDATION PAPERS →</span>
+        </button>
+        <button type="button" class="notes-qualification-card" data-notes-qualification="acca" aria-pressed="false">
+          <span class="notes-qualification-label">PROFESSIONAL ACCOUNTING PATHWAY</span><strong>ACCA</strong><span>15 QUALIFICATION PAPERS →</span>
+        </button>
+        <button type="button" class="notes-qualification-all" data-notes-qualification="all" aria-pressed="false">SEARCH ALL 25 PAPERS ↗</button>
+      </div>
+    </section>
     <div class="notes-toolbar">
-      <label for="paperSelect">PAPER<select id="paperSelect" aria-label="Select ACCA FIA paper"></select></label>
+      <label for="paperSelect">PAPER<select id="paperSelect" aria-label="Select FIA or ACCA paper"></select></label>
       <label for="notesSearch" class="notes-search">SEARCH SYLLABUS / TOPIC<input id="notesSearch" type="search" placeholder="e.g. D6, receivables, break-even, payroll..." autocomplete="off"></label>
       <label for="notesFilter">CONTENT<select id="notesFilter"><option value="all">All syllabus topics</option><option value="lesson">Detailed lessons</option><option value="outline">Syllabus outlines</option></select></label>
     </div>
-    <div id="paperIntro" class="notes-paper-intro" role="status">Loading FIA study materials…</div>
+    <div id="paperIntro" class="notes-paper-intro" role="status">Loading FIA and ACCA study materials…</div>
     <div id="topicList" class="notes-topic-list" aria-live="polite"></div>
     <div class="notes-empty" id="notesEmpty" hidden>No topics match the current search. Try a different keyword or paper.</div>
   </section>
