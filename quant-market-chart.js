@@ -272,13 +272,13 @@
     });
     script.addEventListener('error', () => {
       if (!shell.isConnected) return;
-      setStatus('STREAMING PROVIDER UNAVAILABLE', 'error');
+      if (model.view === 'live') setStatus('STREAMING PROVIDER UNAVAILABLE', 'error');
       widget.textContent = 'The streaming chart could not load. Check your connection or open the provider directly.';
       widget.classList.add('q-market-live-error');
     });
     script.addEventListener('load', () => {
       if (!shell.isConnected) return;
-      setStatus('PROVIDER WIDGET LOADED / DATA MAY BE DELAYED', 'ok');
+      if (model.view === 'live') setStatus('PROVIDER WIDGET LOADED / DATA MAY BE DELAYED', 'ok');
     });
     shell.appendChild(script);
     setStatus('CONNECTING TO EXTERNAL MARKET PROVIDER', 'info');
