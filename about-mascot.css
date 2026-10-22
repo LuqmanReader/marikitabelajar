@@ -213,3 +213,7 @@ html:has(#hubView:not([hidden])) .student-access {
   margin-top: 14px;
 }
 /* Intentionally preserve #storyProgressBar and all mascot animations. */
+
+/* INTRO ONLY: fail-safe for old browser-cached chapter markup. Mascot doodles untouched. */
+#story .chapter-emoji{display:none!important}
+#story .chapter-foot > span[aria-hidden="true"]{display:none!important}
