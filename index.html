@@ -272,20 +272,25 @@ footer{font-size:11px;text-align:center;text-transform:uppercase;font-weight:900
 @media(prefers-reduced-motion:reduce){.intro-companion img{animation:none}}
 
 
-/* Whole-homepage cursor-responsive transparent background layer.
-   Canvas has no fill: the original LedgerPeer cream #FFF7E4 stays unchanged.
-   This covers every visible homepage section without blocking any controls. */
+/* Homepage ONLY: place interaction behind the interface on cream paper.
+   Coloured cards, hero, navigation, sign-in, and mascot stay visually untouched. */
 #lpHomepageField.lp-home-interactive-field {
  position:fixed;inset:0;display:block;
  width:100vw;height:100vh;height:100dvh;
- pointer-events:none!important;touch-action:auto;
- z-index:45;opacity:.94;mix-blend-mode:multiply;
+ pointer-events:none!important;
+ z-index:0;opacity:1;
  background:transparent!important;
 }
-@media (prefers-reduced-motion:reduce) {
- #lpHomepageField.lp-home-interactive-field{opacity:.35}
+/* Painting above the canvas masks it wherever an existing panel is opaque. */
+body > main#top, body > .site-footer, body > .colour-ribbon {
+ position:relative;z-index:1;
 }
-</style><script defer src="homepage-reactive.js?v=20261022fullbg1"></script></head><body><canvas id="lpHomepageField" class="lp-home-interactive-field" aria-hidden="true"></canvas><div aria-hidden="true" class="colour-ribbon"></div><header class="lp-header">
+/* Preserve the sticky header and its normal, opaque cream background. */
+body > .lp-header {z-index:50;}
+@media (prefers-reduced-motion:reduce) {
+ #lpHomepageField.lp-home-interactive-field{opacity:.65}
+}
+</style><script defer src="homepage-reactive.js?v=20261022cream2"></script></head><body><canvas id="lpHomepageField" class="lp-home-interactive-field" aria-hidden="true"></canvas><div aria-hidden="true" class="colour-ribbon"></div><header class="lp-header">
 <a aria-label="LedgerPeer homepage" class="brand" href="#top">
 <img alt="" height="45" src="ledgerpeer-sidebar-logo.png" width="45"/>
 <span>LEDGER<span class="brand-accent">PEER</span></span>
