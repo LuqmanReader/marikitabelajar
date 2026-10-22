@@ -186,6 +186,56 @@ function onSliders(){
  });
  
 }
+
+function renderValidation(result){
+ const b=result?.backtest,r=result?.historical_risk,chart=el('backtestChart');
+ const ids=['btWindows','btEvents','btBrier','btBaseline','histVar','histEs','histDd','histN'];
+ if(!b||!r||!Array.isArray(b.windows)||!b.windows.length){
+   ids.forEach(id=>{if(el(id))el(id).textContent='—'});
+   el('validationStatus').textContent='NO VERIFIED BACKTEST';
+   el('walkforwardStatus').textContent='DATA UNAVAILABLE';
+   el('walkforwardStatus').className='q-red';
+   el('calibrationStatus').textContent='NOT VALIDATED';
+   el('backtestConclusion').textContent='Forecast backtesting requires a successful authenticated market-data computation.';
+   if(chart&&window.Plotly&&chart._fullLayout)window.Plotly.purge(chart);
+   return;
+ }
+ const dec=(v,d=4)=>Number.isFinite(v)?Number(v).toFixed(d):'—';
+ el('btWindows').textContent=String(b.forecasts);
+ el('btEvents').textContent=String(b.events)+' / '+b.forecasts;
+ el('btBrier').textContent=dec(b.brier_model);
+ el('btBaseline').textContent=dec(b.brier_baseline);
+ el('histVar').textContent=dec(r.var_95_1d_pct,2)+'%';
+ el('histEs').textContent=dec(r.expected_shortfall_95_1d_pct,2)+'%';
+ el('histDd').textContent=dec(r.max_drawdown_pct,2)+'%';
+ el('histN').textContent=String(r.observations);
+ el('validationStatus').textContent='OUT-OF-SAMPLE SCORED';
+ el('walkforwardStatus').textContent='SCORED / LIMITED SAMPLE';
+ el('walkforwardStatus').className='q-amber';
+ el('calibrationStatus').textContent='SCORED / NOT YET VALIDATED';
+ const edge=(b.brier_baseline-b.brier_model);
+ const verdict=edge>0?'lower':edge<0?'higher':'equal';
+ const verdictText=verdict==='lower'?'lower (better)':verdict==='higher'?'higher (worse)':'equal';
+ el('backtestConclusion').textContent='Model Brier score '+dec(b.brier_model)+' versus historical-frequency baseline '+dec(b.brier_baseline)+' — '+verdictText+' over '+b.forecasts+' non-overlapping windows ('+b.events+' observed declines). This is an initial retrospective test, not evidence of a reliable trading edge. Overlapping training windows, small test count, and regime changes limit inference. Model fitting uses no prices later than each forecast date.';
+ el('backtestConclusion').dataset.type='info';
+ if(!chart||!window.Plotly)return;
+ const x=b.windows.map(w=>w.forecast_date),a=b.windows.map(w=>w.predicted_pct),baseline=b.windows.map(w=>w.baseline_pct),observed=b.windows.map(w=>w.realized);
+ const scale=Math.min(100,Math.max(15,Math.ceil(Math.max(...a,...baseline)*1.15/5)*5));
+ const traces=[
+ {type:'scatter',mode:'lines+markers',name:'MODEL PROBABILITY',x,y:a,line:{color:'#6bf4c4',width:2.5},marker:{size:6},hovertemplate:'Forecast: %{x}<br>Model: %{y:.2f}%<extra></extra>'},
+ {type:'scatter',mode:'lines',name:'HISTORICAL BENCHMARK',x,y:baseline,line:{color:'#79b7ff',width:2,dash:'dot'},hovertemplate:'Forecast: %{x}<br>Benchmark: %{y:.2f}%<extra></extra>'},
+ {type:'scatter',mode:'markers',name:'REALIZED 5%+ DROP',x,y:observed,marker:{size:9,symbol:observed.map(v=>v?'diamond':'circle-open'),color:observed.map(v=>v?'#ff7085':'#728aa5')},yaxis:'y2',hovertemplate:'Forecast: %{x}<br>Outcome: %{y} (1 = drop)<extra></extra>'}
+ ];
+ const layout={paper_bgcolor:'#0a1827',plot_bgcolor:'#0a1827',height:315,margin:{l:64,r:45,b:68,t:22},
+ font:{family:'Consolas,monospace',size:10,color:'#b5cede'},
+ xaxis:{title:'Historical forecast origin (trading date)',type:'date',gridcolor:'#24394e',tickfont:{size:10}},
+ yaxis:{title:'Predicted event probability (%)',range:[0,scale],gridcolor:'#24394e',zeroline:false},
+ yaxis2:{title:'Observed event',overlaying:'y',side:'right',range:[-.08,1.3],tickvals:[0,1],ticktext:['No','Yes'],showgrid:false},
+ legend:{orientation:'h',y:-.32,x:0,font:{size:9}},margin:{l:61,r:50,b:74,t:15},showlegend:true,hovermode:'x unified',uirevision:'quant-walkforward-v1'};
+ try{window.Plotly.react(chart,traces,layout,{responsive:true,displaylogo:false,scrollZoom:false}).catch(()=>{el('validationStatus').textContent='BACKTEST READY / CHART UNAVAILABLE'})}
+ catch(e){el('validationStatus').textContent='BACKTEST READY / CHART UNAVAILABLE'}
+}
+
 function authenticate(){
  return new Promise(async resolve=>{
   const client=await window.PersonalHubAuth.init();
@@ -221,7 +271,7 @@ async function requestForecast(client){
   el('volOut').textContent=fmt(state.vol*100,1)+'%';el('driftOut').textContent=fmt(state.drift*100,1)+'%';
   el('pipelineStatus').textContent='CALCULATED';el('obsValue').textContent=result.observations??'—';
   el('asofValue').textContent=result.sample_end||'—';el('sourceValue').textContent=state.source;
-  pathData();state.reframe?.();
+  pathData();state.reframe?.();renderValidation(result);
   el('marketExplanation').textContent='MARKET DATA CONNECTED — '+result.observations+' historical S&P 500 closing prices, through '+result.sample_end+'. The three-dimensional terrain shows simulated probability densities calibrated from historical estimates, not observed future prices or guaranteed forecasts.';
   setMessage('Forecast computed from '+result.observations+' price observations. Scenario controls allow sensitivity analysis; changing them does not retrieve new data. Model: '+result.model_version+'.','ok');
  }catch(error){
@@ -229,7 +279,7 @@ async function requestForecast(client){
   state.live=false;state.source='ILLUSTRATIVE';state.date=null;state.level=100;state.vol=.21;state.drift=.065;
   el('obsValue').textContent='—';el('asofValue').textContent='—';
   el('volControl').value='21';el('driftControl').value='6.5';el('volOut').textContent='21%';el('driftOut').textContent='6.5%';
-  pathData();state.reframe?.();
+  pathData();state.reframe?.();renderValidation(null);
   el('marketExplanation').textContent='Current market calibration unavailable. The three-dimensional density terrain shows educational simulations, not observed S&P 500 prices.';
   setMessage('MARKET-DATA PIPELINE FAILURE: '+error.message+'\nThe 3D simulation remains available using clearly labelled educational assumptions. No live probability is being claimed.','error');
  }finally{btn.disabled=false}
