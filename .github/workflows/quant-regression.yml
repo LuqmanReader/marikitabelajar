@@ -1,0 +1,24 @@
+name: QUANT research regression
+on:
+  push:
+    paths:
+      - 'supabase/functions/ledgerpeer-quant-forecast/index.ts'
+      - 'quant-cockpit.js'
+      - 'quant-model.html'
+      - 'tests/quant-risk-regression.js'
+      - '.github/workflows/quant-regression.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check browser script syntax
+        run: node --check quant-cockpit.js
+      - name: Verify non-overlap, no-lookahead and tail-risk maths
+        run: node tests/quant-risk-regression.js
