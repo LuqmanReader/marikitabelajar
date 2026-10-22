@@ -173,6 +173,8 @@
   }
 
   async function refresh() {
+    if (historicalFetching) return;
+    historicalFetching = true;
     setStatus('LOADING HISTORICAL PRICES', 'info');
     const node = byId('sp500PriceChart');
     if (node && !model.loaded) node.textContent = 'Retrieving verified historical close data…';
@@ -183,6 +185,7 @@
       if (!res.ok) throw Error('Snapshot request returned HTTP ' + res.status);
       const raw = await res.json();
       const checked = normalizeSeries(raw);
+      historicalLastChecked = Date.now();
       model.points = checked.points;
       model.source = checked.source;
       model.retrievedAt = checked.retrievedAt;
@@ -194,7 +197,109 @@
         '. Check the market snapshot and retry.';
       byId('sp500ChartNote').textContent = 'The chart does not fabricate prices when verified data is unavailable.';
     } finally {
+      historicalFetching = false;
       if (button) button.disabled = false;
+    }
+  }
+
+
+  // Streaming provider chart is strictly separated from FRED-calibrated research data.
+  // The third-party widget manages its own quote updates and may be delayed.
+  const STREAM_WIDGET_SRC = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+  const CLOSE_REFRESH_MS = 5 * 60 * 1000;
+  let liveInitialized = false, historicalLastChecked = 0, historicalFetching = false, historyRefreshTimer = null;
+
+  function updateViewButtons(view) {
+    for (const [id, active] of [['sp500LiveToggle', view === 'live'], ['sp500HistoryToggle', view === 'history']]) {
+      const btn = byId(id);
+      if (!btn) continue;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-pressed', String(active));
+    }
+  }
+
+  function initStreamingChart(reconnect = false) {
+    if (liveInitialized && !reconnect) return;
+    const container = byId('sp500LiveChart');
+    if (!container) return;
+    container.replaceChildren();
+    liveInitialized = true;
+    const shell = document.createElement('div');
+    shell.className = 'tradingview-widget-container';
+    shell.style.width = '100%';
+    shell.style.height = '100%';
+    const widget = document.createElement('div');
+    widget.className = 'tradingview-widget-container__widget';
+    widget.style.width = '100%';
+    widget.style.height = 'calc(100% - 32px)';
+    shell.appendChild(widget);
+    const credit = document.createElement('div');
+    credit.className = 'tradingview-widget-copyright';
+    credit.style.cssText = 'height:32px;display:flex;align-items:center;gap:5px;padding:0 15px;font:11px Arial,sans-serif;color:#9bb4c9;';
+    const link = document.createElement('a');
+    link.href = 'https://www.tradingview.com/symbols/SPX/?exchange=TVC';
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer nofollow';
+    link.style.color = '#6bf4c4';
+    link.textContent = 'S&P 500-based index chart';
+    credit.append(link, document.createTextNode('by TradingView'));
+    shell.appendChild(credit);
+    container.appendChild(shell);
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = STREAM_WIDGET_SRC;
+    script.async = true;
+    script.textContent = JSON.stringify({
+      autosize: true,
+      symbol: 'TVC:SPX',
+      interval: '5',
+      timezone: 'America/New_York',
+      theme: 'dark',
+      style: '1',
+      locale: 'en',
+      backgroundColor: '#0a1827',
+      gridColor: 'rgba(90,131,162,0.14)',
+      hide_top_toolbar: false,
+      hide_side_toolbar: true,
+      hide_legend: false,
+      hide_volume: true,
+      allow_symbol_change: false,
+      withdateranges: true,
+      details: false,
+      hotlist: false,
+      calendar: false,
+      save_image: true
+    });
+    script.addEventListener('error', () => {
+      if (!shell.isConnected) return;
+      setStatus('STREAMING PROVIDER UNAVAILABLE', 'error');
+      widget.textContent = 'The streaming chart could not load. Check your connection or open the provider directly.';
+      widget.classList.add('q-market-live-error');
+    });
+    script.addEventListener('load', () => {
+      if (!shell.isConnected) return;
+      setStatus('PROVIDER WIDGET LOADED / DATA MAY BE DELAYED', 'ok');
+    });
+    shell.appendChild(script);
+    setStatus('CONNECTING TO EXTERNAL MARKET PROVIDER', 'info');
+  }
+
+  function showChartView(view) {
+    model.view = view;
+    const live = byId('sp500LiveView');
+    const history = byId('sp500HistoryView');
+    if (!live || !history) return;
+    live.hidden = view !== 'live';
+    history.hidden = view !== 'history';
+    updateViewButtons(view);
+    if (view === 'live') {
+      initStreamingChart();
+    } else {
+      if (!model.loaded || Date.now() - historicalLastChecked >= CLOSE_REFRESH_MS) {
+        void refresh();
+      } else {
+        void draw();
+      }
     }
   }
 
@@ -216,8 +321,24 @@
       });
     }
     byId('sp500Refresh')?.addEventListener('click', refresh);
+    byId('sp500LiveToggle')?.addEventListener('click', () => showChartView('live'));
+    byId('sp500HistoryToggle')?.addEventListener('click', () => showChartView('history'));
+    byId('sp500LiveReload')?.addEventListener('click', () => {
+      if (model.view === 'live') initStreamingChart(true);
+    });
     updateControls();
-    void refresh();
+    showChartView('live');
+    // Only FRED historical closes are polled. Streaming updates belong to the provider widget.
+    historyRefreshTimer = root.setInterval(() => {
+      if (model.view === 'history' && document.visibilityState !== 'hidden' &&
+          !historicalFetching && Date.now() - historicalLastChecked >= CLOSE_REFRESH_MS) {
+        void refresh();
+      }
+    }, CLOSE_REFRESH_MS);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && model.view === 'history' &&
+          Date.now() - historicalLastChecked >= CLOSE_REFRESH_MS) void refresh();
+    });
   }
 
   root.LedgerPeerMarketChart = { mount };
