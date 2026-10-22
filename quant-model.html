@@ -4,9 +4,9 @@
 <title>Quant Intelligence Research Lab | LedgerPeer</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script><script src="auth.js"></script>
-<link rel="stylesheet" href="quant-cockpit.css?v=20261022stream5">
+<link rel="stylesheet" href="quant-cockpit.css?v=20261022candles6">
 <script defer src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
-<script defer src="quant-cockpit.js?v=20261022stream5"></script><script defer src="quant-market-chart.js?v=20261022stream5"></script></head>
+<script defer src="quant-cockpit.js?v=20261022candles6"></script><script defer src="quant-market-chart.js?v=20261022candles6"></script></head>
 <body class="quant-body"><main class="q-shell">
 <header class="q-header">
   <div class="q-brand">LEDGERPEER <span>/ QUANT</span><div class="q-eyebrow" style="margin-top:6px">RESEARCH DIVISION • CONSTRUCTION ACCESS</div></div>
@@ -23,7 +23,7 @@
 <section class="q-top"><div><div class="q-eyebrow">LPQ / EXPERIMENTAL QUANTITATIVE RESEARCH ENVIRONMENT</div>
 <h1>THE FUTURE IS <em>A DISTRIBUTION.</em></h1>
 <p class="q-lede">An interactive financial uncertainty laboratory. Explore simulated market trajectories, stress the assumptions, and challenge the mathematics behind every probability.</p></div>
-<div class="q-version">LAB BUILD 0.5<br>ACCESS: BUILDER ONLY<br>RELEASE: NOT AUTHORIZED</div></section>
+<div class="q-version">LAB BUILD 0.6<br>ACCESS: BUILDER ONLY<br>RELEASE: NOT AUTHORIZED</div></section>
 <div class="q-warning"><b>RESEARCH MODE:</b> This is not a trading signal or a validated prediction engine. Simulated scenarios are educational; real-market calibration is explicitly marked when a data feed succeeds.</div>
 
 <section class="q-section q-market-panel" id="sp500MarketPanel" aria-label="S&P 500 streaming market and historical price explorer">
@@ -34,17 +34,33 @@
   <div class="q-market-view-tabs" role="group" aria-label="Choose S&P 500 chart source">
     <button type="button" id="sp500LiveToggle" class="active" aria-pressed="true">AUTO-UPDATING / INTRADAY</button>
     <button type="button" id="sp500HistoryToggle" aria-pressed="false">VERIFIED / DAILY CLOSES</button>
-    <span class="q-micro">Streaming chart and research dataset use different providers.</span>
+    <span class="q-micro">Candlesticks move only when providers publish new bars. Historical OHLC is available during closed sessions.</span>
   </div>
   <div id="sp500LiveView" class="q-market-live-view">
     <div class="q-market-live-intro">
       <div>
         <span class="q-eyebrow">TVC:SPX / INDICATIVE S&amp;P 500-BASED INDEX</span>
         <h3>STREAMING PRICE ACTION<span class="q-market-dot">.</span></h3>
-        <p class="q-micro">Auto-updating provider chart · Intraday intervals · Market hours apply</p>
+        <p class="q-micro">Candlesticks use real provider OHLC observations · Daily candles remain visible while the US market is closed</p>
+        <p><span id="sp500SessionBadge" class="q-market-session" role="status">CHECKING US MARKET SESSION</span></p>
       </div>
-      <button type="button" id="sp500LiveReload" class="q-ghost">RECONNECT CHART ↻</button>
+      <div class="q-market-intro-actions"><button type="button" id="sp500LiveReload" class="q-ghost">RECONNECT CHART ↻</button><a href="https://www.tradingview.com/chart/?symbol=TVC%3ASPX" target="_blank" rel="noopener noreferrer" class="q-ghost q-market-direct-link">OPEN FULL CHART ↗</a></div>
     </div>
+    <div class="q-market-candle-controls" aria-label="TradingView chart controls">
+      <div class="q-market-button-group" role="group" aria-label="Select TradingView candle interval">
+        <span class="q-micro">INTERVAL</span>
+        <button type="button" data-sp500-live-interval="D" class="active" aria-pressed="true">1 DAY</button>
+        <button type="button" data-sp500-live-interval="60" aria-pressed="false">1 HOUR</button>
+        <button type="button" data-sp500-live-interval="15" aria-pressed="false">15 MIN</button>
+        <button type="button" data-sp500-live-interval="5" aria-pressed="false">5 MIN</button>
+      </div>
+      <div class="q-market-button-group" role="group" aria-label="Select candle or line chart">
+        <span class="q-micro">CHART TYPE</span>
+        <button type="button" data-sp500-live-style="1" class="active" aria-pressed="true">CANDLES</button>
+        <button type="button" data-sp500-live-style="2" aria-pressed="false">LINE</button>
+      </div>
+    </div>
+    <p id="sp500SessionHint" class="q-market-session-hint">Checking New York trading hours…</p>
     <div class="q-market-live-chart" id="sp500LiveChart" aria-label="TradingView S&P 500-based intraday price chart with provider updates">
       <p>Connecting to market chart provider…</p>
     </div>
