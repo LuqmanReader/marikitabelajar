@@ -65,3 +65,20 @@ input[type=range]{width:100%;accent-color:var(--q-green);margin:11px 0 0}
 @media(max-width:950px){.q-columns,.q-system-grid{grid-template-columns:1fr}.q-metrics{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){.q-shell{padding:0 14px 50px}.q-header{flex-direction:column;align-items:start}.q-top{padding-top:28px}.q-pad{padding:16px}.q-stage{min-height:340px}#quantCanvas{height:340px}.q-legend{display:none}.q-metrics,.q-lessons,.q-data{grid-template-columns:1fr}.q-stage-badge{right:10px;left:10px}.q-stage-overlay{left:12px;top:12px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+
+/* QUANT DISTRIBUTION TERRAIN: WebGL surface viewport and legible interaction layer */
+.q-columns{grid-template-columns:minmax(0,2.15fr) minmax(295px,.78fr);align-items:stretch}
+.q-stage{min-height:555px;overflow:hidden;background:radial-gradient(ellipse at 48% 43%,#13354c 0%,#081523 73%)}
+#quantSurface{width:100%;height:550px;min-width:0;position:relative}
+#quantSurface .js-plotly-plot,#quantSurface .plot-container{width:100%!important;height:100%!important}
+.q-stage-overlay{z-index:1;top:17px;left:18px}
+.q-stage-title{letter-spacing:.015em;text-shadow:0 2px 14px #07101c}
+.q-stage-badge{z-index:1;bottom:12px;left:14px;max-width:48%;font-size:9px;pointer-events:none}
+.q-legend{display:none}
+.q-surface-guide{padding:14px 20px;border-top:1px solid #284058;background:#0a1827;color:#a9c6db;font-size:11px;line-height:1.7}
+.q-surface-guide b{color:#82f5d2}
+.q-surface-guide strong{display:block;font-size:11px;letter-spacing:.09em;color:#c8e6f8;margin-bottom:4px}
+.q-surface-guide .q-guide-terms{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+.q-surface-guide .q-guide-terms span{display:inline-block;padding:4px 7px;border:1px solid #324d60;background:#122436}
+@media(max-width:1050px){.q-columns{grid-template-columns:1fr}.q-stage{min-height:540px}#quantSurface{height:530px}}
+@media(max-width:600px){.q-stage{min-height:410px}#quantSurface{height:405px}.q-stage-overlay{top:10px;left:12px}.q-stage-title{font-size:16px}.q-stage-badge{left:8px;right:8px;max-width:none;bottom:6px;font-size:9px}.q-surface-guide{padding:12px 14px}}
