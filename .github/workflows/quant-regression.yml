@@ -4,6 +4,10 @@ on:
     paths:
       - 'supabase/functions/ledgerpeer-quant-forecast/index.ts'
       - 'quant-cockpit.js'
+      - 'quant-market-chart.js'
+      - 'quant-cockpit.css'
+      - 'data/quant-sp500.json'
+      - 'tests/quant-market-chart-regression.js'
       - 'quant-model.html'
       - 'tests/quant-risk-regression.js'
       - '.github/workflows/quant-regression.yml'
@@ -19,6 +23,10 @@ jobs:
         with:
           node-version: '22'
       - name: Check browser script syntax
-        run: node --check quant-cockpit.js
+        run: |
+          node --check quant-cockpit.js
+          node --check quant-market-chart.js
+      - name: Verify S&P 500 chart calculation and authenticated wiring
+        run: node tests/quant-market-chart-regression.js
       - name: Verify non-overlap, no-lookahead and tail-risk maths
         run: node tests/quant-risk-regression.js
