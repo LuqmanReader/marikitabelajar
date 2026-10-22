@@ -5,7 +5,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script><script src="auth.js"></script>
 <link rel="stylesheet" href="quant-cockpit.css?v=20261022c">
-<script defer src="quant-cockpit.js?v=20261022d"></script></head>
+<script defer src="quant-cockpit.js?v=20261022e"></script></head>
 <body class="quant-body"><main class="q-shell">
 <header class="q-header">
   <div class="q-brand">LEDGERPEER <span>/ QUANT</span><div class="q-eyebrow" style="margin-top:6px">RESEARCH DIVISION • CONSTRUCTION ACCESS</div></div>
@@ -51,6 +51,7 @@
 <div class="q-system"><div class="q-eyebrow">SOURCE</div><strong id="sourceValue">Awaiting feed</strong><p>Historical market-data provider</p></div>
 <div class="q-system"><div class="q-eyebrow">INPUT COVERAGE</div><strong id="obsValue">—</strong><p>Accepted closing-price observations</p></div>
 <div class="q-system"><div class="q-eyebrow">LATEST OBSERVATION</div><strong id="asofValue">—</strong><p>Index observation date, not a live quote</p></div></div>
+<p id="marketExplanation" class="q-feedback" data-type="info" role="status">Retrieving historical index prices. Simulated paths are not past market movements.</p>
 <p id="modelMessage" class="q-feedback" data-type="info" role="status">Checking Quant data pipeline…</p>
 </div></section>
 <div class="q-data">
