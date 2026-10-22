@@ -54,7 +54,7 @@ a:focus-visible,button:focus-visible{outline:4px solid var(--blue);outline-offse
 .chapter-yellow{background:#fff}.chapter-blue{background:var(--blue);color:#fff}.chapter-green{background:var(--green)}.chapter-purple{background:var(--purple)}.chapter-red{background:var(--red)}
 .chapter-index{display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:11px;font-weight:900;letter-spacing:.02em;border-bottom:3px solid currentColor;padding-bottom:13px;margin-bottom:auto}
 .chapter-index span{font-size:10px}
-.chapter-emoji{font:900 clamp(50px,6vw,85px)/1 var(--display-font);margin:25px 0}
+
 .chapter h2{font-size:clamp(36px,4.7vw,67px);margin:8px 0 20px;max-width:520px;overflow-wrap:anywhere}
 .chapter p{font-size:clamp(14px,1.25vw,17px);font-weight:800;max-width:460px;margin:0 0 22px}
 .chapter-foot{display:flex;justify-content:space-between;gap:10px;align-items:center;font-size:10px;font-weight:900;border-top:3px solid currentColor;padding-top:13px;margin-top:auto}
@@ -65,7 +65,7 @@ a:focus-visible,button:focus-visible{outline:4px solid var(--blue);outline-offse
 .outro h2{font-size:clamp(40px,7vw,90px);margin:20px 0 27px}
 .outro h2 span{color:var(--yellow)}
 .outro .outro-cta{background:var(--green)}
-.outro-star{position:absolute;color:var(--red);top:-40px;right:40px;font-size:180px;line-height:1;transform:rotate(25deg)}
+
 .site-footer{max-width:1325px;margin:0 auto;padding:0 0 45px;display:flex;gap:20px;justify-content:space-between;flex-wrap:wrap;font-size:11px;font-weight:900}
 .site-footer a{color:var(--ink)}
 @keyframes mascot-float{0%,100%{transform:translateY(9px)}50%{transform:translateY(1px)}}
@@ -114,12 +114,12 @@ a:focus-visible,button:focus-visible{outline:4px solid var(--blue);outline-offse
   .doodle-1{left:48%;top:8%}.doodle-2{right:4%;top:4%}
   .chapter{min-height:365px;padding:19px;box-shadow:6px 6px 0 var(--ink);scroll-margin-top:322px}
   .chapter-index{font-size:10px;padding-bottom:9px}.chapter-index span{font-size:9px}
-  .chapter-emoji{font-size:38px;margin:15px 0}
+  
   .chapter h2{font-size:clamp(31px,8.5vw,45px);margin-bottom:13px}
   .chapter p{font-size:12.5px;line-height:1.55}
   .chapter-foot{font-size:9px;padding-top:8px}
   .chapter-cta{margin-bottom:22px;font-size:10px}
-  .outro{padding:52px 15px;margin-bottom:35px}.outro-star{font-size:90px;right:-15px;top:-20px}
+  .outro{padding:52px 15px;margin-bottom:35px}
   .outro h2{font-size:clamp(32px,9vw,50px)}
   .site-footer{font-size:10px;flex-direction:column;gap:8px}
 }
