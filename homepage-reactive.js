@@ -1,4 +1,4 @@
-/* LedgerPeer homepage CREAM BACKGROUND ONLY cursor-reactive field.
+/* LedgerPeer homepage CREAM BACKGROUND ONLY cursor-reactive field, scroll-synchronized.
    Original implementation inspired by cursor-reactive event-site canvases.
    No dependencies, no authentication changes, and no interception of controls. */
 (() => {
@@ -14,6 +14,7 @@
   let width = 1;
   let height = 1;
   let dots = [];
+  let step = 26;
   let animationFrame = 0;
   let inViewport = true;
   let previousFrame = 0;
@@ -34,24 +35,16 @@
     canvas.width = Math.round(width * scale);
     canvas.height = Math.round(height * scale);
     context.setTransform(scale, 0, 0, scale, 0, 0);
-
-    const step = width < 600 ? 28 : 26;
+    // Visible cells are recycled; each dot's identity is anchored to its document row.
+    step = width < 600 ? 28 : 26;
     dots = [];
-    const rows = Math.ceil(height / step);
-    const cols = Math.ceil(width / step);
-    for (let row = 0; row <= rows; row++) {
-      for (let col = 0; col <= cols; col++) {
-        const seed = hash(col, row);
-        dots.push({
-          x: col * step + step * .43,
-          y: row * step + step * .5,
-          seed,
-          phase: seed * Math.PI * 2,
-          star: seed > .967
-        });
+    const rows = Math.ceil(height / step) + 5, cols = Math.ceil(width / step) + 2;
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        dots.push({col, row, x: col * step + step * .43});
       }
     }
-    if (reducedMotion) draw(0);
+    draw(performance.now());
   }
 
   function localCoordinates(event) {
@@ -75,7 +68,7 @@
   function ripple(event) {
     if (reducedMotion || (event.pointerType === 'mouse' && event.button !== 0)) return;
     const p = localCoordinates(event);
-    waves.push({ x: p.x, y: p.y, created: performance.now() });
+    waves.push({ x: p.x, y: p.y + (window.scrollY || window.pageYOffset || 0), created: performance.now() });
     if (waves.length > 5) waves.shift();
     cursor.x = cursor.sx = p.x;
     cursor.y = cursor.sy = p.y;
@@ -100,8 +93,19 @@
       ctx.fillRect(cursor.sx - 245, cursor.sy - 245, 490, 490);
     }
 
+    const scrollOffset = window.scrollY || window.pageYOffset || 0;
+    const firstRow = Math.floor(scrollOffset / step) - 2;
     const seconds = now / 1000;
-    for (const dot of dots) {
+    for (const cell of dots) {
+      const documentRow = firstRow + cell.row;
+      const seed = hash(cell.col, documentRow);
+      const dot = {
+        x: cell.x,
+        y: documentRow * step + step * .5 - scrollOffset,
+        seed,
+        phase: seed * Math.PI * 2,
+        star: seed > .967
+      };
       let x = dot.x;
       let y = dot.y;
       let influence = 0;
@@ -120,12 +124,12 @@
       for (const wave of waves) {
         const elapsed = (now - wave.created) / 1000;
         const radius = elapsed * 315;
-        const waveDistance = Math.hypot(x - wave.x, y - wave.y);
+        const waveDistance = Math.hypot(x - wave.x, y - (wave.y - scrollOffset));
         const ring = Math.exp(-Math.pow((waveDistance - radius) / 23, 2)) * (1 - elapsed / 1.55);
         if (ring > 0) {
           const direction = 9 * ring;
           x += (x - wave.x) / Math.max(waveDistance, 1) * direction;
-          y += (y - wave.y) / Math.max(waveDistance, 1) * direction;
+          y += (y - (wave.y - scrollOffset)) / Math.max(waveDistance, 1) * direction;
           waveStrength += ring;
         }
       }
@@ -159,7 +163,7 @@
         continue;
       }
       ctx.beginPath();
-      ctx.arc(wave.x, wave.y, age * 315, 0, Math.PI * 2);
+      ctx.arc(wave.x, wave.y - scrollOffset, age * 315, 0, Math.PI * 2);
       ctx.strokeStyle = 'rgba(41,86,255,' + ((1 - age / 1.55) * .77).toFixed(3) + ')';
       ctx.lineWidth = 2.4;
       ctx.stroke();
@@ -204,6 +208,11 @@
   resize();
 
   window.addEventListener('resize', resize, {passive:true});
+  window.addEventListener('scroll', () => {
+    // World-anchored painting translates precisely with normal page scrolling.
+    if (reducedMotion) draw(performance.now());
+    else start();
+  }, {passive:true});
 
   if (!reducedMotion) {
     document.addEventListener('pointermove', move, { passive: true });
