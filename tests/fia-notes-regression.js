@@ -39,10 +39,10 @@ let accaTopics=0;
 for(const paper of acca){
  const data=syllabus[paper.code];
  assert(data?.topics?.length>=10,'Missing ACCA syllabus topics: '+paper.code);
- assert(/^https:\\/\\/www\\.accaglobal\\.com\\//.test(data.source),'Missing official source for '+paper.code);
+ assert(data.source?.startsWith('https://www.accaglobal.com/'),'Missing official source for '+paper.code);
  const ids=new Set();
  for(const item of data.topics){
-  const match=item.match(/^([A-Z]\\d+)\\s*·\\s*(.+)$/);
+  const match=item.match(/^([A-Z][0-9]+) · (.+)$/);
   assert(match,'Invalid ACCA topic code in '+paper.code+': '+item);
   assert(!ids.has(match[1]),'Repeated syllabus code '+paper.code+': '+match[1]);
   ids.add(match[1]);accaTopics++;
