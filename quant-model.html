@@ -4,9 +4,9 @@
 <title>Quant Intelligence Research Lab | LedgerPeer</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script><script src="auth.js"></script>
-<link rel="stylesheet" href="quant-cockpit.css?v=20261022density2">
+<link rel="stylesheet" href="quant-cockpit.css?v=20261022backtest3">
 <script defer src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
-<script defer src="quant-cockpit.js?v=20261022density2"></script></head>
+<script defer src="quant-cockpit.js?v=20261022backtest3"></script></head>
 <body class="quant-body"><main class="q-shell">
 <header class="q-header">
   <div class="q-brand">LEDGERPEER <span>/ QUANT</span><div class="q-eyebrow" style="margin-top:6px">RESEARCH DIVISION • CONSTRUCTION ACCESS</div></div>
@@ -23,7 +23,7 @@
 <section class="q-top"><div><div class="q-eyebrow">LPQ / EXPERIMENTAL QUANTITATIVE RESEARCH ENVIRONMENT</div>
 <h1>THE FUTURE IS <em>A DISTRIBUTION.</em></h1>
 <p class="q-lede">An interactive financial uncertainty laboratory. Explore simulated market trajectories, stress the assumptions, and challenge the mathematics behind every probability.</p></div>
-<div class="q-version">LAB BUILD 0.2<br>ACCESS: BUILDER ONLY<br>RELEASE: NOT AUTHORIZED</div></section>
+<div class="q-version">LAB BUILD 0.3<br>ACCESS: BUILDER ONLY<br>RELEASE: NOT AUTHORIZED</div></section>
 <div class="q-warning"><b>RESEARCH MODE:</b> This is not a trading signal or a validated prediction engine. Simulated scenarios are educational; real-market calibration is explicitly marked when a data feed succeeds.</div>
 <section class="q-metrics" aria-label="Quant readout">
  <article class="q-metric"><div class="q-metric-label">Terminal downside probability</div><div class="q-metric-value q-red" id="riskValue">—</div><div class="q-metric-sub" id="riskDetail">Six-month terminal decline</div></article>
@@ -60,6 +60,26 @@
 <p id="marketExplanation" class="q-feedback" data-type="info" role="status">Retrieving historical index prices. Simulated paths are not past market movements.</p>
 <p id="modelMessage" class="q-feedback" data-type="info" role="status">Checking Quant data pipeline…</p>
 </div></section>
+
+<section class="q-section" id="validationPanel" aria-label="Walk-forward forecast backtesting">
+<div class="q-section-head"><h2>07 / Out-of-Sample Backtest</h2><span class="q-micro" id="validationStatus">AWAITING VERIFIED DATA</span></div>
+<div class="q-pad"><p class="q-micro q-instruction">Each forecast uses only the previous 252 daily log returns to predict whether the index falls 5% or more over the next 21 trading days. Evaluation advances in non-overlapping 21-day blocks. Probabilities are scored against a rolling historical-frequency benchmark.</p>
+<div class="q-validation-grid">
+ <div class="q-system"><div class="q-eyebrow">HISTORICAL FORECASTS</div><strong id="btWindows">—</strong><p>Out-of-sample, non-overlapping windows</p></div>
+ <div class="q-system"><div class="q-eyebrow">DOWNSIDE EVENTS</div><strong id="btEvents">—</strong><p>Realized losses of 5% or more</p></div>
+ <div class="q-system"><div class="q-eyebrow">MODEL BRIER SCORE</div><strong id="btBrier">—</strong><p>Lower is better; 0 is perfect</p></div>
+ <div class="q-system"><div class="q-eyebrow">HISTORICAL BENCHMARK</div><strong id="btBaseline">—</strong><p>Smoothed rolling event frequency</p></div>
+</div>
+<div id="backtestChart" role="img" aria-label="Out-of-sample predicted decline probabilities, baseline probabilities and realized events across chronological test windows"></div>
+<p id="backtestConclusion" class="q-feedback" data-type="info">Backtest not calculated. This module does not claim a validated predictive edge.</p></div></section>
+<section class="q-section" aria-label="Historical market risk">
+<div class="q-section-head"><h2>08 / Empirical Risk Diagnostics</h2><span class="q-micro">OBSERVED HISTORICAL LOSSES / NOT A FORECAST</span></div>
+<div class="q-pad"><div class="q-validation-grid">
+ <div class="q-system"><div class="q-eyebrow">ONE-DAY VALUE AT RISK / 95%</div><strong id="histVar">—</strong><p>Worst 5% loss boundary</p></div>
+ <div class="q-system"><div class="q-eyebrow">ONE-DAY EXPECTED SHORTFALL / 95%</div><strong id="histEs">—</strong><p>Mean loss in the worst 5% of days</p></div>
+ <div class="q-system"><div class="q-eyebrow">SAMPLE MAXIMUM DRAWDOWN</div><strong id="histDd">—</strong><p>Largest peak-to-trough decline in the sample</p></div>
+ <div class="q-system"><div class="q-eyebrow">RISK SAMPLE</div><strong id="histN">—</strong><p>Daily close-to-close return observations</p></div>
+</div><p class="q-micro">Historical loss statistics describe this sample only. They do not imply that future tail risk is capped at these levels.</p></div></section>
 <div class="q-data">
 <section class="q-section"><div class="q-section-head"><h2>04 / Mathematical Kernel</h2><span class="q-micro">MODEL TRANSPARENCY</span></div><div class="q-pad">
 <div class="q-eyebrow">LOGNORMAL TERMINAL THRESHOLD</div><p>Assume independent log returns. Approximate cumulative log return by a normal distribution with a constant mean and volatility.</p>
@@ -69,8 +89,8 @@
 <table class="q-table"><thead><tr><th>Test</th><th>Current status</th></tr></thead><tbody>
 <tr><td>Authenticated builder gate</td><td class="q-green">ENFORCED</td></tr>
 <tr><td>Data freshness validation</td><td class="q-amber">AT REQUEST TIME</td></tr>
-<tr><td>Walk-forward backtesting</td><td class="q-red">NOT IMPLEMENTED</td></tr>
-<tr><td>Probability calibration</td><td class="q-red">NOT VALIDATED</td></tr>
+<tr><td>Walk-forward backtesting</td><td id="walkforwardStatus" class="q-amber">NOT YET RUN</td></tr>
+<tr><td>Probability calibration</td><td id="calibrationStatus" class="q-red">NOT VALIDATED</td></tr>
 <tr><td>Model stress testing</td><td class="q-green">INTERACTIVE</td></tr>
 <tr><td>Public release</td><td class="q-red">CLOSED</td></tr>
 </tbody></table></div></section>
