@@ -11,10 +11,11 @@ def parse_csv(body):
  if body.lstrip().startswith("<"): raise ValueError("HTML instead of CSV")
  reader=csv.DictReader(io.StringIO(body))
  fields={k.lower():k for k in (reader.fieldnames or [])}
- if "date" not in fields: raise ValueError("missing Date column")
+ date_column=fields.get("date") or fields.get("observation_date")
+ if not date_column: raise ValueError("missing Date/observation_date column")
  value=fields.get("close") or fields.get("sp500")
  if not value: raise ValueError("missing Close/SP500 column")
- return [{"date":r[fields["date"]],"close":float(r[value])} for r in reader if r.get(value) and r[value] not in (".","null")]
+ return [{"date":r[date_column],"close":float(r[value])} for r in reader if r.get(value) and r[value] not in (".","null")]
 def validate(points):
  points=sorted({p["date"]:p for p in points if math.isfinite(p["close"]) and p["close"]>0}.values(),key=lambda p:p["date"])
  if len(points)<252: raise ValueError("fewer than 252 observations")
