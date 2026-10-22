@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Hourly QUANT historical-close snapshot. Only writes validated market data."""
-import csv, io, json, math, pathlib, urllib.request, urllib.error, datetime, time
+import csv, io, json, math, pathlib, urllib.request, urllib.error, datetime, time, re
+from html.parser import HTMLParser
 OUT=pathlib.Path("data/quant-sp500.json")
 SOURCES=[
  ("FRED SP500","https://fred.stlouisfed.org/graph/fredgraph.csv?id=SP500"),
@@ -15,6 +16,32 @@ def parse_fred_table(body):
  for line in body.splitlines():
   match=re.match(r"^\\s*(\\d{4}-\\d{2}-\\d{2})\\s+([\\d.]+)\\s*$",line)
   if match and match.group(2)!=".": points.append({"date":match.group(1),"close":float(match.group(2))})
+ return points
+
+
+class _PriceTable(HTMLParser):
+ def __init__(self):
+  super().__init__(); self.rows=[]; self.row=None; self.cell=None
+ def handle_starttag(self,tag,attrs):
+  if tag=="tr": self.row=[]
+  if tag in ("td","th") and self.row is not None: self.cell=[]
+ def handle_data(self,data):
+  if self.cell is not None: self.cell.append(data)
+ def handle_endtag(self,tag):
+  if tag in ("td","th") and self.cell is not None and self.row is not None:
+   self.row.append("".join(self.cell).strip()); self.cell=None
+  if tag=="tr" and self.row is not None:
+   self.rows.append(self.row); self.row=None
+
+def parse_html_prices(body):
+ if "<table" not in body.lower(): raise ValueError("HTML contains no market-price table")
+ p=_PriceTable();p.feed(body); points=[]
+ for row in p.rows:
+  if len(row)<2: continue
+  date=row[0].strip(); value=row[1].replace(",","").strip()
+  if re.fullmatch(r"\d{4}-\d{2}-\d{2}",date) and re.fullmatch(r"\d+(?:\.\d+)?",value):
+   points.append({"date":date,"close":float(value)})
+ if len(points)<252: raise ValueError("HTML page contained only "+str(len(points))+" valid dated prices")
  return points
 
 def parse_csv(body):
@@ -49,22 +76,27 @@ def parse_yahoo(body):
  closes=((item.get("indicators") or {}).get("quote") or [{}])[0].get("close") or []
  return [{"date":datetime.datetime.fromtimestamp(t,datetime.timezone.utc).date().isoformat(),"close":float(v)} for t,v in zip(times,closes) if v is not None]
 
-def download(url):
+def download(url,allow_html=False):
  req=urllib.request.Request(url,headers={"User-Agent":"Mozilla/5.0 (compatible; LedgerPeerMarketData/1.0)","Accept":"text/csv,application/json,text/plain"})
  with urllib.request.urlopen(req,timeout=18) as response:
   content_type=response.headers.get("Content-Type","").lower()
   body=response.read(2_000_000).decode("utf-8-sig")
-  if "text/html" in content_type or body.lstrip().lower().startswith(("<!doctype html","<html")):
+  if not allow_html and ("text/html" in content_type or body.lstrip().lower().startswith(("<!doctype html","<html"))):
    raise ValueError("HTML error/maintenance page received; no prices to convert")
   return body
 
 now=int(time.time())
 SOURCES.append(("Yahoo chart JSON","https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?period1="+str(now-4*366*86400)+"&period2="+str(now)+"&interval=1d"))
+SOURCES.extend([
+ ("FRED HTML table","https://fred.stlouisfed.org/data/SP500"),
+ ("Equibles FRED mirror HTML table","https://equibles.com/economicdata/sp500"),
+])
 errors=[]
 for name,url in SOURCES:
  try:
-  body=download(url)
-  points=validate(parse_yahoo(body) if name=="Yahoo chart JSON" else parse_fred_table(body) if name=="FRED table data" else parse_csv(body))
+  html_source="HTML table" in name
+  body=download(url,allow_html=html_source)
+  points=validate(parse_html_prices(body) if html_source else parse_yahoo(body) if name=="Yahoo chart JSON" else parse_fred_table(body) if name=="FRED table data" else parse_csv(body))
   OUT.parent.mkdir(parents=True,exist_ok=True)
   OUT.write_text(json.dumps({"source_name":name,"retrieved_at":datetime.datetime.now(datetime.timezone.utc).isoformat(),"points":points},separators=(",",":"))+"\n")
   print("Verified",name,len(points),points[-1]["date"])
