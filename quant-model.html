@@ -4,9 +4,9 @@
 <title>Quant Intelligence Research Lab | LedgerPeer</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script><script src="auth.js"></script>
-<link rel="stylesheet" href="quant-cockpit.css?v=20261022backtest3">
+<link rel="stylesheet" href="quant-cockpit.css?v=20261022market4">
 <script defer src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
-<script defer src="quant-cockpit.js?v=20261022backtest3"></script></head>
+<script defer src="quant-cockpit.js?v=20261022market4"></script><script defer src="quant-market-chart.js?v=20261022market4"></script></head>
 <body class="quant-body"><main class="q-shell">
 <header class="q-header">
   <div class="q-brand">LEDGERPEER <span>/ QUANT</span><div class="q-eyebrow" style="margin-top:6px">RESEARCH DIVISION • CONSTRUCTION ACCESS</div></div>
@@ -23,8 +23,53 @@
 <section class="q-top"><div><div class="q-eyebrow">LPQ / EXPERIMENTAL QUANTITATIVE RESEARCH ENVIRONMENT</div>
 <h1>THE FUTURE IS <em>A DISTRIBUTION.</em></h1>
 <p class="q-lede">An interactive financial uncertainty laboratory. Explore simulated market trajectories, stress the assumptions, and challenge the mathematics behind every probability.</p></div>
-<div class="q-version">LAB BUILD 0.3<br>ACCESS: BUILDER ONLY<br>RELEASE: NOT AUTHORIZED</div></section>
+<div class="q-version">LAB BUILD 0.4<br>ACCESS: BUILDER ONLY<br>RELEASE: NOT AUTHORIZED</div></section>
 <div class="q-warning"><b>RESEARCH MODE:</b> This is not a trading signal or a validated prediction engine. Simulated scenarios are educational; real-market calibration is explicitly marked when a data feed succeeds.</div>
+
+<section class="q-section q-market-panel" id="sp500MarketPanel" aria-label="S&P 500 historical price explorer">
+  <div class="q-section-head">
+    <h2>00 / S&amp;P 500 Market History</h2>
+    <span class="q-micro q-market-state" id="sp500ChartStatus" role="status">AWAITING VERIFIED SNAPSHOT</span>
+  </div>
+  <div class="q-market-head">
+    <div>
+      <div class="q-eyebrow">S&amp;P 500 INDEX <span class="q-market-symbol">/ ^GSPC</span></div>
+      <h3>OBSERVED PRICE ACTION<span class="q-market-dot">.</span></h3>
+      <p class="q-micro">Daily index closing levels · Historical reference · Not an intraday trading feed</p>
+    </div>
+    <div class="q-market-source">
+      <span class="q-eyebrow">MARKET DATA PROVIDER</span>
+      <strong id="sp500Source">Loading verified FRED market snapshot…</strong>
+    </div>
+  </div>
+  <div class="q-market-metrics">
+    <div class="q-market-metric"><span>LAST CLOSE</span><strong class="q-market-stat" id="sp500Last">—</strong><small>Index points, not USD</small></div>
+    <div class="q-market-metric"><span>LAST SESSION MOVE</span><strong class="q-market-stat" id="sp500Daily">—</strong><small>Versus prior trading close</small></div>
+    <div class="q-market-metric"><span id="sp500PeriodLabel">1Y PERIOD RETURN</span><strong class="q-market-stat" id="sp500Period">—</strong><small>First to last visible close</small></div>
+    <div class="q-market-metric"><span>AS-OF TRADING DATE</span><strong class="q-market-stat" id="sp500AsOf">—</strong><small>Source timestamp is not a live quote</small></div>
+  </div>
+  <div class="q-market-toolbar" aria-label="Historical price chart controls">
+    <div class="q-market-ranges" role="group" aria-label="Select price history period">
+      <button type="button" data-sp500-range="5D" aria-pressed="false">5D</button>
+      <button type="button" data-sp500-range="1M" aria-pressed="false">1M</button>
+      <button type="button" data-sp500-range="3M" aria-pressed="false">3M</button>
+      <button type="button" data-sp500-range="6M" aria-pressed="false">6M</button>
+      <button type="button" data-sp500-range="YTD" aria-pressed="false">YTD</button>
+      <button type="button" data-sp500-range="1Y" class="active" aria-pressed="true">1Y</button>
+      <button type="button" data-sp500-range="ALL" aria-pressed="false">ALL</button>
+    </div>
+    <div class="q-market-tools" role="group" aria-label="Technical overlays and data refresh">
+      <button type="button" id="sp500Ma20" aria-pressed="true" class="active" title="Show 20-trading-day simple moving average">MA 20</button>
+      <button type="button" id="sp500Ma50" aria-pressed="false" title="Show 50-trading-day simple moving average">MA 50</button>
+      <button type="button" id="sp500Refresh" title="Re-fetch latest verified closing-price snapshot">↻ REFRESH</button>
+    </div>
+  </div>
+  <div class="q-market-plot" id="sp500PriceChart" role="img" aria-label="Interactive line graph of observed S&P 500 daily closing prices. Drag to zoom and hover for historical index levels.">Loading historical market chart…</div>
+  <div class="q-market-footer">
+    <span id="sp500ChartNote">Observed market prices are separate from the simulated forecast distribution below.</span>
+    <span>DRAG TO ZOOM · DOUBLE-CLICK TO RESET · HOVER FOR DAILY VALUES</span>
+  </div>
+</section>
 <section class="q-metrics" aria-label="Quant readout">
  <article class="q-metric"><div class="q-metric-label">Terminal downside probability</div><div class="q-metric-value q-red" id="riskValue">—</div><div class="q-metric-sub" id="riskDetail">Six-month terminal decline</div></article>
  <article class="q-metric"><div class="q-metric-label">Annualised volatility</div><div class="q-metric-value" id="volValue">—</div><div class="q-metric-sub">Model parameter σ</div></article>
