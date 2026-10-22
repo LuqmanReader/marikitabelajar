@@ -289,6 +289,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
   if(!window.PersonalHubAuth)throw Error('LedgerPeer authentication unavailable');
   const client=await authenticate();el('loading').hidden=true;
   if(!client)return;
+  window.LedgerPeerMarketChart?.mount(); // Observed prices load only after the builder gate grants access.
   onSliders();pathData();surfaceInit();
   el('runForecast').addEventListener('click',()=>requestForecast(client));
   await requestForecast(client);
