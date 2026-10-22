@@ -1,0 +1,36 @@
+name: FIA notes library regression
+on:
+  push:
+    paths:
+      - 'notes.html'
+      - 'notes.css'
+      - 'notes-data.js'
+      - 'notes-page.js'
+      - 'acca-published-data.js'
+      - 'index.html'
+      - 'hub.html'
+      - 'calendar.html'
+      - 'study-planner.html'
+      - 'achievements.html'
+      - 'financial-manager.html'
+      - 'financial-dashboard.html'
+      - 'quant-model.html'
+      - 'tests/fia-notes-regression.js'
+      - '.github/workflows/fia-notes-regression.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate notes JavaScript syntax
+        run: |
+          node --check notes-data.js
+          node --check notes-page.js
+      - name: Test syllabus coverage and retired navigation
+        run: node tests/fia-notes-regression.js
