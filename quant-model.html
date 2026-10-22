@@ -4,9 +4,9 @@
 <title>Quant Intelligence Research Lab | LedgerPeer</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script><script src="auth.js"></script>
-<link rel="stylesheet" href="quant-cockpit.css?v=20261022density1">
+<link rel="stylesheet" href="quant-cockpit.css?v=20261022density2">
 <script defer src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
-<script defer src="quant-cockpit.js?v=20261022density1"></script></head>
+<script defer src="quant-cockpit.js?v=20261022density2"></script></head>
 <body class="quant-body"><main class="q-shell">
 <header class="q-header">
   <div class="q-brand">LEDGERPEER <span>/ QUANT</span><div class="q-eyebrow" style="margin-top:6px">RESEARCH DIVISION • CONSTRUCTION ACCESS</div></div>
@@ -37,8 +37,12 @@
 <div class="q-stage-overlay"><div class="q-eyebrow">3D RESEARCH VIEW / INTERACTIVE</div><div class="q-stage-title">THE DISTRIBUTION TERRAIN</div><div class="q-overlay-caption">WebGL surface • Drag to orbit • Scroll to zoom</div></div>
 <div class="q-stage-badge" id="sampleOutput">Simulating scenario trajectories…</div>
 </div>
-<div class="q-surface-guide"><strong>HOW TO READ THIS SURFACE</strong> The terrain is estimated from <b>3,000 reproducible simulated paths</b>. The horizontal plane contains time and percentage return; <b>surface height is probability density</b> (per percentage-point return), not the probability of one exact price. A widening ridge means greater dispersion over time. The coloured lines mark model-based 5th, median, and 95th percentile outcomes. <div class="q-guide-terms"><span>PEAK = concentration</span><span>WIDTH = uncertainty</span><span>TAIL = extreme outcomes</span><span>RED DASH = loss threshold</span></div></div>
-<div class="q-pad" style="padding-top:12px"><button class="q-ghost" id="rotateScene">ROTATE CAMERA ↻</button></div></section>
+<div class="q-snapshot-row" aria-label="Probability range widens across three forecast horizons">
+<div class="q-snapshot"><span id="slice-early-day">EARLY HORIZON</span><strong id="slice-early-range">—</strong><div class="q-width-track"><i id="slice-early-bar"></i></div></div>
+<div class="q-snapshot"><span id="slice-mid-day">MID HORIZON</span><strong id="slice-mid-range">—</strong><div class="q-width-track"><i id="slice-mid-bar"></i></div></div>
+<div class="q-snapshot"><span id="slice-late-day">FULL HORIZON</span><strong id="slice-late-range">—</strong><div class="q-width-track"><i id="slice-late-bar"></i></div></div>
+</div><div class="q-surface-guide"><strong>HOW TO READ THIS SURFACE</strong> The terrain is estimated from <b>3,000 reproducible simulated paths</b> with bandwidth-adaptive density smoothing. The horizontal plane contains time and percentage return; <b>surface height is probability density</b> (per percentage-point return), not the probability of one exact price. The coloured cross-section ridges show how the density widens and its peak falls. A widening ridge means greater dispersion over time; the cards above quantify the change. Surface colour shows concentration relative to each time slice, while <b>height represents actual density</b>. The coloured longitudinal lines mark model-based 5th, median, and 95th percentile outcomes. <div class="q-guide-terms"><span>PEAK = concentration</span><span>WIDTH = uncertainty</span><span>TAIL = extreme outcomes</span><span>RED DASH = loss threshold</span></div></div>
+<div class="q-pad q-chart-tools"><button class="q-ghost" id="rotateScene">ROTATE CAMERA ↻</button><button class="q-ghost" id="scaleMode">SCALE: LOCKED ↔</button><span class="q-micro" id="axisNotice">LOCKED SCALE COMPARISON</span></div></section>
 <section class="q-section"><div class="q-section-head"><h2>02 / Stress-Test Console</h2><span class="q-micro">INTERACTIVE PARAMETERS</span></div>
 <div class="q-console"><h3>Modify the mathematical assumptions</h3>
 <div class="q-field"><div class="q-field-head"><label for="volControl">Annualised volatility (σ)</label><output id="volOut">21%</output></div><input type="range" id="volControl" min="5" max="65" step=".5" value="21"></div>
@@ -76,7 +80,7 @@
 <details class="q-lesson" open><summary>01 — What is a quant?</summary><p>Quantitative researchers develop mathematical models of risk, pricing and markets. Their output is useful only when assumptions, data quality and out-of-sample performance are scrutinised.</p></details>
 <details class="q-lesson"><summary>02 — Log returns and price ratios</summary><p>Daily log return rₜ = ln(Pₜ/Pₜ₋₁). Log returns add across time, unlike ordinary percentage returns. Historical means should not be mistaken for stable future returns.</p></details>
 <details class="q-lesson"><summary>03 — Distribution, variance and tails</summary><p>Standard deviation describes dispersion, but it does not capture every kind of financial risk. The normal distribution tends to underestimate certain extreme market moves.</p></details>
-<details class="q-lesson"><summary>04 — The simulator's mechanics</summary><p>Each path draws independent random shocks and compounds log returns over the horizon. The 3D surface shows smoothed histograms from 3,000 seeded simulations across the forecast horizon. The headline threshold probability uses the matching lognormal model formula, rather than relying on the displayed sample frequency. The surface begins after the first few simulated steps because a point-mass initial value has no finite density.</p></details>
+<details class="q-lesson"><summary>04 — The simulator's mechanics</summary><p>Each path draws independent random shocks and compounds log returns over the horizon. The 3D surface shows adaptively smoothed probability densities from 3,000 seeded simulations across the forecast horizon, with a stable comparison scale that can be toggled to auto-fit. The headline threshold probability uses the matching lognormal model formula, rather than relying on the displayed sample frequency. The surface begins after the first few simulated steps because a point-mass initial value has no finite density.</p></details>
 <details class="q-lesson"><summary>05 — What is a meaningful backtest?</summary><p>Freeze all information at each historical forecast date, score predictions against later outcomes, and compare them with simple alternatives. Avoid using future revisions and tuning to test data.</p></details>
 <details class="q-lesson"><summary>06 — Build a testable hypothesis</summary><p>Example: Does higher realised volatility improve forecasting of a six-month 10% decline? Specify the target, predictor, training window, evaluation window and metric before looking at results.</p></details>
 </div></section>
