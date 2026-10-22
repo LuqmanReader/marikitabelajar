@@ -93,6 +93,7 @@ function renderIntro(codes){
 function render(){
  const list=byId('topicList');list.replaceChildren();
  const activePapers=paper==='ALL'?PAPERS.map(x=>x[0]):[paper];
+ renderIntro(activePapers);
  const q=query.trim().toLowerCase();
  let total=0,rendered=0,detailCount=0;
  for(const code of activePapers){
