@@ -1,4 +1,4 @@
-/* LedgerPeer full-homepage cursor-reactive background.
+/* LedgerPeer homepage CREAM BACKGROUND ONLY cursor-reactive field.
    Original implementation inspired by cursor-reactive event-site canvases.
    No dependencies, no authentication changes, and no interception of controls. */
 (() => {
@@ -35,7 +35,7 @@
     canvas.height = Math.round(height * scale);
     context.setTransform(scale, 0, 0, scale, 0, 0);
 
-    const step = width < 600 ? 36 : 31;
+    const step = width < 600 ? 28 : 26;
     dots = [];
     const rows = Math.ceil(height / step);
     const cols = Math.ceil(width / step);
@@ -92,12 +92,12 @@
       const easing = pointerFine ? .16 : .11;
       cursor.sx += (cursor.x - cursor.sx) * easing;
       cursor.sy += (cursor.y - cursor.sy) * easing;
-      const halo = ctx.createRadialGradient(cursor.sx, cursor.sy, 3, cursor.sx, cursor.sy, 180);
-      halo.addColorStop(0, 'rgba(41,86,255,.085)');
-      halo.addColorStop(.45, 'rgba(54,217,139,.035)');
+      const halo = ctx.createRadialGradient(cursor.sx, cursor.sy, 3, cursor.sx, cursor.sy, 245);
+      halo.addColorStop(0, 'rgba(41,86,255,.20)');
+      halo.addColorStop(.45, 'rgba(54,217,139,.10)');
       halo.addColorStop(1, 'rgba(255,247,228,0)');
       ctx.fillStyle = halo;
-      ctx.fillRect(cursor.sx - 180, cursor.sy - 180, 360, 360);
+      ctx.fillRect(cursor.sx - 245, cursor.sy - 245, 490, 490);
     }
 
     const seconds = now / 1000;
@@ -110,9 +110,9 @@
       const dx = x - cursor.sx;
       const dy = y - cursor.sy;
       const distance = Math.hypot(dx, dy);
-      if (cursor.active && distance < 165) {
-        influence = Math.pow(1 - distance / 165, 2);
-        const repel = influence * 30;
+      if (cursor.active && distance < 245) {
+        influence = Math.pow(1 - distance / 245, 1.65);
+        const repel = influence * 55;
         x += (dx / Math.max(1, distance)) * repel;
         y += (dy / Math.max(1, distance)) * repel;
       }
@@ -132,12 +132,12 @@
 
       const ambient = reducedMotion ? 0 : Math.sin(seconds * 1.25 + dot.phase) * .7;
       y += ambient;
-      const active = clamp(influence * 2.3 + waveStrength * 1.9, 0, 1);
-      const opacity = .095 + dot.seed * .045 + active * .66;
-      const size = (dot.star ? 2.1 : 1.22) + active * 2.65;
+      const active = clamp(influence * 2.6 + waveStrength * 2.0, 0, 1);
+      const opacity = .20 + dot.seed * .11 + active * .69;
+      const size = (dot.star ? 3.1 : 2.1) + active * 4.15;
       const color = active > .25
         ? palette[Math.min(4, Math.floor(dot.seed * 5))]
-        : '#233F54';
+        : '#344151';
 
       ctx.globalAlpha = opacity;
       ctx.fillStyle = color;
@@ -160,8 +160,8 @@
       }
       ctx.beginPath();
       ctx.arc(wave.x, wave.y, age * 315, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(41,86,255,' + ((1 - age / 1.55) * .43).toFixed(3) + ')';
-      ctx.lineWidth = 1.6;
+      ctx.strokeStyle = 'rgba(41,86,255,' + ((1 - age / 1.55) * .77).toFixed(3) + ')';
+      ctx.lineWidth = 2.4;
       ctx.stroke();
     }
 
