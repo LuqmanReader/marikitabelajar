@@ -32,77 +32,118 @@ function pathData(){
  el('activeSource').textContent=state.live?state.source+' · '+state.date:'Educational assumptions only';
 }
 
+
 function surfaceInit(){
  const node=el('quantSurface');
  if(!node)return;
- if(!window.Plotly){node.textContent='3D WebGL chart library could not load. Market forecasts and risk calculations remain available; check your connection and refresh.';return}
- let redrawTimer=null,inFlight=false,queued=false,rendered=false;
- let camera={eye:{x:1.8,y:-2.05,z:1.35},center:{x:0,y:0,z:0}};
- let orbitStep=-.85;
- const spectrum=[[0,'#102a40'],[.08,'#1e5180'],[.22,'#277bbd'],[.45,'#21c4d6'],[.67,'#8d92ff'],[.85,'#dc86fc'],[1,'#ffd27d']];
+ if(!window.Plotly){node.textContent='3D WebGL chart library could not load; the calculations remain available. Check the connection and refresh.';return}
+ let redrawTimer=null,inFlight=false,queued=false,rendered=false,frame=null,axisLocked=true;
+ let camera={eye:{x:1.72,y:-2.12,z:1.62},center:{x:0,y:0,z:0}};
+ let orbitStep=-.88;
+ const spectrum=[[0,'#152b45'],[.08,'#265789'],[.22,'#257fc0'],[.45,'#21bbce'],[.66,'#67eacb'],[.84,'#d6c0fd'],[1,'#ffe1aa']];
  const percentile=(t,z)=>(Math.exp(state.drift*t/252+z*state.vol*Math.sqrt(t/252))-1)*100;
+ const roundSign=x=>(x>=0?'+':'')+fmt(x,1)+'%';
+ const lowZ=-1.6448536269, highZ=1.6448536269;
+ function updateSnapshots(){
+   const ts=[state.term/6,state.term/2,state.term];
+   const fullWidth=percentile(state.term,highZ)-percentile(state.term,lowZ);
+   ['early','mid','late'].forEach((id,i)=>{
+     const day=ts[i],lo=percentile(day,lowZ),hi=percentile(day,highZ);
+     const dayEl=el('slice-'+id+'-day'),rangeEl=el('slice-'+id+'-range'),bar=el('slice-'+id+'-bar');
+     if(dayEl)dayEl.textContent=fmt(day,0)+' TRADING DAYS';
+     if(rangeEl)rangeEl.textContent=roundSign(lo)+' to '+roundSign(hi);
+     if(bar)bar.style.width=fmt(Math.max(5,(hi-lo)/Math.max(.001,fullWidth)*100),1)+'%';
+   });
+ }
  function makeFigure(){
-   const paths=state.paths,steps=paths[0].log.length-1,lowLog=Math.min(-.12,state.drift*state.term/252-4*state.vol*Math.sqrt(state.term/252),Math.log(1-state.threshold)-.05);
-   const highLog=Math.max(.12,state.drift*state.term/252+4*state.vol*Math.sqrt(state.term/252));
+   const paths=state.paths,steps=paths[0].log.length-1, T=state.term/252;
+   const lowLog=Math.min(-.12,state.drift*T-3.8*state.vol*Math.sqrt(T),Math.log(1-state.threshold)-.05);
+   const highLog=Math.max(.12,state.drift*T+3.8*state.vol*Math.sqrt(T));
    const minReturn=Math.max(-99,(Math.exp(lowLog)-1)*100),maxReturn=(Math.exp(highLog)-1)*100;
-   const rows=73,firstStep=Math.max(2,Math.ceil(steps*.065));
+   const rows=101,firstStep=Math.max(2,Math.ceil(steps*.065));
    const indices=Array.from({length:steps-firstStep+1},(_,i)=>i+firstStep);
    const times=indices.map(i=>i*state.term/steps);
    const returns=Array.from({length:rows},(_,i)=>minReturn+(maxReturn-minReturn)*i/(rows-1));
    const bin=(maxReturn-minReturn)/(rows-1),n=paths.length;
    const densities=indices.map(step=>{
-      const histogram=new Float64Array(rows);
-      for(const path of paths){
-        const value=(Math.exp(path.log[step])-1)*100;
-        const index=Math.floor((value-minReturn)/bin+.5);
-        if(index>=0&&index<rows)histogram[index]++;
-      }
-      let smoothed=histogram;
-      for(let pass=0;pass<3;pass++){
-        const next=new Float64Array(rows);
-        for(let j=0;j<rows;j++){
-          let weight=0,sum=0;
-          for(let k=-3;k<=3;k++){const q=j+k;if(q>=0&&q<rows){const w=[1,6,15,20,15,6,1][k+3];sum+=smoothed[q]*w;weight+=w}}
-          next[j]=sum/weight;
-        }
-        smoothed=next;
-      }
-      return Array.from(smoothed,v=>v/(n*bin));
+     const histogram=new Float64Array(rows);
+     let sum=0,sumSq=0;
+     for(const path of paths){
+       const v=(Math.exp(path.log[step])-1)*100;
+       sum+=v;sumSq+=v*v;
+       const idx=Math.floor((v-minReturn)/bin+.5);
+       if(idx>=0&&idx<rows)histogram[idx]++;
+     }
+     const sd=Math.sqrt(Math.max(0,sumSq/n-(sum/n)**2));
+     const bandwidth=Math.max(.65*bin,1.06*sd*Math.pow(n,-.2));
+     const radius=Math.max(1,Math.min(14,Math.ceil(3*bandwidth/bin)));
+     const smooth=new Float64Array(rows);
+     for(let j=0;j<rows;j++){
+       let v=0;
+       for(let k=-radius;k<=radius;k++){
+         const q=j+k;
+         if(q<0||q>=rows)continue;
+         v+=histogram[q]*Math.exp(-.5*(k*bin/bandwidth)**2);
+       }
+       smooth[j]=v;
+     }
+     const integral=smooth.reduce((a,b)=>a+b,0)*bin;
+     return Array.from(smooth,v=>v/Math.max(integral,1e-10));
    });
-   const z=returns.map((_,i)=>densities.map(d=>d[i]));
    const maxDensity=Math.max(...densities.flat());
+   const z=returns.map((_,i)=>densities.map(d=>d[i]));
+   // Colour means concentration relative to each time slice; height remains true density.
+   const peaks=densities.map(d=>Math.max(...d));
+   const relativeColour=z.map(row=>row.map((v,j)=>v/Math.max(peaks[j],1e-10)));
+   if(!frame){
+      const yPad=(maxReturn-minReturn)*.075;
+      frame={y:[minReturn-yPad,maxReturn+yPad],z:[0,maxDensity*1.3]};
+   }
    const heightAt=(t,value)=>{
-      const idx=Math.min(densities.length-1,Math.max(0,Math.round(t/state.term*steps)-firstStep));
-      const iy=Math.max(0,Math.min(rows-1,Math.round((value-minReturn)/bin)));
-      return densities[idx][iy]+maxDensity*.03;
+     const j=Math.max(0,Math.min(densities.length-1,Math.round(t/state.term*steps)-firstStep));
+     const r=Math.max(0,Math.min(rows-1,Math.round((value-minReturn)/bin)));
+     return densities[j][r]+maxDensity*.025;
    };
-   const main={type:'surface',x:times,y:returns,z,opacity:.94,showscale:false,
-      colorscale:spectrum,lighting:{ambient:.56,diffuse:.91,specular:.32,roughness:.65,fresnel:.10},lightposition:{x:110,y:-95,z:170},
-      contours:{z:{show:true,highlight:false,project:{z:true},color:'#42617c',width:1}},
-      hovertemplate:'Time: %{x:.0f} trading days<br>Cumulative return: %{y:.1f}%<br>Density: %{z:.4f} per 1% return<extra>MONTE CARLO DENSITY</extra>',
-      name:'Simulated distribution'};
-   const bands=[{z:-1.6448536269,name:'5th percentile',color:'#ff8296'},{z:0,name:'Median',color:'#7dffda'},{z:1.6448536269,name:'95th percentile',color:'#ffd38b'}];
-   const lines=bands.map(p=>{
-     const values=times.map(t=>percentile(t,p.z));
-     return {type:'scatter3d',mode:'lines',x:times,y:values,z:values.map((v,i)=>heightAt(times[i],v)),
-        name:p.name,hovertemplate:p.name+'<br>Day %{x:.0f}<br>Return %{y:.1f}%<extra></extra>',
-        line:{color:p.color,width:p.z===0?8:5},showlegend:true};
+   const surface={type:'surface',name:'Simulated probability density',x:times,y:returns,z,surfacecolor:relativeColour,
+      cmin:0,cmax:1,opacity:.97,showscale:false,colorscale:spectrum,
+      lighting:{ambient:.60,diffuse:.91,specular:.30,roughness:.65,fresnel:.10},
+      lightposition:{x:100,y:-90,z:165},
+      contours:{z:{show:true,highlight:false,project:{z:true},color:'#486e88',width:1}},
+      hovertemplate:'Time: %{x:.0f} trading days<br>Cumulative return: %{y:.1f}%<br>Estimated density: %{z:.4f} per 1% return<extra>DENSITY TERRAIN</extra>'};
+   const bandLines=[{z:lowZ,name:'5th percentile',color:'#ff8296'},{z:0,name:'Median',color:'#7dffda'},{z:highZ,name:'95th percentile',color:'#ffd38b'}].map(p=>{
+      const vals=times.map(t=>percentile(t,p.z));
+      return {type:'scatter3d',mode:'lines',name:p.name,x:times,y:vals,z:vals.map((v,i)=>heightAt(times[i],v)),
+         hovertemplate:p.name+'<br>Day %{x:.0f}<br>Return %{y:.1f}%<extra></extra>',
+         line:{color:p.color,width:p.z===0?8:5},showlegend:true};
    });
-   const thresholdReturn=-state.threshold*100;
-   const threshold={type:'scatter3d',mode:'lines',name:'Loss threshold',
-      x:times,y:times.map(()=>thresholdReturn),z:times.map(()=>maxDensity*.015),
-      line:{color:'#ff566f',dash:'dash',width:4},hovertemplate:'Loss threshold: %{y:.0f}%<extra></extra>',showlegend:true};
-   const guide=el('sampleOutput');if(guide)guide.textContent=n.toLocaleString('en-US')+' simulations • '+indices.length+' density slices • seeded / reproducible';
-   const axis={color:'#9ab5ca',gridcolor:'rgba(115,161,195,.21)',zerolinecolor:'#6bf4c4',showbackground:true,backgroundcolor:'#0c1b2a',
+   const sliceStops=[Math.max(firstStep,Math.round(steps/6)),Math.max(firstStep,Math.round(steps/2)),steps];
+   const sliceColors=['#55b7ff','#dba8ff','#fff09b'];
+   const ridges=sliceStops.map((step,i)=>{
+      const j=step-firstStep,values=densities[j],day=times[j];
+      return {type:'scatter3d',mode:'lines',name:'Day '+fmt(day,0)+' density',
+         x:Array(rows).fill(day),y:returns,z:values.map(v=>v+maxDensity*.012),
+         line:{color:sliceColors[i],width:i===2?7:5},showlegend:false,
+         hovertemplate:'Day '+fmt(day,0)+'<br>Return %{y:.1f}%<br>Density %{z:.4f}<extra>TIME SLICE</extra>'};
+   });
+   const threshold={type:'scatter3d',mode:'lines',name:'Loss threshold',x:times,y:times.map(()=>-state.threshold*100),
+      z:times.map(()=>maxDensity*.012),line:{color:'#ff5269',dash:'dash',width:4},
+      hovertemplate:'Loss threshold: %{y:.0f}%<extra></extra>',showlegend:true};
+   const guide=el('sampleOutput');
+   if(guide)guide.textContent=n.toLocaleString('en-US')+' paths • '+indices.length+' time slices • seeded / reproducible';
+   updateSnapshots();
+   const clipped=axisLocked&&(percentile(state.term,lowZ)<frame.y[0]||percentile(state.term,highZ)>frame.y[1]||maxDensity>frame.z[1]);
+   const notice=el('axisNotice');
+   if(notice)notice.textContent=clipped?'LOCKED VIEW: Some values exceed this scale; use Auto-fit to inspect them.':axisLocked?'FIXED COMPARISON SCALE: axis limits remain stable while parameters change.':'AUTO-FIT: axes resize to include the latest distribution.';
+   const axis={color:'#9ab5ca',gridcolor:'rgba(115,161,195,.27)',zerolinecolor:'#6bf4c4',showbackground:true,backgroundcolor:'#0c1b2a',
       tickfont:{size:10,color:'#a3c0d8'},titlefont:{size:11,color:'#bdd7ec'}};
    const layout={paper_bgcolor:'#091523',plot_bgcolor:'#091523',font:{family:'Consolas,monospace',color:'#cbdef0',size:11},
       margin:{l:0,r:0,t:0,b:0},showlegend:true,
-      legend:{orientation:'h',x:.5,xanchor:'center',y:.015,yanchor:'bottom',font:{size:10,color:'#d3e3f4'},bgcolor:'rgba(8,19,34,.78)'},
-      scene:{xaxis:{...axis,title:'TIME / TRADING DAYS',range:[0,state.term]},yaxis:{...axis,title:'CUMULATIVE RETURN / %',range:[minReturn,maxReturn]},
-         zaxis:{...axis,title:'PROBABILITY DENSITY / 1% RETURN',range:[0,maxDensity*1.12]},
-         aspectmode:'manual',aspectratio:{x:1.6,y:1.15,z:.95},camera,dragmode:'orbit'},
-      uirevision:'quant-density-v1',autosize:true};
-   return {data:[main,...lines,threshold],layout};
+      legend:{orientation:'h',x:.50,xanchor:'center',y:.012,yanchor:'bottom',font:{size:9,color:'#d3e3f4'},bgcolor:'rgba(8,19,34,.8)'},
+      scene:{xaxis:{...axis,title:'TIME / TRADING DAYS',range:[0,state.term]},yaxis:{...axis,title:'CUMULATIVE RETURN / %',range:axisLocked?frame.y:[minReturn,maxReturn]},
+         zaxis:{...axis,title:'DENSITY / 1% RETURN',range:axisLocked?frame.z:[0,maxDensity*1.22]},
+         aspectmode:'manual',aspectratio:{x:1.7,y:1.20,z:1.05},camera,dragmode:'orbit'},
+      uirevision:'quant-density-v2',autosize:true};
+   return {data:[surface,...bandLines,...ridges,threshold],layout};
  }
  async function render(){
    if(inFlight){queued=true;return}
@@ -114,20 +155,25 @@ function surfaceInit(){
        if(rendered)await window.Plotly.react(node,data,layout,{displaylogo:false,responsive:true,scrollZoom:true});
        else {await window.Plotly.newPlot(node,data,layout,{displaylogo:false,responsive:true,scrollZoom:true});rendered=true}
      }while(queued);
-   }catch(error){node.textContent='WebGL density chart could not be rendered: '+error.message;rendered=false}
+   }catch(error){node.textContent='WebGL chart rendering failed: '+error.message;rendered=false}
    finally{inFlight=false}
  }
- state.draw=()=>{clearTimeout(redrawTimer);redrawTimer=setTimeout(render,90)};
+ state.draw=()=>{clearTimeout(redrawTimer);redrawTimer=setTimeout(render,100)};
+ state.reframe=()=>{frame=null;state.draw()};
+ const scaleButton=el('scaleMode');
+ if(scaleButton)scaleButton.addEventListener('click',()=>{
+   axisLocked=!axisLocked;
+   scaleButton.textContent=axisLocked?'SCALE: LOCKED ↔':'SCALE: AUTO-FIT ⤢';
+   state.draw();
+ });
  const turn=el('rotateScene');
  if(turn)turn.addEventListener('click',()=>{
    orbitStep+=.55;
-   camera={eye:{x:2.4*Math.cos(orbitStep),y:2.4*Math.sin(orbitStep),z:1.30},center:{x:0,y:0,z:0}};
+   camera={eye:{x:2.5*Math.cos(orbitStep),y:2.5*Math.sin(orbitStep),z:1.5},center:{x:0,y:0,z:0}};
    if(rendered)window.Plotly.relayout(node,{'scene.camera':camera});
  });
- node.on?.('plotly_relayout',event=>{
-   if(event['scene.camera'])camera=event['scene.camera'];
- });
  render();
+ if(node.on)node.on('plotly_relayout',event=>{if(event['scene.camera'])camera=event['scene.camera']});
 }
 function onSliders(){
  [['volControl','volOut',v=>v/100,'vol'],['driftControl','driftOut',v=>v/100,'drift'],['termControl','termOut',v=>v,'term'],['thresholdControl','thresholdOut',v=>v/100,'threshold']].forEach(([id,out,parse,field])=>{
@@ -135,9 +181,10 @@ function onSliders(){
  });
  el('resetScenario').addEventListener('click',()=>{state.drift=.065;state.vol=.21;state.term=126;state.threshold=.10;state.live=false;state.modified=false;state.source='ILLUSTRATIVE';
   [['volControl',21],['driftControl',6.5],['termControl',126],['thresholdControl',10]].forEach(([id,v])=>{el(id).value=String(v);el(id).dispatchEvent(new Event('input'))});
+  state.reframe?.();
   setMessage('Scenario reset to educational assumptions. These are not live S&P 500 estimates.','info');
  });
- el('rotateScene').addEventListener('click',()=>{state.orbit+=.45;state.draw?.()});
+ 
 }
 function authenticate(){
  return new Promise(async resolve=>{
@@ -174,16 +221,16 @@ async function requestForecast(client){
   el('volOut').textContent=fmt(state.vol*100,1)+'%';el('driftOut').textContent=fmt(state.drift*100,1)+'%';
   el('pipelineStatus').textContent='CALCULATED';el('obsValue').textContent=result.observations??'—';
   el('asofValue').textContent=result.sample_end||'—';el('sourceValue').textContent=state.source;
-  pathData();state.draw?.();
-  el('marketExplanation').textContent='MARKET DATA CONNECTED — '+result.observations+' historical S&P 500 closing prices, through '+result.sample_end+'. The 3D curves are simulated possible futures using historical volatility and return estimates; they are not observed future prices or guaranteed forecasts.';
+  pathData();state.reframe?.();
+  el('marketExplanation').textContent='MARKET DATA CONNECTED — '+result.observations+' historical S&P 500 closing prices, through '+result.sample_end+'. The three-dimensional terrain shows simulated probability densities calibrated from historical estimates, not observed future prices or guaranteed forecasts.';
   setMessage('Forecast computed from '+result.observations+' price observations. Scenario controls allow sensitivity analysis; changing them does not retrieve new data. Model: '+result.model_version+'.','ok');
  }catch(error){
   el('pipelineStatus').textContent='DATA FAILURE';el('sourceValue').textContent='No verified feed';
   state.live=false;state.source='ILLUSTRATIVE';state.date=null;state.level=100;state.vol=.21;state.drift=.065;
   el('obsValue').textContent='—';el('asofValue').textContent='—';
   el('volControl').value='21';el('driftControl').value='6.5';el('volOut').textContent='21%';el('driftOut').textContent='6.5%';
-  pathData();state.draw?.();
-  el('marketExplanation').textContent='Current market calibration unavailable. The 3D paths shown here are educational simulations, not observed S&P 500 prices.';
+  pathData();state.reframe?.();
+  el('marketExplanation').textContent='Current market calibration unavailable. The three-dimensional density terrain shows educational simulations, not observed S&P 500 prices.';
   setMessage('MARKET-DATA PIPELINE FAILURE: '+error.message+'\nThe 3D simulation remains available using clearly labelled educational assumptions. No live probability is being claimed.','error');
  }finally{btn.disabled=false}
 }
