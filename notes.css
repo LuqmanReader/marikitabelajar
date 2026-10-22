@@ -1,5 +1,5 @@
 :root{--ink:#111;--cream:#f4eedd;--yellow:#ffcd30;--blue:#294bdf;--red:#f06952;--green:#adebc6}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font:15px/1.65 ui-monospace,"SFMono-Regular",Consolas,monospace}button,input,select{font:inherit}
+*{box-sizing:border-box}[hidden]{display:none!important}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font:15px/1.65 ui-monospace,"SFMono-Regular",Consolas,monospace}button,input,select{font:inherit}
 a{color:inherit}a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
 .notes-top{border-bottom:4px solid var(--ink);background:#fff;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:12px clamp(14px,4vw,55px)}
 .notes-brand{font:900 20px/1 Arial,sans-serif;letter-spacing:-.045em;display:flex;align-items:center;gap:12px;text-decoration:none}.notes-brand img{object-fit:contain}.notes-brand small{font-size:10px;letter-spacing:.11em;color:#555;display:block;margin-top:5px}
