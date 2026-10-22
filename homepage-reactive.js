@@ -1,11 +1,11 @@
-/* LedgerPeer homepage-only magnetic pixel field.
+/* LedgerPeer full-homepage cursor-reactive background.
    Original implementation inspired by cursor-reactive event-site canvases.
    No dependencies, no authentication changes, and no interception of controls. */
 (() => {
   'use strict';
 
-  const stage = document.querySelector('[data-lp-playground]');
-  const canvas = stage?.querySelector('canvas');
+  const stage = window;
+  const canvas = document.getElementById('lpHomepageField');
   const context = canvas?.getContext('2d', { alpha: true });
   if (!stage || !canvas || !context) return;
 
@@ -19,7 +19,7 @@
   let previousFrame = 0;
   const cursor = { x: -1000, y: -1000, sx: -1000, sy: -1000, active: false };
   const waves = [];
-  const palette = ['#7ae8ce', '#ffd562', '#b99cff', '#71b4ff', '#ff8f86'];
+  const palette = ['#2956FF', '#137A49', '#8852CC', '#BA5E3F', '#A97711'];
 
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
   const hash = (a, b) => {
@@ -28,15 +28,14 @@
   };
 
   function resize() {
-    const rect = stage.getBoundingClientRect();
-    width = Math.max(1, Math.round(rect.width));
-    height = Math.max(1, Math.round(rect.height));
+    width = Math.max(1, Math.round(window.innerWidth));
+    height = Math.max(1, Math.round(window.innerHeight));
     const scale = Math.min(window.devicePixelRatio || 1, 2);
     canvas.width = Math.round(width * scale);
     canvas.height = Math.round(height * scale);
     context.setTransform(scale, 0, 0, scale, 0, 0);
 
-    const step = width < 600 ? 30 : 27;
+    const step = width < 600 ? 36 : 31;
     dots = [];
     const rows = Math.ceil(height / step);
     const cols = Math.ceil(width / step);
@@ -56,12 +55,12 @@
   }
 
   function localCoordinates(event) {
-    const bounds = stage.getBoundingClientRect();
-    return { x: event.clientX - bounds.left, y: event.clientY - bounds.top };
+    return {x: event.clientX, y: event.clientY};
   }
 
   function move(event) {
     if (reducedMotion) return;
+    if (event.pointerType === 'touch') return;
     const position = localCoordinates(event);
     cursor.x = position.x;
     cursor.y = position.y;
@@ -74,7 +73,7 @@
   }
 
   function ripple(event) {
-    if (reducedMotion) return;
+    if (reducedMotion || (event.pointerType === 'mouse' && event.button !== 0)) return;
     const p = localCoordinates(event);
     waves.push({ x: p.x, y: p.y, created: performance.now() });
     if (waves.length > 5) waves.shift();
@@ -94,9 +93,9 @@
       cursor.sx += (cursor.x - cursor.sx) * easing;
       cursor.sy += (cursor.y - cursor.sy) * easing;
       const halo = ctx.createRadialGradient(cursor.sx, cursor.sy, 3, cursor.sx, cursor.sy, 180);
-      halo.addColorStop(0, 'rgba(115,236,202,.15)');
-      halo.addColorStop(.45, 'rgba(121,138,255,.09)');
-      halo.addColorStop(1, 'rgba(121,138,255,0)');
+      halo.addColorStop(0, 'rgba(41,86,255,.085)');
+      halo.addColorStop(.45, 'rgba(54,217,139,.035)');
+      halo.addColorStop(1, 'rgba(255,247,228,0)');
       ctx.fillStyle = halo;
       ctx.fillRect(cursor.sx - 180, cursor.sy - 180, 360, 360);
     }
@@ -134,11 +133,11 @@
       const ambient = reducedMotion ? 0 : Math.sin(seconds * 1.25 + dot.phase) * .7;
       y += ambient;
       const active = clamp(influence * 2.3 + waveStrength * 1.9, 0, 1);
-      const opacity = .21 + dot.seed * .16 + active * .67;
-      const size = (dot.star ? 2.5 : 1.55) + active * 2.8;
+      const opacity = .095 + dot.seed * .045 + active * .66;
+      const size = (dot.star ? 2.1 : 1.22) + active * 2.65;
       const color = active > .25
         ? palette[Math.min(4, Math.floor(dot.seed * 5))]
-        : '#8ba8bb';
+        : '#233F54';
 
       ctx.globalAlpha = opacity;
       ctx.fillStyle = color;
@@ -161,14 +160,14 @@
       }
       ctx.beginPath();
       ctx.arc(wave.x, wave.y, age * 315, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(120,236,209,' + ((1 - age / 1.55) * .43).toFixed(3) + ')';
+      ctx.strokeStyle = 'rgba(41,86,255,' + ((1 - age / 1.55) * .43).toFixed(3) + ')';
       ctx.lineWidth = 1.6;
       ctx.stroke();
     }
 
     if (cursor.active && pointerFine) {
       const x = cursor.sx, y = cursor.sy;
-      ctx.strokeStyle = 'rgba(255,210,98,.72)';
+      ctx.strokeStyle = 'rgba(17,17,17,.46)';
       ctx.lineWidth = 1.2;
       const r = 17;
       ctx.beginPath();
@@ -204,28 +203,17 @@
 
   resize();
 
-  if ('ResizeObserver' in window) {
-    new ResizeObserver(resize).observe(stage);
-  } else {
-    window.addEventListener('resize', resize, { passive: true });
-  }
+  window.addEventListener('resize', resize, {passive:true});
 
   if (!reducedMotion) {
-    stage.addEventListener('pointermove', move, { passive: true });
-    stage.addEventListener('pointerdown', ripple, { passive: true });
-    stage.addEventListener('pointerleave', () => { cursor.active = false; }, { passive: true });
-    stage.addEventListener('pointercancel', () => { cursor.active = false; }, { passive: true });
+    document.addEventListener('pointermove', move, { passive: true });
+    document.addEventListener('pointerdown', ripple, { passive: true });
+    document.addEventListener('pointerleave', () => { cursor.active = false; }, { passive: true });
+    document.addEventListener('pointercancel', () => { cursor.active = false; }, { passive: true });
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) stop();
       else start();
     });
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(entries => {
-        inViewport = !!entries[0]?.isIntersecting;
-        if (inViewport) start();
-        else stop();
-      }, { threshold: .01 }).observe(stage);
-    }
     start();
   }
 })();
