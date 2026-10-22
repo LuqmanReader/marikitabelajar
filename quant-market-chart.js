@@ -206,6 +206,42 @@
   // Streaming provider chart is strictly separated from FRED-calibrated research data.
   // The third-party widget manages its own quote updates and may be delayed.
   const STREAM_WIDGET_SRC = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+  const streamPrefs = { interval: 'D', style: '1' }; // Show historical candles immediately, including when US market is closed.
+  const validIntervals = ['D', '60', '15', '5'];
+  function getNySession(date = new Date()) {
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone: 'America/New_York', weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+    }).formatToParts(date);
+    const find = type => parts.find(p => p.type === type)?.value;
+    const day = find('weekday'), minuteOfDay = Number(find('hour')) * 60 + Number(find('minute'));
+    const weekday = !['Sat','Sun'].includes(day);
+    return { open: weekday && minuteOfDay >= 570 && minuteOfDay < 960, weekday, minuteOfDay };
+  }
+  function renderSessionInfo() {
+    const state = getNySession();
+    const badge = byId('sp500SessionBadge');
+    if (badge) {
+      badge.textContent = state.open ? 'US REGULAR SESSION / USUALLY OPEN' : 'US REGULAR SESSION / CLOSED';
+      badge.dataset.session = state.open ? 'open' : 'closed';
+      badge.title = 'US regular index session: 9:30 AM–4:00 PM New York time, excluding holidays and special closings.';
+    }
+    const hint = byId('sp500SessionHint');
+    if (hint) hint.textContent = state.open
+      ? 'Within usual US market hours. New candles depend on provider updates, delay, and the selected timeframe.'
+      : 'US market is outside regular trading hours. Existing candles should still pan and zoom; new price candles normally wait until 9:30 AM New York time.';
+  }
+  function updateStreamControls() {
+    document.querySelectorAll('[data-sp500-live-interval]').forEach(btn => {
+      const active = btn.dataset.sp500LiveInterval === streamPrefs.interval;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-pressed', String(active));
+    });
+    document.querySelectorAll('[data-sp500-live-style]').forEach(btn => {
+      const active = btn.dataset.sp500LiveStyle === streamPrefs.style;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-pressed', String(active));
+    });
+  }
   const CLOSE_REFRESH_MS = 5 * 60 * 1000;
   let liveInitialized = false, historicalLastChecked = 0, historicalFetching = false, historyRefreshTimer = null;
 
@@ -252,10 +288,10 @@
     script.textContent = JSON.stringify({
       autosize: true,
       symbol: 'TVC:SPX',
-      interval: '5',
+      interval: streamPrefs.interval,
       timezone: 'America/New_York',
       theme: 'dark',
-      style: '1',
+      style: streamPrefs.style,
       locale: 'en',
       backgroundColor: '#0a1827',
       gridColor: 'rgba(90,131,162,0.14)',
@@ -268,20 +304,39 @@
       details: false,
       hotlist: false,
       calendar: false,
-      save_image: true
+      save_image: true,
+      support_host: 'https://www.tradingview.com',
+      show_popup_button: true,
+      popup_width: '1200',
+      popup_height: '750'
     });
-    script.addEventListener('error', () => {
+    const failure = reason => {
       if (!shell.isConnected) return;
-      if (model.view === 'live') setStatus('STREAMING PROVIDER UNAVAILABLE', 'error');
-      widget.textContent = 'The streaming chart could not load. Check your connection or open the provider directly.';
+      if (model.view === 'live') setStatus('EMBED UNAVAILABLE / USE DIRECT CHART', 'error');
       widget.classList.add('q-market-live-error');
-    });
+      widget.replaceChildren();
+      const notice = document.createElement('p');
+      notice.textContent = reason + ' The market chart provider may be blocked by browser privacy settings.';
+      const link = document.createElement('a');
+      link.href = 'https://www.tradingview.com/chart/?symbol=TVC%3ASPX';
+      link.target = '_blank'; link.rel = 'noopener noreferrer';
+      link.textContent = 'OPEN S&P 500 CHART ON TRADINGVIEW ↗';
+      widget.append(notice, link);
+    };
+    script.addEventListener('error', () => failure('TradingView embed script failed to load.'));
     script.addEventListener('load', () => {
       if (!shell.isConnected) return;
-      if (model.view === 'live') setStatus('PROVIDER WIDGET LOADED / DATA MAY BE DELAYED', 'ok');
+      // Loading the script does not guarantee the price-data frame rendered.
+      root.setTimeout(() => {
+        if (!shell.isConnected) return;
+        const embedded = !!shell.querySelector('iframe');
+        if (!embedded) failure('The provider did not create a chart frame.');
+        else if (model.view === 'live') setStatus('CHART FRAME READY / QUOTES MAY BE DELAYED', 'ok');
+      }, 7000);
     });
     shell.appendChild(script);
-    setStatus('CONNECTING TO EXTERNAL MARKET PROVIDER', 'info');
+    renderSessionInfo();
+    if (model.view === 'live') setStatus('CONNECTING TO EXTERNAL MARKET PROVIDER', 'info');
   }
 
   function showChartView(view) {
@@ -326,6 +381,26 @@
     byId('sp500LiveReload')?.addEventListener('click', () => {
       if (model.view === 'live') initStreamingChart(true);
     });
+    document.querySelectorAll('[data-sp500-live-interval]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const interval = btn.dataset.sp500LiveInterval;
+        if (!validIntervals.includes(interval)) return;
+        streamPrefs.interval = interval;
+        updateStreamControls();
+        initStreamingChart(true);
+      });
+    });
+    document.querySelectorAll('[data-sp500-live-style]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (!['1', '2'].includes(btn.dataset.sp500LiveStyle)) return;
+        streamPrefs.style = btn.dataset.sp500LiveStyle;
+        updateStreamControls();
+        initStreamingChart(true);
+      });
+    });
+    root.setInterval(renderSessionInfo, 60000);
+    renderSessionInfo();
+    updateStreamControls();
     updateControls();
     showChartView('live');
     // Only FRED historical closes are polled. Streaming updates belong to the provider widget.
