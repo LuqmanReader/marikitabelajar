@@ -159,3 +159,21 @@ input[type=range]{width:100%;accent-color:var(--q-green);margin:11px 0 0}
 .q-market-live-note a{color:#81e9c6;font-weight:900;white-space:nowrap;text-decoration:none}
 .q-market-live-note a:hover{text-decoration:underline}
 @media(max-width:700px){.q-market-view-tabs{padding:13px 12px}.q-market-view-tabs .q-micro{margin-left:0;max-width:none;width:100%}.q-market-view-tabs button{padding:10px}.q-market-live-intro{padding:18px 13px}.q-market-live-chart{height:495px;padding:0 4px}.q-market-live-note{padding:13px}.q-market-live-intro h3{font-size:24px}}
+
+
+/* QUANT 0.6 — explicit session-state and candle interval controls */
+.q-market-intro-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.q-market-intro-actions .q-market-direct-link{display:inline-flex;align-items:center;text-decoration:none;justify-content:center}
+.q-market-session{font-size:10px;font-weight:900;letter-spacing:.05em;border:1px solid #5e5260;border-radius:3px;padding:7px 10px;color:#ffca66;background:#2a2430;display:inline-flex}
+.q-market-session[data-session="open"]{border-color:#317c68;background:#173b37;color:#85ffd0}
+.q-market-session[data-session="closed"]{border-color:#8a693d;background:#362919;color:#ffca66}
+.q-market-candle-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 22px 11px;border-block:1px solid #253e53;background:#101e2e}
+.q-market-button-group{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.q-market-button-group .q-micro{margin-right:7px}
+.q-market-button-group button{background:#11263a;color:#c5dcee;border:1px solid #344b61;border-radius:3px;padding:9px 12px;font-size:11px;font-weight:900}
+.q-market-button-group button:hover,.q-market-button-group button:focus-visible{color:#6bf4c4;border-color:#6bf4c4}
+.q-market-button-group button.active{color:#6bf4c4;border-color:#6bf4c4;background:#16403d}
+.q-market-session-hint{font-size:11px;margin:0;color:#d1b587;padding:9px 22px;line-height:1.6;background:#231f1a}
+.q-market-live-error{display:flex;flex-direction:column;gap:15px;align-items:center;justify-content:center}
+.q-market-live-error a{color:#8ffbd6;font-weight:900}
+@media(max-width:700px){.q-market-candle-controls{padding:10px;align-items:flex-start}.q-market-button-group .q-micro{width:100%}.q-market-button-group button{padding:9px}.q-market-session-hint{padding:8px 12px}}
