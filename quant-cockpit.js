@@ -110,7 +110,7 @@ async function requestForecast(client){
   const {data:{session}}=await client.auth.getSession();if(!session)throw Error('Builder session expired');
   const response=await fetch(window.RH_SUPABASE_URL+'/functions/v1/ledgerpeer-quant-forecast',{method:'POST',
     headers:{Authorization:'Bearer '+session.access_token,apikey:window.RH_SUPABASE_PUBLISHABLE_KEY,'Content-Type':'application/json'},body:'{}'});
-  const result=await response.json();if(!response.ok)throw Error((result.error||'Computation service failed')+(Array.isArray(result.diagnostics)?' — '+result.diagnostics.join(' | '):''));
+  const raw=await response.text();let result;try{result=JSON.parse(raw)}catch{throw Error('Forecast service returned a non-JSON response (HTTP '+response.status+'). Check Edge Function deployment.')}if(!response.ok)throw Error((result.error||'Computation service failed')+(Array.isArray(result.diagnostics)?' — '+result.diagnostics.join(' | '):''));
   if(!Number.isFinite(result.annual_volatility)||!Number.isFinite(result.annual_drift)||!Number.isFinite(result.market_level))throw Error('Malformed quantitative result');
   state.live=true;state.level=result.market_level;state.vol=Math.max(.01,Math.min(.8,result.annual_volatility));state.drift=Math.max(-.8,Math.min(.8,result.annual_drift));
   state.source=result.source_name||'Unknown data provider';state.date=result.sample_end;
@@ -122,7 +122,10 @@ async function requestForecast(client){
   setMessage('Forecast computed from '+result.observations+' price observations. Scenario controls allow sensitivity analysis; changing them does not retrieve new data. Model: '+result.model_version+'.','ok');
  }catch(error){
   el('pipelineStatus').textContent='DATA FAILURE';el('sourceValue').textContent='No verified feed';
-  state.live=false;pathData();state.draw?.();
+  state.live=false;state.source='ILLUSTRATIVE';state.date=null;state.level=100;state.vol=.21;state.drift=.065;
+  el('obsValue').textContent='—';el('asofValue').textContent='—';
+  el('volControl').value='21';el('driftControl').value='6.5';el('volOut').textContent='21%';el('driftOut').textContent='6.5%';
+  pathData();state.draw?.();
   setMessage('MARKET-DATA PIPELINE FAILURE: '+error.message+'\nThe 3D simulation remains available using clearly labelled educational assumptions. No live probability is being claimed.','error');
  }finally{btn.disabled=false}
 }
