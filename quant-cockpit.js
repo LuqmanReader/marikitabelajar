@@ -3,7 +3,7 @@
 const el=id=>document.getElementById(id);
 const fmt=(x,d=1)=>Number.isFinite(x)?x.toFixed(d):'—';
 const norm=x=>{const t=1/(1+.2316419*Math.abs(x)),d=.3989422804*Math.exp(-x*x/2);const p=1-d*t*(.319381530+t*(-.356563782+t*(1.781477937+t*(-1.821255978+t*1.330274429))));return x>=0?p:1-p};
-const state={level:100,drift:.065,vol:.21,term:126,threshold:.10,live:false,source:'ILLUSTRATIVE',date:null,sample:0,orbit:.57,pitch:.48,paths:[],selected:0,animated:true,seed:9911};
+const state={level:100,drift:.065,vol:.21,term:126,threshold:.10,live:false,modified:false,source:'ILLUSTRATIVE',date:null,sample:0,orbit:.57,pitch:.48,paths:[],selected:0,animated:true,seed:9911};
 function rand(seed){let n=seed>>>0;return ()=>((n=Math.imul(1664525,n)+1013904223>>>0)/4294967296)}
 function gaussian(random){return Math.sqrt(-2*Math.log(Math.max(random(),1e-8)))*Math.cos(2*Math.PI*random())}
 function setMessage(message,type='info'){const box=el('modelMessage');if(box){box.textContent=message;box.dataset.type=type}}
@@ -27,7 +27,7 @@ function pathData(){
  el('riskDetail').textContent='Probability at '+state.term+' trading days; terminal decline ≥ '+fmt(state.threshold*100,0)+'%';
  el('sampleOutput').textContent='Monte Carlo visualisation: '+n+' paths • '+negative+' negative outcomes in this seeded draw';
  el('formulaText').textContent='Φ[(ln('+(1-state.threshold).toFixed(2)+') − μ·T) / (σ√T)] = '+fmt(analytic*100,2)+'%';
- el('dataMode').textContent=state.live?'CALIBRATED FROM OBSERVATIONS':'ILLUSTRATIVE / NOT MARKET CALIBRATED';
+ el('dataMode').textContent=state.live?(state.modified?'MARKET BASELINE / USER-ADJUSTED':'CALIBRATED FROM OBSERVATIONS'):'ILLUSTRATIVE / NOT MARKET CALIBRATED';
  el('dataMode').style.color=state.live?'#6bf4c4':'#ffca66';
  el('activeSource').textContent=state.live?state.source+' · '+state.date:'Educational assumptions only';
 }
@@ -75,9 +75,9 @@ function canvasInit(){
 }
 function onSliders(){
  [['volControl','volOut',v=>v/100,'vol'],['driftControl','driftOut',v=>v/100,'drift'],['termControl','termOut',v=>v,'term'],['thresholdControl','thresholdOut',v=>v/100,'threshold']].forEach(([id,out,parse,field])=>{
-  el(id).addEventListener('input',()=>{const raw=Number(el(id).value);state[field]=parse(raw);el(out).textContent=(field==='term'?raw+' trading days':raw+'%');pathData();state.draw?.()});
+  el(id).addEventListener('input',()=>{const raw=Number(el(id).value);state[field]=parse(raw);state.modified=state.live;el(out).textContent=(field==='term'?raw+' trading days':raw+'%');pathData();state.draw?.()});
  });
- el('resetScenario').addEventListener('click',()=>{state.drift=.065;state.vol=.21;state.term=126;state.threshold=.10;state.live=false;state.source='ILLUSTRATIVE';
+ el('resetScenario').addEventListener('click',()=>{state.drift=.065;state.vol=.21;state.term=126;state.threshold=.10;state.live=false;state.modified=false;state.source='ILLUSTRATIVE';
   [['volControl',21],['driftControl',6.5],['termControl',126],['thresholdControl',10]].forEach(([id,v])=>{el(id).value=String(v);el(id).dispatchEvent(new Event('input'))});
   setMessage('Scenario reset to educational assumptions. These are not live S&P 500 estimates.','info');
  });
@@ -112,13 +112,14 @@ async function requestForecast(client){
     headers:{Authorization:'Bearer '+session.access_token,apikey:window.RH_SUPABASE_PUBLISHABLE_KEY,'Content-Type':'application/json'},body:'{}'});
   const raw=await response.text();let result;try{result=JSON.parse(raw)}catch{throw Error('Forecast service returned a non-JSON response (HTTP '+response.status+'). Check Edge Function deployment.')}if(!response.ok)throw Error((result.error||'Computation service failed')+(Array.isArray(result.diagnostics)?' — '+result.diagnostics.join(' | '):''));
   if(!Number.isFinite(result.annual_volatility)||!Number.isFinite(result.annual_drift)||!Number.isFinite(result.market_level))throw Error('Malformed quantitative result');
-  state.live=true;state.level=result.market_level;state.vol=Math.max(.01,Math.min(.8,result.annual_volatility));state.drift=Math.max(-.8,Math.min(.8,result.annual_drift));
+  state.live=true;state.modified=false;state.level=result.market_level;state.vol=Math.max(.01,Math.min(.8,result.annual_volatility));state.drift=Math.max(-.8,Math.min(.8,result.annual_drift));
   state.source=result.source_name||'Unknown data provider';state.date=result.sample_end;
   el('volControl').value=state.vol*100;el('driftControl').value=state.drift*100;
   el('volOut').textContent=fmt(state.vol*100,1)+'%';el('driftOut').textContent=fmt(state.drift*100,1)+'%';
   el('pipelineStatus').textContent='CALCULATED';el('obsValue').textContent=result.observations??'—';
   el('asofValue').textContent=result.sample_end||'—';el('sourceValue').textContent=state.source;
   pathData();state.draw?.();
+  el('marketExplanation').textContent='MARKET DATA CONNECTED — '+result.observations+' historical S&P 500 closing prices, through '+result.sample_end+'. The 3D curves are simulated possible futures using historical volatility and return estimates; they are not observed future prices or guaranteed forecasts.';
   setMessage('Forecast computed from '+result.observations+' price observations. Scenario controls allow sensitivity analysis; changing them does not retrieve new data. Model: '+result.model_version+'.','ok');
  }catch(error){
   el('pipelineStatus').textContent='DATA FAILURE';el('sourceValue').textContent='No verified feed';
@@ -126,6 +127,7 @@ async function requestForecast(client){
   el('obsValue').textContent='—';el('asofValue').textContent='—';
   el('volControl').value='21';el('driftControl').value='6.5';el('volOut').textContent='21%';el('driftOut').textContent='6.5%';
   pathData();state.draw?.();
+  el('marketExplanation').textContent='Current market calibration unavailable. The 3D paths shown here are educational simulations, not observed S&P 500 prices.';
   setMessage('MARKET-DATA PIPELINE FAILURE: '+error.message+'\nThe 3D simulation remains available using clearly labelled educational assumptions. No live probability is being claimed.','error');
  }finally{btn.disabled=false}
 }
