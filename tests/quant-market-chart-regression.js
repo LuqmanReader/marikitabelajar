@@ -50,4 +50,17 @@ assert(marketScript.includes('cache: \'no-store\''), 'Verified close fetch must 
 assert(marketScript.includes("if (model.view === 'live') setStatus"), 'External-provider callbacks must not overwrite historical chart status');
 assert(!marketScript.includes("model.points.push("), 'Provider quotes must never be spliced into the verified FRED observations');
 
+
+assert(html.includes('id="sp500SessionBadge"') && html.includes('id="sp500SessionHint"'), 'Market-open/closed indication is missing');
+assert(html.includes('data-sp500-live-interval="D"') && html.includes('data-sp500-live-interval="5"'), 'Daily and intraday candle controls must both exist');
+assert(html.includes('data-sp500-live-style="1"') && html.includes('data-sp500-live-style="2"'), 'Candle/line visual switches missing');
+assert(html.includes('OPEN FULL CHART'), 'Direct full TradingView chart fallback missing');
+assert(marketScript.includes("const streamPrefs = { interval: 'D', style: '1' }"), 'Default to daily historical candles instead of static out-of-session five-minute bar');
+assert(marketScript.includes("support_host: 'https://www.tradingview.com'"), 'TradingView provider config incomplete');
+assert(marketScript.includes('validIntervals.includes(interval)') && marketScript.includes("initStreamingChart(true)"), 'Interactive timeframe changes must recreate the provider widget');
+assert(marketScript.includes("shell.querySelector('iframe')"), 'Streaming widget must verify its frame exists before reporting ready');
+assert(marketScript.includes('failure(\'The provider did not create a chart frame.\')'), 'Missing external provider fallback on blank iframe');
+assert(marketScript.includes("timeZone: 'America/New_York'"), 'Market session indicator must respect US daylight saving time');
+assert(marketScript.includes('minuteOfDay >= 570 && minuteOfDay < 960'), 'US regular market session math is incorrect');
+
 console.log('S&P 500 CHART REGRESSION PASSED | closes:',points.length,'| latest:',points[points.length-1].date,'| 5D points:',market.selectRange(points,'5D').length);
