@@ -2,8 +2,9 @@
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
-const ctx={};
+const ctx={};ctx.window=ctx;
 vm.createContext(ctx);
+vm.runInContext(fs.readFileSync('subject-catalog.js','utf8'),ctx);
 vm.runInContext(fs.readFileSync('acca-published-data.js','utf8'),ctx);
 vm.runInContext(fs.readFileSync('notes-data.js','utf8'),ctx);
 const syllabus=ctx.LedgerPublishedSyllabi.papers,notes=ctx.LedgerFiaNotes;
@@ -27,7 +28,29 @@ for(const paper of papers){
   }
   console.log(paper+': '+mapped+'/'+syllabus[paper].topics.length+' syllabus topics supported');
 }
-assert.equal(Object.keys(notes).length,total,'Orphaned notes or duplicate syllabus references');
+const registry=ctx.SubjectCatalog.papers;
+const fia=registry.filter(p=>p.stage.startsWith('FIA'));
+const acca=registry.filter(p=>p.stage.startsWith('ACCA'));
+assert.equal(fia.length,10,'Expected 10 FIA papers including specialist options');
+assert.equal(acca.length,15,'Expected 15 ACCA qualification papers');
+assert.equal(registry.length,25,'Expected all 25 FIA and ACCA subjects in official catalog');
+assert.equal(new Set(registry.map(p=>p.code)).size,25,'Subject codes must be unique');
+let accaTopics=0;
+for(const paper of acca){
+ const data=syllabus[paper.code];
+ assert(data?.topics?.length>=10,'Missing ACCA syllabus topics: '+paper.code);
+ assert(/^https:\\/\\/www\\.accaglobal\\.com\\//.test(data.source),'Missing official source for '+paper.code);
+ const ids=new Set();
+ for(const item of data.topics){
+  const match=item.match(/^([A-Z]\\d+)\\s*·\\s*(.+)$/);
+  assert(match,'Invalid ACCA topic code in '+paper.code+': '+item);
+  assert(!ids.has(match[1]),'Repeated syllabus code '+paper.code+': '+match[1]);
+  ids.add(match[1]);accaTopics++;
+ }
+ assert(Object.keys(notes).some(k=>k.startsWith(paper.code+':')),'No original study lesson for '+paper.code);
+}
+assert(accaTopics>300,'ACCA study topic index incomplete');
+assert.equal(Object.keys(notes).length,total+acca.length,'Unexpected missing/extra study lessons');
 assert.equal(total,74,'Four core FIA syllabus papers changed, audit content before release');
 for(const paper of ['FBT','FMA','FFA']){
  assert(syllabus[paper]?.topics?.length>10&&/^https:\/\/www\.accaglobal\.com\//.test(syllabus[paper].source),'Supplementary FIA syllabus index missing: '+paper);
@@ -35,8 +58,12 @@ for(const paper of ['FBT','FMA','FFA']){
 const html=fs.readFileSync('notes.html','utf8');
 const script=fs.readFileSync('notes-page.js','utf8');
 assert(html.includes('id="notesApp"')&&html.includes('id="notesFilter"')&&html.includes('id="topicList"'),'Notes navigation missing');
-assert(html.includes('src="acca-published-data.js?')&&html.includes('src="notes-data.js?')&&html.includes('src="notes-page.js?'),'Missing syllabus/notes scripts');
+assert(html.includes('src="subject-catalog.js?')&&html.includes('src="acca-published-data.js?')&&html.includes('src="notes-data.js?')&&html.includes('src="notes-page.js?'),'Missing full subject registry / syllabus / notes scripts');
+assert(html.includes('data-notes-qualification="acca"') && html.includes('data-notes-qualification="fia"') && html.includes('data-notes-qualification="all"'),'Missing FIA vs ACCA first-class selector');
 assert(script.includes('PersonalHubAuth.ready()'),'Student auth gate missing');
+assert(script.includes('SubjectCatalog?.papers')&&script.includes("qualification==='acca'"),'Notes renderer still limited to FIA hardcoded subjects');
+assert(!script.includes('ACROSS 7 PAPERS'),'Outdated FIA-only topic count found');
+assert(script.includes("paper=arg;qualification=qualificationOf(arg)"),'Deep linked ACCA subjects must switch qualification automatically');
 assert(script.includes("content.append(makeLesson("),'Lesson renderer missing');
 const home=fs.readFileSync('index.html','utf8');
 assert(home.includes('FIA–ACCA Notes Library')&&!home.includes('financial-manager.html'),'Home still promotes finance instead of notes');
@@ -52,4 +79,4 @@ for(const [oldPage,dest] of [['achievements.html','notes.html'],['financial-mana
 }
 const quant=fs.readFileSync('quant-model.html','utf8');
 assert(!quant.includes('href="financial-manager.html"'),'QUANT returns to deleted finance area');
-console.log('FIA NOTES REGRESSION PASSED | '+total+' original detailed notes | public finance card retired | QUANT preserved');
+console.log('FIA + ACCA NOTES REGRESSION PASSED | FIA core: '+total+' full notes | ACCA: '+acca.length+' subjects, '+accaTopics+' topics, '+acca.length+' starter lessons | finance retired | QUANT preserved');
