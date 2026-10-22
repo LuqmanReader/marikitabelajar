@@ -8,11 +8,11 @@ function rand(seed){let n=seed>>>0;return ()=>((n=Math.imul(1664525,n)+101390422
 function gaussian(random){return Math.sqrt(-2*Math.log(Math.max(random(),1e-8)))*Math.cos(2*Math.PI*random())}
 function setMessage(message,type='info'){const box=el('modelMessage');if(box){box.textContent=message;box.dataset.type=type}}
 function pathData(){
- const n=100, horizon=state.term,dt=horizon/252, drift=state.drift;
+ const n=3000, steps=60, horizon=state.term,dt=horizon/252, drift=state.drift;
  const random=rand(state.seed);const paths=[];let negative=0;
  for(let p=0;p<n;p++){
    const arr=[0];let log=0;
-   for(let t=1;t<=126;t++){log+=drift*dt/126+state.vol*Math.sqrt(dt/126)*gaussian(random);arr.push(log)}
+   for(let t=1;t<=steps;t++){log+=drift*dt/steps+state.vol*Math.sqrt(dt/steps)*gaussian(random);arr.push(log)}
    if(log<=Math.log(1-state.threshold))negative++;
    paths.push({log:arr,tail:log,bad:log<=Math.log(1-state.threshold)});
  }
@@ -25,53 +25,109 @@ function pathData(){
  el('driftValue').textContent=(state.drift>=0?'+':'')+fmt(state.drift*100,1)+'%';
  el('levelValue').textContent=state.live?state.level.toLocaleString('en-US',{maximumFractionDigits:2}):'SIMULATED';
  el('riskDetail').textContent='Probability at '+state.term+' trading days; terminal decline ≥ '+fmt(state.threshold*100,0)+'%';
- el('sampleOutput').textContent='Monte Carlo visualisation: '+n+' paths • '+negative+' negative outcomes in this seeded draw';
+ el('sampleOutput').textContent='Monte Carlo: '+n+' seeded paths • '+negative+' paths beyond loss threshold';
  el('formulaText').textContent='Φ[(ln('+(1-state.threshold).toFixed(2)+') − μ·T) / (σ√T)] = '+fmt(analytic*100,2)+'%';
  el('dataMode').textContent=state.live?(state.modified?'MARKET BASELINE / USER-ADJUSTED':'CALIBRATED FROM OBSERVATIONS'):'ILLUSTRATIVE / NOT MARKET CALIBRATED';
  el('dataMode').style.color=state.live?'#6bf4c4':'#ffca66';
  el('activeSource').textContent=state.live?state.source+' · '+state.date:'Educational assumptions only';
 }
-function canvasInit(){
- const canvas=el('quantCanvas'),ctx=canvas.getContext('2d');if(!ctx)return;
- let dragging=false,prevX=0,prevY=0;
- canvas.addEventListener('pointerdown',e=>{dragging=true;prevX=e.clientX;prevY=e.clientY;canvas.setPointerCapture(e.pointerId)});
- canvas.addEventListener('pointerup',()=>dragging=false);
- canvas.addEventListener('pointercancel',()=>dragging=false);
- canvas.addEventListener('pointermove',e=>{if(!dragging)return;state.orbit+=(e.clientX-prevX)*.007;state.pitch=Math.min(1.15,Math.max(.18,state.pitch+(e.clientY-prevY)*.004));prevX=e.clientX;prevY=e.clientY;draw()});
- const resize=()=>{const rect=canvas.getBoundingClientRect();const scale=Math.min(window.devicePixelRatio||1,2);canvas.width=Math.round(rect.width*scale);canvas.height=Math.round(rect.height*scale);ctx.setTransform(scale,0,0,scale,0,0);draw()};
- if('ResizeObserver'in window)new ResizeObserver(resize).observe(canvas);else window.addEventListener('resize',resize);
- function project(t,v,lane,w,h){
-  // Perspective projection of genuine 3D coordinates: time axis, log-return axis and path-spread axis.
-  const x=(t/126-.5)*7.0,y=v*5.0,z=lane*3.2;const a=state.orbit,c=Math.cos(a),s=Math.sin(a);
-  const xr=x*c-z*s,zr=x*s+z*c;const cp=Math.cos(state.pitch),sp=Math.sin(state.pitch);
-  const yr=y*cp-zr*sp, depth=y*sp+zr*cp;
-  const perspective=13/(13+depth*.55);
-  return [w*.49+xr*perspective*Math.min(w/9.8,70),h*.56-yr*perspective*Math.min(h/4.3,95),perspective];
+
+function surfaceInit(){
+ const node=el('quantSurface');
+ if(!node)return;
+ if(!window.Plotly){node.textContent='3D WebGL chart library could not load. Market forecasts and risk calculations remain available; check your connection and refresh.';return}
+ let redrawTimer=null,inFlight=false,queued=false,rendered=false;
+ let camera={eye:{x:1.8,y:-2.05,z:1.35},center:{x:0,y:0,z:0}};
+ let orbitStep=-.85;
+ const spectrum=[[0,'#102a40'],[.08,'#1e5180'],[.22,'#277bbd'],[.45,'#21c4d6'],[.67,'#8d92ff'],[.85,'#dc86fc'],[1,'#ffd27d']];
+ const percentile=(t,z)=>(Math.exp(state.drift*t/252+z*state.vol*Math.sqrt(t/252))-1)*100;
+ function makeFigure(){
+   const paths=state.paths,steps=paths[0].log.length-1,lowLog=Math.min(-.12,state.drift*state.term/252-4*state.vol*Math.sqrt(state.term/252),Math.log(1-state.threshold)-.05);
+   const highLog=Math.max(.12,state.drift*state.term/252+4*state.vol*Math.sqrt(state.term/252));
+   const minReturn=Math.max(-99,(Math.exp(lowLog)-1)*100),maxReturn=(Math.exp(highLog)-1)*100;
+   const rows=73,firstStep=Math.max(2,Math.ceil(steps*.065));
+   const indices=Array.from({length:steps-firstStep+1},(_,i)=>i+firstStep);
+   const times=indices.map(i=>i*state.term/steps);
+   const returns=Array.from({length:rows},(_,i)=>minReturn+(maxReturn-minReturn)*i/(rows-1));
+   const bin=(maxReturn-minReturn)/(rows-1),n=paths.length;
+   const densities=indices.map(step=>{
+      const histogram=new Float64Array(rows);
+      for(const path of paths){
+        const value=(Math.exp(path.log[step])-1)*100;
+        const index=Math.floor((value-minReturn)/bin+.5);
+        if(index>=0&&index<rows)histogram[index]++;
+      }
+      let smoothed=histogram;
+      for(let pass=0;pass<3;pass++){
+        const next=new Float64Array(rows);
+        for(let j=0;j<rows;j++){
+          let weight=0,sum=0;
+          for(let k=-3;k<=3;k++){const q=j+k;if(q>=0&&q<rows){const w=[1,6,15,20,15,6,1][k+3];sum+=smoothed[q]*w;weight+=w}}
+          next[j]=sum/weight;
+        }
+        smoothed=next;
+      }
+      return Array.from(smoothed,v=>v/(n*bin));
+   });
+   const z=returns.map((_,i)=>densities.map(d=>d[i]));
+   const maxDensity=Math.max(...densities.flat());
+   const heightAt=(t,value)=>{
+      const idx=Math.min(densities.length-1,Math.max(0,Math.round(t/state.term*steps)-firstStep));
+      const iy=Math.max(0,Math.min(rows-1,Math.round((value-minReturn)/bin)));
+      return densities[idx][iy]+maxDensity*.03;
+   };
+   const main={type:'surface',x:times,y:returns,z,opacity:.94,showscale:false,
+      colorscale:spectrum,lighting:{ambient:.56,diffuse:.91,specular:.32,roughness:.65,fresnel:.10},lightposition:{x:110,y:-95,z:170},
+      contours:{z:{show:true,highlight:false,project:{z:true},color:'#42617c',width:1}},
+      hovertemplate:'Time: %{x:.0f} trading days<br>Cumulative return: %{y:.1f}%<br>Density: %{z:.4f} per 1% return<extra>MONTE CARLO DENSITY</extra>',
+      name:'Simulated distribution'};
+   const bands=[{z:-1.6448536269,name:'5th percentile',color:'#ff8296'},{z:0,name:'Median',color:'#7dffda'},{z:1.6448536269,name:'95th percentile',color:'#ffd38b'}];
+   const lines=bands.map(p=>{
+     const values=times.map(t=>percentile(t,p.z));
+     return {type:'scatter3d',mode:'lines',x:times,y:values,z:values.map((v,i)=>heightAt(times[i],v)),
+        name:p.name,hovertemplate:p.name+'<br>Day %{x:.0f}<br>Return %{y:.1f}%<extra></extra>',
+        line:{color:p.color,width:p.z===0?8:5},showlegend:true};
+   });
+   const thresholdReturn=-state.threshold*100;
+   const threshold={type:'scatter3d',mode:'lines',name:'Loss threshold',
+      x:times,y:times.map(()=>thresholdReturn),z:times.map(()=>maxDensity*.015),
+      line:{color:'#ff566f',dash:'dash',width:4},hovertemplate:'Loss threshold: %{y:.0f}%<extra></extra>',showlegend:true};
+   const guide=el('sampleOutput');if(guide)guide.textContent=n.toLocaleString('en-US')+' simulations • '+indices.length+' density slices • seeded / reproducible';
+   const axis={color:'#9ab5ca',gridcolor:'rgba(115,161,195,.21)',zerolinecolor:'#6bf4c4',showbackground:true,backgroundcolor:'#0c1b2a',
+      tickfont:{size:10,color:'#a3c0d8'},titlefont:{size:11,color:'#bdd7ec'}};
+   const layout={paper_bgcolor:'#091523',plot_bgcolor:'#091523',font:{family:'Consolas,monospace',color:'#cbdef0',size:11},
+      margin:{l:0,r:0,t:0,b:0},showlegend:true,
+      legend:{orientation:'h',x:.5,xanchor:'center',y:.015,yanchor:'bottom',font:{size:10,color:'#d3e3f4'},bgcolor:'rgba(8,19,34,.78)'},
+      scene:{xaxis:{...axis,title:'TIME / TRADING DAYS',range:[0,state.term]},yaxis:{...axis,title:'CUMULATIVE RETURN / %',range:[minReturn,maxReturn]},
+         zaxis:{...axis,title:'PROBABILITY DENSITY / 1% RETURN',range:[0,maxDensity*1.12]},
+         aspectmode:'manual',aspectratio:{x:1.6,y:1.15,z:.95},camera,dragmode:'orbit'},
+      uirevision:'quant-density-v1',autosize:true};
+   return {data:[main,...lines,threshold],layout};
  }
- function draw(){
-  const w=canvas.clientWidth,h=canvas.clientHeight;if(!w||!h)return;
-  ctx.clearRect(0,0,w,h);
-  const bg=ctx.createLinearGradient(0,0,0,h);bg.addColorStop(0,'#11283a');bg.addColorStop(1,'#081322');ctx.fillStyle=bg;ctx.fillRect(0,0,w,h);
-  // floor grid
-  for(let t=0;t<=126;t+=14)for(let axis=0;axis<1;axis++){
-   const a=project(t,-.46,-1.5,w,h),b=project(t,-.46,1.5,w,h);
-   ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.strokeStyle='rgba(112,173,201,.17)';ctx.lineWidth=1;ctx.stroke();
-  }
-  for(let lane=-1.5;lane<=1.5;lane+=.3){const a=project(0,-.46,lane,w,h),b=project(126,-.46,lane,w,h);ctx.beginPath();ctx.moveTo(a[0],a[1]);ctx.lineTo(b[0],b[1]);ctx.strokeStyle='rgba(112,173,201,.13)';ctx.stroke()}
-  // reference zero path and threshold
-  for(const [y,color] of [[0,'rgba(107,244,196,.47)'],[Math.log(1-state.threshold),'rgba(255,112,133,.62)']]){
-   const a=project(0,y,-1.45,w,h),b=project(126,y,-1.45,w,h);ctx.beginPath();ctx.moveTo(...a);ctx.lineTo(...b);ctx.strokeStyle=color;ctx.setLineDash([5,5]);ctx.stroke();ctx.setLineDash([]);
-  }
-  for(let i=0;i<state.paths.length;i++){
-    const p=state.paths[i],lane=(i/99-.5)*1.75;ctx.beginPath();
-    for(let t=0;t<=126;t+=2){const xy=project(t,p.log[t],lane,w,h);if(!t)ctx.moveTo(xy[0],xy[1]);else ctx.lineTo(xy[0],xy[1]);}
-    ctx.strokeStyle=p.bad?'rgba(255,112,133,.39)':'rgba(100,208,248,.33)';ctx.lineWidth=p.bad?1.15:1;ctx.stroke();
-  }
-  const median=state.paths.map(x=>x.log[126]).sort((a,b)=>a-b)[50];
-  const end=project(126,median,0,w,h);ctx.beginPath();ctx.arc(end[0],end[1],5,0,Math.PI*2);ctx.fillStyle='#6bf4c4';ctx.fill();
-  ctx.fillStyle='#90b2c9';ctx.font='11px monospace';ctx.fillText('t = 0',14,h-19);ctx.fillText('HORIZON '+state.term+'D',Math.max(5,w-155),h-19);
+ async function render(){
+   if(inFlight){queued=true;return}
+   inFlight=true;
+   try{
+     do{
+       queued=false;
+       const {data,layout}=makeFigure();
+       if(rendered)await window.Plotly.react(node,data,layout,{displaylogo:false,responsive:true,scrollZoom:true});
+       else {await window.Plotly.newPlot(node,data,layout,{displaylogo:false,responsive:true,scrollZoom:true});rendered=true}
+     }while(queued);
+   }catch(error){node.textContent='WebGL density chart could not be rendered: '+error.message;rendered=false}
+   finally{inFlight=false}
  }
- state.draw=draw;resize();
+ state.draw=()=>{clearTimeout(redrawTimer);redrawTimer=setTimeout(render,90)};
+ const turn=el('rotateScene');
+ if(turn)turn.addEventListener('click',()=>{
+   orbitStep+=.55;
+   camera={eye:{x:2.4*Math.cos(orbitStep),y:2.4*Math.sin(orbitStep),z:1.30},center:{x:0,y:0,z:0}};
+   if(rendered)window.Plotly.relayout(node,{'scene.camera':camera});
+ });
+ node.on?.('plotly_relayout',event=>{
+   if(event['scene.camera'])camera=event['scene.camera'];
+ });
+ render();
 }
 function onSliders(){
  [['volControl','volOut',v=>v/100,'vol'],['driftControl','driftOut',v=>v/100,'drift'],['termControl','termOut',v=>v,'term'],['thresholdControl','thresholdOut',v=>v/100,'threshold']].forEach(([id,out,parse,field])=>{
@@ -136,7 +192,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
   if(!window.PersonalHubAuth)throw Error('LedgerPeer authentication unavailable');
   const client=await authenticate();el('loading').hidden=true;
   if(!client)return;
-  onSliders();pathData();canvasInit();
+  onSliders();pathData();surfaceInit();
   el('runForecast').addEventListener('click',()=>requestForecast(client));
   await requestForecast(client);
  }catch(error){el('loading').textContent='Failed to start research cockpit: '+error.message;el('loading').hidden=false}
