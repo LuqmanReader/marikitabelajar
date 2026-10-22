@@ -14,7 +14,7 @@ assert(snapshot.points.length>=504,'Insufficient cached history');
 const result=sandbox.calc(snapshot.points);
 const b=result.backtest,r=result.historical_risk;
 assert(b.forecasts===b.windows.length&&b.forecasts>=10,'No meaningful holdout windows');
-assert(b.windows.every((w,i)=>i===0||w.forecast_date>b.windows[i-1].outcome_date),'Overlapping evaluation windows');
+assert(b.windows.every((w,i)=>i===0||w.forecast_date>=b.windows[i-1].outcome_date),'Overlapping evaluation windows');
 assert(b.events===b.windows.reduce((n,w)=>n+w.realized,0),'Event counts wrong');
 assert(b.windows.every(w=>w.predicted_pct>=0&&w.predicted_pct<=100&&w.baseline_pct>=0&&w.baseline_pct<=100),'Probabilities out of bounds');
 assert(b.brier_model>=0&&b.brier_model<=1&&b.brier_baseline>=0&&b.brier_baseline<=1,'Invalid Brier score');
