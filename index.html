@@ -271,46 +271,21 @@ footer{font-size:11px;text-align:center;text-transform:uppercase;font-weight:900
 }
 @media(prefers-reduced-motion:reduce){.intro-companion img{animation:none}}
 
-/* Homepage-only interactive playground, inspired by cursor-responsive event sites. */
-.lp-reactive-playground{
-  position:relative;isolation:isolate;
-  max-width:1325px;height:clamp(235px,24vw,315px);
-  margin:-20px auto 74px;overflow:hidden;
-  border:4px solid var(--ink);box-shadow:9px 9px 0 var(--ink);
-  background:radial-gradient(ellipse at 78% 38%,#203d64 0%,#101f38 39%,#081321 86%);
-  color:#fff;cursor:crosshair;touch-action:pan-y;
+
+/* Whole-homepage cursor-responsive transparent background layer.
+   Canvas has no fill: the original LedgerPeer cream #FFF7E4 stays unchanged.
+   This covers every visible homepage section without blocking any controls. */
+#lpHomepageField.lp-home-interactive-field {
+ position:fixed;inset:0;display:block;
+ width:100vw;height:100vh;height:100dvh;
+ pointer-events:none!important;touch-action:auto;
+ z-index:45;opacity:.94;mix-blend-mode:multiply;
+ background:transparent!important;
 }
-.lp-reactive-playground::before{
-  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
-  background:linear-gradient(140deg,rgba(17,33,52,.4),transparent 60%);
+@media (prefers-reduced-motion:reduce) {
+ #lpHomepageField.lp-home-interactive-field{opacity:.35}
 }
-.lp-reactive-playground::after{
-  content:"";position:absolute;left:0;right:0;bottom:0;height:4px;z-index:2;
-  background:linear-gradient(90deg,var(--green),var(--blue),var(--purple),var(--yellow));
-  pointer-events:none;
-}
-.lp-reactive-canvas{position:absolute;inset:0;display:block;width:100%;height:100%;z-index:1;pointer-events:none}
-.lp-reactive-copy{position:absolute;z-index:2;inset:0;padding:24px 29px;
-  pointer-events:none;display:flex;flex-direction:column;justify-content:space-between}
-.lp-reactive-topline{display:flex;gap:20px;justify-content:space-between;align-items:start}
-.lp-reactive-topline span{font-size:10px;font-weight:900;letter-spacing:.14em;color:#87f0cb}
-.lp-reactive-topline span:last-child{color:#9aaec8;text-align:right}
-.lp-reactive-footer{display:flex;align-items:end;gap:22px;justify-content:space-between}
-.lp-reactive-footer strong{font:900 clamp(24px,3.5vw,47px)/1 "Arial Black",Arial,sans-serif;
-  letter-spacing:-.055em;text-transform:uppercase;color:#f3f9ff;text-shadow:3px 3px 0 #182e54}
-.lp-reactive-footer p{margin:0;max-width:205px;font-size:10px;line-height:1.6;
-  text-align:right;color:#bac9db;font-weight:800;letter-spacing:.03em}
-html:has(#hubView:not([hidden])) .lp-reactive-playground{margin-top:25px;margin-bottom:25px;height:225px}
-@media(max-width:1385px){.lp-reactive-playground{margin-left:24px;margin-right:34px}}
-@media(max-width:650px){
-  .lp-reactive-playground{height:205px;margin:-4px 20px 36px 14px;box-shadow:6px 6px 0 var(--ink)}
-  .lp-reactive-copy{padding:15px 16px}.lp-reactive-topline span{font-size:8px}
-  .lp-reactive-footer{align-items:start;flex-direction:column;gap:8px}
-  .lp-reactive-footer strong{font-size:26px}
-  .lp-reactive-footer p{max-width:none;text-align:left;font-size:9px}
-  html:has(#hubView:not([hidden])) .lp-reactive-playground{height:200px;margin-top:17px;margin-bottom:21px}
-}
-</style><script defer src="homepage-reactive.js?v=20261022a"></script></head><body><div aria-hidden="true" class="colour-ribbon"></div><header class="lp-header">
+</style><script defer src="homepage-reactive.js?v=20261022fullbg1"></script></head><body><canvas id="lpHomepageField" class="lp-home-interactive-field" aria-hidden="true"></canvas><div aria-hidden="true" class="colour-ribbon"></div><header class="lp-header">
 <a aria-label="LedgerPeer homepage" class="brand" href="#top">
 <img alt="" height="45" src="ledgerpeer-sidebar-logo.png" width="45"/>
 <span>LEDGER<span class="brand-accent">PEER</span></span>
@@ -326,13 +301,7 @@ html:has(#hubView:not([hidden])) .lp-reactive-playground{margin-top:25px;margin-
 
 
 <div aria-hidden="true" class="intro-companion"><img alt="" decoding="async" height="989" src="ledgerpeer-wave.png" width="1591"/><span class="intro-companion-bubble">HEY! I’LL SHOW YOU AROUND ✳</span></div></section>
-<section class="lp-reactive-playground" data-lp-playground aria-label="Interactive motion playground">
-  <canvas class="lp-reactive-canvas" aria-hidden="true"></canvas>
-  <div class="lp-reactive-copy">
-    <div class="lp-reactive-topline"><span>LEDGERPEER / INTERACTIVE SPACE</span><span>01 // MOTION EXPERIMENT</span></div>
-    <div class="lp-reactive-footer"><strong>MAKE WAVES. ✳</strong><p>MOVE YOUR CURSOR TO BEND THE FIELD.<br>CLICK OR TAP TO SEND A RIPPLE.</p></div>
-  </div>
-</section>
+
 <section aria-label="Explore LedgerPeer's features with its mascot" class="story" id="story">
 <div class="mascot-column">
 <div class="mascot-sticky">
