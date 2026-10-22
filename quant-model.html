@@ -4,9 +4,9 @@
 <title>Quant Intelligence Research Lab | LedgerPeer</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script><script src="auth.js"></script>
-<link rel="stylesheet" href="quant-cockpit.css?v=20261022market4">
+<link rel="stylesheet" href="quant-cockpit.css?v=20261022stream5">
 <script defer src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
-<script defer src="quant-cockpit.js?v=20261022market4"></script><script defer src="quant-market-chart.js?v=20261022market4"></script></head>
+<script defer src="quant-cockpit.js?v=20261022stream5"></script><script defer src="quant-market-chart.js?v=20261022stream5"></script></head>
 <body class="quant-body"><main class="q-shell">
 <header class="q-header">
   <div class="q-brand">LEDGERPEER <span>/ QUANT</span><div class="q-eyebrow" style="margin-top:6px">RESEARCH DIVISION • CONSTRUCTION ACCESS</div></div>
@@ -23,14 +23,37 @@
 <section class="q-top"><div><div class="q-eyebrow">LPQ / EXPERIMENTAL QUANTITATIVE RESEARCH ENVIRONMENT</div>
 <h1>THE FUTURE IS <em>A DISTRIBUTION.</em></h1>
 <p class="q-lede">An interactive financial uncertainty laboratory. Explore simulated market trajectories, stress the assumptions, and challenge the mathematics behind every probability.</p></div>
-<div class="q-version">LAB BUILD 0.4<br>ACCESS: BUILDER ONLY<br>RELEASE: NOT AUTHORIZED</div></section>
+<div class="q-version">LAB BUILD 0.5<br>ACCESS: BUILDER ONLY<br>RELEASE: NOT AUTHORIZED</div></section>
 <div class="q-warning"><b>RESEARCH MODE:</b> This is not a trading signal or a validated prediction engine. Simulated scenarios are educational; real-market calibration is explicitly marked when a data feed succeeds.</div>
 
-<section class="q-section q-market-panel" id="sp500MarketPanel" aria-label="S&P 500 historical price explorer">
+<section class="q-section q-market-panel" id="sp500MarketPanel" aria-label="S&P 500 streaming market and historical price explorer">
   <div class="q-section-head">
-    <h2>00 / S&amp;P 500 Market History</h2>
-    <span class="q-micro q-market-state" id="sp500ChartStatus" role="status">AWAITING VERIFIED SNAPSHOT</span>
+    <h2>00 / S&amp;P 500 MARKET MONITOR</h2>
+    <span class="q-micro q-market-state" id="sp500ChartStatus" role="status">PROVIDER DATA / DELAY POSSIBLE</span>
   </div>
+  <div class="q-market-view-tabs" role="group" aria-label="Choose S&P 500 chart source">
+    <button type="button" id="sp500LiveToggle" class="active" aria-pressed="true">AUTO-UPDATING / INTRADAY</button>
+    <button type="button" id="sp500HistoryToggle" aria-pressed="false">VERIFIED / DAILY CLOSES</button>
+    <span class="q-micro">Streaming chart and research dataset use different providers.</span>
+  </div>
+  <div id="sp500LiveView" class="q-market-live-view">
+    <div class="q-market-live-intro">
+      <div>
+        <span class="q-eyebrow">TVC:SPX / INDICATIVE S&amp;P 500-BASED INDEX</span>
+        <h3>STREAMING PRICE ACTION<span class="q-market-dot">.</span></h3>
+        <p class="q-micro">Auto-updating provider chart · Intraday intervals · Market hours apply</p>
+      </div>
+      <button type="button" id="sp500LiveReload" class="q-ghost">RECONNECT CHART ↻</button>
+    </div>
+    <div class="q-market-live-chart" id="sp500LiveChart" aria-label="TradingView S&P 500-based intraday price chart with provider updates">
+      <p>Connecting to market chart provider…</p>
+    </div>
+    <div class="q-market-live-note">
+      <span>Third-party market chart powered by TradingView. Quotes may be delayed, market-hours dependent or unavailable. TVC:SPX is a TradingView-calculated S&amp;P 500-based series, not a licensed exchange-certified real-time index feed. This view does not supply values to the QUANT forecasting model.</span>
+      <a href="https://www.tradingview.com/symbols/SPX/?exchange=TVC" target="_blank" rel="noopener noreferrer">VIEW SOURCE ↗</a>
+    </div>
+  </div>
+  <div id="sp500HistoryView" hidden>
   <div class="q-market-head">
     <div>
       <div class="q-eyebrow">S&amp;P 500 INDEX <span class="q-market-symbol">/ ^GSPC</span></div>
@@ -69,6 +92,7 @@
     <span id="sp500ChartNote">Observed market prices are separate from the simulated forecast distribution below.</span>
     <span>DRAG TO ZOOM · DOUBLE-CLICK TO RESET · HOVER FOR DAILY VALUES</span>
   </div>
+  </div><!-- /sp500HistoryView -->
 </section>
 <section class="q-metrics" aria-label="Quant readout">
  <article class="q-metric"><div class="q-metric-label">Terminal downside probability</div><div class="q-metric-value q-red" id="riskValue">—</div><div class="q-metric-sub" id="riskDetail">Six-month terminal decline</div></article>
