@@ -82,3 +82,14 @@ input[type=range]{width:100%;accent-color:var(--q-green);margin:11px 0 0}
 .q-surface-guide .q-guide-terms span{display:inline-block;padding:4px 7px;border:1px solid #324d60;background:#122436}
 @media(max-width:1050px){.q-columns{grid-template-columns:1fr}.q-stage{min-height:540px}#quantSurface{height:530px}}
 @media(max-width:600px){.q-stage{min-height:410px}#quantSurface{height:405px}.q-stage-overlay{top:10px;left:12px}.q-stage-title{font-size:16px}.q-stage-badge{left:8px;right:8px;max-width:none;bottom:6px;font-size:9px}.q-surface-guide{padding:12px 14px}}
+
+/* Time-slice diagnostics and physically consistent axis comparisons */
+.q-snapshot-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:#2b4560;border-top:1px solid #2b4560;border-bottom:1px solid #2b4560}
+.q-snapshot{padding:14px 17px;background:#102235;min-width:0}
+.q-snapshot span{display:block;font-size:10px;letter-spacing:.09em;color:#85a8c5;font-weight:800}
+.q-snapshot strong{display:block;margin:7px 0 9px;color:#e9f7ff;font-size:13px}
+.q-width-track{height:5px;width:100%;background:#263d4f;overflow:hidden;border-radius:3px}
+.q-width-track i{display:block;height:100%;width:0;background:linear-gradient(90deg,#4abfff,#90f4d8,#ffd48a);border-radius:3px;transition:width .25s ease}
+.q-chart-tools{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+#axisNotice{max-width:400px;letter-spacing:0;line-height:1.5}
+@media(max-width:600px){.q-snapshot{padding:10px}.q-snapshot span{font-size:9px}.q-snapshot strong{font-size:10px;line-height:1.35}}
