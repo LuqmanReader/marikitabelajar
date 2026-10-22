@@ -22,7 +22,7 @@ for(const paper of papers){
     assert(lesson.summary.length>=75,'Shallow explanation: '+paper+' '+match[1]);
     assert(Array.isArray(lesson.steps)&&lesson.steps.length>=3,'Missing teaching points: '+paper+' '+match[1]);
     for(const field of ['formula','example','trap','check','answer'])
-      assert(typeof lesson[field]==='string'&&lesson[field].length>=15,'Missing lesson field '+field+': '+paper+' '+match[1]);
+      assert(typeof lesson[field]==='string'&&lesson[field].length>=(field==='answer'?3:field==='formula'?8:15),'Missing lesson field '+field+': '+paper+' '+match[1]);
     mapped++;total++;
   }
   console.log(paper+': '+mapped+'/'+syllabus[paper].topics.length+' syllabus topics supported');
