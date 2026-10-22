@@ -4,8 +4,9 @@
 <title>Quant Intelligence Research Lab | LedgerPeer</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script><script src="auth.js"></script>
-<link rel="stylesheet" href="quant-cockpit.css?v=20261022c">
-<script defer src="quant-cockpit.js?v=20261022e"></script></head>
+<link rel="stylesheet" href="quant-cockpit.css?v=20261022density1">
+<script defer src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<script defer src="quant-cockpit.js?v=20261022density1"></script></head>
 <body class="quant-body"><main class="q-shell">
 <header class="q-header">
   <div class="q-brand">LEDGERPEER <span>/ QUANT</span><div class="q-eyebrow" style="margin-top:6px">RESEARCH DIVISION • CONSTRUCTION ACCESS</div></div>
@@ -31,12 +32,13 @@
  <article class="q-metric"><div class="q-metric-label">Reference S&P 500 index</div><div class="q-metric-value" id="levelValue">—</div><div class="q-metric-sub" id="activeSource">Waiting for market feed</div></article>
 </section>
 <div class="q-columns">
-<section class="q-section"><div class="q-section-head"><h2>01 / Stochastic Scenario Field</h2><span class="q-micro" id="dataMode">VERIFYING DATA</span></div>
-<div class="q-stage"><canvas id="quantCanvas" aria-label="Interactive perspective-projected 3D financial scenario paths; drag to rotate"></canvas>
-<div class="q-stage-overlay"><div class="q-eyebrow">3D RESEARCH VIEW / INTERACTIVE</div><div class="q-stage-title">POSSIBLE FUTURES</div><div class="q-overlay-caption">Drag to orbit • Depth separates stochastic paths</div></div>
+<section class="q-section"><div class="q-section-head"><h2>01 / Forecast Distribution Surface</h2><span class="q-micro" id="dataMode">VERIFYING DATA</span></div>
+<div class="q-stage"><div id="quantSurface" role="img" aria-label="Interactive three-dimensional Monte Carlo probability density surface. Horizontal axes show forecast time in trading days and cumulative return in percent; height shows estimated probability density. Drag to orbit, scroll to zoom."></div>
+<div class="q-stage-overlay"><div class="q-eyebrow">3D RESEARCH VIEW / INTERACTIVE</div><div class="q-stage-title">THE DISTRIBUTION TERRAIN</div><div class="q-overlay-caption">WebGL surface • Drag to orbit • Scroll to zoom</div></div>
 <div class="q-stage-badge" id="sampleOutput">Simulating scenario trajectories…</div>
-<div class="q-legend"><span class="q-band"><i></i>Paths</span><span class="q-risk"><i></i>Downside</span><span class="q-live"><i></i>Reference</span></div>
-</div><div class="q-pad" style="padding-top:12px"><button class="q-ghost" id="rotateScene">ROTATE VIEW ↻</button></div></section>
+</div>
+<div class="q-surface-guide"><strong>HOW TO READ THIS SURFACE</strong> The terrain is estimated from <b>3,000 reproducible simulated paths</b>. The horizontal plane contains time and percentage return; <b>surface height is probability density</b> (per percentage-point return), not the probability of one exact price. A widening ridge means greater dispersion over time. The coloured lines mark model-based 5th, median, and 95th percentile outcomes. <div class="q-guide-terms"><span>PEAK = concentration</span><span>WIDTH = uncertainty</span><span>TAIL = extreme outcomes</span><span>RED DASH = loss threshold</span></div></div>
+<div class="q-pad" style="padding-top:12px"><button class="q-ghost" id="rotateScene">ROTATE CAMERA ↻</button></div></section>
 <section class="q-section"><div class="q-section-head"><h2>02 / Stress-Test Console</h2><span class="q-micro">INTERACTIVE PARAMETERS</span></div>
 <div class="q-console"><h3>Modify the mathematical assumptions</h3>
 <div class="q-field"><div class="q-field-head"><label for="volControl">Annualised volatility (σ)</label><output id="volOut">21%</output></div><input type="range" id="volControl" min="5" max="65" step=".5" value="21"></div>
@@ -74,7 +76,7 @@
 <details class="q-lesson" open><summary>01 — What is a quant?</summary><p>Quantitative researchers develop mathematical models of risk, pricing and markets. Their output is useful only when assumptions, data quality and out-of-sample performance are scrutinised.</p></details>
 <details class="q-lesson"><summary>02 — Log returns and price ratios</summary><p>Daily log return rₜ = ln(Pₜ/Pₜ₋₁). Log returns add across time, unlike ordinary percentage returns. Historical means should not be mistaken for stable future returns.</p></details>
 <details class="q-lesson"><summary>03 — Distribution, variance and tails</summary><p>Standard deviation describes dispersion, but it does not capture every kind of financial risk. The normal distribution tends to underestimate certain extreme market moves.</p></details>
-<details class="q-lesson"><summary>04 — The simulator's mechanics</summary><p>Each path draws independent random shocks and compounds log returns over the horizon. The path cloud illustrates dispersion. The headline percentage is calculated analytically, not estimated from just 100 visual paths.</p></details>
+<details class="q-lesson"><summary>04 — The simulator's mechanics</summary><p>Each path draws independent random shocks and compounds log returns over the horizon. The 3D surface shows smoothed histograms from 3,000 seeded simulations across the forecast horizon. The headline threshold probability uses the matching lognormal model formula, rather than relying on the displayed sample frequency. The surface begins after the first few simulated steps because a point-mass initial value has no finite density.</p></details>
 <details class="q-lesson"><summary>05 — What is a meaningful backtest?</summary><p>Freeze all information at each historical forecast date, score predictions against later outcomes, and compare them with simple alternatives. Avoid using future revisions and tuning to test data.</p></details>
 <details class="q-lesson"><summary>06 — Build a testable hypothesis</summary><p>Example: Does higher realised volatility improve forecasting of a six-month 10% decline? Specify the target, predictor, training window, evaluation window and metric before looking at results.</p></details>
 </div></section>
