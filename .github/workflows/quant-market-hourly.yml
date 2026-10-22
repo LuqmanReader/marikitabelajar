@@ -1,5 +1,9 @@
 name: QUANT hourly market data
 on:
+  push:
+    paths:
+      - 'scripts/refresh_quant_market.py'
+      - '.github/workflows/quant-market-hourly.yml'
   schedule:
     - cron: '17 * * * *'
   workflow_dispatch:
