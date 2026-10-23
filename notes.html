@@ -3,13 +3,15 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,follow"><meta name="theme-color" content="#f4eedd">
 <title>FIA–ACCA Notes Library · LedgerPeer</title><link rel="icon" href="favicon-32.png">
-<link rel="stylesheet" href="notes.css?v=20261022acca25v2">
+<link rel="stylesheet" href="notes.css?v=20261023coverage1">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script><script src="auth.js"></script>
 <script defer src="subject-catalog.js?v=20261022acca25v2"></script>
 <script defer src="acca-published-data.js?v=20261013-online-25-syllabi"></script>
 <script defer src="notes-data.js?v=20261022acca25v2"></script>
-<script defer src="notes-page.js?v=20261022acca25v2"></script>
+<script defer src="notes-uk-syllabi.js?v=20261023coverage1"></script>
+<script defer src="notes-expanded-data.js?v=20261023coverage1"></script>
+<script defer src="notes-page.js?v=20261023coverage1"></script>
 </head><body>
 <header class="notes-top">
   <a class="notes-brand" href="index.html"><img src="ledgerpeer-sidebar-logo.png" width="52" height="52" alt=""><span>LEDGERPEER <small>/ STUDY LIBRARY</small></span></a>
@@ -20,13 +22,13 @@
   <section class="notes-hero">
     <span class="notes-eyebrow">FIA FOUNDATION + ACCA QUALIFICATION / 2026–27 SYLLABUSES</span>
     <h1>KNOW IT.<br><em>DON'T JUST MEMORISE IT.</em></h1>
-    <p>Browse all 25 FIA and ACCA papers in one searchable syllabus library. Learn with original worked lessons where available; follow official syllabus links for subjects whose detailed notes are still being developed.</p>
+    <p>Study all 25 FIA and ACCA papers through a searchable syllabus map, original core lessons, worked examples and self-checks. Law uses England (LW-ENG); taxation uses the UK variants. See exactly what is taught here and what still requires further study.</p>
     <div class="notes-hero-actions"><a href="#library" class="notes-primary">EXPLORE TOPICS ↓</a><a href="https://www.accaglobal.com/my/en/student/your-study-options/studyhub.html" target="_blank" rel="noopener noreferrer" class="notes-secondary">OFFICIAL ACCA STUDY HUB ↗</a></div>
   </section>
   <section class="notes-orientation" aria-label="Library principles">
     <p><strong>CURRICULUM-ALIGNED</strong><span>Includes 10 FIA papers and 15 ACCA papers, using published paper-specific syllabus codes.</span></p>
-    <p><strong>ORIGINAL LEARNING NOTES</strong><span>Clear explanations and worked examples written for LedgerPeer, not reproduced textbooks.</span></p>
-    <p><strong>TRANSPARENT COVERAGE</strong><span>Full lessons are labelled. Other topics link to official study resources instead of claiming to be complete notes.</span></p>
+    <p><strong>ORIGINAL LEARNING NOTES</strong><span>Original explanations, worked examples, common mistakes and self-check answers. New content is pending editorial review.</span></p>
+    <p><strong>TRANSPARENT COVERAGE</strong><span>Topic lessons are introductions, not a claim that every detailed learning outcome is covered. Missing lessons remain visible. Exam-standard practice and current examinable documents are still essential.</span></p>
   </section>
   <section class="notes-main" id="library" aria-labelledby="libraryTitle">
     <div class="notes-title-line"><div><span class="notes-eyebrow">THE STUDENT'S WORKBENCH</span><h2 id="libraryTitle">NOTES LIBRARY.</h2></div><span id="notesCount" class="notes-count">LOADING...</span></div>
@@ -45,8 +47,13 @@
     <div class="notes-toolbar">
       <label for="paperSelect">PAPER<select id="paperSelect" aria-label="Select FIA or ACCA paper"></select></label>
       <label for="notesSearch" class="notes-search">SEARCH SYLLABUS / TOPIC<input id="notesSearch" type="search" placeholder="e.g. D6, receivables, break-even, payroll..." autocomplete="off"></label>
-      <label for="notesFilter">CONTENT<select id="notesFilter"><option value="all">All syllabus topics</option><option value="lesson">Detailed lessons</option><option value="outline">Syllabus outlines</option></select></label>
+      <label for="notesFilter">CONTENT<select id="notesFilter"><option value="all">All syllabus topics</option><option value="lesson">Core topic lessons</option><option value="outline">Topics needing lessons</option></select></label>
     </div>
+    <details class="notes-coverage" id="coveragePanel">
+      <summary>FULL SYLLABUS MAP <span id="coverageSummary">Checking all 25 papers…</span></summary>
+      <p>Coverage counts syllabus headings with a core lesson. A heading can contain many detailed learning outcomes: 100% here does <strong>not</strong> mean a complete textbook or exam readiness. Shared lessons are reused where syllabus topics overlap. New notes are pending editorial review.</p>
+      <div class="notes-coverage-scroll"><table><caption>FIA–ACCA core lesson coverage by paper</caption><thead><tr><th scope="col">Paper / variant</th><th scope="col">Core lessons</th><th scope="col">Needs a lesson</th><th scope="col">Study</th></tr></thead><tbody id="coverageRows"></tbody></table></div>
+    </details>
     <div id="paperIntro" class="notes-paper-intro" role="status">Loading FIA and ACCA study materials…</div>
     <div id="topicList" class="notes-topic-list" aria-live="polite"></div>
     <div class="notes-empty" id="notesEmpty" hidden>No topics match the current search. Try a different keyword or paper.</div>
@@ -54,7 +61,7 @@
   <section class="notes-resources" aria-labelledby="resourcesTitle"><span class="notes-eyebrow">CREDIBLE SOURCES, NO PIRATED NOTES</span><h2 id="resourcesTitle">GO FURTHER.</h2><p>Our original explanations complement — not replace — ACCA's syllabus, official learning chapters, quizzes, flashcards and specimen exams.</p>
   <div class="notes-resource-grid"><a href="https://www.accaglobal.com/my/en/student/your-study-options/studyhub.html" target="_blank" rel="noopener noreferrer"><strong>ACCA Study Hub ↗</strong><span>Comprehensive study chapters, flashcards and quizzes. Requires your myACCA login.</span></a><a href="https://www.accaglobal.com/my/en/student/exam-support-resources.html" target="_blank" rel="noopener noreferrer"><strong>Official exam resources ↗</strong><span>Find each exam's syllabus, examinable documents and CBE specimen.</span></a></div>
   </section>
-  <footer>LEDGERPEER / FIA–ACCA NOTES · Independent educational materials. Not affiliated with or endorsed by ACCA. Always check current examinable documents before your exam.</footer>
+  <footer>UK TAX: FINANCE ACT 2025 / TAX YEAR 2025–26 FOR JUNE 2026–JUNE 2027 EXAMS. ILLUSTRATIVE COMPUTATIONS STATE THEIR ASSUMPTIONS.<br>LEDGERPEER / FIA–ACCA NOTES · Independent educational materials. Not affiliated with or endorsed by ACCA. Always check current examinable documents before your exam.</footer>
 </main>
 <div class="notes-loading" id="notesLoading" role="status">AUTHENTICATING STUDENT ACCESS…</div>
 </body></html>

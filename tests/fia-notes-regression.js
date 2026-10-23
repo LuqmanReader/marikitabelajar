@@ -7,7 +7,9 @@ vm.createContext(ctx);
 vm.runInContext(fs.readFileSync('subject-catalog.js','utf8'),ctx);
 vm.runInContext(fs.readFileSync('acca-published-data.js','utf8'),ctx);
 vm.runInContext(fs.readFileSync('notes-data.js','utf8'),ctx);
-const syllabus=ctx.LedgerPublishedSyllabi.papers,notes=ctx.LedgerFiaNotes;
+vm.runInContext(fs.readFileSync('notes-uk-syllabi.js','utf8'),ctx);
+vm.runInContext(fs.readFileSync('notes-expanded-data.js','utf8'),ctx);
+const syllabus=ctx.LedgerNotesSyllabi.papers,notes=ctx.LedgerFiaNotes;
 assert(ctx.LedgerPublishedSyllabi.edition.includes('2026'),'Syllabus must be 2026 edition');
 const papers=['FA1','MA1','FA2','MA2'];
 let total=0;
@@ -50,7 +52,7 @@ for(const paper of acca){
  assert(Object.keys(notes).some(k=>k.startsWith(paper.code+':')),'No original study lesson for '+paper.code);
 }
 assert(accaTopics>300,'ACCA study topic index incomplete');
-assert.equal(Object.keys(notes).length,total+acca.length,'Unexpected missing/extra study lessons');
+assert(Object.keys(notes).length>=total+acca.length,'Missing existing study lessons');
 assert.equal(total,74,'Four core FIA syllabus papers changed, audit content before release');
 for(const paper of ['FBT','FMA','FFA']){
  assert(syllabus[paper]?.topics?.length>10&&/^https:\/\/www\.accaglobal\.com\//.test(syllabus[paper].source),'Supplementary FIA syllabus index missing: '+paper);
@@ -79,4 +81,5 @@ for(const [oldPage,dest] of [['achievements.html','notes.html'],['financial-mana
 }
 const quant=fs.readFileSync('quant-model.html','utf8');
 assert(!quant.includes('href="financial-manager.html"'),'QUANT returns to deleted finance area');
-console.log('FIA + ACCA NOTES REGRESSION PASSED | FIA core: '+total+' full notes | ACCA: '+acca.length+' subjects, '+accaTopics+' topics, '+acca.length+' starter lessons | finance retired | QUANT preserved');
+console.log('FIA + ACCA NOTES REGRESSION PASSED | FIA core: '+total+' existing core notes | ACCA: '+acca.length+' subjects, '+accaTopics+' topics, '+Object.keys(notes).length+' core lesson entries | finance retired | QUANT preserved');
+

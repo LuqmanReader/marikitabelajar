@@ -59,3 +59,19 @@ footer{margin-top:60px;border-top:2px solid var(--ink);padding-top:20px;font-siz
 .notes-toolbar select optgroup{font-weight:900}
 @media(max-width:800px){.notes-qualification-options{grid-template-columns:1fr 1fr}.notes-qualification-all{grid-column:1/-1;max-width:none}.notes-qualification-card{padding:16px}.notes-qualification-card strong{font-size:36px}}
 @media(max-width:470px){.notes-qualification-options{grid-template-columns:1fr}.notes-qualification-all{grid-column:auto}.notes-qualification-card{padding:16px}.notes-qualification-card strong{font-size:38px}}
+
+
+/* Full syllabus coverage; horizontally scrollable on narrow screens. */
+.notes-coverage{border:3px solid var(--ink,#111);background:#fffdf6;margin:22px 0;box-shadow:4px 4px 0 #111}
+.notes-coverage>summary{cursor:pointer;padding:17px;font-weight:900;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;list-style:revert}
+.notes-coverage>p{padding:0 17px;font-size:12px;line-height:1.7;max-width:900px}
+.notes-coverage-scroll{overflow-x:auto;padding:0 17px 17px}
+.notes-coverage table{border-collapse:collapse;width:100%;min-width:570px;font-size:12px}
+.notes-coverage caption{text-align:left;font-weight:bold;padding:12px 0}
+.notes-coverage th,.notes-coverage td{text-align:left;padding:12px 9px;border-top:2px solid #111}
+.notes-coverage thead{background:#ffcf24}
+.notes-coverage small{display:block;font-weight:400;margin-top:5px}
+.notes-coverage a{display:inline-block;padding:9px;color:#1539cb;font-weight:bold}
+.notes-coverage>summary span{font-size:11px}
+.notes-lesson-scope{font-size:11px;font-weight:900;color:#1539cb}
+.notes-review-status{font-size:11px;background:#fff0b8;border-left:3px solid #a56b00;padding:9px}

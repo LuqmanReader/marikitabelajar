@@ -5,6 +5,8 @@ on:
       - 'notes.html'
       - 'notes.css'
       - 'notes-data.js'
+      - 'notes-expanded-data.js'
+      - 'notes-uk-syllabi.js'
       - 'notes-page.js'
       - 'acca-published-data.js'
       - 'index.html'
@@ -16,6 +18,8 @@ on:
       - 'financial-dashboard.html'
       - 'quant-model.html'
       - 'tests/fia-notes-regression.js'
+      - 'tests/notes-coverage-regression.js'
+      - 'tests/notes-reader-regression.js'
       - '.github/workflows/fia-notes-regression.yml'
   workflow_dispatch:
 permissions:
@@ -32,5 +36,11 @@ jobs:
         run: |
           node --check notes-data.js
           node --check notes-page.js
+          node --check notes-expanded-data.js
+          node --check notes-uk-syllabi.js
       - name: Test syllabus coverage and retired navigation
-        run: node tests/fia-notes-regression.js
+        run: |
+          node tests/fia-notes-regression.js
+          node tests/notes-coverage-regression.js
+          node tests/notes-reader-regression.js
+
