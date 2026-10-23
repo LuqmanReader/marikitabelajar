@@ -15,7 +15,7 @@ function link(label,url,cls){
  const a=node('a',cls,label);
  if(/^https:\/\/www\.accaglobal\.com\//.test(url)){
     a.href=url;a.target='_blank';a.rel='noopener noreferrer';
- }else if(/^notes\.html\?/.test(url)){a.href=url}
+ }else if(/^(notes\.html\?|fia-study\.html(?:\?|$))/.test(url)){a.href=url}
  else{a.href='https://www.accaglobal.com/my/en/student/exam-support-resources.html';a.target='_blank';a.rel='noopener noreferrer'}
  return a;
 }
@@ -57,6 +57,8 @@ function makeLesson(n,src,paperCode){
  main.append(node('p','notes-lesson-scope',(n.scope||'Core topic lesson').toUpperCase()+' · INTRODUCTION + WORKED APPLICATION'));
  if(n.reviewStatus)main.append(node('p','notes-review-status',n.reviewStatus+' · '+(n.updatedAt||'2026-10-23')));
  main.append(node('p','',n.summary));
+ const chapterKey=root.LedgerFiaGuides?.topicChapters?.[paperCode+':'+n.code];
+ if(chapterKey&&root.appendFiaTeaching)root.appendFiaTeaching(main,paperCode,chapterKey);
  main.append(node('h4','', 'HOW IT WORKS'));
  const ul=node('ul');
  for(const step of n.steps)ul.append(node('li','',step));
@@ -69,6 +71,7 @@ function makeLesson(n,src,paperCode){
  const summary=node('summary','',n.check);
  const answer=node('div','notes-check-answer',n.answer);
  check.append(node('h4','', 'SELF CHECK'),summary,answer);side.append(check);
+ if(FIA_PAPERS.some(p=>p.code===paperCode))side.append(link('READ THE EXPANDED '+paperCode+' STUDY GUIDE →','fia-study.html?paper='+paperCode,'notes-guide-link'));
  side.append(link('OFFICIAL SYLLABUS ↗',src || resourceLink(paperCode)));
  layout.append(main,side);return layout;
 }

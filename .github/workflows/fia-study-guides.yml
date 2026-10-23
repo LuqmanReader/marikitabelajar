@@ -1,0 +1,34 @@
+name: FIA expanded study guides
+on:
+  push:
+    paths:
+      - 'fia-study*'
+      - 'fia-authoring/**'
+      - 'notes.html'
+      - 'notes-page.js'
+      - 'tests/fia-study*'
+      - 'tests/notes-reader-regression.js'
+      - '.github/workflows/fia-study-guides.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check guide source and compiled data
+        run: |
+          node --check fia-study-reader-v2.js
+          node --check fia-study-content-v2.js
+          node --check fia-study-data-v2.js
+          node fia-authoring/build.cjs
+          git diff --exit-code -- fia-study-data-v2.js
+      - name: Verify guide routes and reader behaviour
+        run: |
+          node tests/fia-study-data-regression.js
+          node tests/fia-study-reader-regression.js
+          node tests/notes-reader-regression.js

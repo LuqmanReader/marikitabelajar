@@ -75,3 +75,7 @@ footer{margin-top:60px;border-top:2px solid var(--ink);padding-top:20px;font-siz
 .notes-coverage>summary span{font-size:11px}
 .notes-lesson-scope{font-size:11px;font-weight:900;color:#1539cb}
 .notes-review-status{font-size:11px;background:#fff0b8;border-left:3px solid #a56b00;padding:9px}
+
+.fia-guide-launch{margin:28px 0;padding:26px;border:4px solid #111;background:#c5f0d0;box-shadow:6px 6px #111}.fia-guide-launch h2{font-size:clamp(25px,4vw,38px);line-height:1.15;margin:10px 0}.fia-guide-launch>p{max-width:800px}.fia-guide-launch .notes-primary{display:inline-block;margin:10px 0}.fia-guide-small{font-size:11px}
+
+.fia-expanded-teaching{margin:24px 0;padding:22px 0;border-top:3px solid #111;border-bottom:3px solid #111;line-height:1.8;font-size:15px}.fia-expanded-teaching>h3{font-size:21px;line-height:1.4}.fia-expanded-teaching h4{margin-top:25px;font-size:17px}.fia-expanded-teaching p{max-width:72ch;white-space:normal}.fia-expanded-teaching>a{display:inline-block;margin-bottom:12px;font-weight:bold}.fia-inline-answer{padding:14px;background:#e4f5dc;border:2px solid #457731;margin:20px 0}.fia-inline-answer summary{cursor:pointer;font-weight:bold}.notes-guide-link{display:block;padding:12px 0;font-weight:bold}

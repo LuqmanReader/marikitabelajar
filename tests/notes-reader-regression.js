@@ -15,12 +15,12 @@ async function create(search='',signedIn=true){
  for(const m of html.matchAll(/id="([^"]+)"/g)){const n=new Element('div');n.id=m[1]}
  const buttons=['fia','acca','all'].map(q=>{const e=new Element('button');e.dataset.notesQualification=q;return e});
  let redirect='';const c={window:null,URLSearchParams,console,location:{search,replace:v=>redirect=v},PersonalHubAuth:{ready:async()=>signedIn,addLockButton(){}},document:{readyState:'complete',createElement:t=>new Element(t),createTextNode:t=>{const e=new Element('text');e.textContent=t;return e},getElementById:id=>ids.get(id),querySelectorAll:()=>buttons}};c.window=c;vm.createContext(c);
- for(const f of ['subject-catalog.js','acca-published-data.js','notes-data.js','notes-uk-syllabi.js','notes-expanded-data.js','notes-page.js'])vm.runInContext(fs.readFileSync(f,'utf8'),c);
+ for(const f of ['subject-catalog.js','acca-published-data.js','notes-data.js','notes-uk-syllabi.js','notes-expanded-data.js','fia-study-data-v2.js','fia-study-content-v2.js','notes-page.js'])vm.runInContext(fs.readFileSync(f,'utf8'),c);
  await new Promise(r=>setImmediate(r));return{ids,buttons,redirect};
 }
 (async()=>{
  let r=await create();let list=r.ids.get('topicList');assert.equal(list.children.length,700);assert.equal(r.ids.get('coverageRows').children.length,25);assert.equal(r.ids.get('notesLoading').hidden,true);
- let first=list.children[0],detail=first.children[1];assert.equal(detail.children.length,0,'Lesson content should load lazily');first.open=true;assert.equal(detail.children.length,1);first.open=false;first.open=true;assert.equal(detail.children.length,1,'Do not duplicate opened content');
+ let first=list.children[0],detail=first.children[1];assert.equal(detail.children.length,0,'Lesson content should load lazily');first.open=true;assert.equal(detail.children.length,1);first.open=false;first.open=true;assert.equal(detail.children.length,1,'Do not duplicate opened content');assert(detail.textContent.includes('EXPANDED TEACHING:'),'FIA topics must render the longer teaching chapter');
  const select=r.ids.get('paperSelect');select.value='TX';select.fire('change');assert.equal(list.children.length,36);assert(r.ids.get('paperIntro').textContent.includes('VARIANT UK'));
  const filter=r.ids.get('notesFilter');filter.value='outline';filter.fire('change');assert.equal(list.children.length,0);assert.equal(r.ids.get('notesEmpty').hidden,false);filter.value='all';filter.fire('change');
  const search=r.ids.get('notesSearch');search.value='zzzz-no-match';search.fire('input');assert.equal(list.children.length,0);search.value='';search.fire('input');
