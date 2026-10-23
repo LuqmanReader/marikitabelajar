@@ -51,18 +51,20 @@ function fixture(url,opts={}){
 async function main(){
  const origin='https://example.github.io/marikitabelajar/index.html';
  const validOtp=fixture(origin);
- const verifiedOtp=await validOtp.A.verifySignUpOtp('student@example.com','123456');
+ const verifiedOtp=await validOtp.A.verifySignUpOtp('student@example.com','12345678');
  assert(verifiedOtp.session&&verifiedOtp.user);
  assert.strictEqual(validOtp.state.verifyCalls[0].type,'email');
  assert.strictEqual(validOtp.state.verifyCalls[0].email,'student@example.com');
- assert.strictEqual(validOtp.state.verifyCalls[0].token,'123456');
+ assert.strictEqual(validOtp.state.verifyCalls[0].token,'12345678');
  const badOtp=fixture(origin);
- await assert.rejects(()=>badOtp.A.verifySignUpOtp('student@example.com','12x456'),/valid 6-digit/);
+ await assert.rejects(()=>badOtp.A.verifySignUpOtp('student@example.com','12x45678'),/valid 8-digit/);
+ assert.strictEqual(badOtp.state.verifyCalls.length,0);
+ await assert.rejects(()=>badOtp.A.verifySignUpOtp('student@example.com','123456'),/valid 8-digit/);
  assert.strictEqual(badOtp.state.verifyCalls.length,0);
  const rejectedOtp=fixture(origin,{rejectToken:true});
- await assert.rejects(()=>rejectedOtp.A.verifySignUpOtp('student@example.com','111111'),/expired or is invalid/);
+ await assert.rejects(()=>rejectedOtp.A.verifySignUpOtp('student@example.com','11111111'),/expired or is invalid/);
  const unconfirmedOtp=fixture(origin,{stillUnconfirmed:true});
- await assert.rejects(()=>unconfirmedOtp.A.verifySignUpOtp('student@example.com','333333'),/not confirmed this email/);
+ await assert.rejects(()=>unconfirmedOtp.A.verifySignUpOtp('student@example.com','33333333'),/not confirmed this email/);
  const direct=fixture(origin+'?token_hash=valid-hash&type=email');
  const yes=await direct.A.completeEmailLink();
  assert.strictEqual(yes.verified,true);
@@ -90,14 +92,15 @@ async function main(){
  assert(homepage.includes('completeEmailLink(incomingAuthCallback)'),'home page did not await confirmation');
  assert(homepage.includes('email not confirmed'),'unconfirmed account path missing');
  assert(homepage.includes("Sign Up & Verify"),'signup UI not updated');
- assert(homepage.includes('We will email you a one-time 6-digit verification code'),'signup OTP wording missing');
- assert(homepage.includes('Enter the 6-digit verification code sent to'),'verification OTP instruction missing');
- assert(homepage.includes('pattern="[0-9]{6}" maxlength="6"'),'strict six-digit input missing');
+ assert(homepage.includes('We will email you a one-time 8-digit verification code'),'signup OTP wording missing');
+ assert(homepage.includes('Enter the 8-digit verification code sent to'),'verification OTP instruction missing');
+ assert(homepage.includes('pattern="[0-9]{8}" maxlength="8"'),'strict eight-digit input missing');
  assert(homepage.includes('Resend verification code'),'resend-button label missing');
  assert(homepage.includes('Email sending limit reached'),'rate-limit recovery missing');
- assert(homepage.includes('Use the newest 6-digit code'),'expired OTP guidance missing');
+ assert(homepage.includes('Use the newest 8-digit code'),'expired OTP guidance missing');
  const scripts=[...homepage.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(x=>x[1]);
  for(const js of scripts)new Function(js);
- console.log(JSON.stringify({result:'PASS',cases:['six-digit-signup-otp','invalid-otp-rejected','expired-otp-rejected','not-confirmed-otp-blocked','confirmed-token-hash','plain-homepage-does-not-fake-confirmation','expired-link','server-still-unconfirmed','implicit-session-redirect','PKCE-code','recovery-preserved','Supabase-error-surfaced','login-callback-integration'],count:13},null,2));
+ console.log(JSON.stringify({result:'PASS',cases:['eight-digit-signup-otp','invalid-otp-rejected','expired-otp-rejected','not-confirmed-otp-blocked','confirmed-token-hash','plain-homepage-does-not-fake-confirmation','expired-link','server-still-unconfirmed','implicit-session-redirect','PKCE-code','recovery-preserved','Supabase-error-surfaced','login-callback-integration'],count:13},null,2));
 }
 main().catch(e=>{console.error(e);process.exit(1)});
+
