@@ -277,7 +277,7 @@
     if(!data){
       profileRedirecting=true;
       const name=location.pathname.split('/').pop();
-      const target=safeDestination(name);
+      const target=safeDestination(new URL(location.href).searchParams.get('next'))||safeDestination(name);
       const next=target&&target!=='profile.html'?'?next='+encodeURIComponent(target):'';
       location.replace('profile.html'+next);
       return false;
