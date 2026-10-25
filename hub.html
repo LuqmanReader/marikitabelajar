@@ -379,6 +379,16 @@
   }
   #toast.show{transform:translate(-50%,0);}
 
+.lp-quiz-overview-metrics{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:10px}
+.lp-quiz-overview-metrics>div{border:2px solid #111;background:#f5c518;padding:10px 14px;min-width:120px;display:flex;flex-direction:column;gap:4px}
+.lp-quiz-overview-metrics strong{font:900 24px "Arial Black",Impact,sans-serif}
+.lp-quiz-overview-metrics span{font-size:9px;font-weight:900;letter-spacing:.4px}
+.lp-quiz-panel h3{font:900 12px ui-monospace,monospace;margin:18px 0 9px}
+.lp-quiz-panel p{font-size:12px;line-height:1.6}
+.lp-quiz-panel .lp-quiz-caveat{font-size:10px;color:#555}
+.lp-quiz-targets{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:17px}
+.lp-quiz-targets a{font-size:11px;text-decoration:none;font-weight:800;border:2px solid #111;background:white;padding:8px 10px}
+.lp-quiz-targets a:hover{background:#f5c518}
 </style>
 <script src="subject-catalog.js"></script><script src="official-exam-registry.js?v=20261013-online-format-v1"></script><script src="acca-published-data.js?v=20261013-online-25-syllabi"></script><script src="syllabus-catalog.js?v=20261013-online-25-syllabi"></script>
 <script src="exam-model.js"></script>
@@ -386,6 +396,7 @@
 <script src="pdf-topic-suggestions.js?v=20261014-whole-pdf-3"></script><script src="chapter-ui.js?v=20261014-whole-pdf-3"></script>
 <link rel="stylesheet" href="chapter-analysis.css">
 <link rel="stylesheet" href="revision-flow.css">
+<script defer src="quiz-dashboard.js?v=1"></script>
 <link rel="stylesheet" href="site-nav.css">
 <link rel="stylesheet" href="ledgerpeer-theme.css?v=20261011">
 
@@ -438,20 +449,22 @@
       <div class="lp-notes-feature-copy">
         <span class="lp-notes-feature-eyebrow">CORE STUDY RESOURCE / 02</span>
         <h2>THE FIA–ACCA<br>NOTES LIBRARY<span aria-hidden="true">.</span></h2>
-        <p>Find all 25 FIA and ACCA papers. Explore official syllabus topics, learn from 89 original worked lessons, and practise with exam traps and self-check questions.</p>
+        <p>Find all 25 FIA and ACCA papers. Explore official syllabus topics, learn from 700 original topic lessons, and practise with exam traps and self-check questions.</p>
         <span class="lp-notes-feature-arrow">EXPLORE STUDY NOTES <span aria-hidden="true">↗</span></span>
       </div>
       <div class="lp-notes-feature-side">
         <span class="lp-notes-feature-index">01 / UNDERSTAND</span>
         <span class="lp-notes-feature-index">02 / WORK IT OUT</span>
         <span class="lp-notes-feature-index">03 / TEST YOURSELF</span>
-        <strong>89</strong>
-        <span class="lp-notes-feature-count">DETAILED LEARNING NOTES<br><small>FIA + 15 ACCA PAPER STARTERS</small></span>
-        <small class="lp-notes-feature-disclaimer">All 25 FIA + ACCA papers indexed; many topics remain outlines</small>
+        <strong>700</strong>
+        <span class="lp-notes-feature-count">CORE TOPIC LESSONS<br><small>10 FIA + 15 ACCA PAPERS</small></span>
+        <small class="lp-notes-feature-disclaimer">All 700 syllabus headings have a core lesson; editorial review is pending</small>
       </div>
     </a>
   </section>
   <nav class="lp-study-shortcuts" aria-label="Study utilities"><a class="site-back" href="quiz.html">Topic Quiz</a><a class="site-back" href="ai-tutor.html">AI Tutor</a><a class="site-back" href="study-planner.html">Study Planner</a><a class="site-back" href="calendar.html">Calendar</a></nav>
+  <div class="analysis-title"><h2>Topic Quiz Progress</h2><span class="tag">Practice</span></div>
+  <div class="chart-panel lp-quiz-panel" id="lpQuizOverview" aria-live="polite">Loading topic practice…</div>
   <div id="subjectDash"></div>
 
   <div class="current-subject-banner">
