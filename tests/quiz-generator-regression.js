@@ -19,9 +19,10 @@ for(const [paper,config] of Object.entries(syllabus)){
     const topic=engine.topicCode(heading);
     assert.ok(topic,'Syllabus headings must have parseable codes');
     assert.ok(lessons[paper+':'+topic.code],'Missing authored lesson: '+paper+':'+topic.code);
-    const result=engine.generate({paper,topics:[topic.code],count:5,lessons,syllabus,rng});
-    assert.equal(result.questions.length,5,'Every topic needs five unique practice questions: '+paper+':'+topic.code);
-    assert.equal(new Set(result.questions.map(q=>q.prompt)).size,5,'No duplicated prompts in the set');
+    const result=engine.generate({paper,topics:[topic.code],count:20,lessons,syllabus,rng});
+    assert.equal(result.questions.length,20,'Every topic needs 20 practice questions: '+paper+':'+topic.code);
+    assert.equal(new Set(result.questions.map(q=>q.prompt)).size,20,'No duplicated prompts in the set');
+    assert.equal(new Set(result.questions.map(q=>q.id)).size,20,'No duplicate answer IDs in a session');
     for(const q of result.questions){
       assert.equal(q.key,paper+':'+topic.code);
       assert.ok(q.prompt&&q.explanation,'Questions must have model answers');
@@ -35,6 +36,16 @@ for(const [paper,config] of Object.entries(syllabus)){
   }
 }
 assert.equal(topics,700,'Expected 700 indexed 2026–27 syllabus headings');
+for(const paper of Object.keys(syllabus)){
+  const mock=engine.generate({paper,mode:'mock',count:50,lessons,syllabus,rng});
+  assert.equal(mock.available,50,'50-question paper mock must be complete: '+paper);
+  assert.equal(new Set(mock.questions.map(q=>q.id)).size,50,'Mock questions must not duplicate IDs');
+  assert.ok(mock.topicsCovered>=10,'Mock should distribute questions across a paper: '+paper);
+  assert.ok(mock.questions.every(q=>q.key.startsWith(paper+':')),'Mock must not mix ACCA papers');
+}
+const first=engine.generate({paper:'FA2',topics:['A1'],count:20,lessons,syllabus,rng});
+const second=engine.generate({paper:'FA2',topics:['A1'],count:20,recentIds:first.questions.map(q=>q.id),lessons,syllabus,rng});
+assert.ok(second.questions.some(q=>!first.questions.map(x=>x.id).includes(q.id)),'Repeat practice must offer previously unseen questions');
 for(const [paper,code]of [['FA2','B1'],['FA2','C2'],['FA2','D1'],['MA2','C1'],['MA2','C2'],['MA2','D1']]){
   for(let i=0;i<25;i++){
     const set=engine.generate({paper,topics:[code],count:10,lessons,syllabus,rng});
@@ -53,4 +64,4 @@ assert.equal(engine.generate({paper:'FA2',topics:['Z9'],count:5,lessons,syllabus
 const store=new Map(),storage={getItem:k=>store.get(k)||null,setItem:(k,v)=>store.set(k,v)};
 engine.saveHistory(storage,{id:'one',at:new Date().toISOString(),items:[]});
 assert.equal(engine.readHistory(storage).length,1);
-console.log('Topic quiz regression passed: 25 papers, '+topics+' syllabus topics, numeric MCQs, scoring and persistence.');
+console.log('Quiz Centre regression passed: 25 papers, '+topics+' twenty-question topic pools, 50-question paper mocks, numerical MCQs, randomized selection, scoring and persistence.');
