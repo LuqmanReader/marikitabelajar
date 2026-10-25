@@ -29,7 +29,7 @@ function fillTopics(){
  select.value=topics.some(t=>t.code===prior)?prior:'all';
  if(!params.has('topic'))select.value='all';
  params.delete('topic');
- setMessage(covered+' of '+topics.length+' syllabus headings have source-backed lesson questions. Outline-only headings need authored material before a quiz can be made. Calculation templates are available for selected FA2/MA2 topics.');
+ setMessage(covered+' of '+topics.length+' syllabus headings have source-backed objective questions. FA1/MA1 are MCQ-only; FA2/MA2 include numerical entry where appropriate.');
  updateReadLink();
 }
 function updateReadLink(){
@@ -49,8 +49,8 @@ function setMode(next){
  $('countField').hidden=isMock;
  $('readTopic').hidden=isMock;
  $('modeDescription').textContent=isMock
-  ?'50 questions are drawn across the selected paper’s syllabus topics. This is mock-style revision practice with written self-marking, not an official computer-based ACCA examination.'
-  :'Up to 20 questions per topic. Questions are selected from distinct lesson-based prompts and random numerical scenarios where available. Recently used questions are deprioritised.';
+  ?'50 automatically marked questions across this paper. FA1/MA1 are MCQ-only; FA2/MA2 include numerical entry where appropriate. Not an official ACCA mock.'
+  :'Up to 20 automatically marked questions per topic. Numerical scenarios are varied, and recently used questions are deprioritised.';
  $('generate').textContent=isMock?'GENERATE 50-QUESTION MOCK →':'GENERATE '+$('count').value+' QUESTIONS →';
 }
 
@@ -71,7 +71,7 @@ function makeQuiz(){
  $('quizSection').hidden=false;$('results').hidden=true;$('saveStatus').textContent='';$('save').disabled=false;
  const narrow=mode==='mock'?' / PAPER-WIDE MOCK PRACTICE':topics?' / '+topics.join(', '):' / MIXED TOPICS';
  $('quizTitle').textContent=mode==='mock'?'50-QUESTION MOCK PRACTICE':'TOPIC PRACTICE SET';
- $('quizSummary').textContent=paper+narrow+' · '+active.available+' varied questions'+(active.available<count?' (requested '+count+'; available source material is limited)':'')+' · '+active.topicsCovered+' syllabus topics covered · '+(mode==='mock'?'Written answers require self-assessment.':'Calculation questions are auto-marked where supported.');
+ $('quizSummary').textContent=paper+narrow+' · '+active.available+' varied questions'+(active.available<count?' (requested '+count+'; available source material is limited)':'')+' · '+active.topicsCovered+' syllabus topics covered · '+'Every answer is automatically marked.';
  $('review').hidden=false;
  renderQuestions();$('quizSection').scrollIntoView({block:'start',behavior:'smooth'});
 }
