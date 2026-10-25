@@ -7,7 +7,7 @@ async function init(){
  try{
   if(!window.PersonalHubAuth)throw Error('Account system unavailable.');
   const ok=await PersonalHubAuth.ready();
-  if(!ok){location.replace('index.html#access');return;}
+  if(!ok){location.replace(PersonalHubAuth.signInUrl('profile.html'));return;}
   client=PersonalHubAuth.getClient();user=PersonalHubAuth.getUser();
   if(!client||!user)throw Error('Please log in again.');
   const {data,error}=await client.from('student_profiles').select('display_name,handle,pathway,current_paper,bio').eq('user_id',user.id).maybeSingle();
@@ -54,7 +54,9 @@ byId('profileForm').addEventListener('submit',async event=>{
    }
   }
   status('Profile saved. Opening your workspace…');
-  location.replace('index.html#access');
+  const requested=new URLSearchParams(location.search).get('next');
+  const destination=PersonalHubAuth.safeDestination(requested);
+  location.replace(destination&&destination!=='profile.html'?destination:'index.html#access');
  }catch(e){
   const duplicate=e?.code==='23505'||/duplicate key|unique constraint/i.test(e?.message||'');
   status(duplicate?'That username is already taken. Choose another.':('Could not save your profile: '+(e?.message||e)),true);

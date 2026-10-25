@@ -393,7 +393,7 @@ async function submit(){error.textContent='';notice.textContent='';button.disabl
    await A.verifySignUpOtp(pendingEmail,code);
    sessionStorage.removeItem(pendingSignupKey);pendingEmail='';
    notice.textContent='Email verified. Opening your LedgerPeer workspace…';
-   location.replace('index.html');return;
+   location.replace('index.html'+location.search);return;
  }
  if(!email.value.trim())throw Error('Enter your email address.');
  if(mode==='signup'){
@@ -448,7 +448,11 @@ authView.hidden=false;hubView.hidden=true;
    if(signedIn){
     sessionStorage.removeItem(pendingSignupKey);pendingEmail='';
     const ok=await A.ready();
-    if(ok){authView.hidden=true;hubView.hidden=false;}
+    if(ok){
+      const next=A.safeDestination(new URL(location.href).searchParams.get('next'));
+      if(next&&next!=='profile.html'){location.replace(next);return;}
+      authView.hidden=true;hubView.hidden=false;
+    }
     else if(A.isRedirectingToProfile?.()){authView.hidden=true;hubView.hidden=true;}
     else{authView.hidden=false;hubView.hidden=true;show('login');error.textContent='Email confirmed, but the workspace could not load. Please sign in again.';}
    }else if(pendingEmail){

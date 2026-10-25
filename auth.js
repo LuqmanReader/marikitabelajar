@@ -162,7 +162,20 @@
    status(cloud?'Your work is loaded · autosave on':'Autosave ready · saved on this device');
   }
  }
- async function login(email,password){await init();const {error}=await client.auth.signInWithPassword({email,password});if(error)throw error;await hydrate();location.href='index.html';}
+ function safeDestination(raw){
+  const allowed=new Set(['classroom.html','profile.html','hub.html','notes.html','quiz.html','study-planner.html','calendar.html']);
+  const target=String(raw||'').trim();
+  return allowed.has(target)?target:null;
+ }
+ function loginLanding(){
+  try{return safeDestination(new URL(location.href).searchParams.get('next'))||'index.html#access';}
+  catch{return 'index.html#access';}
+ }
+ function signInUrl(next){
+  const destination=safeDestination(next)||'classroom.html';
+  return 'index.html?next='+encodeURIComponent(destination)+'#access';
+ }
+ async function login(email,password){await init();const {error}=await client.auth.signInWithPassword({email,password});if(error)throw error;await hydrate();location.href=loginLanding();}
  async function signUp(email,password){
   await init();
   const {data,error}=await client.auth.signUp({email:email.trim(),password,options:{emailRedirectTo:new URL('index.html',location.href).href}});
@@ -261,7 +274,14 @@
    if(!/\/profile\.html$/i.test(location.pathname)){
     const {data,error}=await client.from('student_profiles').select('user_id').eq('user_id',user.id).maybeSingle();
     if(error)throw error;
-    if(!data){profileRedirecting=true;location.replace('profile.html');return false;}
+    if(!data){
+      profileRedirecting=true;
+      const name=location.pathname.split('/').pop();
+      const target=safeDestination(new URL(location.href).searchParams.get('next'))||safeDestination(name);
+      const next=target&&target!=='profile.html'?'?next='+encodeURIComponent(target):'';
+      location.replace('profile.html'+next);
+      return false;
+    }
    }
    profileRedirecting=false;return true;
   }catch(e){console.error(e);status('Unable to open account safely: '+(e?.message||e),true);return false;}
@@ -275,7 +295,7 @@
   const obsolete=document.getElementById('rhManualSave');if(obsolete)obsolete.remove();
  }
  const api={login,logout,signUp,verifySignUpOtp,completeEmailLink,resendSignUpOtp,sendRecovery,updatePassword,onAuthChange,ready,sync,init,
-  getClient(){return client;},getUser(){return user;},isRedirectingToProfile(){return profileRedirecting;},
+  getClient(){return client;},getUser(){return user;},isRedirectingToProfile(){return profileRedirecting;},safeDestination,signInUrl,loginLanding,
   async isSignedIn(){try{await loadUser();return true;}catch{return false;}},
   guard(){document.documentElement.style.visibility='hidden';ready().then(ok=>{
     if(!ok){if(!profileRedirecting)location.replace('index.html');return;}

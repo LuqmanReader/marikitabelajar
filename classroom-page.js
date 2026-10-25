@@ -164,7 +164,7 @@ async function init(){
   const A=window.PersonalHubAuth;
   if(!A)throw Error('Student login is unavailable.');
   const ready=await A.ready();
-  if(!ready){if(!A.isRedirectingToProfile?.())location.replace('index.html#access');return;}
+  if(!ready){if(!A.isRedirectingToProfile?.())location.replace(A.signInUrl('classroom.html'));return;}
   client=A.getClient();user=A.getUser();
   if(!client||!user)throw Error('You must sign in first.');
   const {data,error}=await client.from('classrooms').select('id,name,description').eq('slug','ledgerpeer-commons').maybeSingle();
@@ -178,7 +178,7 @@ async function init(){
   A.addLockButton?.();
   $('classApp').hidden=false;subscribe();
  }catch(error){
-  status('classStatus','Classroom could not load: '+(error.message||error)+'. Make sure your student profile is complete.',true);
+  status('classStatus','Classroom could not load: '+(error.message||error)+'. Try signing in again from the student homepage.',true);
  }
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();

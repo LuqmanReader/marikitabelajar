@@ -9,8 +9,11 @@ for(const file of ['auth.js','profile-page.js','classroom-page.js']){
 const auth=read('auth.js'),profile=read('profile-page.js'),room=read('classroom-page.js');
 const profilePage=read('profile.html'),classPage=read('classroom.html');
 assert.ok(auth.includes("from('student_profiles').select('user_id')"),'Profile must be checked on private account entry');
-assert.ok(auth.includes("location.replace('profile.html')"),'Incomplete profiles must redirect to setup');
+assert.ok(auth.includes("location.replace('profile.html'+next)"),'Incomplete profiles must redirect to setup while retaining their destination');
 assert.ok(auth.includes("profileRedirecting"),'Onboarding redirect must be preserved');
+assert.ok(auth.includes("function safeDestination(raw)")&&auth.includes("const allowed=new Set("),'Only same-site approved destinations may be used');
+assert.ok(auth.includes("function signInUrl(next)")&&auth.includes("loginLanding()"),'Direct classroom link must return to intended page after sign-in');
+assert.ok(auth.includes("searchParams.get('next')"),'Pending classroom route must survive profile completion');
 assert.ok(auth.includes("getClient(){return client;}")&&auth.includes("getUser(){return user;}"),'Pages must reuse the existing account session');
 assert.ok(profile.includes("from('student_profiles').upsert(payload"),'Profile form must save in Supabase');
 assert.ok(profile.includes("from('classroom_members').insert("),'Profile completion should join the shared room');
@@ -24,6 +27,9 @@ assert.ok(room.includes("from('classroom_members')"),'Room must have actual memb
 assert.ok(room.includes("from('classroom_messages')")&&room.includes("from('classroom_posts')"),'Messages and posts must use Supabase');
 assert.ok(room.includes("from('classroom_reports')"),'Users need a reporting mechanism');
 assert.ok(room.includes("postgres_changes"),'Classroom must subscribe to live updates');
+assert.ok(room.includes("A.signInUrl('classroom.html')"),'Direct room access must return to room after sign-in');
+assert.ok(profile.includes("PersonalHubAuth.safeDestination(requested)"),'Profile completion must resume a safe original destination');
+assert.ok(read('index.html').includes("const next=A.safeDestination(new URL(location.href).searchParams.get('next'))"),'Signed-in homepage must redirect to requested page safely');
 assert.ok(room.includes("setInterval("),'Classroom must also refresh when realtime is unavailable');
 assert.ok(room.includes("textContent"),'Render user-generated text without inserting HTML');
 assert.ok(!room.includes('.innerHTML='),'Never inject untrusted user messages as HTML');
