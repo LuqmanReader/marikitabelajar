@@ -173,6 +173,7 @@
         const q=scenarioQuestion(key,scenario,rng,i);
         if(q&&!seen.has(q.prompt)){pool.push(q);seen.add(q.prompt);}
       }
+      pool=[...new Map(pool.map(q=>[q.prompt,q])).values()];
       if(pool.length)pools.set(key,shuffled(pool,rng));
     }
     const availableKeys=shuffled([...pools.keys()],rng),picked=[],used=new Map();
