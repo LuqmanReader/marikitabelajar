@@ -166,6 +166,13 @@
       const lessonsForTopic=lessons[key],title=allowed.get(key.split(':')[1]);
       let pool=clozeQuestions(key,lessonsForTopic,rng)
         .concat(matchedQuestions(key,lessonsForTopic,lessons,title,rng));
+      if(typeof root.LedgerExamScenarios?.concept==='function'){
+        for(let i=0;i<12;i++){
+          const item=root.LedgerExamScenarios.concept(key,rng,i);
+          if(!item)break;
+          pool.push({...item,id:key+':author:'+i,key,group:'author-'+i,type:'mcq'});
+        }
+      }
       const seen=new Set(pool.map(q=>q.prompt));
       for(let i=0;i<qty+10;i++){
         const scenario=typeof root.LedgerExamScenarios?.problem==='function'?
@@ -185,7 +192,8 @@
         const groups=used.get(key)||new Set();let best=-1,cost=Infinity;
         for(let i=0;i<pool.length;i++){
           const q=pool[i];
-          const penalty=(groups.has(q.group)?5:0)+(recent.has(q.id)?12:0)+rng()/10;
+          const penalty=(groups.has(q.group)?5:0)+(recent.has(q.id)?12:0)+
+            (q.group?.startsWith('author-')?-3:q.group?.startsWith('calc-')?-1:q.group?.startsWith('fact-')?2:0)+rng()/10;
           if(penalty<cost){cost=penalty;best=i;}
         }
         if(best<0)continue;
