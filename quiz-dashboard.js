@@ -28,7 +28,7 @@ function start(){
    const item=el('div');item.append(el('strong',value),el('span',label));coverage.append(item);
  }
  host.append(coverage);
- host.append(el('p','Quiz accuracy combines automatically graded questions and your self-marked recall. It does not replace the exam-attempt performance metrics below.','lp-quiz-caveat'));
+ host.append(el('p','Quiz accuracy now uses automatically graded MCQs and numerical answers. Older self-marked results may remain in your history. Practice results are separate from exam attempts.','lp-quiz-caveat'));
  const weak=[...topicTotals.entries()].filter(([,s])=>s.wrong>0).sort((a,b)=>a[1].correct/a[1].attempts-b[1].correct/b[1].attempts||b[1].wrong-a[1].wrong).slice(0,3);
  host.append(el('h3','YOUR RECENT REVISION TARGETS'));
  if(!weak.length)host.append(el('p','No incorrect responses in saved sessions yet.'));

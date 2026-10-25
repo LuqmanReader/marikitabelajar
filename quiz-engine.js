@@ -1,5 +1,5 @@
 /* LedgerPeer topic practice engine. Original practice, not official ACCA questions.
-   Works without paid AI or network requests; self-checks are explicitly self-marked. */
+   Every question is automatically marked as MCQ or numerical answer. */
 (function(root){
   'use strict';
   const STUDY_KEY='ledgerpeer_topic_quiz_history_v1';
@@ -55,117 +55,177 @@
   }
   /* Each assessment is derived from an existing authored teaching fact. This is a
      *practice* generator, not an LLM and not a claim of 20 distinct exam outcomes. */
-  function recallQuestions(key,lesson,title){
+
+  const TERMS=[
+   ['asset','liability','equity','expense','revenue'],
+   ['assets','liabilities','equity','expenses','revenue'],
+   ['invoice','credit note','receipt','purchase order','goods received note'],
+   ['cash book','bank statement','trial balance','general ledger','supplier statement'],
+   ['fixed cost','variable cost','semi-variable cost','relevant cost','sunk cost'],
+   ['variable','fixed','direct','indirect','semi-variable'],
+   ['cost centre','profit centre','investment centre','revenue centre','service cost centre'],
+   ['FIFO','weighted average','specific identification','reducing balance','straight-line'],
+   ['gross profit','contribution','net profit','revenue','cost of sales'],
+   ['prepayment','accrual','provision','deferred income','accrued income'],
+   ['receivables','payables','inventory','expenses','drawings'],
+   ['materials','labour','overheads','expenses','revenue'],
+   ['operating','investing','financing','production','administration'],
+   ['current','non-current','direct','indirect','deferred']
+  ];
+  function factSentences(lesson){
     if(!lesson)return [];
-    const result=[];
-    const add=(id,group,prompt,reference)=>{
-      if(!prompt||!reference)return;
-      result.push({id:key+':'+id,key,group,type:'recall',prompt:String(prompt),explanation:String(reference)});
-    };
-    const summary=String(lesson.summary||'').trim();
-    const formula=String(lesson.formula||'').trim();
-    const example=String(lesson.example||'').trim();
-    const trap=String(lesson.trap||'').trim();
-    const steps=Array.isArray(lesson.steps)?lesson.steps.map(s=>String(s||'').trim()).filter(Boolean):[];
-    const background=summary+'\n\nWorked application: '+example;
-    if(lesson.check&&lesson.answer)add('check','check',lesson.check,lesson.answer);
-    if(summary){
-      add('big-idea','overview','What is the central idea of '+title+'? Explain it without copying a definition.',summary);
-      add('purpose','overview','Why does '+title+' matter when making accounting, financial or business decisions?',summary);
-      add('relationship','overview','Explain how the key concepts in '+title+' fit together.',summary+'\n\nKey guidance: '+steps.join(' '));
-      add('summary-explain','overview','Write a concise explanation of '+title+' suitable for teaching another learner.',summary);
+    const out=[];
+    for(const field of ['summary','steps','formula','example','trap','answer']){
+      const values=field==='steps'?(Array.isArray(lesson.steps)?lesson.steps:[]):[lesson[field]];
+      for(const value of values)for(const sentence of String(value||'').replace(/\s+/g,' ').split(/(?<=[.!?])\s+(?=[A-Z])/)){
+        const s=sentence.trim();if(s.length>=23&&s.length<350&&!out.includes(s))out.push(s);
+      }
     }
-    steps.forEach((step,i)=>{
-      const label='GUIDANCE: '+step;
-      add('step-'+i+'-interpret','step-'+i,'In your own words, interpret this syllabus guidance and explain what it requires.\n'+label,step+'\n\nTopic context: '+summary);
-      add('step-'+i+'-apply','step-'+i,'Give a practical example of how to apply this instruction.\n'+label,step+'\n\nReference application: '+example);
-      add('step-'+i+'-verify','step-'+i,'How would you verify that a solution follows this instruction?\n'+label,step+'\n\nCross-check against: '+formula);
-      add('step-'+i+'-pitfall','step-'+i,'What might a learner get wrong if they overlooked this instruction?\n'+label,step+'\n\nRelevant exam trap: '+trap);
-      add('step-'+i+'-connect','step-'+i,'Connect this instruction to the broader topic: what does it help you understand?\n'+label,step+'\n\n'+summary);
-    });
-    if(formula){
-      add('formula-recall','formula','State one important formula, framework or accounting rule used in '+title+'.',formula);
-      add('formula-meaning','formula','Explain what the quantities or parts of the rule mean, and when it is useful in '+title+'.',formula+'\n\n'+summary);
-      add('formula-check','formula','How would you check the reasonableness of a calculation or decision in '+title+'?',formula+'\n\n'+trap);
-      add('formula-usage','formula','Describe the information you would need before applying the main rule in '+title+'.',formula+'\n\n'+example);
+    return out.slice(0,30);
+  }
+  function clozeQuestions(key,lesson,rng){
+    const pool=[];
+    for(const [fi,sentence] of factSentences(lesson).entries()){
+      const positions=new Set();
+      for(const terms of TERMS){
+        for(const term of terms){
+          const regex=new RegExp('\\b'+term+'\\b','i'),match=regex.exec(sentence);
+          if(!match||positions.has(match.index))continue;
+          const alternatives=terms.filter(t=>t.toLowerCase()!==term.toLowerCase()&&!new RegExp('\\b'+t+'\\b','i').test(sentence));
+          if(alternatives.length<3)continue;
+          positions.add(match.index);
+          const options=shuffled([match[0],...shuffled(alternatives,rng).slice(0,3)],rng);
+          const completed=sentence.slice(0,match.index)+'______'+sentence.slice(match.index+match[0].length);
+          pool.push({id:key+':cloze:'+fi+':'+match.index,key,group:'fact-'+fi,
+           type:'mcq',prompt:'Complete the accounting principle: '+completed,
+           choices:options.map((label,i)=>({value:'C'+i,label})),
+           correctValue:'C'+options.indexOf(match[0]),explanation:sentence});
+        }
+      }
     }
-    if(example){
-      add('example-explain','example','Explain the reasoning behind the worked application of '+title+' in your notes.',example);
-      add('example-work','example','Reconstruct the main workings or decision process used in an example of '+title+'.',example+'\n\nApplicable rule: '+formula);
-      add('example-alternative','example','Invent a similar but different illustration of '+title+'. Compare it with the reference application.',background);
-      add('example-judgement','example','What should be checked before accepting the conclusion of a worked example about '+title+'?',example+'\n\nExam caution: '+trap);
+    return pool;
+  }
+  function matchedQuestions(key,lesson,allLessons,title,rng){
+    const snippets=factSentences(lesson).filter(s=>s.length<=230),paper=key.split(':')[0];
+    const others=Object.entries(allLessons).filter(([k])=>k.startsWith(paper+':')&&k!==key)
+      .flatMap(([,v])=>factSentences(v).slice(0,3)).filter(s=>s.length<=230&&!snippets.includes(s));
+    const output=[];
+    const styles=[
+      'Which accounting guidance is most relevant to the following focus within ',
+      'A learner is reviewing the following aspect of ',
+      'Which explanation best fits this aspect of '
+    ];
+    for(let i=0;i<snippets.length;i++){
+      const wrong=shuffled([...new Set(others)],rng).slice(0,3);if(wrong.length<3)continue;
+      const focus=snippets[i].replace(/[.;:].*$/,'').split(/\s+/).slice(0,6).join(' ').toLowerCase();
+      for(let variant=0;variant<3;variant++){
+        const options=shuffled([snippets[i],...shuffled(wrong,rng)],rng);
+        const prompt=variant===0?styles[0]+title+'? Focus: '+focus+'.':
+          variant===1?styles[1]+title+'. Focus: '+focus+'. Which statement is relevant?':
+          styles[2]+title+'? Focus: '+focus+'.';
+        output.push({id:key+':association:'+i+':'+variant,key,group:'fact-'+i,type:'mcq',
+          prompt,choices:options.map((label,j)=>({value:'C'+j,label})),
+          correctValue:'C'+options.indexOf(snippets[i]),explanation:'Relevant lesson statement: '+snippets[i]});
+      }
     }
-    if(trap){
-      add('trap-name','trap','Identify a common exam trap in '+title+' and give its correction.',trap);
-      add('trap-prevent','trap','Describe a checking step that would prevent a common error in '+title+'.',trap+'\n\n'+steps.join(' '));
-      add('trap-diagnose','trap','How could you spot a plausible but incorrect solution in '+title+'?',trap+'\n\n'+formula);
-      add('trap-consequence','trap','Why does avoiding this exam trap matter when answering a question on '+title+'?',trap+'\n\n'+summary);
+    return output;
+  }
+  function scenarioQuestion(key,scenario,rng,seq){
+    if(!scenario||!Number.isFinite(scenario.answer))return null;
+    const id=key+':calc:'+scenario.family+':'+seq;
+    if(['FA2','MA2'].includes(key.split(':')[0]))
+      return {id,key,group:'calc-'+scenario.family,type:'numeric',prompt:scenario.prompt,
+        correctValue:scenario.answer,unit:scenario.unit||'RM',explanation:scenario.explanation};
+    const value=scenario.answer,delta=Math.max(1,Math.round(Math.abs(value)*.08*100)/100);
+    const choices=[value];
+    for(const candidate of shuffled([value+delta,value-delta,value+2*delta,value-2*delta,value+1,value-1,value+10,value-10],rng)){
+      const n=Math.round(candidate*100)/100;
+      if(n>=0&&!choices.includes(n)){choices.push(n);if(choices.length===4)break;}
     }
-    return result;
+    if(choices.length!==4)return null;
+    const shuffledChoices=shuffled(choices,rng);
+    const fmt=n=>(scenario.unit==='units'?n.toLocaleString('en-MY')+' units':
+        scenario.unit==='%'?n.toLocaleString('en-MY')+'%':
+        scenario.unit==='years'?n.toLocaleString('en-MY')+' years':
+        scenario.unit&&scenario.unit.startsWith('RM/')?'RM'+n.toLocaleString('en-MY')+' '+scenario.unit.slice(2):
+        'RM'+n.toLocaleString('en-MY'));
+    return {id,key,group:'calc-'+scenario.family,type:'mcq',prompt:scenario.prompt,
+      choices:shuffledChoices.map((n,i)=>({value:'C'+i,label:fmt(n)})),
+      correctValue:'C'+shuffledChoices.indexOf(value),explanation:scenario.explanation};
   }
   function generate({paper,topics,count=5,mode='topic',recentIds=[],lessons={},syllabus={},rng=Math.random}){
-    const official=syllabus[paper]?.topics||[];
-    const allowed=new Map(official.map(x=>{const t=topicCode(x);return t?[t.code,t.title]:null}).filter(Boolean));
-    const mock=mode==='mock';
-    const requested=mock?new Set(allowed.keys()):(Array.isArray(topics)&&topics.length?new Set(topics):new Set(allowed.keys()));
-    const keys=shuffled([...requested].filter(x=>allowed.has(x)).map(x=>paper+':'+x),rng);
-    const qty=mock?50:Math.max(1,Math.min(20,Math.trunc(Number(count)||5)));
+    const headings=syllabus[paper]?.topics||[];
+    const allowed=new Map(headings.map(x=>{const t=topicCode(x);return t?[t.code,t.title]:null}).filter(Boolean));
+    const mock=mode==='mock',wanted=mock?new Set(allowed.keys()):
+      Array.isArray(topics)&&topics.length?new Set(topics):new Set(allowed.keys());
+    const keys=shuffled([...wanted].filter(k=>allowed.has(k)).map(k=>paper+':'+k),rng);
+    const qty=mock?50:Math.max(1,Math.min(20,Math.floor(Number(count)||5)));
     const recent=new Set(Array.isArray(recentIds)?recentIds:[]);
-    const queues=new Map();
+    const pools=new Map();
     for(const key of keys){
-      const title=allowed.get(key.split(':')[1]);
-      const pool=recallQuestions(key,lessons[key],title);
+      const lessonsForTopic=lessons[key],title=allowed.get(key.split(':')[1]);
+      let pool=clozeQuestions(key,lessonsForTopic,rng)
+        .concat(matchedQuestions(key,lessonsForTopic,lessons,title,rng));
+      if(typeof root.LedgerExamScenarios?.concept==='function'){
+        for(let i=0;i<12;i++){
+          const item=root.LedgerExamScenarios.concept(key,rng,i);
+          if(!item)break;
+          pool.push({...item,id:key+':author:'+i,key,group:'author-'+i,type:'mcq'});
+        }
+      }
       const seen=new Set(pool.map(q=>q.prompt));
-      for(let i=0;i<Math.min(12,qty);i++){
-        const candidate=optionProblem(key,rng,i);
-        if(candidate&&!seen.has(candidate.prompt)){
-          candidate.group='numerical';
-          pool.push(candidate);
-          seen.add(candidate.prompt);
-        }
+      for(let i=0;i<qty+10;i++){
+        const scenario=typeof root.LedgerExamScenarios?.problem==='function'?
+           root.LedgerExamScenarios.problem(key,rng,i):null;
+        const q=scenarioQuestion(key,scenario,rng,i);
+        if(q&&!seen.has(q.prompt)){pool.push(q);seen.add(q.prompt);}
       }
-      if(pool.length)queues.set(key,shuffled(pool,rng));
+      pool=[...new Map(pool.map(q=>[q.prompt,q])).values()];
+      if(pool.length)pools.set(key,shuffled(pool,rng));
     }
-    const eligible=shuffled([...queues.keys()],rng);
-    const selected=[],usedGroups=new Map(),numericCounts=new Map();
-    // Round robin across syllabus headings for fair mock-exam coverage.
-    while(selected.length<qty){
-      let progress=false;
-      for(const key of eligible){
-        if(selected.length===qty)break;
-        const pool=queues.get(key);
-        if(!pool||!pool.length)continue;
-        const counts=usedGroups.get(key)||new Map();
-        const numericCap=mock?2:Math.max(2,Math.ceil(qty/(Math.max(1,eligible.length)*4)));
-        let bestIndex=-1,bestCost=Infinity;
+    const availableKeys=shuffled([...pools.keys()],rng),picked=[],used=new Map();
+    while(picked.length<qty){
+      let changed=false;
+      for(const key of availableKeys){
+        if(picked.length>=qty)break;
+        const pool=pools.get(key);if(!pool?.length)continue;
+        const groups=used.get(key)||new Set();let best=-1,cost=Infinity;
         for(let i=0;i<pool.length;i++){
-          const q=pool[i],usage=counts.get(q.group)||0;
-          const penalty=(recent.has(q.id)?8:0)+(usage>=2?6:usage*1.5)+
-            (q.type==='mcq'&&(numericCounts.get(key)||0)>=numericCap?7:0)+rng();
-          if(penalty<bestCost){bestCost=penalty;bestIndex=i;}
+          const q=pool[i];
+          const penalty=(groups.has(q.group)?5:0)+(recent.has(q.id)?12:0)+
+            (q.group?.startsWith('author-')?-3:q.group?.startsWith('calc-')?-1:q.group?.startsWith('fact-')?2:0)+rng()/10;
+          if(penalty<cost){cost=penalty;best=i;}
         }
-        if(bestIndex<0)continue;
-        const [q]=pool.splice(bestIndex,1);
-        selected.push(q);progress=true;
-        counts.set(q.group,(counts.get(q.group)||0)+1);usedGroups.set(key,counts);
-        if(q.type==='mcq')numericCounts.set(key,(numericCounts.get(key)||0)+1);
+        if(best<0)continue;
+        const [item]=pool.splice(best,1);
+        if(picked.some(q=>q.prompt===item.prompt))continue;
+        picked.push(item);groups.add(item.group);used.set(key,groups);changed=true;
       }
-      if(!progress)break;
+      if(!changed)break;
     }
-    return {questions:selected,available:selected.length,requested:qty,
-      topicsCovered:new Set(selected.map(q=>q.key)).size,paper,mode:mock?'mock':'topic'};
+    return {questions:picked,available:picked.length,requested:qty,
+      topicsCovered:new Set(picked.map(q=>q.key)).size,paper,mode:mock?'mock':'topic'};
+  }
+  function parseNumber(value){
+    if(typeof value==='number')return Number.isFinite(value)?value:null;
+    const s=String(value??'').trim().replace(/,/g,'').replace(/^(RM|£|\$)\s*/i,'');
+    if(!/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(s))return null;
+    const n=Number(s);return Number.isFinite(n)?n:null;
+  }
+  function isNumericCorrect(value,expected){
+    const n=parseNumber(value);return n!==null&&Number.isFinite(expected)&&Math.abs(n-expected)<=0.011;
   }
   function score(questions,answers){
-    let correct=0,marked=0,automatic=0,selfMarked=0;
+    let correct=0,marked=0,automatic=0;
     const items=questions.map(q=>{
       const answer=answers[q.id];
-      const isAuto=q.type==='mcq';
-      const passed=isAuto?answer===q.correctValue:answer===true;
-      const attempted=isAuto?answer!==undefined:(answer===true||answer===false);
-      if(attempted){marked++;if(passed)correct++;if(isAuto)automatic++;else selfMarked++;}
+      const attempted=q.type==='numeric'?parseNumber(answer)!==null:answer!==undefined&&answer!=='';
+      const passed=attempted&&(q.type==='numeric'?isNumericCorrect(answer,q.correctValue):answer===q.correctValue);
+      if(attempted){marked++;automatic++;if(passed)correct++;}
       return {id:q.id,key:q.key,type:q.type,attempted,correct:attempted?passed:null};
     });
-    return {correct,marked,total:questions.length,automatic,selfMarked,items,percent:marked?Math.round(100*correct/marked):0};
+    return {correct,marked,total:questions.length,automatic,selfMarked:0,items,
+      percent:marked?Math.round(100*correct/marked):0};
   }
   function readHistory(storage){
     try{const a=JSON.parse(storage.getItem(STUDY_KEY)||'[]');return Array.isArray(a)?a.slice(0,250):[];}catch(e){return [];}
@@ -175,7 +235,7 @@
     const next=[record,...old].slice(0,250);
     storage.setItem(STUDY_KEY,JSON.stringify(next));return next;
   }
-  const api={generate,score,readHistory,saveHistory,topicCode,STUDY_KEY};
+  const api={generate,score,readHistory,saveHistory,topicCode,STUDY_KEY,parseNumber,isNumericCorrect};
   root.LedgerQuizEngine=api;
   if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof window!=='undefined'?window:globalThis);
