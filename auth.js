@@ -6,7 +6,7 @@
  const DIRTY='rh_beta_unsynced_v3';
  const BASELINE='rh_beta_cloud_baseline_v3';
  const IGNORE=/^(ph_auth_hash_v1|ph_unlocked_v1|sb-|rh_beta_|google)/i;
- let client,user=null,timer=null,debounce=null,saving=false,activeSync=null;
+ let client,user=null,timer=null,debounce=null,saving=false,activeSync=null,profileRedirecting=false;
  let lastSaved=null,lastCloud=null,conflicted=false,applying=false,changedDuringHydrate=false;
  const rawSet=Storage.prototype.setItem;
  const rawRemove=Storage.prototype.removeItem;
@@ -253,7 +253,19 @@
   if(user){const ok=await sync(true);if(!ok){alert('Your work is saved on this device, but cloud backup is not complete. Sign out is blocked to protect unsynced work.');return;}}
   if(client)await client.auth.signOut();user=null;clearData();removeMeta(OWNER);removeMeta(DIRTY);removeMeta(BASELINE);sessionStorage.removeItem(PREFIX);location.replace('index.html');
  }
- async function ready(){try{await hydrate();start();return true;}catch(e){console.error(e);status('Unable to open account safely: '+(e?.message||e),true);return false;}}
+ async function ready(){
+  try{
+   await hydrate();start();
+   // Account onboarding gate. Website-only routing is complemented by
+   // Supabase RLS: unprofiled accounts cannot join or read classroom content.
+   if(!/\/profile\.html$/i.test(location.pathname)){
+    const {data,error}=await client.from('student_profiles').select('user_id').eq('user_id',user.id).maybeSingle();
+    if(error)throw error;
+    if(!data){profileRedirecting=true;location.replace('profile.html');return false;}
+   }
+   profileRedirecting=false;return true;
+  }catch(e){console.error(e);status('Unable to open account safely: '+(e?.message||e),true);return false;}
+ }
  function start(){
   if(timer)return;
   timer=setInterval(()=>{sync().catch(e=>console.error(e));},3000);
@@ -263,9 +275,10 @@
   const obsolete=document.getElementById('rhManualSave');if(obsolete)obsolete.remove();
  }
  const api={login,logout,signUp,verifySignUpOtp,completeEmailLink,resendSignUpOtp,sendRecovery,updatePassword,onAuthChange,ready,sync,init,
+  getClient(){return client;},getUser(){return user;},isRedirectingToProfile(){return profileRedirecting;},
   async isSignedIn(){try{await loadUser();return true;}catch{return false;}},
   guard(){document.documentElement.style.visibility='hidden';ready().then(ok=>{
-    if(!ok){location.replace('index.html');return;}
+    if(!ok){if(!profileRedirecting)location.replace('index.html');return;}
     if(changedDuringHydrate){
      changedDuringHydrate=false;
      if(document.readyState==='loading')window.addEventListener('load',()=>location.reload(),{once:true});
