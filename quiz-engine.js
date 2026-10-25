@@ -14,8 +14,12 @@
     const id=key+':variation:'+sequence;
     const add=(prompt,answer,formula,offsets,unit='RM')=>{
       const alternatives=offsets.map(n=>answer+n).filter(n=>Number.isFinite(n)&&n>=0&&n!==answer);
-      const distinct=[answer,...new Set(alternatives)].slice(0,4);
-      if(distinct.length!==4) return null;
+      const distinct=[answer];
+      for(const candidate of [...alternatives,answer-1,answer+1,answer-2,answer+2,answer-10,answer+10]){
+        if(candidate>=0&&Number.isFinite(candidate)&&!distinct.includes(candidate))distinct.push(candidate);
+        if(distinct.length===4)break;
+      }
+      if(distinct.length!==4)return null;
       const choices=shuffled(distinct,rng).map(n=>({value:n,label:unit==='units'?n.toLocaleString('en-MY')+' units':unit==='rate'?'RM'+n.toLocaleString('en-MY')+' per unit':'RM'+n.toLocaleString('en-MY')}));
       return {id,key,type:'mcq',prompt,choices,correctValue:answer,explanation:formula};
     };
@@ -55,6 +59,9 @@
     if(lesson.check&&lesson.answer)q.push({id:key+':check',key,type:'recall',prompt:String(lesson.check),explanation:String(lesson.answer)});
     if(Array.isArray(lesson.steps)&&lesson.steps.length>=2)q.push({id:key+':principles',key,type:'recall',prompt:'Explain two important principles or steps involved in '+title+'.',explanation:lesson.steps.slice(0,2).join('\n\n')});
     if(lesson.trap)q.push({id:key+':trap',key,type:'recall',prompt:'What common exam mistake must a student avoid in '+title+'?',explanation:String(lesson.trap)});
+    if(lesson.formula)q.push({id:key+':rule',key,type:'recall',prompt:'Recall a useful rule, formula or framework for '+title+'. When is it applied?',explanation:String(lesson.formula)});
+    if(lesson.example)q.push({id:key+':application',key,type:'recall',prompt:'Construct an example that applies '+title+'. Explain the accounting or management reasoning, then compare your example with the reference.',explanation:String(lesson.example)});
+    if(lesson.summary)q.push({id:key+':purpose',key,type:'recall',prompt:'In your own words, explain the central idea and purpose of '+title+'.',explanation:String(lesson.summary)});
     return q;
   }
   function generate({paper,topics,count=5,lessons={},syllabus={},rng=Math.random}){
@@ -68,13 +75,17 @@
       const title=allowed.get(key.split(':')[1]);
       pool.push(...recallQuestions(key,lessons[key],title));
       // Parametric numerical questions have different input values each time.
-      for(let k=0;k<qty;k++){const item=optionProblem(key,rng,k);if(item)pool.push(item);}
+      const seen=new Set();
+      for(let k=0;k<qty;k++){
+        const item=optionProblem(key,rng,k);
+        if(item&&!seen.has(item.prompt)){pool.push(item);seen.add(item.prompt);}
+      }
     }
     pool=shuffled(pool,rng);
     // Balance broad paper tests so one numerical template does not dominate.
-    const picked=[],used=new Map();
+    const picked=[],used=new Map(),activeKeys=[...new Set(pool.map(q=>q.key))];
     while(picked.length<qty&&pool.length){
-      let index=pool.findIndex(q=>(used.get(q.key)||0)===Math.min(...keys.map(k=>used.get(k)||0)) );
+      let index=pool.findIndex(q=>(used.get(q.key)||0)===Math.min(...activeKeys.map(k=>used.get(k)||0)) );
       if(index<0)index=0;
       const [item]=pool.splice(index,1);picked.push(item);used.set(item.key,(used.get(item.key)||0)+1);
     }
