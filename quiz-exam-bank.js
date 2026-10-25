@@ -136,7 +136,7 @@ function problem(key,rng,index){
  }
  case 'FA2:A1':{
   const rent=R(12,48)*120,months=R(2,9),owing=R(2,16)*100,paid=R(3,15)*100;
-  if(index%3===0)return P('period-recognition','Rent of '+Z(rent)+' covers 12 months from 1 January. At 31 December only '+months+' months of that coverage belong to next year. Calculate the prepayment at the reporting date.',rent*months/12,'Prepayment = total rent × months attributable to next year ÷ 12 = '+Z(rent*months/12)+'.');
+  if(index%3===0)return P('period-recognition','An annual rent payment of '+Z(rent)+' covers 12 months. At the reporting date '+months+' months of that coverage remain unused. Calculate the prepayment.',rent*months/12,'Prepayment = total rent × months attributable to next year ÷ 12 = '+Z(rent*months/12)+'.');
   if(index%3===1)return P('accrual-principle','A business owes '+Z(owing)+' for utilities already consumed in the reporting period, but has not received the invoice. Calculate the expense to recognise under accrual accounting.',owing,'Record the utility expense when incurred: '+Z(owing)+'.');
   return P('accrual-cash-difference','A business collected '+Z(paid)+' in advance for services. At year-end, services worth '+Z(Math.floor(paid/100)*40)+' have been delivered. Calculate the amount remaining as a liability.',paid-Math.floor(paid/100)*40,'Deferred income = cash received − revenue earned = '+Z(paid-Math.floor(paid/100)*40)+'.');
  }
@@ -147,7 +147,7 @@ function problem(key,rng,index){
   return P('posting-trial-balance','A journal contains debits of '+Z(cash)+' and '+Z(returns)+'. What total credits must be entered to balance the journal?',cash+returns,'Total credits must equal total debits = '+Z(cash+returns)+'.');
  }
  case 'FA2:A3':{
-  const cost=R(12,70)*100,price=cost+R(1,12)*100,completion=R(1,18)*100,nrv=price-completion;
+  const cost=R(12,70)*100,price=cost+R(8,20)*100,completion=R(1,12)*100,nrv=price-completion;
   if(index%3===0)return P('measurement-nrv','For one inventory item, estimated sale proceeds are '+Z(price)+' and selling/completion costs are '+Z(completion)+'. What is net realisable value?',nrv,'NRV = sale proceeds − costs to complete and sell = '+Z(nrv)+'.');
   if(index%3===1)return P('measurement-lower-of','One inventory item cost '+Z(cost)+'. Its estimated net realisable value is '+Z(nrv)+'. Under the lower-of-cost-and-NRV rule, at what amount is it recorded?',Math.min(cost,nrv),'Inventory measurement = lower of cost ('+Z(cost)+') and NRV ('+Z(nrv)+') = '+Z(Math.min(cost,nrv))+'.');
   return P('measurement-write-down','An inventory item has cost '+Z(cost)+' and NRV '+Z(nrv)+'. What is the required inventory write-down (enter zero when no write-down is needed)?',Math.max(0,cost-nrv),'Write-down = max(0, cost − NRV) = '+Z(Math.max(0,cost-nrv))+'.');
