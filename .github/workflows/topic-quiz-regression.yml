@@ -1,0 +1,43 @@
+name: LedgerPeer topic quiz regression
+on:
+  push:
+    paths:
+      - 'quiz*.js'
+      - 'quiz*.html'
+      - 'quiz*.css'
+      - 'notes-page.js'
+      - 'notes-data.js'
+      - 'notes-expanded-data.js'
+      - 'acca-published-data.js'
+      - 'notes-uk-syllabi.js'
+      - 'tests/quiz-generator-regression.js'
+      - '.github/workflows/topic-quiz-regression.yml'
+  pull_request:
+    paths:
+      - 'quiz*.js'
+      - 'quiz*.html'
+      - 'quiz*.css'
+      - 'notes-page.js'
+      - 'notes-data.js'
+      - 'notes-expanded-data.js'
+      - 'acca-published-data.js'
+      - 'notes-uk-syllabi.js'
+      - 'tests/quiz-generator-regression.js'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  quiz:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify JavaScript syntax
+        run: |
+          node --check quiz-engine.js
+          node --check quiz-page.js
+          node --check quiz-dashboard.js
+      - name: Verify topic coverage, scoring and persistence
+        run: node tests/quiz-generator-regression.js
