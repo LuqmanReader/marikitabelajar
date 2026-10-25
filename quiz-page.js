@@ -42,6 +42,7 @@ function qTitle(q){const t=getTopics(active.paper).find(x=>x.code===q.key.split(
 function makeQuiz(){
  const paper=$('paper').value,topics=getSelection(),count=Number($('count').value);
  active=engine.generate({paper,topics,count,lessons,syllabus:syllabi});
+ active.selectedTopic=$('topic').value;
  answers={};phase='answering';saved=false;
  if(!active.questions.length){
    $('quizSection').hidden=true;
@@ -81,6 +82,13 @@ function markWritten(q,passed,container){
 }
 function reviewQuiz(){
  if(phase!=='answering')return;
+ const unanswered=active.questions.find(q=>q.type==='mcq'&&answers[q.id]===undefined);
+ if(unanswered){
+  setMessage('Answer every multiple-choice question before checking. Written questions can be assessed after revealing the reference answer.');
+  const index=active.questions.indexOf(unanswered);
+  $('practice-'+index).scrollIntoView({block:'center',behavior:'smooth'});
+  return;
+ }
  phase='review';$('review').hidden=true;
  active.questions.forEach((q,i)=>{
   const card=$('practice-'+i),box=card.querySelector('.feedback');
@@ -117,7 +125,7 @@ function saveQuiz(){
  const outcome=engine.score(active.questions,answers);
  if(outcome.marked!==outcome.total)return;
  const record={id:new Date().toISOString()+'-'+Math.floor(Math.random()*100000),at:new Date().toISOString(),
-   paper:active.paper,topic:$('topic').value,correct:outcome.correct,total:outcome.total,percent:outcome.percent,
+   paper:active.paper,topic:active.selectedTopic,correct:outcome.correct,total:outcome.total,percent:outcome.percent,
    automatic:outcome.automatic,selfMarked:outcome.selfMarked,items:outcome.items,
    edition:syllabi[active.paper]?.edition||null};
  try{
