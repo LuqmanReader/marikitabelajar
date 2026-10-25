@@ -3,7 +3,7 @@
 const $=id=>document.getElementById(id),engine=root.LedgerQuizEngine;
 const papers=root.SubjectCatalog?.papers||[],syllabi=root.LedgerNotesSyllabi?.papers||{},lessons=root.LedgerFiaNotes||{};
 const params=new URLSearchParams(root.location.search);
-let active=null,answers={},phase='setup',saved=false;
+let active=null,answers={},phase='setup',saved=false,mode='topic',recentlyGenerated=[];
 const element=(tag,className,value)=>{const n=document.createElement(tag);if(className)n.className=className;if(value!==undefined)n.textContent=value;return n;};
 const getTopics=paper=>(syllabi[paper]?.topics||[]).map(engine.topicCode).filter(Boolean);
 function setMessage(message){$('coverage').textContent=message;}
@@ -38,11 +38,30 @@ function updateReadLink(){
  $('readTopic').textContent=topic==='all'?'OPEN '+paper+' SYLLABUS ↗':'STUDY '+paper+' '+topic+' ↗';
 }
 function getSelection(){return $('topic').value==='all'?null:[$('topic').value];}
+function setMode(next){
+ mode=next==='mock'?'mock':'topic';
+ const isMock=mode==='mock';
+ $('topicMode').classList.toggle('active',!isMock);
+ $('mockMode').classList.toggle('active',isMock);
+ $('topicMode').setAttribute('aria-pressed',String(!isMock));
+ $('mockMode').setAttribute('aria-pressed',String(isMock));
+ $('topicField').hidden=isMock;
+ $('countField').hidden=isMock;
+ $('readTopic').hidden=isMock;
+ $('modeDescription').textContent=isMock
+  ?'50 questions are drawn across the selected paper’s syllabus topics. This is mock-style revision practice with written self-marking, not an official computer-based ACCA examination.'
+  :'Up to 20 questions per topic. Questions are selected from distinct lesson-based prompts and random numerical scenarios where available. Recently used questions are deprioritised.';
+ $('generate').textContent=isMock?'GENERATE 50-QUESTION MOCK →':'GENERATE '+$('count').value+' QUESTIONS →';
+}
+
 function qTitle(q){const t=getTopics(active.paper).find(x=>x.code===q.key.split(':')[1]);return t?.title||q.key;}
 function makeQuiz(){
- const paper=$('paper').value,topics=getSelection(),count=Number($('count').value);
- active=engine.generate({paper,topics,count,lessons,syllabus:syllabi});
- active.selectedTopic=$('topic').value;
+ const paper=$('paper').value,topics=mode==='mock'?null:getSelection(),count=mode==='mock'?50:Number($('count').value);
+ const records=engine.readHistory(root.localStorage).filter(r=>r.paper===paper).slice(0,3);
+ const recentIds=records.flatMap(r=>(r.items||[]).map(q=>q.id)).concat(recentlyGenerated);
+ active=engine.generate({paper,topics,count,mode,recentIds,lessons,syllabus:syllabi});
+ active.selectedTopic=mode==='mock'?'all':$('topic').value;
+ recentlyGenerated=recentlyGenerated.concat(active.questions.map(q=>q.id)).slice(-400);
  answers={};phase='answering';saved=false;
  if(!active.questions.length){
    $('quizSection').hidden=true;
@@ -50,8 +69,9 @@ function makeQuiz(){
    return;
  }
  $('quizSection').hidden=false;$('results').hidden=true;$('saveStatus').textContent='';$('save').disabled=false;
- const narrow=topics?' / '+topics.join(', '):' / MIXED TOPICS';
- $('quizSummary').textContent=paper+narrow+' · '+active.available+' unique questions in this set'+(active.available<count?' (requested '+count+'; no repeated placeholders)':'')+' · '+active.topicsCovered+' syllabus topics covered.';
+ const narrow=mode==='mock'?' / PAPER-WIDE MOCK PRACTICE':topics?' / '+topics.join(', '):' / MIXED TOPICS';
+ $('quizTitle').textContent=mode==='mock'?'50-QUESTION MOCK PRACTICE':'TOPIC PRACTICE SET';
+ $('quizSummary').textContent=paper+narrow+' · '+active.available+' varied questions'+(active.available<count?' (requested '+count+'; available source material is limited)':'')+' · '+active.topicsCovered+' syllabus topics covered · '+(mode==='mock'?'Written answers require self-assessment.':'Calculation questions are auto-marked where supported.');
  $('review').hidden=false;
  renderQuestions();$('quizSection').scrollIntoView({block:'start',behavior:'smooth'});
 }
@@ -125,7 +145,7 @@ function saveQuiz(){
  const outcome=engine.score(active.questions,answers);
  if(outcome.marked!==outcome.total)return;
  const record={id:new Date().toISOString()+'-'+Math.floor(Math.random()*100000),at:new Date().toISOString(),
-   paper:active.paper,topic:active.selectedTopic,correct:outcome.correct,total:outcome.total,percent:outcome.percent,
+   paper:active.paper,topic:active.selectedTopic,mode:active.mode,correct:outcome.correct,total:outcome.total,percent:outcome.percent,
    automatic:outcome.automatic,selfMarked:outcome.selfMarked,items:outcome.items,
    edition:syllabi[active.paper]?.edition||null};
  try{
@@ -144,7 +164,7 @@ function renderHistory(){
  const wrap=element('div','history-list');
  for(const r of entries.slice(0,8)){
    const row=element('div','history-row'),left=element('div');
-   left.append(element('b',null,r.paper+' / '+(r.topic==='all'?'MIXED TOPICS':r.topic||'MIXED')));
+   left.append(element('b',null,r.paper+' / '+(r.mode==='mock'?'50-QUESTION MOCK':r.topic==='all'?'MIXED TOPICS':r.topic||'MIXED')));
    left.append(element('small',null,new Date(r.at).toLocaleString('en-MY')+' · '+r.automatic+' automatic / '+r.selfMarked+' self-marked'));
    row.append(left,element('b',null,r.correct+' / '+r.total));wrap.append(row);
  }
@@ -155,6 +175,10 @@ async function init(){
   if(!engine||papers.length!==25||!root.PersonalHubAuth||!Object.keys(syllabi).length)throw Error('The syllabus or quiz engine could not load.');
   if(!await root.PersonalHubAuth.ready()){root.location.replace('index.html');return;}
   fillPapers();fillTopics();renderHistory();
+  setMode(params.get('mode')==='mock'?'mock':'topic');
+  $('topicMode').addEventListener('click',()=>setMode('topic'));
+  $('mockMode').addEventListener('click',()=>setMode('mock'));
+  $('count').addEventListener('change',()=>setMode(mode));
   $('paper').addEventListener('change',()=>{fillTopics();});
   $('topic').addEventListener('change',updateReadLink);
   $('generate').addEventListener('click',makeQuiz);
