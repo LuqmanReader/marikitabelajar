@@ -15,7 +15,7 @@ function link(label,url,cls){
  const a=node('a',cls,label);
  if(/^https:\/\/www\.accaglobal\.com\//.test(url)){
     a.href=url;a.target='_blank';a.rel='noopener noreferrer';
- }else if(/^(notes\.html\?|fia-study\.html(?:\?|$))/.test(url)){a.href=url}
+ }else if(/^(notes\.html\?|fia-study\.html(?:\?|$)|quiz\.html(?:\?|$))/.test(url)){a.href=url}
  else{a.href='https://www.accaglobal.com/my/en/student/exam-support-resources.html';a.target='_blank';a.rel='noopener noreferrer'}
  return a;
 }
@@ -72,6 +72,7 @@ function makeLesson(n,src,paperCode){
  const answer=node('div','notes-check-answer',n.answer);
  check.append(node('h4','', 'SELF CHECK'),summary,answer);side.append(check);
  if(FIA_PAPERS.some(p=>p.code===paperCode))side.append(link('READ THE EXPANDED '+paperCode+' STUDY GUIDE →','fia-study.html?paper='+paperCode,'notes-guide-link'));
+ side.append(link('PRACTICE '+paperCode+' / '+n.code+' →','quiz.html?paper='+paperCode+'&topic='+n.code,'notes-guide-link'));
  side.append(link('OFFICIAL SYLLABUS ↗',src || resourceLink(paperCode)));
  layout.append(main,side);return layout;
 }
