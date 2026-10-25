@@ -168,14 +168,14 @@
   return allowed.has(target)?target:null;
  }
  function loginLanding(){
-  try{return safeDestination(new URL(location.href).searchParams.get('next'))||'index.html#access';}
-  catch{return 'index.html#access';}
+  try{return safeDestination(new URL(location.href).searchParams.get('next'))||'hub.html';}
+  catch{return 'hub.html';}
  }
  function signInUrl(next){
   const destination=safeDestination(next)||'classroom.html';
   return 'index.html?next='+encodeURIComponent(destination)+'#access';
  }
- async function login(email,password){await init();const {error}=await client.auth.signInWithPassword({email,password});if(error)throw error;await hydrate();location.href=loginLanding();}
+ async function login(email,password){await init();const {error}=await client.auth.signInWithPassword({email,password});if(error)throw error;await hydrate();location.replace(loginLanding());}
  async function signUp(email,password){
   await init();
   const {data,error}=await client.auth.signUp({email:email.trim(),password,options:{emailRedirectTo:new URL('index.html',location.href).href}});
