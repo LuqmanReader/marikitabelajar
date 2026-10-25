@@ -449,6 +449,7 @@ authView.hidden=false;hubView.hidden=true;
     sessionStorage.removeItem(pendingSignupKey);pendingEmail='';
     const ok=await A.ready();
     if(ok){authView.hidden=true;hubView.hidden=false;}
+    else if(A.isRedirectingToProfile?.()){authView.hidden=true;hubView.hidden=true;}
     else{authView.hidden=false;hubView.hidden=true;show('login');error.textContent='Email confirmed, but the workspace could not load. Please sign in again.';}
    }else if(pendingEmail){
     show('verify');
