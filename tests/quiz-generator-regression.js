@@ -25,6 +25,12 @@ for(const [paper,config] of Object.entries(syllabus)){
   assert.equal(set.available,20,'Expected 20 scored questions: '+key);
   assert.equal(new Set(set.questions.map(q=>q.id)).size,20,'Duplicate question IDs '+key);
   assert.equal(new Set(set.questions.map(q=>q.prompt)).size,20,'Duplicate prompts '+key);
+  const mixed=paper==='FA2'||paper==='MA2';
+  assert.equal(set.actualMix.mcq,mixed?10:20,'Topic MCQ split incorrect: '+key);
+  assert.equal(set.actualMix.numeric,mixed?10:0,'Topic numerical split incorrect: '+key);
+  assert.equal(set.questions.filter(q=>q.type==='mcq').length,set.actualMix.mcq);
+  assert.equal(set.questions.filter(q=>q.type==='numeric').length,set.actualMix.numeric);
+
   for(const q of set.questions){
    assert.equal(q.key,key,'Incorrect subject classification');
    assert.ok(q.prompt.length>12&&q.explanation.length>12,'Missing question/explanation');
@@ -45,6 +51,10 @@ for(const [paper,config] of Object.entries(syllabus)){
  }
  const mock=engine.generate({paper,mode:'mock',count:50,lessons,syllabus,rng});
  assert.equal(mock.available,50,'Paper mock needs fifty questions '+paper);
+ const mixedMock=paper==='FA2'||paper==='MA2';
+ assert.equal(mock.actualMix.mcq,mixedMock?35:50,'Mock MCQ split incorrect: '+paper);
+ assert.equal(mock.actualMix.numeric,mixedMock?15:0,'Mock numerical split incorrect: '+paper);
+
  assert.equal(new Set(mock.questions.map(q=>q.id)).size,50);
  assert.ok(mock.topicsCovered>=10,'Mock should spread across syllabus headings');
  assert.ok(mock.questions.every(q=>q.key.startsWith(paper+':')),'Never mix papers in same exam');
@@ -58,6 +68,16 @@ for(const paper of ['FA1','MA1','FA2','MA2']){
  for(const t of topicsForPaper){
   const q=engine.generate({paper,topics:[t.code],count:20,lessons,syllabus,rng});
   assert.equal(q.questions.length,20);
+ }
+}
+
+for(const paper of ['FA2','MA2']){
+ const topic=engine.topicCode(syllabus[paper].topics[0]).code;
+ for(const [count,mcq,numeric] of [[5,3,2],[10,5,5],[20,10,10]]){
+  const set=engine.generate({paper,topics:[topic],count,lessons,syllabus,rng});
+  assert.equal(set.available,count,'Short drill question count '+paper+':'+count);
+  assert.equal(set.actualMix.mcq,mcq,'Short drill MCQ ratio');
+  assert.equal(set.actualMix.numeric,numeric,'Short drill numeric ratio');
  }
 }
 assert.equal(engine.parseNumber('RM2,500.00'),2500);
@@ -90,4 +110,4 @@ assert.ok(html.includes('quiz-exam-bank.js'));
 assert.ok(page.includes("input.type='text'"),'Numerical entry must use a compact input');
 assert.ok(!page.includes("element('textarea'"),'Essay fields must be removed');
 assert.ok(!page.includes('SELF MARKED'),'Do not show legacy self-marking');
-console.log('PASS Quiz Centre regression: 700 topics, 25 mock papers, MCQ:',objective,'numeric:',numeric,'FA1/MA1 MCQ-only, FA2/MA2 numeric entry and all answers auto-graded.');
+console.log('PASS Quiz Centre ratio checks: 700 topics x 20 questions, 25 mocks x 50 questions, FA2/MA2 exact topic 10 MCQ + 10 numerical and mock 35 MCQ + 15 numerical, FA1/MA1 MCQ-only; total MCQ:',objective,'numerical:',numeric);

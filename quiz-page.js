@@ -49,8 +49,8 @@ function setMode(next){
  $('countField').hidden=isMock;
  $('readTopic').hidden=isMock;
  $('modeDescription').textContent=isMock
-  ?'50 automatically marked questions across this paper. FA1/MA1 are MCQ-only; FA2/MA2 include numerical entry where appropriate. Not an official ACCA mock.'
-  :'Up to 20 automatically marked questions per topic. Numerical scenarios are varied, and recently used questions are deprioritised.';
+  ?(['FA2','MA2'].includes($('paper').value)?'50-question mock: 35 multiple-choice (70%) and 15 numerical entry (30%). All automatically graded.':'50-question mock: MCQ-only for this paper. All automatically graded.')
+  :(['FA2','MA2'].includes($('paper').value)?'20-question topic drill: 10 MCQs (50%) and 10 numerical entry questions (50%). A 10-question drill splits 5/5; 5 questions split 3/2.':'Topic practice: MCQ-only for this paper. All questions are automatically marked.');
  $('generate').textContent=isMock?'GENERATE 50-QUESTION MOCK →':'GENERATE '+$('count').value+' QUESTIONS →';
 }
 
@@ -71,7 +71,7 @@ function makeQuiz(){
  $('quizSection').hidden=false;$('results').hidden=true;$('saveStatus').textContent='';$('save').disabled=false;
  const narrow=mode==='mock'?' / PAPER-WIDE MOCK PRACTICE':topics?' / '+topics.join(', '):' / MIXED TOPICS';
  $('quizTitle').textContent=mode==='mock'?'50-QUESTION MOCK PRACTICE':'TOPIC PRACTICE SET';
- $('quizSummary').textContent=paper+narrow+' · '+active.available+' varied questions'+(active.available<count?' (requested '+count+'; available source material is limited)':'')+' · '+active.topicsCovered+' syllabus topics covered · '+'Every answer is automatically marked.';
+ $('quizSummary').textContent=paper+narrow+' · '+active.available+' questions · '+active.actualMix.mcq+' MCQ / '+active.actualMix.numeric+' numerical entry · '+active.topicsCovered+' topics covered'+(active.available<count?' · INCOMPLETE: insufficient questions for required ratio.':'')+' · All automatically marked.';
  $('review').hidden=false;
  renderQuestions();$('quizSection').scrollIntoView({block:'start',behavior:'smooth'});
 }
@@ -177,7 +177,7 @@ async function init(){
   $('topicMode').addEventListener('click',()=>setMode('topic'));
   $('mockMode').addEventListener('click',()=>setMode('mock'));
   $('count').addEventListener('change',()=>setMode(mode));
-  $('paper').addEventListener('change',()=>{fillTopics();});
+  $('paper').addEventListener('change',()=>{fillTopics();setMode(mode);});
   $('topic').addEventListener('change',updateReadLink);
   $('generate').addEventListener('click',makeQuiz);
   $('regenerate').addEventListener('click',makeQuiz);
