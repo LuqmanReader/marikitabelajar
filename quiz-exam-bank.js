@@ -64,8 +64,8 @@ function problem(key,rng,index){
   return P('materials-total','A store holds '+a+' units at RM'+unit1+' and receives '+b+' more units at RM'+unit2+'. What is the total material cost available?',total,'Total = ('+a+' × RM'+unit1+') + ('+b+' × RM'+unit2+') = '+Z(total)+'.');
  }
  case 'MA1:D3':case 'MA2:B3':case 'MA2:C1':{
-  const hours=R(2,10)*1000,rate=R(4,20),oh=hours*rate;
-  if(index%2)return P('overhead-absorbed','Budgeted production overhead is '+Z(oh)+' with expected activity of '+hours+' labour-hours. A job uses '+R(5,20)+' hours. What is the absorption rate per labour-hour?',rate,'Rate = budgeted overhead ÷ budgeted hours = '+Z(oh)+' ÷ '+hours+' = RM'+rate+' per hour.','RM/hour');
+  const hours=R(2,10)*1000,rate=R(4,20),oh=hours*rate,jobHours=R(5,20);
+  if(index%2)return P('overhead-absorbed','Budgeted production overhead is '+Z(oh)+' for '+hours+' labour-hours. A particular job uses '+jobHours+' hours. How much overhead is absorbed by that job?',rate*jobHours,'Absorption rate = RM'+rate+' per hour; job charge = '+jobHours+' × RM'+rate+' = '+Z(rate*jobHours)+'.');
   return P('overhead-rate','Budgeted production overhead is '+Z(oh)+' for '+hours+' labour-hours. Find the overhead absorption rate.',rate,'Absorption rate = budgeted overhead ÷ budgeted activity = RM'+rate+' per hour.','RM/hour');
  }
  case 'MA1:D4':case 'MA2:C3':{
@@ -116,7 +116,7 @@ function problem(key,rng,index){
   return fam===0?P('break-even','Fixed costs are '+Z(fixed)+'. A product sells for RM'+price+' and variable cost is RM'+vc+' per unit. Calculate break-even volume.',breakeven,'Contribution = RM'+margin+'; break-even units = fixed costs ÷ contribution = '+breakeven+' units.','units'):
   fam===1?P('margin-safety','Budget sales are '+budget+' units and break-even sales are '+breakeven+' units. What is the margin of safety?',budget-breakeven,'Margin of safety = budgeted units − break-even units = '+(budget-breakeven)+'.','units'):
   fam===2?P('cs-ratio','Selling price is RM'+price+' and variable cost is RM'+vc+' per unit. Calculate the C/S ratio as a percentage to TWO DECIMAL PLACES.',round(100*margin/price),'C/S ratio = contribution per unit ÷ selling price × 100 = '+round(100*margin/price)+'%.','%'):
-  P('target-profit','Fixed costs are '+Z(fixed)+', contribution is RM'+margin+' per unit and target profit is '+Z(margin*R(5,30)*100)+'. What is break-even sales volume in units (not target-profit volume)?',breakeven,'Break-even ignores target profit: fixed costs ÷ contribution per unit = '+breakeven+' units.','units');
+  P('target-profit','Fixed costs are '+Z(fixed)+', contribution is RM'+margin+' per unit and the desired profit is '+Z(margin*1000)+'. How many units must be sold to earn that profit?',breakeven+1000,'Required volume = (fixed costs + target profit) ÷ contribution per unit = '+(breakeven+1000)+' units.','units');
  }
  case 'MA2:D2':{
   const incremental=R(10,45)*100,extra=R(4,20)*100,unavoidable=R(4,18)*100;
@@ -205,7 +205,7 @@ const CONCEPTS={
 'MA2:A4':[["When output volume changes sharply, what improves comparison of actual and budgeted production costs?","Adjusting for activity level","Comparing totals without adjustment","Ignoring activity measures","Treating all differences as efficiency problems","Volume changes should be separated from genuine performance effects."]],
 'MA2:A5':[["Which improvement is most useful in a management variance report?","Highlight material variances and likely causes","Remove date and unit labels","Show every raw transaction without summary","Mix forecasts and actuals without headings","A manager needs clear, actionable exceptions."]],
 'MA2:B1':[["Which inventory costing method uses the earliest purchase costs first?","FIFO","Periodic weighted average","Replacement cost method","Selling price valuation","FIFO treats the oldest inventory cost as issued first."]],
-'MA2:B2':[["Which element is included in gross pay but excluded when calculating net pay?","Employee deduction","Employer factory rent","Machine depreciation","Customer receipt","Net pay is gross pay less employee deductions."]],
+'MA2:B2':[["Which item is deducted from gross wages when calculating net pay?","Employee deduction","Employer factory rent","Machine depreciation","Customer receipt","Net pay is gross pay less employee deductions."]],
 'MA2:B3':[["When is production overhead over-absorbed?","Absorbed overhead exceeds actual overhead","Actual overhead exceeds absorbed overhead","No overhead rate exists","Selling expenses are included","Over-absorption means more overhead was charged to production than actually incurred."]],
 'MA2:C1':[["How is fixed production overhead treated under absorption costing?","Included in inventory cost per unit","Always charged fully as a period cost","Omitted from both inventory and profit","Treated as a sales commission","Absorption costing includes fixed manufacturing overhead in the production cost."]],
 'MA2:C2':[["How is contribution per unit calculated?","Selling price minus variable cost per unit","Selling price minus fixed cost in total","Sales revenue minus drawings","Profit plus loan repayments","Contribution is the excess of sales over variable costs."]],
