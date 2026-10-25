@@ -110,13 +110,23 @@
     const others=Object.entries(allLessons).filter(([k])=>k.startsWith(paper+':')&&k!==key)
       .flatMap(([,v])=>factSentences(v).slice(0,3)).filter(s=>s.length<=230&&!snippets.includes(s));
     const output=[];
+    const styles=[
+      'Which accounting guidance is most relevant to the following focus within ',
+      'A learner is reviewing the following aspect of ',
+      'Which explanation best fits this aspect of '
+    ];
     for(let i=0;i<snippets.length;i++){
       const wrong=shuffled([...new Set(others)],rng).slice(0,3);if(wrong.length<3)continue;
-      const options=shuffled([snippets[i],...wrong],rng);
-      output.push({id:key+':association:'+i,key,group:'fact-'+i,type:'mcq',
-        prompt:'Which statement is most directly associated with '+title+' in the study material?',
-        choices:options.map((label,j)=>({value:'C'+j,label})),
-        correctValue:'C'+options.indexOf(snippets[i]),explanation:'Relevant principle: '+snippets[i]});
+      const focus=snippets[i].replace(/[.;:].*$/,'').split(/\s+/).slice(0,6).join(' ').toLowerCase();
+      for(let variant=0;variant<3;variant++){
+        const options=shuffled([snippets[i],...shuffled(wrong,rng)],rng);
+        const prompt=variant===0?styles[0]+title+'? Focus: '+focus+'.':
+          variant===1?styles[1]+title+'. Focus: '+focus+'. Which statement is relevant?':
+          styles[2]+title+'? Focus: '+focus+'.';
+        output.push({id:key+':association:'+i+':'+variant,key,group:'fact-'+i,type:'mcq',
+          prompt,choices:options.map((label,j)=>({value:'C'+j,label})),
+          correctValue:'C'+options.indexOf(snippets[i]),explanation:'Relevant lesson statement: '+snippets[i]});
+      }
     }
     return output;
   }
