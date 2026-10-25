@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#f5efdd">
+<title>Complete Your Profile · LedgerPeer</title><link rel="icon" href="favicon-32.png">
+<link rel="stylesheet" href="classroom.css?v=1">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="supabase-config.js"></script><script src="auth.js"></script>
+<script defer src="profile-page.js?v=1"></script></head>
+<body class="social-page">
+<header class="social-header"><a class="wordmark" href="index.html">LEDGER<span>PEER</span></a><span>STUDENT IDENTITY / 01</span></header>
+<main class="social-shell profile-shell">
+<section class="profile-heading">
+<p class="eyebrow">ONE ACCOUNT · ONE STUDENT SPACE</p>
+<h1>BEFORE YOU<br><em>JOIN THE CLASS.</em></h1>
+<p>Complete your student profile to access LedgerPeer’s study workspace and shared classroom. Only your display name, username and study information appear to classmates. Your email stays private.</p>
+</section>
+<section class="social-panel profile-panel" aria-labelledby="profileTitle">
+ <div class="panel-head"><span>01 / STUDENT PROFILE</span><h2 id="profileTitle">TELL US WHAT TO CALL YOU.</h2></div>
+ <form id="profileForm" autocomplete="on">
+  <div class="profile-grid">
+   <label>DISPLAY NAME <input id="displayName" required minlength="2" maxlength="50" placeholder="e.g. N. Luqman" autocomplete="nickname"></label>
+   <label>USERNAME <span class="field-prefix">@</span><input id="handle" required minlength="3" maxlength="24" pattern="[a-z][a-z0-9_]{2,23}" placeholder="e.g. ledgerstudent" autocapitalize="off" autocomplete="off"></label>
+   <label>STUDY PATHWAY <select id="pathway" required><option value="">SELECT YOUR PATHWAY</option><option value="FIA">FIA / FOUNDATIONS</option><option value="ACCA">ACCA QUALIFICATION</option><option value="BOTH">FIA + ACCA</option></select></label>
+   <label>CURRENT PAPER <select id="currentPaper"><option value="">NOT SELECTED</option><option>FA1</option><option>MA1</option><option>FA2</option><option>MA2</option><option>FBT</option><option>FMA</option><option>FFA</option><option>FAU</option><option>FFM</option><option>FTX</option><option>BT</option><option>MA</option><option>FA</option><option>LW</option><option>PM</option><option>TX</option><option>FR</option><option>AA</option><option>FM</option><option>SBL</option><option>SBR</option><option>AFM</option><option>APM</option><option>ATX</option><option>AAA</option></select></label>
+  </div>
+  <label class="wide-field">SHORT INTRODUCTION / OPTIONAL <textarea id="bio" maxlength="240" rows="3" placeholder="What are you studying or working towards?"></textarea></label>
+  <p class="form-note">Use a nickname if you prefer. Don’t include phone numbers, home addresses or sensitive details. Profiles are visible to other signed-in students.</p>
+  <label class="checkrow"><input type="checkbox" id="guidelines" required><span>I agree to respect classmates, avoid posting personal information, and share appropriate study content.</span></label>
+  <button type="submit" class="action-button" id="profileSave">SAVE PROFILE & ENTER LEDGERPEER →</button>
+  <p id="profileStatus" role="status" class="form-status">Checking your account…</p>
+ </form>
+</section><a id="profileBack" href="index.html" class="muted-link" hidden>← BACK TO MY WORKSPACE</a>
+</main></body></html>

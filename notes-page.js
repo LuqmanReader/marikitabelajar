@@ -169,7 +169,7 @@ async function init(){
  try{
    if(!root.PersonalHubAuth)throw Error('Student authentication unavailable.');
    const valid=await root.PersonalHubAuth.ready();
-   if(!valid){location.replace('index.html');return}
+   if(!valid){if(!root.PersonalHubAuth.isRedirectingToProfile?.())location.replace('index.html');return}
    if(!root.LedgerNotesSyllabi||!root.LedgerFiaNotes||!root.SubjectCatalog?.papers?.length)throw Error('Subject catalog or syllabus bundle not loaded. Please refresh.');
    const arg=searchParams.get('paper')?.toUpperCase();
    if(arg==='ALL'){

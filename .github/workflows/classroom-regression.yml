@@ -1,0 +1,49 @@
+name: LedgerPeer Classroom Regression
+on:
+  push:
+    paths:
+      - 'auth.js'
+      - 'profile*'
+      - 'classroom*'
+      - 'hub.html'
+      - 'index.html'
+      - 'notes.html'
+      - 'quiz.html'
+      - 'notes-page.js'
+      - 'quiz-page.js'
+      - 'calendar.html'
+      - 'study-planner.html'
+      - 'tests/classroom-regression.js'
+      - '.github/workflows/classroom-regression.yml'
+  pull_request:
+    paths:
+      - 'auth.js'
+      - 'profile*'
+      - 'classroom*'
+      - 'hub.html'
+      - 'index.html'
+      - 'notes.html'
+      - 'quiz.html'
+      - 'notes-page.js'
+      - 'quiz-page.js'
+      - 'calendar.html'
+      - 'study-planner.html'
+      - 'tests/classroom-regression.js'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check classroom JavaScript syntax
+        run: |
+          node --check auth.js
+          node --check profile-page.js
+          node --check classroom-page.js
+      - name: Test onboarding and classroom integration
+        run: node tests/classroom-regression.js

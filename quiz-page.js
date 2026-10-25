@@ -171,7 +171,7 @@ function renderHistory(){
 async function init(){
  try{
   if(!engine||papers.length!==25||!root.PersonalHubAuth||!Object.keys(syllabi).length)throw Error('The syllabus or quiz engine could not load.');
-  if(!await root.PersonalHubAuth.ready()){root.location.replace('index.html');return;}
+  if(!await root.PersonalHubAuth.ready()){if(!root.PersonalHubAuth.isRedirectingToProfile?.())root.location.replace('index.html');return;}
   fillPapers();fillTopics();renderHistory();
   setMode(params.get('mode')==='mock'?'mock':'topic');
   $('topicMode').addEventListener('click',()=>setMode('topic'));

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#f5efdd">
+<title>Student Classroom · LedgerPeer</title><link rel="icon" href="favicon-32.png">
+<link rel="stylesheet" href="classroom.css?v=1">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="supabase-config.js"></script><script src="auth.js"></script>
+<script defer src="classroom-page.js?v=1"></script></head>
+<body class="social-page">
+<header class="social-header">
+<a class="wordmark" href="index.html">LEDGER<span>PEER</span></a>
+<nav class="social-nav" aria-label="Student workspace"><a href="hub.html">REVISION</a><a href="notes.html">STUDY LIBRARY</a><a href="study-planner.html">STUDY PLANNER</a><a href="profile.html">MY PROFILE</a></nav>
+</header>
+<main class="social-shell">
+<section class="class-hero"><div><p class="eyebrow">LEDGERPEER / CLASSROOM 01</p>
+<h1>THE STUDY<br><em>COMMONS.</em></h1>
+<p>A place to meet fellow FIA and ACCA students, discuss tricky topics and share useful study resources. Student revision attempts and private account data remain separate.</p></div>
+<div class="room-chip"><i aria-hidden="true"></i> SHARED FIA + ACCA CLASSROOM</div></section>
+<p id="classStatus" role="status">Checking your student access…</p>
+<div id="classApp" class="class-grid" hidden>
+<section class="class-main" aria-label="Classroom discussion">
+<div class="tabbar" role="tablist" aria-label="Classroom sections">
+<button type="button" id="chatTab" role="tab" aria-selected="true" aria-controls="chatPanel">GROUP CHAT</button>
+<button type="button" id="resourceTab" role="tab" aria-selected="false" aria-controls="resourcePanel">SHARED RESOURCES</button>
+</div>
+<section id="chatPanel" role="tabpanel" class="social-panel" aria-label="Group chat">
+<div class="panel-head"><span>01 / CLASS DISCUSSION</span><h2>THE GROUP CHAT.</h2></div>
+<div id="messages" class="feed" role="log" aria-live="polite" aria-relevant="additions text"><p class="empty-state">Loading messages…</p></div>
+<form id="chatForm" class="chat-form"><label for="messageText" class="eyebrow">SAY SOMETHING TO THE CLASS</label>
+<textarea id="messageText" rows="3" minlength="1" maxlength="1000" required placeholder="Ask an FIA question, share a tip, or help someone out."></textarea>
+<div class="chat-compose-footer"><span class="counter"><span id="messageCount">0</span> / 1000 characters · Enter sends, Shift+Enter adds a line</span><button type="submit" id="sendMessage" class="action-button">SEND MESSAGE →</button></div>
+</form><p id="chatStatus" class="form-status" role="status"></p>
+</section>
+<section id="resourcePanel" role="tabpanel" class="social-panel" aria-label="Shared resources" hidden>
+<div class="panel-head"><span>02 / COMMUNITY LEARNING</span><h2>THE RESOURCE BOARD.</h2></div>
+<form id="postForm" class="post-form">
+<label for="postTitle">RESOURCE TITLE <input id="postTitle" required maxlength="100" minlength="3" placeholder="e.g. FA2 Bank Reconciliation Guide"></label>
+<label for="postText">WHAT ARE YOU SHARING? <textarea id="postText" required minlength="1" maxlength="2200" placeholder="Share notes, a tip, a study question or a summary."></textarea></label>
+<label for="postLink">OPTIONAL LINK (HTTPS ONLY) <input id="postLink" type="url" maxlength="600" placeholder="https://..."></label>
+<p class="help-note">This first version supports notes, text and resource links. Direct file attachments are not enabled yet. Don’t post copyrighted PDFs or private information.</p>
+<button id="sharePost" type="submit" class="action-button">SHARE WITH CLASS →</button><p id="postStatus" class="form-status" role="status"></p>
+</form>
+<div id="posts" class="posts-list" aria-live="polite"><p class="empty-state">Loading shared resources…</p></div>
+</section>
+</section>
+<aside class="class-aside">
+<section class="social-panel"><div class="panel-head"><span>03 / STUDY COMMUNITY</span><h2>CLASSMATES <span id="memberCount">0</span></h2></div>
+<div id="members" class="members-list"><p class="empty-state">Loading classmates…</p></div></section>
+<section class="social-panel"><div class="panel-head"><span>04 / CLASSROOM RULES</span><h2>STUDY TOGETHER.</h2></div>
+<ul class="rules"><li>Be respectful and keep conversations academic.</li><li>Don’t share contact details, addresses or someone else’s personal information.</li><li>No harassment, unsolicited promotion or pirated study material.</li><li>Report anything inappropriate; remove your own messages when needed.</li></ul>
+<p class="privacy-note">Only signed-in classmates who have completed their profiles and joined this room can read its chat and posts. Other students can see your display name, username, study pathway and profile bio.</p>
+<a href="profile.html" class="secondary-button">EDIT MY STUDENT PROFILE ↗</a></section>
+</aside>
+</div>
+</main></body></html>
