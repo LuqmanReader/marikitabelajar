@@ -134,6 +134,48 @@ function problem(key,rng,index){
   const principal=R(5,40)*1000,rate=R(2,12),years=R(1,4);
   return P('simple-interest','A loan of '+Z(principal)+' bears simple interest of '+rate+'% annually for '+years+' years. What total interest is payable (ignore fees)?',principal*rate/100*years,'Total interest = principal × annual rate × years = '+Z(principal*rate/100*years)+'.');
  }
+ case 'FA2:A1':{
+  const rent=R(12,48)*120,months=R(2,9),owing=R(2,16)*100,paid=R(3,15)*100;
+  if(index%3===0)return P('period-recognition','Rent of '+Z(rent)+' covers 12 months from 1 January. At 31 December only '+months+' months of that coverage belong to next year. Calculate the prepayment at the reporting date.',rent*months/12,'Prepayment = total rent × months attributable to next year ÷ 12 = '+Z(rent*months/12)+'.');
+  if(index%3===1)return P('accrual-principle','A business owes '+Z(owing)+' for utilities already consumed in the reporting period, but has not received the invoice. Calculate the expense to recognise under accrual accounting.',owing,'Record the utility expense when incurred: '+Z(owing)+'.');
+  return P('accrual-cash-difference','A business collected '+Z(paid)+' in advance for services. At year-end, services worth '+Z(Math.floor(paid/100)*40)+' have been delivered. Calculate the amount remaining as a liability.',paid-Math.floor(paid/100)*40,'Deferred income = cash received − revenue earned = '+Z(paid-Math.floor(paid/100)*40)+'.');
+ }
+ case 'FA2:A2':case 'FA2:B2':{
+  const cash=R(4,20)*1000,sales=R(3,12)*1000,returns=R(1,5)*100,receipts=R(2,9)*1000;
+  if(index%3===0)return P('flow-of-records','The receivables ledger has an opening debit of '+Z(cash)+'. Credit sales invoices total '+Z(sales)+', credit notes '+Z(returns)+' and receipts '+Z(receipts)+'. What is the closing debit balance?',cash+sales-returns-receipts,'Receivables = opening + credit invoices − credit notes − customer receipts = '+Z(cash+sales-returns-receipts)+'.');
+  if(index%3===1)return P('source-document-correction','An invoice of '+Z(sales)+' was posted twice to receivables and sales. What amount must be credited to receivables to correct the duplication?',sales,'Reversing one duplicate entry credits receivables by '+Z(sales)+'.');
+  return P('posting-trial-balance','A journal contains debits of '+Z(cash)+' and '+Z(returns)+'. What total credits must be entered to balance the journal?',cash+returns,'Total credits must equal total debits = '+Z(cash+returns)+'.');
+ }
+ case 'FA2:A3':{
+  const cost=R(12,70)*100,price=cost+R(1,12)*100,completion=R(1,18)*100,nrv=price-completion;
+  if(index%3===0)return P('measurement-nrv','For one inventory item, estimated sale proceeds are '+Z(price)+' and selling/completion costs are '+Z(completion)+'. What is net realisable value?',nrv,'NRV = sale proceeds − costs to complete and sell = '+Z(nrv)+'.');
+  if(index%3===1)return P('measurement-lower-of','One inventory item cost '+Z(cost)+'. Its estimated net realisable value is '+Z(nrv)+'. Under the lower-of-cost-and-NRV rule, at what amount is it recorded?',Math.min(cost,nrv),'Inventory measurement = lower of cost ('+Z(cost)+') and NRV ('+Z(nrv)+') = '+Z(Math.min(cost,nrv))+'.');
+  return P('measurement-write-down','An inventory item has cost '+Z(cost)+' and NRV '+Z(nrv)+'. What is the required inventory write-down (enter zero when no write-down is needed)?',Math.max(0,cost-nrv),'Write-down = max(0, cost − NRV) = '+Z(Math.max(0,cost-nrv))+'.');
+ }
+ case 'MA2:A1':{
+  const completed=R(40,90),outstanding=R(10,60),onTime=R(20,completed);
+  if(index%3===0)return P('operational-completion','An operational report lists '+completed+' completed orders and '+outstanding+' outstanding orders. What percentage of all orders have been completed? Give TWO decimal places.',round(100*completed/(completed+outstanding)),'Completion rate = completed ÷ all orders × 100 = '+round(100*completed/(completed+outstanding))+'%.','%');
+  if(index%3===1)return P('management-on-time','Of '+completed+' completed jobs, '+onTime+' were finished by their deadlines. What percentage were completed on time? Give TWO decimal places.',round(100*onTime/completed),'On-time performance = '+onTime+' ÷ '+completed+' × 100 = '+round(100*onTime/completed)+'%.','%');
+  return P('management-backlog','An operations dashboard shows '+completed+' completed orders, '+outstanding+' still open and '+R(5,12)+' cancelled. How many orders are still outstanding?',outstanding,'Backlog is the number of outstanding orders = '+outstanding+'.','orders');
+ }
+ case 'MA2:A2':{
+  const dm=R(4,18)*100,dl=R(3,15)*100,oh=R(1,9)*100,units=R(4,20)*10;
+  if(index%3===0)return P('cost-system-production','A batch costs '+Z(dm)+' in direct materials, '+Z(dl)+' in direct labour and '+Z(oh)+' in production overhead. What is total production cost?',dm+dl+oh,'Total production cost = materials + labour + production overhead = '+Z(dm+dl+oh)+'.');
+  if(index%3===1)return P('cost-system-direct','A job cost card lists direct materials '+Z(dm)+' and direct labour '+Z(dl)+'. What is prime cost, assuming no other direct expenses?',dm+dl,'Prime cost = direct materials + direct labour = '+Z(dm+dl)+'.');
+  return P('cost-system-unit','A batch of '+units+' identical items has total production cost '+Z((dm+dl+oh)) +'. What is cost per item? Give TWO decimal places.',round((dm+dl+oh)/units),'Cost per item = total batch cost ÷ '+units+' = '+Z(round((dm+dl+oh)/units))+'.','RM/unit');
+ }
+ case 'MA2:A4':{
+  const budget=R(30,120)*100,actual=budget+R(1,18)*100,target=R(50,90),achieved=R(35,95);
+  if(index%3===0)return P('comparison-absolute','Budgeted spending was '+Z(budget)+' and actual spending was '+Z(actual)+'. By what amount was actual spending ABOVE budget?',actual-budget,'Adverse spending difference = actual − budget = '+Z(actual-budget)+'.');
+  if(index%3===1)return P('comparison-percentage','Budgeted spending was '+Z(budget)+' and actual spending was '+Z(actual)+'. What was the percentage overspend relative to budget? Give TWO decimal places.',round(100*(actual-budget)/budget),'Overspend % = (actual − budget) ÷ budget × 100 = '+round(100*(actual-budget)/budget)+'%.','%');
+  return P('comparison-output','The production target was '+target+' units and actual output was '+achieved+' units. Calculate the difference (actual minus target), allowing a negative number.',achieved-target,'Output variance in units = actual − target = '+(achieved-target)+' units.','units');
+ }
+ case 'MA2:A5':{
+  const budget=R(20,90)*100,actual=budget-R(1,14)*100,entries=R(50,130),errors=R(1,18);
+  if(index%3===0)return P('reporting-favourable','A management report compares budgeted cost of '+Z(budget)+' against actual cost of '+Z(actual)+'. Calculate the favourable cost variance in RM.',budget-actual,'Favourable cost difference = budget − actual = '+Z(budget-actual)+'.');
+  if(index%3===1)return P('reporting-percentage','A report shows budgeted cost '+Z(budget)+' and actual cost '+Z(actual)+'. By what percentage is actual cost BELOW budget? Give TWO decimal places.',round((budget-actual)/budget*100),'Savings % = (budget − actual) ÷ budget × 100 = '+round((budget-actual)/budget*100)+'%.','%');
+  return P('reporting-error-rate','Of '+entries+' transactions in an exception report, '+errors+' contain confirmed coding errors. What percentage contain errors? Give TWO decimal places.',round(100*errors/entries),'Exception error rate = error count ÷ total transactions × 100 = '+round(100*errors/entries)+'%.','%');
+ }
  default:return null;
  }
 }
