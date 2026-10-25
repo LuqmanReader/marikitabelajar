@@ -36,6 +36,7 @@ jobs:
           node-version: '22'
       - name: Verify JavaScript syntax
         run: |
+          node --check quiz-exam-bank.js
           node --check quiz-engine.js
           node --check quiz-page.js
           node --check quiz-dashboard.js
