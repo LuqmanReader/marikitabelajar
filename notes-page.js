@@ -71,7 +71,6 @@ function makeLesson(n,src,paperCode){
  const summary=node('summary','',n.check);
  const answer=node('div','notes-check-answer',n.answer);
  check.append(node('h4','', 'SELF CHECK'),summary,answer);side.append(check);
- if(FIA_PAPERS.some(p=>p.code===paperCode))side.append(link('READ THE EXPANDED '+paperCode+' STUDY GUIDE →','fia-study.html?paper='+paperCode,'notes-guide-link'));
  side.append(link('PRACTICE '+paperCode+' / '+n.code+' →','quiz.html?paper='+paperCode+'&topic='+n.code,'notes-guide-link'));
  side.append(link('OFFICIAL SYLLABUS ↗',src || resourceLink(paperCode)));
  layout.append(main,side);return layout;
@@ -119,6 +118,8 @@ function renderIntro(codes){
  area.append(right);
 }
 function render(){
+ const guide=byId('fiaLibraryGuides');
+ if(guide){guide.hidden=qualification==='acca';const link=byId('fiaGuideLibraryLink');if(link)link.href='fia-study.html'+(paper!=='ALL'&&qualificationOf(paper)==='fia'?'?paper='+encodeURIComponent(paper):'');}
  const list=byId('topicList');list.replaceChildren();
  const activePapers=paper==='ALL'?visiblePapers().map(p=>p.code):[paper];
  renderIntro(activePapers);

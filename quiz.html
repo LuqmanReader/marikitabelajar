@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,follow"><meta name="theme-color" content="#f4eedd">
-<title>Topic Quiz Generator · LedgerPeer</title><link rel="icon" href="favicon-32.png">
-<link rel="stylesheet" href="quiz.css?v=1">
+<title>Quiz Centre · LedgerPeer</title><link rel="icon" href="favicon-32.png">
+<link rel="stylesheet" href="quiz.css?v=2">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script><script src="auth.js"></script>
 <script defer src="subject-catalog.js?v=20261022acca25v2"></script>
@@ -12,30 +12,31 @@
 <script defer src="notes-data.js?v=20261022acca25v2"></script>
 <script defer src="notes-uk-syllabi.js?v=20261023fia2"></script>
 <script defer src="notes-expanded-data.js?v=20261023fia2"></script>
-<script defer src="quiz-engine.js?v=1"></script>
-<script defer src="quiz-page.js?v=1"></script>
+<script defer src="quiz-engine.js?v=2"></script>
+<script defer src="quiz-page.js?v=2"></script>
 </head>
 <body>
-<header class="lp-header"><a class="brand" href="index.html">LEDGER<span>PEER</span></a><nav aria-label="Workspace"><a href="notes.html">TOPIC LIBRARY</a><a href="hub.html">REVISION DASHBOARD</a></nav></header>
+<header class="lp-header"><a class="brand" href="index.html">LEDGER<span>PEER</span></a><nav aria-label="Workspace"><a href="notes.html">TOPIC LIBRARY</a><a href="study-planner.html">STUDY PLANNER</a><a href="hub.html">REVISION DASHBOARD</a></nav></header>
 <main class="shell">
   <a class="back" href="notes.html">← BACK TO STUDY LIBRARY</a>
   <section class="intro">
-    <p class="eyebrow">LEDGERPEER / PRACTICE LAB / 2026–27</p>
-    <h1>MAKE THE<br><em>KNOWLEDGE STICK.</em></h1>
-    <p>Generate original, syllabus-scoped practice from the LedgerPeer lesson library. Numerical questions are automatically marked; written recall is self-marked against the reference answer.</p>
+    <p class="eyebrow">LEDGERPEER / QUIZ CENTRE / 2026–27</p>
+    <h1>QUIZ<br><em>CENTRE.</em></h1>
+    <p>Build a 20-question topic drill or a 50-question paper-wide mock practice session. Questions and topic order vary between runs. Calculations are auto-marked; written reasoning is self-marked against lesson references.</p>
     <div class="stripes"><span>LEARN.</span><span>TEST.</span><span>REVIEW.</span><span>REPEAT.</span></div>
   </section>
   <div id="access" class="notice" role="status">Checking student access…</div>
   <div id="app" hidden>
     <section class="panel controls" aria-labelledby="setupTitle">
-      <div class="heading"><span class="eyebrow">01 / SELECT YOUR PRACTICE</span><h2 id="setupTitle">QUIZ BUILDER</h2></div>
+      <div class="heading"><span class="eyebrow">01 / SELECT YOUR PRACTICE</span><h2 id="setupTitle">BUILD YOUR SESSION</h2></div>
+      <div class="mode-tabs" role="group" aria-label="Quiz mode"><button type="button" id="topicMode" class="mode-tab active" aria-pressed="true"><strong>TOPIC PRACTICE</strong><span>UP TO 20 QUESTIONS</span></button><button type="button" id="mockMode" class="mode-tab" aria-pressed="false"><strong>MOCK EXAM</strong><span>50 QUESTIONS · WHOLE PAPER</span></button></div>
       <div class="fields">
         <label>PAPER<select id="paper"></select></label>
-        <label>SYLLABUS TOPIC<select id="topic"></select></label>
-        <label>QUESTIONS<select id="count"><option value="3">3 / Quick drill</option><option value="5" selected>5 / Practice set</option><option value="10">10 / Longer session</option></select></label>
+        <label id="topicField">SYLLABUS TOPIC<select id="topic"></select></label>
+        <label id="countField">QUESTIONS<select id="count"><option value="5">5 / Quick drill</option><option value="10">10 / Practice set</option><option value="20" selected>20 / Complete topic practice</option></select></label>
       </div>
-      <p id="coverage" class="hint" aria-live="polite"></p>
-      <div class="buttons"><button id="generate" type="button" class="primary">GENERATE A QUIZ →</button><a id="readTopic" href="notes.html">STUDY THIS TOPIC ↗</a></div>
+      <p id="modeDescription" class="hint">Topic practice draws from several different source-backed question styles. The generator minimises recently used prompts; material can recur after enough sessions.</p><p id="coverage" class="hint" aria-live="polite"></p>
+      <div class="buttons"><button id="generate" type="button" class="primary">GENERATE 20 QUESTIONS →</button><a id="readTopic" href="notes.html">STUDY THIS TOPIC ↗</a></div>
     </section>
     <section id="quizSection" class="panel quiz" hidden aria-labelledby="quizTitle">
       <div class="heading"><span class="eyebrow">02 / ACTIVE RECALL</span><h2 id="quizTitle">YOUR PRACTICE SET</h2></div>
@@ -51,7 +52,7 @@
       <div class="heading"><span class="eyebrow">03 / YOUR LEARNING RECORD</span><h2 id="historyTitle">RECENT PRACTICE</h2></div>
       <div id="history" class="hint">No topic quizzes yet.</div>
     </section>
-    <p class="disclaimer">Independent LedgerPeer practice, not official ACCA examination questions. Questions are derived from original teaching notes that are pending editorial review. An automatically marked numerical calculation is not a substitute for full exam-style practice. Topic headings follow the selected syllabus and variant.</p>
+    <p class="disclaimer">This is original LedgerPeer revision practice—not an official ACCA mock or licensed question bank. The 50-question mode samples a broad mix of the selected paper’s syllabus topics but includes written self-assessment; only supported numerical questions are automatically marked. Different prompts can assess related lesson concepts. Notes are pending editorial review; the source lessons do not cover every detailed syllabus outcome.</p>
   </div>
 </main>
 <div id="loading" class="loading" role="status">AUTHENTICATING STUDENT ACCESS…</div>
