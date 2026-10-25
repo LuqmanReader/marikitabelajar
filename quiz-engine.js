@@ -183,28 +183,49 @@
       pool=[...new Map(pool.map(q=>[q.prompt,q])).values()];
       if(pool.length)pools.set(key,shuffled(pool,rng));
     }
-    const availableKeys=shuffled([...pools.keys()],rng),picked=[],used=new Map();
-    while(picked.length<qty){
-      let changed=false;
-      for(const key of availableKeys){
-        if(picked.length>=qty)break;
-        const pool=pools.get(key);if(!pool?.length)continue;
-        const groups=used.get(key)||new Set();let best=-1,cost=Infinity;
-        for(let i=0;i<pool.length;i++){
-          const q=pool[i];
-          const penalty=(groups.has(q.group)?5:0)+(recent.has(q.id)?12:0)+
-            (q.group?.startsWith('author-')?-3:q.group?.startsWith('calc-')?-1:q.group?.startsWith('fact-')?2:0)+rng()/10;
-          if(penalty<cost){cost=penalty;best=i;}
+    const availableKeys=shuffled([...pools.keys()],rng);
+    // FA1 and MA1 remain MCQ-only. FA2/MA2 use the exact requested mix:
+    // topic (20 questions): 10 MCQ + 10 numerical; mock (50): 35 + 15.
+    // For odd-sized quick drills, the extra question is MCQ.
+    const mixed=['FA2','MA2'].includes(paper);
+    const numericalTarget=mixed?(mock?15:Math.floor(qty/2)):0;
+    const mcqTarget=qty-numericalTarget;
+    const seenPrompts=new Set(),selected=[],usedGroups=new Map();
+    function collect(type,target){
+      const collected=[];
+      while(collected.length<target){
+        let madeProgress=false;
+        for(const key of availableKeys){
+          if(collected.length>=target)break;
+          const pool=pools.get(key);
+          if(!pool||!pool.length)continue;
+          const groups=usedGroups.get(key)||new Set();
+          let bestIndex=-1,bestScore=Infinity;
+          for(let i=0;i<pool.length;i++){
+            const question=pool[i];
+            if(question.type!==type||seenPrompts.has(question.prompt))continue;
+            const penalty=(groups.has(question.group)?5:0)+(recent.has(question.id)?12:0)+
+              (question.group?.startsWith('author-')?-3:question.group?.startsWith('calc-')?-1:
+                question.group?.startsWith('fact-')?2:0)+rng()/10;
+            if(penalty<bestScore){bestScore=penalty;bestIndex=i;}
+          }
+          if(bestIndex<0)continue;
+          const [question]=pool.splice(bestIndex,1);
+          collected.push(question);seenPrompts.add(question.prompt);
+          groups.add(question.group);usedGroups.set(key,groups);madeProgress=true;
         }
-        if(best<0)continue;
-        const [item]=pool.splice(best,1);
-        if(picked.some(q=>q.prompt===item.prompt))continue;
-        picked.push(item);groups.add(item.group);used.set(key,groups);changed=true;
+        if(!madeProgress)break;
       }
-      if(!changed)break;
+      return collected;
     }
+    const mcqs=collect('mcq',mcqTarget);
+    const numerical=collect('numeric',numericalTarget);
+    selected.push(...mcqs,...numerical);
+    const picked=shuffled(selected,rng);
     return {questions:picked,available:picked.length,requested:qty,
-      topicsCovered:new Set(picked.map(q=>q.key)).size,paper,mode:mock?'mock':'topic'};
+      topicsCovered:new Set(picked.map(q=>q.key)).size,paper,mode:mock?'mock':'topic',
+      targetMix:{mcq:mcqTarget,numeric:numericalTarget},
+      actualMix:{mcq:mcqs.length,numeric:numerical.length}};
   }
   function parseNumber(value){
     if(typeof value==='number')return Number.isFinite(value)?value:null;
