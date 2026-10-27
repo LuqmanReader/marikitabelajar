@@ -2,10 +2,10 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#f5efdd">
 <title>Student Classroom · LedgerPeer</title><link rel="icon" href="favicon-32.png">
-<link rel="stylesheet" href="classroom.css?v=1">
+<link rel="stylesheet" href="classroom.css?v=2">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script><script src="auth.js"></script>
-<script defer src="classroom-page.js?v=1"></script></head>
+<script defer src="classroom-page.js?v=2"></script></head>
 <body class="social-page">
 <header class="social-header">
 <a class="wordmark" href="index.html">LEDGER<span>PEER</span></a>
@@ -14,42 +14,75 @@
 <main class="social-shell">
 <section class="class-hero"><div><p class="eyebrow">LEDGERPEER / CLASSROOM 01</p>
 <h1>THE STUDY<br><em>COMMONS.</em></h1>
-<p>A place to meet fellow FIA and ACCA students, discuss tricky topics and share useful study resources. Student revision attempts and private account data remain separate.</p></div>
+<p>A shared conversation for FIA and ACCA students. Chat in real time, exchange files and find anything the class has shared — without mixing in your private revision data.</p></div>
 <div class="room-chip"><i aria-hidden="true"></i> SHARED FIA + ACCA CLASSROOM</div></section>
 <p id="classStatus" role="status">Checking your student access…</p>
+
 <div id="classApp" class="class-grid" hidden>
 <section class="class-main" aria-label="Classroom discussion">
 <div class="tabbar" role="tablist" aria-label="Classroom sections">
-<button type="button" id="chatTab" role="tab" aria-selected="true" aria-controls="chatPanel">GROUP CHAT</button>
-<button type="button" id="resourceTab" role="tab" aria-selected="false" aria-controls="resourcePanel">SHARED RESOURCES</button>
+<button type="button" id="chatTab" role="tab" aria-selected="true" aria-controls="chatPanel">CHAT</button>
+<button type="button" id="mediaTab" role="tab" aria-selected="false" aria-controls="mediaPanel">MEDIA LIBRARY</button>
+<button type="button" id="resourceTab" role="tab" aria-selected="false" aria-controls="resourcePanel">RESOURCE BOARD</button>
 </div>
-<section id="chatPanel" role="tabpanel" class="social-panel" aria-label="Group chat">
-<div class="panel-head"><span>01 / CLASS DISCUSSION</span><h2>THE GROUP CHAT.</h2></div>
-<div id="messages" class="feed" role="log" aria-live="polite" aria-relevant="additions text"><p class="empty-state">Loading messages…</p></div>
-<form id="chatForm" class="chat-form"><label for="messageText" class="eyebrow">SAY SOMETHING TO THE CLASS</label>
-<textarea id="messageText" rows="3" minlength="1" maxlength="1000" required placeholder="Ask an FIA question, share a tip, or help someone out."></textarea>
-<div class="chat-compose-footer"><span class="counter"><span id="messageCount">0</span> / 1000 characters · Enter sends, Shift+Enter adds a line</span><button type="submit" id="sendMessage" class="action-button">SEND MESSAGE →</button></div>
-</form><p id="chatStatus" class="form-status" role="status"></p>
+<section id="chatPanel" role="tabpanel" class="social-panel conversation-panel" aria-label="Group chat">
+<div class="conversation-head">
+<div class="conversation-icon" aria-hidden="true">LP</div><div class="conversation-heading"><h2>Study Commons</h2><span id="roomSummary">FIA + ACCA group · Loading classmates…</span></div>
+<button class="chat-tool" type="button" id="jumpMedia" title="Browse shared media">MEDIA ↗</button>
+</div>
+<div class="chat-search-row"><label class="sr-only" for="chatSearch">Find messages in loaded chat history</label><input id="chatSearch" type="search" placeholder="⌕ Search this conversation…"><span id="chatSearchCount" class="search-count"></span></div>
+<button type="button" id="loadOlder" class="load-older" hidden>LOAD OLDER MESSAGES ↑</button>
+<div id="messages" class="feed conversation-feed" role="log" aria-live="off"><p class="empty-state">Loading messages…</p></div>
+<form id="chatForm" class="chat-form" aria-label="Send group message and attachments">
+<div id="fileTray" class="file-tray" hidden></div>
+<div class="chat-composer">
+<button type="button" id="attachButton" class="attach-button" aria-label="Attach photos, videos or documents" title="Add files">＋</button>
+<input type="file" id="attachmentInput" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,application/pdf,text/plain,.doc,.docx,.xls,.xlsx,.ppt,.pptx" multiple hidden>
+<label class="sr-only" for="messageText">Your message</label>
+<textarea id="messageText" rows="1" maxlength="1000" placeholder="Message the class…"></textarea>
+<button type="submit" id="sendMessage" class="action-button send-button">SEND ↗</button>
+</div>
+<div class="compose-note"><span id="messageCount">0</span> / 1000 · Enter sends · Shift+Enter for new line · Up to 4 files, 15 MB each</div>
+</form><p id="chatStatus" class="form-status chat-feedback" role="status"></p>
+</section>
+<section id="mediaPanel" role="tabpanel" class="social-panel library-panel" aria-label="Shared media history" hidden>
+<div class="panel-head"><span>02 / ARCHIVE</span><h2>MEDIA LIBRARY.</h2></div>
+<p class="library-intro">Every file and shared resource link in one searchable collection. Only members of this classroom can access private attachments.</p>
+<div class="library-controls"><label class="sr-only" for="mediaSearch">Search shared files and links</label><input id="mediaSearch" type="search" placeholder="Search names, captions, classmates…"><label class="sr-only" for="sortMedia">Sort shared media</label><select id="sortMedia"><option value="new">NEWEST FIRST</option><option value="old">OLDEST FIRST</option></select></div>
+<div id="mediaFilters" class="media-filters" role="group" aria-label="Filter by media type">
+<button type="button" data-kind="all" aria-pressed="true">ALL</button>
+<button type="button" data-kind="image" aria-pressed="false">PHOTOS</button>
+<button type="button" data-kind="video" aria-pressed="false">VIDEOS</button>
+<button type="button" data-kind="document" aria-pressed="false">DOCUMENTS</button>
+<button type="button" data-kind="link" aria-pressed="false">LINKS</button>
+</div>
+<p id="mediaCount" class="library-count" role="status">Loading shared media…</p>
+<div id="mediaResults" class="media-results"></div>
+<button type="button" id="loadMoreMedia" class="load-older" hidden>SHOW MORE MEDIA</button>
 </section>
 <section id="resourcePanel" role="tabpanel" class="social-panel" aria-label="Shared resources" hidden>
-<div class="panel-head"><span>02 / COMMUNITY LEARNING</span><h2>THE RESOURCE BOARD.</h2></div>
+<div class="panel-head"><span>03 / COMMUNITY LEARNING</span><h2>THE RESOURCE BOARD.</h2></div>
 <form id="postForm" class="post-form">
 <label for="postTitle">RESOURCE TITLE <input id="postTitle" required maxlength="100" minlength="3" placeholder="e.g. FA2 Bank Reconciliation Guide"></label>
 <label for="postText">WHAT ARE YOU SHARING? <textarea id="postText" required minlength="1" maxlength="2200" placeholder="Share notes, a tip, a study question or a summary."></textarea></label>
 <label for="postLink">OPTIONAL LINK (HTTPS ONLY) <input id="postLink" type="url" maxlength="600" placeholder="https://..."></label>
-<p class="help-note">This first version supports notes, text and resource links. Direct file attachments are not enabled yet. Don’t post copyrighted PDFs or private information.</p>
+<p class="help-note">For direct documents, photos and videos, attach them in the group chat. Share only material you have permission to distribute.</p>
 <button id="sharePost" type="submit" class="action-button">SHARE WITH CLASS →</button><p id="postStatus" class="form-status" role="status"></p>
 </form>
 <div id="posts" class="posts-list" aria-live="polite"><p class="empty-state">Loading shared resources…</p></div>
 </section>
 </section>
 <aside class="class-aside">
-<section class="social-panel"><div class="panel-head"><span>03 / STUDY COMMUNITY</span><h2>CLASSMATES <span id="memberCount">0</span></h2></div>
+<section class="social-panel"><div class="panel-head"><span>04 / STUDY COMMUNITY</span><h2>CLASSMATES <span id="memberCount">0</span></h2></div>
 <div id="members" class="members-list"><p class="empty-state">Loading classmates…</p></div></section>
-<section class="social-panel"><div class="panel-head"><span>04 / CLASSROOM RULES</span><h2>STUDY TOGETHER.</h2></div>
-<ul class="rules"><li>Be respectful and keep conversations academic.</li><li>Don’t share contact details, addresses or someone else’s personal information.</li><li>No harassment, unsolicited promotion or pirated study material.</li><li>Report anything inappropriate; remove your own messages when needed.</li></ul>
-<p class="privacy-note">Only signed-in classmates who have completed their profiles and joined this room can read its chat and posts. Other students can see your display name, username, study pathway and profile bio.</p>
+<section class="social-panel"><div class="panel-head"><span>05 / CLASSROOM RULES</span><h2>STUDY TOGETHER.</h2></div>
+<ul class="rules"><li>Respect classmates; keep discussions academic.</li><li>Share only your own or appropriately licensed study materials.</li><li>Don't upload contact details, private records or pirated PDFs.</li><li>Report inappropriate content; you can remove your own messages.</li></ul>
+<p class="privacy-note">Classroom messages, files and resource history are visible to joined classmates. Direct messages and end-to-end encryption are not part of this feature.</p>
 <a href="profile.html" class="secondary-button">EDIT MY STUDENT PROFILE ↗</a></section>
 </aside>
 </div>
+<dialog id="mediaDialog" class="media-dialog" aria-label="Shared file preview">
+<div class="preview-top"><strong id="previewTitle">SHARED MEDIA</strong><button type="button" id="closePreview" class="secondary-button">CLOSE ✕</button></div>
+<div id="previewBody" class="preview-body"></div><p id="previewDetail" class="preview-detail"></p>
+</dialog>
 </main></body></html>
