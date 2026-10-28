@@ -34,7 +34,14 @@ assert.ok(room.includes("setInterval("),'Classroom must also refresh when realti
 assert.ok(room.includes("textContent"),'Render user-generated text without inserting HTML');
 assert.ok(!room.includes('.innerHTML='),'Never inject untrusted user messages as HTML');
 assert.ok(room.includes("url.protocol==='https:'"),'Only allow HTTPS resource links');
-assert.ok(!classPage.includes('type="file"'),'Uploads must not be implied where none are implemented');
+assert.ok(classPage.includes('type="file" id="attachmentInput"'),'Classroom attachments must have an actual file input');
+assert.ok(classPage.includes('id="replyTray"')&&classPage.includes('id="cancelReply"'),'Reply composer must support preview and cancellation');
+assert.ok(room.includes('function selectReply(')&&room.includes('function clearReply('),'Chat must manage reply selection');
+assert.ok(room.includes('function replyQuote(')&&room.includes('function jumpToMessage('),'Quoted replies must link back to originals');
+assert.ok(room.includes('payload.reply_to_message_id=replyId'),'Reply target must persist with messages in Supabase');
+assert.ok(room.includes("select('id,classroom_id,user_id,body,created_at,reply_to_message_id')"),'Message loading must include reply references');
+assert.ok(read('classroom.css').includes('.quoted-reply')&&read('classroom.css').includes('.reply-tray'),'Linked replies must have responsive presentation styles');
+assert.ok(read('supabase/classroom-replies-schema.sql').includes('on delete set null (reply_to_message_id)'),'Database must preserve valid room-scoped reply references');
 for(const file of ['hub.html','index.html','notes.html','quiz.html','study-planner.html']){
  assert.ok(read(file).includes('href="classroom.html"'),file+' should link Classroom');
 }
