@@ -31,20 +31,21 @@
   const today=new Date(now.getFullYear(),now.getMonth(),now.getDate(),12);
   const todayKey=key(today);
   const earliest=addDays(today,-364),start=addDays(earliest,-earliest.getDay());
+  const historyStart=key(new Date(today.getFullYear()-3,0,1,12));
   const end=addDays(today,6-today.getDay());
   const days=new Map();
   function entry(date){if(!days.has(date))days.set(date,empty());return days.get(date);}
   for(const task of Array.isArray(records.tasks)?records.tasks:[]){
    if(!task||!task.done)continue;
    const date=activityDate(task.completedAt);
-   if(!date||date<key(earliest)||date>todayKey)continue;
+   if(!date||date<historyStart||date>todayKey)continue;
    entry(date).tasks++;
   }
   for(const session of Array.isArray(records.sessions)?records.sessions:[]){
    if(!session)continue;
    const date=activityDate(session.date);
    const minutes=Number(session.minutes);
-   if(!date||date<key(earliest)||date>todayKey||!Number.isFinite(minutes)||minutes<=0)continue;
+   if(!date||date<historyStart||date>todayKey||!Number.isFinite(minutes)||minutes<=0)continue;
    const active=entry(date);
    active.sessions++;active.minutes+=minutes;
   }
@@ -52,7 +53,7 @@
   for(const record of days.values()){
    record.total=record.tasks+record.sessions;
    record.level=level(record.total);
-   activeDays++;totalTasks+=record.tasks;totalSessions+=record.sessions;totalMinutes+=record.minutes;
+   // A four-year archive is displayed, but summary stats remain last-365-day values.
   }
   const weeks=[],months=[];
   let priorMonth=-1;
@@ -71,6 +72,35 @@
    }
    weeks.push(week);
   }
+  const years=[];
+  for(let y=today.getFullYear();y>=today.getFullYear()-3;y--){
+   const first=new Date(y,0,1,12),last=new Date(y,11,31,12);
+   const alignedFirst=addDays(first,-first.getDay()),alignedLast=addDays(last,6-last.getDay());
+   const yearWeeks=[],yearMonths=[];
+   let previousMonth=-1,yearContributions=0,yearActiveDays=0;
+   for(let weekStart=alignedFirst;weekStart<=alignedLast;weekStart=addDays(weekStart,7)){
+    const week=[];
+    for(let d=0;d<7;d++){
+     const dateObj=addDays(weekStart,d),date=key(dateObj);
+     const valid=date>=key(first)&&date<=key(last)&&date<=todayKey;
+     const activity=valid?(days.get(date)||empty()):empty();
+     if(valid&&activity.total>0){yearContributions+=activity.total;yearActiveDays++;}
+     week.push({date,day:dateObj,valid,activity});
+    }
+    const firstOfWeek=weekStart<first?first:weekStart;
+    const month=firstOfWeek.getMonth();
+    if(firstOfWeek<=last&&month!==previousMonth){
+     yearMonths.push({week:yearWeeks.length+1,label:firstOfWeek.toLocaleDateString('en-MY',{month:'short'})});
+     previousMonth=month;
+    }
+    yearWeeks.push(week);
+   }
+   years.push({year:y,isCurrent:y===today.getFullYear(),weeks:yearWeeks,months:yearMonths,contributions:yearContributions,activeDays:yearActiveDays});
+  }
+  for(const [date,record] of days){
+   if(date<key(earliest)||date>todayKey)continue;
+   activeDays++;totalTasks+=record.tasks;totalSessions+=record.sessions;totalMinutes+=record.minutes;
+  }
   function hasActivity(day){return (days.get(key(day))?.total||0)>0;}
   let cursor=hasActivity(today)?today:addDays(today,-1),currentStreak=0;
   while(cursor>=earliest&&hasActivity(cursor)){currentStreak++;cursor=addDays(cursor,-1);}
@@ -79,7 +109,7 @@
    run=hasActivity(date)?run+1:0;
    if(run>bestStreak)bestStreak=run;
   }
-  return {weeks,months,days,activeDays,totalTasks,totalSessions,totalMinutes,currentStreak,bestStreak,todayKey,earliest:key(earliest)};
+  return {weeks,months,years,days,activeDays,totalTasks,totalSessions,totalMinutes,currentStreak,bestStreak,todayKey,earliest:key(earliest)};
  }
  function plural(n,name){return n+' '+name+(n===1?'':'s');}
  function detail(date,activity){
@@ -87,28 +117,31 @@
   return label+' · '+plural(activity.tasks,'completed task')+' · '+plural(activity.sessions,'study session')+' · '+Math.round(activity.minutes)+' logged minutes';
  }
  function render(model){
-  const labels=['','Mon','','Wed','','Fri',''];
-  const contributions=model.totalTasks+model.totalSessions;
+  const legend='<div class="study-contrib-legend" aria-label="Activity intensity, from fewer to more study contributions"><span>Less</span><i class="level-0"></i><i class="level-1"></i><i class="level-2"></i><i class="level-3"></i><i class="level-4"></i><span>More</span></div>';
   let html='<section class="study-contrib-panel" aria-labelledby="contribTitle">';
-  html+='<header class="study-contrib-heading"><h2 id="contribTitle">'+contributions.toLocaleString('en-MY')+' study contributions in the last year</h2></header>';
-  html+='<div class="study-contrib-scroll" tabindex="0" role="region" aria-label="Study contribution calendar, scroll horizontally to see all months"><div class="study-contrib-calendar" style="--weeks:'+model.weeks.length+'">';
-  html+='<div class="study-contrib-months">';
-  for(const month of model.months)html+='<span style="grid-column:'+month.week+'">'+month.label+'</span>';
-  html+='</div><div class="study-contrib-body"><div class="study-contrib-weekdays" aria-hidden="true">';
-  for(const label of labels)html+='<span>'+label+'</span>';
-  html+='</div><div class="study-contrib-squares">';
-  for(const week of model.weeks){
-   for(const cell of week){
-    if(!cell.valid){html+='<span class="study-contrib-placeholder" aria-hidden="true"></span>';continue;}
-    const activity=cell.activity,description=detail(cell.date,activity);
-    html+='<button type="button" class="study-contrib-square level-'+activity.level+'" data-date="'+cell.date+'" title="'+description+'" aria-label="'+description+'" aria-pressed="false"></button>';
+  html+='<header class="study-contrib-heading"><h2 id="contribTitle">Study contributions on LedgerPeer</h2>'+legend+'</header>';
+  html+='<div class="study-contrib-years">';
+  for(const year of model.years){
+   html+='<section class="study-contrib-year" aria-label="Study activity for '+year.year+'">';
+   html+='<h3>'+year.year+': '+year.contributions.toLocaleString('en-MY')+' contributions'+(year.isCurrent?' (so far)':'')+'</h3>';
+   html+='<div class="study-contrib-scroll" tabindex="0" role="region" aria-label="'+year.year+' contribution calendar, scroll horizontally for all months">';
+   html+='<div class="study-contrib-calendar" style="--weeks:'+year.weeks.length+'">';
+   html+='<div class="study-contrib-months">';
+   for(const month of year.months)html+='<span style="grid-column:'+month.week+'">'+month.label+'</span>';
+   html+='</div><div class="study-contrib-squares">';
+   for(const week of year.weeks){
+    for(const cell of week){
+     if(!cell.valid){html+='<span class="study-contrib-placeholder" aria-hidden="true"></span>';continue;}
+     const activity=cell.activity,description=detail(cell.date,activity);
+     html+='<button type="button" class="study-contrib-square level-'+activity.level+'" data-date="'+cell.date+'" title="'+description+'" aria-label="'+description+'" aria-pressed="false"></button>';
+    }
    }
+   html+='</div></div></div></section>';
   }
-  html+='</div></div></div></div>';
-  html+='<footer class="study-contrib-footer"><details class="study-contrib-method"><summary>Learn how we count contributions</summary><p>1 contribution = 1 completed study task or 1 logged study session. Tasks only count when marked complete, not on their planned dates. Activity is stored in this browser and follows your device timezone. No automatic or simulated activity.</p></details><div class="study-contrib-legend" aria-label="Activity levels from no activity to five or more contributions"><span>Less</span><i class="level-0"></i><i class="level-1"></i><i class="level-2"></i><i class="level-3"></i><i class="level-4"></i><span>More</span></div></footer>';
+  html+='</div>';
+  html+='<footer class="study-contrib-footer"><span>LedgerPeer · Activity from completed tasks and logged sessions only</span><details class="study-contrib-method"><summary>How contributions are counted</summary><p>1 contribution = 1 completed study task or 1 logged study session. Tasks count on their completion date, not the scheduled date. No fabricated activity; data remains in this browser.</p></details></footer>';
   html+='<p class="study-contrib-detail" id="contribDetail" role="status" hidden></p>';
-  html+='<p class="study-contrib-meta">Current streak: <strong>'+model.currentStreak+' days</strong><span aria-hidden="true"> · </span>Best streak: <strong>'+model.bestStreak+' days</strong><span aria-hidden="true"> · </span>Minutes logged: <strong>'+model.totalMinutes.toLocaleString('en-MY')+'</strong></p>';
-  if(!model.activeDays)html+='<p class="study-contrib-empty">Complete a study task or log a session to earn your first green square.</p>';
+  html+='<p class="study-contrib-meta">Current streak: <strong>'+model.currentStreak+' days</strong> · Best streak: <strong>'+model.bestStreak+' days</strong> · Minutes logged (past year): <strong>'+model.totalMinutes.toLocaleString('en-MY')+'</strong></p>';
   return html+'</section>';
  }
  function mount(container,model){
