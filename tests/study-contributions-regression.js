@@ -51,6 +51,16 @@ assert.ok(html.includes('study session'),'Hover labels should explain recorded a
 assert.ok(html.includes('No automatic or simulated activity'),'Display must clarify truthful data source');
 assert.ok(html.includes('Current streak')&&html.includes('Minutes logged'),'Display streaks and time');
 assert.ok(html.includes('Learn how we count contributions')&&html.includes('Less')&&html.includes('More'),'Use GitHub-style footer with count explanation and legend');
+
+assert.ok(html.includes('id="contribDetail" role="status" hidden'),'Day details must not auto-highlight today');
+const styles=read('study-contributions.css');
+assert.ok(styles.includes('border:1px solid #d0d7de')&&styles.includes('border-radius:6px'),'Graph frame must use subtle Github-style border');
+assert.ok(styles.includes('#ebedf0')&&styles.includes('#9be9a8')&&styles.includes('#40c463')&&styles.includes('#30a14e')&&styles.includes('#216e39'),'Graph squares must match GitHub green scale');
+assert.ok(!styles.includes('border:3px solid #151515')&&!styles.includes('box-shadow:5px 5px 0 #111'),'Remove oversized frame and brutalist shadow');
+assert.ok(styles.includes('.planner-page .sidebar{background:#ffffff'),'Planner sidebar should be neutral, not yellow');
+assert.ok(styles.includes('.planner-page .stats .stat{background:#ffffff'),'Planner stats should not be yellow');
+assert.ok(read('study-planner.html').includes('<body class="planner-page">'),'Planner-only styling must not affect Calendar');
+
 assert.ok(!html.includes('study-contrib-stats')&&!html.includes('study-contrib-callout'),'No oversized stat cards in calendar');
 assert.ok(html.includes('Mon')&&html.includes('Wed')&&html.includes('Fri'),'Show weekday labels');
 const yesterdayOnly=api.build({sessions:[{date:isoDay(2026,10,27),minutes:20}]},at(2026,10,28));
