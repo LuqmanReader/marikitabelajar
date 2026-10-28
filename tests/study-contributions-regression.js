@@ -51,6 +51,13 @@ assert.ok(html.includes('class="contrib-iso-top"')&&html.includes('class="contri
 assert.equal((html.match(/class="contrib-iso-column has-activity"/g)||[]).length,2,'Only two real study dates should contain extruded columns');
 assert.ok(html.includes('id="contribYear"')&&html.includes('value="2023"'),'All four years must be available without rendering all simultaneously');
 assert.ok(html.includes('id="contribFlatView" hidden'),'Keep 2D calendar collapsed by default');
+assert.ok(html.includes('LEDGERPEER / 3D ACTIVITY VIEW · V2'),'Display an unmistakable 3D version label');
+const zero3d=api.render(empty);
+assert.ok(zero3d.includes('class="contrib-no-activity"'),'Explain genuine zero-activity datasets');
+assert.ok(!zero3d.includes('class="contrib-iso-column has-activity"'),'Empty days must not pretend to contain activity');
+assert.ok(zero3d.includes('contrib-iso-front contrib-iso-empty')&&zero3d.includes('contrib-iso-side contrib-iso-empty'),'Zero-activity days must still have visible 3D depth');
+assert.ok(read('study-planner-3d.html').includes("await loadScript('study-contributions.js?v=20261028e')"),'New uncached 3D entrypoint must load the latest graph');
+assert.ok(read('auth.js').includes("'study-planner-3d.html'"),'3D planner must be safe for authentication returns');
 assert.ok(html.includes('id="contribFlatToggle"'),'Make 2D fallback available on demand');
 assert.deepEqual(model.years.map(y=>y.year),[2026,2025,2024,2023],'Show year-by-year history like the supplied reference');
 assert.deepEqual(model.years.map(y=>y.contributions),[4,1,0,0],'Use true contributions, not generated history');
@@ -86,8 +93,8 @@ const yesterdayOnly=api.build({sessions:[{date:isoDay(2026,10,27),minutes:20}]},
 assert.equal(yesterdayOnly.currentStreak,1,'A streak may remain active until the end of the next day');
 assert.equal(api.activityDate('2026-02-30'),null,'Impossible date must not be accepted');
 const planner=read('study-planner.html');
-assert.ok(planner.includes('study-contributions.css?v=20261028d'),'Page must load green square styling');
-assert.ok(planner.includes("await loadScript('study-contributions.js?v=20261028d')"),'Graph module must load before Study Planner');
+assert.ok(planner.includes('study-contributions.css?v=20261028e'),'Page must load green square styling');
+assert.ok(planner.includes("await loadScript('study-contributions.js?v=20261028e')"),'Graph module must load before Study Planner');
 const logic=read('study-planner-page.js');
 assert.ok(logic.includes('Ledg'+'erPeerStudyContributions.build(db)'),'Planner should compute contributions from saved data');
 assert.ok(logic.includes('LedgerPeerStudyContributions.render(contributions)'),'Planner should display graph');
