@@ -13,6 +13,14 @@ on:
       - 'quiz-page.js'
       - 'calendar.html'
       - 'study-planner.html'
+      - 'site-nav.css'
+      - 'view.html'
+      - 'add-exam.html'
+      - 'ai-tutor.html'
+      - 'about.html'
+      - 'quant-model.html'
+      - 'fia-study.html'
+      - 'productivity-core.js'
       - 'tests/classroom-regression.js'
       - '.github/workflows/classroom-regression.yml'
   pull_request:
@@ -28,6 +36,14 @@ on:
       - 'quiz-page.js'
       - 'calendar.html'
       - 'study-planner.html'
+      - 'site-nav.css'
+      - 'view.html'
+      - 'add-exam.html'
+      - 'ai-tutor.html'
+      - 'about.html'
+      - 'quant-model.html'
+      - 'fia-study.html'
+      - 'productivity-core.js'
       - 'tests/classroom-regression.js'
   workflow_dispatch:
 permissions:
@@ -45,5 +61,6 @@ jobs:
           node --check auth.js
           node --check profile-page.js
           node --check classroom-page.js
+          node --check productivity-core.js
       - name: Test onboarding and classroom integration
         run: node tests/classroom-regression.js
