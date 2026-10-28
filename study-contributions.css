@@ -112,3 +112,26 @@
  box-shadow:none!important;
 }
 .contrib-iso-column .contrib-iso-empty{stroke:#a8b8b0!important;stroke-width:.8!important}
+
+
+/* Recorded study sessions: individually removable entries below session form. */
+.planner-page .session-history{margin:19px 0 0;max-width:100%;border-top:1px solid #d0d7de;padding-top:16px;box-shadow:none}
+.planner-page .session-history-head{display:flex;align-items:baseline;gap:8px 16px;justify-content:space-between;flex-wrap:wrap;margin-bottom:10px}
+.planner-page .session-history-head h3{font:800 14px/1.5 Arial,sans-serif;margin:0;color:#243e2c;letter-spacing:.015em}
+.planner-page .session-history-head p,.planner-page .session-history-empty{font:500 12px/1.5 Arial,sans-serif;color:#66716a;margin:0}
+.planner-page .session-count{display:inline-flex;align-items:center;justify-content:center;min-width:22px;min-height:22px;padding:2px 6px;margin-left:5px;background:#e8f3e9;color:#255e37;border-radius:20px;font:800 11px Arial,sans-serif}
+.planner-page .session-history-list{display:flex;flex-direction:column;gap:8px}
+.planner-page .session-history-row{display:flex;align-items:center;gap:14px;background:#f8faf8;border:1px solid #e0e6e1;border-radius:5px;padding:11px 13px}
+.planner-page .session-history-info{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
+.planner-page .session-history-info strong{font:700 13px/1.35 Arial,sans-serif;color:#283c2d;overflow-wrap:anywhere}
+.planner-page .session-history-info span,.planner-page .session-history-info time{font:500 11px/1.35 Arial,sans-serif;color:#5b6b60;overflow-wrap:anywhere}
+.planner-page .session-duration{font:800 12px/1.4 ui-monospace,Consolas,monospace;color:#246b38;white-space:nowrap}
+.planner-page .session-history .session-delete{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:8px 12px;background:#fff7f7!important;color:#a42d32!important;border:1px solid #eab3b7!important;border-radius:4px!important;box-shadow:none!important;font:800 11px/1.1 Arial,sans-serif;letter-spacing:.03em;white-space:nowrap;cursor:pointer}
+.planner-page .session-history .session-delete:hover{background:#ffe2e2!important;border-color:#d86065!important}
+.planner-page .session-history .session-delete:focus-visible{outline:2px solid #c43b40;outline-offset:2px}
+.planner-page .session-history-empty{padding:15px;border:1px dashed #c7d6cb;border-radius:4px;background:#fbfdfb}
+@media(max-width:650px){
+ .planner-page .session-history-row{flex-wrap:wrap;gap:7px 12px}
+ .planner-page .session-history-info{flex-basis:100%}
+ .planner-page .session-history .session-delete{margin-left:auto}
+}
