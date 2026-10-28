@@ -89,7 +89,7 @@
     }
     const firstOfWeek=weekStart<first?first:weekStart;
     const month=firstOfWeek.getMonth();
-    if(firstOfWeek<=last&&month!==previousMonth){
+    if(firstOfWeek<=last&&firstOfWeek<=today&&month!==previousMonth){
      yearMonths.push({week:yearWeeks.length+1,label:firstOfWeek.toLocaleDateString('en-MY',{month:'short'})});
      previousMonth=month;
     }
