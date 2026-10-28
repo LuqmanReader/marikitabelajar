@@ -8,7 +8,6 @@
  if(root)root.LedgerPeerStudyContributions=api;
 })(typeof window!=='undefined'?window:null,function(){
  'use strict';
- const DAY=86400000;
  const pad=n=>String(n).padStart(2,'0');
  function key(date){return date.getFullYear()+'-'+pad(date.getMonth()+1)+'-'+pad(date.getDate());}
  function fromKey(value){
@@ -63,8 +62,11 @@
     const day=addDays(startWeek,offset),date=key(day);
     week.push({date,day,valid:date>=key(earliest)&&date<=todayKey,activity:days.get(date)||empty()});
     if(offset===0){
-     const month=day.getMonth();
-     if(month!==priorMonth&&day>=earliest){months.push({week:weeks.length+1,label:day.toLocaleDateString('en-MY',{month:'short'})});priorMonth=month;}
+     const firstVisible=startWeek<earliest?earliest:startWeek;
+     if(firstVisible<=today){
+      const month=firstVisible.getMonth();
+      if(month!==priorMonth){months.push({week:weeks.length+1,label:firstVisible.toLocaleDateString('en-MY',{month:'short'})});priorMonth=month;}
+     }
     }
    }
    weeks.push(week);
