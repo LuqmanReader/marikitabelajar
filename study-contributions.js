@@ -106,7 +106,7 @@
   }
   html+='</div></div></div></div>';
   html+='<footer class="study-contrib-footer"><details class="study-contrib-method"><summary>Learn how we count contributions</summary><p>1 contribution = 1 completed study task or 1 logged study session. Tasks only count when marked complete, not on their planned dates. Activity is stored in this browser and follows your device timezone. No automatic or simulated activity.</p></details><div class="study-contrib-legend" aria-label="Activity levels from no activity to five or more contributions"><span>Less</span><i class="level-0"></i><i class="level-1"></i><i class="level-2"></i><i class="level-3"></i><i class="level-4"></i><span>More</span></div></footer>';
-  html+='<p class="study-contrib-detail" id="contribDetail" role="status"></p>';
+  html+='<p class="study-contrib-detail" id="contribDetail" role="status" hidden></p>';
   html+='<p class="study-contrib-meta">Current streak: <strong>'+model.currentStreak+' days</strong><span aria-hidden="true"> · </span>Best streak: <strong>'+model.bestStreak+' days</strong><span aria-hidden="true"> · </span>Minutes logged: <strong>'+model.totalMinutes.toLocaleString('en-MY')+'</strong></p>';
   if(!model.activeDays)html+='<p class="study-contrib-empty">Complete a study task or log a session to earn your first green square.</p>';
   return html+'</section>';
@@ -120,14 +120,13 @@
   const selectDate=(button)=>{
    for(const cell of cells)cell.setAttribute('aria-pressed',String(cell===button));
    const date=button.getAttribute('data-date');
-   detailBox.textContent=detail(date,model.days.get(date)||empty());
+   detailBox.textContent=detail(date,model.days.get(date)||empty());detailBox.hidden=false;
   };
   container.addEventListener('click',event=>{
    const button=event.target.closest('.study-contrib-square');
    if(button&&container.contains(button))selectDate(button);
   });
-  const today=container.querySelector('[data-date="'+model.todayKey+'"]');
-  if(today)selectDate(today);
+  // Leave squares unselected initially, like GitHub's contributions calendar.
  }
  return {activityDate,build,render,mount,level,detail};
 });
