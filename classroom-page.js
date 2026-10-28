@@ -399,6 +399,27 @@ function subscribe(){
  document.addEventListener('visibilitychange',onVisible);
  window.addEventListener('pagehide',()=>{clearInterval(interval);clearTimeout(refreshTimer);document.removeEventListener('visibilitychange',onVisible);if(channel)client.removeChannel(channel);},{once:true});
 }
+function setupAdminSettings(){
+ if(user.id!=='1ce23114-0a09-49ae-80c8-6fad74877b8f')return;
+ const panel=make('details','social-panel'),heading=make('summary','','ADMIN SETTINGS');
+ const description=make('p','','Clear all messages and their attachment entries from this classroom. The resource board stays available. Students receive no deletion notice.');
+ const button=make('button','secondary-button','CLEAR CLASSROOM MESSAGES'),feedback=make('p','form-status');
+ button.type='button';feedback.setAttribute('role','status');
+ button.addEventListener('click',async()=>{
+  if(!confirm('Clear all existing classroom messages for everyone? This cannot be undone.'))return;
+  button.disabled=true;feedback.textContent='Clearing messages…';
+  try{
+   const cutoff=new Date().toISOString();
+   const result=await client.from('classroom_messages').delete().eq('classroom_id',room.id).lte('created_at',cutoff).select('id');
+   if(result.error)throw result.error;
+   clearReply();urlCache.clear();$('chatSearch').value='';messageSignature='';
+   await reload();
+   feedback.textContent=(result.data||[]).length+' messages cleared.';
+  }catch(error){feedback.textContent='Could not clear messages: '+error.message;}
+  finally{button.disabled=false;}
+ });
+ panel.append(heading,description,button,feedback);document.querySelector('.class-aside').append(panel);
+}
 async function init(){
  try{
   const A=window.PersonalHubAuth;if(!A)throw Error('Student login is unavailable.');
@@ -406,7 +427,7 @@ async function init(){
   client=A.getClient();user=A.getUser();if(!client||!user)throw Error('Please sign in.');
   const {data,error}=await client.from('classrooms').select('id,name,description').eq('slug','ledgerpeer-commons').maybeSingle();
   if(error)throw error;if(!data)throw Error('Study Commons is unavailable.');room=data;
-  await joinRoom();await loadMembers();
+  await joinRoom();await loadMembers();setupAdminSettings();
   $('chatTab').addEventListener('click',()=>switchTab('chat'));
   $('mediaTab').addEventListener('click',()=>switchTab('media'));
   $('resourceTab').addEventListener('click',()=>switchTab('resource'));
