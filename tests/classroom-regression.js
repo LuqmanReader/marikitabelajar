@@ -17,6 +17,16 @@ assert.ok(auth.includes("searchParams.get('next')"),'Pending classroom route mus
 assert.ok(auth.includes("getClient(){return client;}")&&auth.includes("getUser(){return user;}"),'Pages must reuse the existing account session');
 assert.ok(profile.includes("from('student_profiles').upsert(payload"),'Profile form must save in Supabase');
 assert.ok(profile.includes("from('classroom_members').insert("),'Profile completion should join the shared room');
+assert.ok(profilePage.includes('id="subjectOptions"')&&profilePage.includes('id="subjectSearch"'),'Profile must offer searchable multi-subject selection');
+assert.ok(profilePage.includes('subject-catalog.js?v=20261028multisubject'),'Profile subjects must come from shared FIA/ACCA syllabus catalogue');
+assert.ok(profile.includes('current_papers:papers')&&profile.includes("current_paper:papers[0]||''"),'Profile must save all subjects and a legacy primary subject');
+assert.ok(profile.includes('restoreSubjects(data)'),'Existing users must get selected subjects restored');
+assert.ok(profile.includes("select('display_name,handle,pathway,current_paper,current_papers,bio')"),'Profile loading must request the complete paper list');
+assert.ok(room.includes('current_paper,current_papers,bio'),'Classroom must query all subject selections');
+assert.ok(room.includes("subjects.join(' · ')"),'Classmate directory must display all chosen subjects');
+assert.ok(read('profile-subjects.css').includes('.subject-choice-grid'),'Multiple-subject picker must be responsive');
+assert.ok(read('supabase/student-profile-multiple-papers.sql').includes('current_papers text[]'),'Schema migration must preserve multiple selections');
+
 assert.ok(profile.includes("user_id:user.id"),'Profile writes must bind to signed-in user');
 assert.ok(profilePage.includes('type="checkbox" id="guidelines" required'),'Require classroom etiquette agreement');
 assert.ok(profilePage.includes('maxlength="240"')&&profilePage.includes('maxlength="50"'),'Limit profile data');
@@ -41,7 +51,7 @@ assert.ok(room.includes('function replyQuote(')&&room.includes('function jumpToM
 assert.ok(room.includes('payload.reply_to_message_id=replyId'),'Reply target must persist with messages in Supabase');
 assert.ok(room.includes("const footer=make('div','chat-message-footer')")&&room.includes("addActions(footer,item,'message')"),'Reply action must appear in a visible footer below each chat message');
 assert.ok(read('classroom.css').includes('.chat-bubble .chat-message-footer .message-actions .reply-action'),'Reply must be prominent inside the message footer');
-assert.ok(classPage.includes('classroom-page.js?v=5')&&classPage.includes('classroom.css?v=5'),'Updated chat assets must bypass stale browser cache');
+assert.ok(classPage.includes('classroom-page.js?v=6')&&classPage.includes('classroom.css?v=5'),'Updated chat assets must bypass stale browser cache');
 assert.ok(room.includes("select('id,classroom_id,user_id,body,created_at,reply_to_message_id')"),'Message loading must include reply references');
 assert.ok(classPage.includes('REPLIES ENABLED · CHAT v5'),'Classroom must show a visible deployment and reply hint');
 assert.ok(read('classroom.css').includes('.quoted-reply')&&read('classroom.css').includes('.reply-tray'),'Linked replies must have responsive presentation styles');
