@@ -9,7 +9,7 @@ let messages=[],media=[],posts=[],pendingFiles=[],messageLimit=100,mediaShown=36
 let replyParents=new Map(),replyingTo=null;
 let lastSent=0,lastPosted=0,mediaKind='all',messageSignature='',urlCache=new Map(),allMessageMedia=new Map(),reloading=false,shouldReload=false;
 function status(id,msg,error=false){const element=$(id);if(element){element.textContent=msg||'';element.classList.toggle('error',error);}}
-function person(id){return profiles.get(id)||{display_name:'Classmate',handle:'student',pathway:'FIA',current_paper:''};}
+function person(id){return profiles.get(id)||{display_name:'Classmate',handle:'student',pathway:'FIA',current_paper:'',current_papers:[]};}
 function fullName(id){const p=person(id);return p.display_name||p.handle||'Classmate';}
 function formatDate(stamp){return new Date(stamp).toLocaleString('en-MY',{dateStyle:'medium',timeStyle:'short'});}
 function formatTime(stamp){return new Date(stamp).toLocaleTimeString('en-MY',{hour:'2-digit',minute:'2-digit'});}
@@ -161,7 +161,10 @@ function renderMembers(members){
   card.append(make('div','avatar',(p.display_name||'?').slice(0,1).toUpperCase()));
   const side=make('div');
   side.append(make('strong','',p.display_name+(m.user_id===user.id?' (YOU)':'')));
-  side.append(make('small','','@'+p.handle+' · '+p.pathway+(p.current_paper?' · '+p.current_paper:'')));
+  const subjects=Array.isArray(p.current_papers)&&p.current_papers.length
+   ?[...new Set(p.current_papers.filter(code=>typeof code==='string'))]
+   :p.current_paper?[p.current_paper]:[];
+  side.append(make('small','','@'+p.handle+' · '+p.pathway+(subjects.length?' · '+subjects.join(' · '):'')));
   if(p.bio)side.append(make('small','',p.bio));
   card.append(side);list.append(card);
  }
@@ -171,7 +174,7 @@ async function loadMembers(){
  if(error)throw error;
  const members=data||[],ids=members.map(m=>m.user_id);
  if(ids.length){
-  const {data:people,error:err}=await client.from('student_profiles').select('user_id,display_name,handle,pathway,current_paper,bio').in('user_id',ids);
+  const {data:people,error:err}=await client.from('student_profiles').select('user_id,display_name,handle,pathway,current_paper,current_papers,bio').in('user_id',ids);
   if(err)throw err;profiles=new Map((people||[]).map(p=>[p.user_id,p]));
  }
  renderMembers(members);
