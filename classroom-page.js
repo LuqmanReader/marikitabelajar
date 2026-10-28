@@ -6,6 +6,7 @@ const MAX_FILES=4,MAX_SIZE=15*1024*1024,BUCKET='classroom-media';
 const mimeMap={jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',webp:'image/webp',gif:'image/gif',mp4:'video/mp4',webm:'video/webm',pdf:'application/pdf',txt:'text/plain',doc:'application/msword',docx:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',xls:'application/vnd.ms-excel',xlsx:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',ppt:'application/vnd.ms-powerpoint',pptx:'application/vnd.openxmlformats-officedocument.presentationml.presentation'};
 let client,user,room,profiles=new Map(),channel,refreshTimer;
 let messages=[],media=[],posts=[],pendingFiles=[],messageLimit=100,mediaShown=36;
+let replyParents=new Map(),replyingTo=null;
 let lastSent=0,lastPosted=0,mediaKind='all',messageSignature='',urlCache=new Map(),allMessageMedia=new Map(),reloading=false,shouldReload=false;
 function status(id,msg,error=false){const element=$(id);if(element){element.textContent=msg||'';element.classList.toggle('error',error);}}
 function person(id){return profiles.get(id)||{display_name:'Classmate',handle:'student',pathway:'FIA',current_paper:''};}
@@ -21,7 +22,13 @@ function addActions(line,item,type){
  const mine=item.user_id===user.id,btn=make('button','',mine?'REMOVE':'REPORT');
  btn.type='button';btn.title=mine?'Remove from classroom':'Report to moderators';
  btn.addEventListener('click',()=>mine?removeItem(item,type):reportItem(item,type));
- const actions=make('div','message-actions');actions.append(btn);line.append(actions);
+ const actions=make('div','message-actions');
+ if(type==='message'){
+  const replyButton=make('button','reply-action','REPLY');replyButton.type='button';
+  replyButton.title='Reply to '+fullName(item.user_id);
+  replyButton.addEventListener('click',()=>selectReply(item));actions.append(replyButton);
+ }
+ actions.append(btn);line.append(actions);
 }
 function postMeta(item){
  const line=make('div','post-meta');
@@ -60,12 +67,60 @@ function appendMessageFiles(bubble,files){
  }
  bubble.append(wrap);
 }
+function replyExcerpt(item){
+ if(!item)return 'Original message unavailable';
+ const attached=allMessageMedia.get(item.id)||[];
+ const value=(item.body||'').trim()||((attached.length?attached.map(f=>f.original_name).join(', '):'Shared attachment'));
+ return value.length>150?value.slice(0,147)+'…':value;
+}
+function clearReply(){
+ replyingTo=null;$('replyTray').hidden=true;$('replyAuthor').textContent='';$('replyExcerpt').textContent='';
+}
+function selectReply(item){
+ replyingTo={id:item.id,user_id:item.user_id,body:item.body};
+ $('replyAuthor').textContent=fullName(item.user_id);
+ $('replyExcerpt').textContent=replyExcerpt(item);
+ $('replyTray').hidden=false;
+ $('messageText').focus();
+}
+function replyQuote(item){
+ if(!item.reply_to_message_id)return null;
+ const target=replyParents.get(item.reply_to_message_id);
+ const quote=make('button','quoted-reply');quote.type='button';
+ quote.title='Jump to original message';
+ quote.setAttribute('aria-label','Jump to message from '+(target?fullName(target.user_id):'classmate'));
+ quote.append(make('strong','',target?fullName(target.user_id):'Original message'),make('span','',replyExcerpt(target)));
+ quote.addEventListener('click',()=>jumpToMessage(item.reply_to_message_id));
+ return quote;
+}
+async function jumpToMessage(id){
+ if($('chatPanel').hidden)switchTab('chat');
+ if($('chatSearch').value){$('chatSearch').value='';messageSignature='';renderMessages(true);}
+ if(!messages.some(m=>m.id===id)){
+  let original=replyParents.get(id);
+  if(!original){
+   const lookup=await client.from('classroom_messages').select('id,classroom_id,user_id,body,created_at,reply_to_message_id').eq('classroom_id',room.id).eq('id',id).maybeSingle();
+   if(lookup.error){status('chatStatus','Could not open original message: '+lookup.error.message,true);return;}
+   original=lookup.data;
+  }
+  if(!original){status('chatStatus','The original message has been removed.',true);return;}
+  messages=[...messages,original].sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
+  replyParents.set(original.id,original);
+  messageSignature='';renderMessages(true);
+ }
+ const row=$('chat-'+id);
+ if(row){
+  row.scrollIntoView({block:'center',behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+  row.classList.remove('reply-highlight');void row.offsetWidth;row.classList.add('reply-highlight');
+  row.addEventListener('animationend',()=>row.classList.remove('reply-highlight'),{once:true});
+ }
+}
 function renderMessages(force=false,older=false){
  const search=$('chatSearch').value.trim().toLowerCase();
  const list=$('messages');
- const filtered=messages.filter(item=>!search||(item.body+' '+fullName(item.user_id)+' @'+person(item.user_id).handle+' '+(allMessageMedia.get(item.id)||[]).map(m=>m.original_name).join(' ')).toLowerCase().includes(search));
+ const filtered=messages.filter(item=>!search||(item.body+' '+fullName(item.user_id)+' @'+person(item.user_id).handle+' '+(allMessageMedia.get(item.id)||[]).map(m=>m.original_name).join(' ')+' '+(item.reply_to_message_id?replyExcerpt(replyParents.get(item.reply_to_message_id)):'' )).toLowerCase().includes(search));
  $('chatSearchCount').textContent=search?filtered.length+' found':'';
- const signature=filtered.map(m=>m.id+':'+(allMessageMedia.get(m.id)||[]).map(a=>a.id).join(',')).join('|')+'|'+search;
+ const signature=filtered.map(m=>m.id+':'+(m.reply_to_message_id||'')+':'+(allMessageMedia.get(m.id)||[]).map(a=>a.id).join(',')).join('|')+'|'+search;
  if(!force&&signature===messageSignature)return;
  messageSignature=signature;
  const priorHeight=list.scrollHeight,priorTop=list.scrollTop;
@@ -84,6 +139,7 @@ function renderMessages(force=false,older=false){
   meta.append(make('strong','',mine?'YOU':fullName(item.user_id)));
   if(!mine)meta.append(make('span','at','@'+person(item.user_id).handle));
   addActions(meta,item,'message');bubble.append(meta);
+  const quote=replyQuote(item);if(quote)bubble.append(quote);
   if(item.body)bubble.append(make('p','message-body',item.body));
   appendMessageFiles(bubble,allMessageMedia.get(item.id)||[]);
   bubble.append(make('div','message-time',formatTime(item.created_at)));
@@ -118,7 +174,7 @@ async function loadMembers(){
 }
 async function loadMessages(older=false){
  if(!room)return;
- const {data,error}=await client.from('classroom_messages').select('id,classroom_id,user_id,body,created_at')
+ const {data,error}=await client.from('classroom_messages').select('id,classroom_id,user_id,body,created_at,reply_to_message_id')
   .eq('classroom_id',room.id).order('created_at',{ascending:false}).limit(messageLimit);
  if(error){status('chatStatus','Cannot load messages: '+error.message,true);return;}
  const items=(data||[]).reverse(),ids=items.map(i=>i.id);
@@ -129,6 +185,14 @@ async function loadMessages(older=false){
   else for(const f of files||[]){if(!attached.has(f.message_id))attached.set(f.message_id,[]);attached.get(f.message_id).push(f);}
  }
  messages=items;allMessageMedia=attached;
+ replyParents=new Map(items.map(item=>[item.id,item]));
+ const missing=[...new Set(items.map(item=>item.reply_to_message_id).filter(id=>id&&!replyParents.has(id)))];
+ if(missing.length){
+  const linked=await client.from('classroom_messages').select('id,classroom_id,user_id,body,created_at,reply_to_message_id')
+   .eq('classroom_id',room.id).in('id',missing);
+  if(linked.error)status('chatStatus','Some original messages could not be loaded: '+linked.error.message,true);
+  else for(const original of linked.data||[])replyParents.set(original.id,original);
+ }
  $('loadOlder').hidden=items.length<messageLimit;
  renderMessages(false,older);
 }
@@ -233,7 +297,7 @@ async function joinRoom(){
 }
 async function sendMessage(event){
  event.preventDefault();
- const text=$('messageText').value.trim(),files=pendingFiles.slice();
+ const text=$('messageText').value.trim(),files=pendingFiles.slice(),replyId=replyingTo?.id||null;
  if(!text&&!files.length){status('chatStatus','Write a message or attach a file.',true);return;}
  if(text.length>1000){status('chatStatus','Message must be at most 1,000 characters.',true);return;}
  if(Date.now()-lastSent<3000){status('chatStatus','Please wait a moment before sending again.',true);return;}
@@ -252,13 +316,15 @@ async function sendMessage(event){
    records.push({classroom_id:room.id,user_id:user.id,object_path:path,original_name:file.name.slice(0,180),mime_type:kind.mime,media_kind:kind.kind,size_bytes:file.size});
   }
   const fallback=files.length===1?'Shared a file':('Shared '+files.length+' files');
-  const inserted=await client.from('classroom_messages').insert({classroom_id:room.id,user_id:user.id,body:text||fallback}).select('id').single();
+  const payload={classroom_id:room.id,user_id:user.id,body:text||fallback};
+  if(replyId)payload.reply_to_message_id=replyId;
+  const inserted=await client.from('classroom_messages').insert(payload).select('id').single();
   if(inserted.error)throw inserted.error;newMessage=inserted.data;
   if(records.length){
    const saving=await client.from('classroom_media').insert(records.map(r=>Object.assign(r,{message_id:newMessage.id})));
    if(saving.error)throw saving.error;
   }
-  lastSent=Date.now();$('messageText').value='';$('messageCount').textContent='0';pendingFiles=[];renderPending();
+  lastSent=Date.now();$('messageText').value='';$('messageCount').textContent='0';pendingFiles=[];renderPending();clearReply();
   status('chatStatus','Sent.');await Promise.all([loadMessages(),loadMedia()]);
  }catch(error){
   if(newMessage?.id)await client.from('classroom_messages').delete().eq('id',newMessage.id).eq('user_id',user.id);
@@ -343,6 +409,7 @@ async function init(){
   $('attachButton').addEventListener('click',()=>$('attachmentInput').click());
   $('attachmentInput').addEventListener('change',chooseFiles);
   $('chatForm').addEventListener('submit',sendMessage);
+  $('cancelReply').addEventListener('click',clearReply);
   $('postForm').addEventListener('submit',sharePost);
   $('messageText').addEventListener('input',()=>{$('messageCount').textContent=String($('messageText').value.length);});
   $('messageText').addEventListener('keydown',event=>{
