@@ -5,18 +5,22 @@ on:
       - 'study-contributions.js'
       - 'study-contributions.css'
       - 'study-planner.html'
+      - 'study-planner-3d.html'
       - 'study-planner-page.js'
       - 'productivity-core.js'
       - 'tests/study-contributions-regression.js'
+      - 'tests/study-planner-sessions-regression.js'
       - '.github/workflows/study-contributions-regression.yml'
   pull_request:
     paths:
       - 'study-contributions.js'
       - 'study-contributions.css'
       - 'study-planner.html'
+      - 'study-planner-3d.html'
       - 'study-planner-page.js'
       - 'productivity-core.js'
       - 'tests/study-contributions-regression.js'
+      - 'tests/study-planner-sessions-regression.js'
   workflow_dispatch:
 permissions:
   contents: read
@@ -35,3 +39,5 @@ jobs:
           node --check productivity-core.js
       - name: Run study contribution regression
         run: node tests/study-contributions-regression.js
+      - name: Run Study Planner session deletion regression
+        run: node tests/study-planner-sessions-regression.js
