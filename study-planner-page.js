@@ -5,7 +5,46 @@ function paperOptions(){return '<option value="">Select paper / module</option>'
 function setTopics(form){const p=form.elements.paper.value,sel=form.elements.topic;sel.innerHTML=opts(CATALOG[PAPER_GROUP[p]]?.[p]||[],'Select syllabus topic')+'<option value="__custom__">Other / custom topic</option>';form.elements.customTopic.hidden=true;form.elements.customTopic.required=false;form.elements.customTopic.value=''}
 function toggleCustom(form){const yes=form.elements.topic.value==='__custom__';form.elements.customTopic.hidden=!yes;form.elements.customTopic.required=yes}
 function paperFields(){return '<select name="paper" required autocomplete="off" onchange="setTopics(this.form)">'+paperOptions()+'</select><select name="topic" required autocomplete="off" onchange="toggleCustom(this.form)"><option value="">Select a paper first</option></select><input name="customTopic" placeholder="Enter custom topic" autocomplete="off" hidden maxlength="120">'}
-function render(){let sugg=readSuggestions(),contributions=window.LedgerPeerStudyContributions.build(db);let content='<div class="stats"><div class="stat">'+db.tasks.length+'<div class="muted">Planned tasks</div></div><div class="stat">'+completed().length+'<div class="muted">Completed tasks</div></div><div class="stat">'+contributions.currentStreak+' days<div class="muted">Current streak</div></div></div>'+window.LedgerPeerStudyContributions.render(contributions)+'<div class="panel" style="margin-top:16px"><h2>Add a study task</h2><form id="taskForm" class="toolbar" autocomplete="off"><input name="title" placeholder="What will you study?" required maxlength="120" autocomplete="off">'+paperFields()+'<input name="date" type="date" required><select name="priority"><option>High</option><option selected>Medium</option><option>Low</option></select><button>Add task</button></form></div><div class="panel" style="margin-top:16px"><h2>Suggested revisions</h2><p class="muted">Suggestions use available saved topic-mastery data. You control what gets scheduled.</p>'+(sugg.length?sugg.map((s,i)=>'<div class="task"><div class="grow"><b>'+esc(s.title)+'</b> <span class="pill">'+esc(s.priority)+'</span></div><button onclick="addSuggestion('+i+')">Add to plan</button></div>').join(''):'<p class="muted">No weak-topic snapshot detected yet. Add your own tasks, or review topic-tagged tests in the Revision Dashboard.</p>')+'</div><div class="panel" style="margin-top:16px"><h2>Your study plan</h2>'+(db.tasks.length?db.tasks.slice().sort((a,b)=>(a.date||'').localeCompare(b.date||'')).map(taskHtml).join(''):'<p class="muted">No tasks added yet.</p>')+'</div><div class="panel" style="margin-top:16px"><h2>Log study session</h2><form id="sessionForm" class="toolbar" autocomplete="off">'+paperFields()+'<input name="minutes" type="number" min="1" max="1440" placeholder="Minutes" required><button>Log session (+10 XP)</button></form><p class="muted">Total logged: '+db.sessions.reduce((n,s)=>n+Number(s.minutes),0)+' minutes</p><a class="btn" href="calendar.html">Open Calendar →</a></div>';shell('study-planner','Smart Study Planner','FIA and ACCA syllabus catalogue, study tasks and session tracking.',content);const date=document.querySelector('#taskForm [name="date"]');if(date)date.value=iso(new Date());window.suggestions=sugg;window.LedgerPeerStudyContributions.mount(document.querySelector('.study-contrib-panel'),contributions)}
+function sessionTimeLabel(raw){
+ const value=String(raw||'');
+ const date=new Date(value);
+ if(!value||Number.isNaN(date.getTime()))return value||'DATE UNAVAILABLE';
+ return /^\d{4}-\d{2}-\d{2}$/.test(value)
+  ?date.toLocaleDateString('en-MY',{day:'numeric',month:'short',year:'numeric'})
+  :date.toLocaleString('en-MY',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+}
+function sessionHistoryHtml(){
+ const rows=db.sessions.map((session,index)=>({session,index}))
+  .sort((a,b)=>(Date.parse(b.session.date)||0)-(Date.parse(a.session.date)||0)||b.index-a.index);
+ return '<section id="sessionHistory" class="session-history" aria-labelledby="sessionHistoryTitle">'+
+  '<div class="session-history-head"><h3 id="sessionHistoryTitle">RECORDED STUDY SESSIONS <span class="session-count">'+rows.length+'</span></h3><p>Delete an incorrect entry to update your logged minutes and contribution graph.</p></div>'+
+  (rows.length?'<div class="session-history-list">'+rows.map(({session,index})=>{
+   const when=sessionTimeLabel(session.date);
+   const minutes=Number(session.minutes);
+   const duration=Number.isFinite(minutes)&&minutes>0?Math.round(minutes):0;
+   const subject=String(session.subject||session.paper||'General study');
+   const topic=String(session.topic||'Study session');
+   return '<div class="session-history-row"><div class="session-history-info"><strong>'+esc(subject)+'</strong><span>'+esc(topic)+'</span><time>'+esc(when)+'</time></div><strong class="session-duration">'+duration+' MIN</strong>'+
+    '<button type="button" class="session-delete" data-delete-session="'+index+'" aria-label="Delete '+duration+' minute session from '+esc(when)+'">DELETE</button></div>';
+  }).join('')+'</div>':'<p class="session-history-empty">No study sessions logged yet.</p>')+'</section>';
+}
+function deleteStudySession(index){
+ if(!Number.isSafeInteger(index)||index<0||index>=db.sessions.length)return;
+ const minutes=Number(db.sessions[index].minutes)||0;
+ if(!confirm('Delete this '+minutes+'-minute study session? It will be removed from your study time and contribution graph.'))return;
+ db.sessions.splice(index,1);
+ save();
+ render();
+}
+function render(){let sugg=readSuggestions(),contributions=window.LedgerPeerStudyContributions.build(db);let content='<div class="stats"><div class="stat">'+db.tasks.length+'<div class="muted">Planned tasks</div></div><div class="stat">'+completed().length+'<div class="muted">Completed tasks</div></div><div class="stat">'+contributions.currentStreak+' days<div class="muted">Current streak</div></div></div>'+window.LedgerPeerStudyContributions.render(contributions)+'<div class="panel" style="margin-top:16px"><h2>Add a study task</h2><form id="taskForm" class="toolbar" autocomplete="off"><input name="title" placeholder="What will you study?" required maxlength="120" autocomplete="off">'+paperFields()+'<input name="date" type="date" required><select name="priority"><option>High</option><option selected>Medium</option><option>Low</option></select><button>Add task</button></form></div><div class="panel" style="margin-top:16px"><h2>Suggested revisions</h2><p class="muted">Suggestions use available saved topic-mastery data. You control what gets scheduled.</p>'+(sugg.length?sugg.map((s,i)=>'<div class="task"><div class="grow"><b>'+esc(s.title)+'</b> <span class="pill">'+esc(s.priority)+'</span></div><button onclick="addSuggestion('+i+')">Add to plan</button></div>').join(''):'<p class="muted">No weak-topic snapshot detected yet. Add your own tasks, or review topic-tagged tests in the Revision Dashboard.</p>')+'</div><div class="panel" style="margin-top:16px"><h2>Your study plan</h2>'+(db.tasks.length?db.tasks.slice().sort((a,b)=>(a.date||'').localeCompare(b.date||'')).map(taskHtml).join(''):'<p class="muted">No tasks added yet.</p>')+'</div><div class="panel" style="margin-top:16px"><h2>Log study session</h2><form id="sessionForm" class="toolbar" autocomplete="off">'+paperFields()+'<input name="minutes" type="number" min="1" max="1440" placeholder="Minutes" required><button>Log session (+10 XP)</button></form><p class="muted">Total logged: '+db.sessions.reduce((n,s)=>n+Number(s.minutes),0)+' minutes</p><a class="btn" href="calendar.html">Open Calendar →</a>'+sessionHistoryHtml()+'</div>';shell('study-planner','Smart Study Planner','FIA and ACCA syllabus catalogue, study tasks and session tracking.',content);const date=document.querySelector('#taskForm [name="date"]');if(date)date.value=iso(new Date());window.suggestions=sugg;window.LedgerPeerStudyContributions.mount(document.querySelector('.study-contrib-panel'),contributions)}
 function addSuggestion(i){let s=window.suggestions[i];if(!s)return;db.tasks.push({...s,id:id(),date:iso(new Date()),done:false});save();render()}
 function dataFrom(form){let entry=Object.fromEntries(new FormData(form));if(entry.topic==='__custom__')entry.topic=entry.customTopic.trim();if(!entry.topic)throw Error('Choose a topic');entry.subject=entry.paper;delete entry.customTopic;return entry}
-document.addEventListener('submit',e=>{if(e.target.id==='taskForm'){e.preventDefault();let entry;try{entry=dataFrom(e.target)}catch(err){alert(err.message);return}db.tasks.push({...entry,id:id(),done:false});save();render()}if(e.target.id==='sessionForm'){e.preventDefault();let entry;try{entry=dataFrom(e.target)}catch(err){alert(err.message);return}db.sessions.push({...entry,id:id(),date:new Date().toISOString()});save();render()}});render();
+document.addEventListener('submit',e=>{if(e.target.id==='taskForm'){e.preventDefault();let entry;try{entry=dataFrom(e.target)}catch(err){alert(err.message);return}db.tasks.push({...entry,id:id(),done:false});save();render()}if(e.target.id==='sessionForm'){e.preventDefault();let entry;try{entry=dataFrom(e.target)}catch(err){alert(err.message);return}db.sessions.push({...entry,id:id(),date:new Date().toISOString()});save();render()}});
+document.addEventListener('click',event=>{
+ const button=event.target.closest('button[data-delete-session]');
+ if(!button||!button.closest('#sessionHistory'))return;
+ const raw=button.getAttribute('data-delete-session');
+ if(!/^\d+$/.test(raw))return;
+ deleteStudySession(Number(raw));
+});
+render();
