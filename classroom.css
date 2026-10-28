@@ -142,7 +142,14 @@ a{color:inherit}a:focus-visible,button:focus-visible,input:focus-visible,textare
 .quoted-reply strong{font-size:10px;color:#2236a0;font-weight:900}
 .quoted-reply span{font-size:11px;line-height:1.4;overflow-wrap:anywhere;white-space:pre-wrap;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .quoted-reply:hover,.quoted-reply:focus-visible{background:var(--yellow)}
-.chat-bubble .message-actions .reply-action{color:var(--blue);font-weight:900}
+.chat-message-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:10px;padding-top:8px;border-top:1px solid #1113}
+.chat-message-footer .message-actions{display:flex;align-items:center;gap:9px;margin-left:0;order:0}
+.chat-message-footer .message-time{margin:0 0 0 auto;flex-shrink:0}
+.chat-bubble .chat-message-footer .message-actions .reply-action{display:inline-flex;align-items:center;justify-content:center;min-height:31px;padding:6px 11px;background:var(--yellow);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);color:var(--ink);font-size:11px;line-height:1;font-weight:900;letter-spacing:.035em;text-decoration:none}
+.chat-bubble .chat-message-footer .message-actions .reply-action:hover{background:#ffe177;transform:translate(-1px,-1px)}
+.chat-bubble .chat-message-footer .message-actions .reply-action:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+.chat-bubble .chat-message-footer .message-actions button:not(.reply-action){font-size:10px;font-weight:800;min-height:30px;padding:4px 2px;line-height:1.2}
+@media(max-width:680px){.chat-message-footer{gap:5px}.chat-message-footer .message-actions{gap:6px}.chat-bubble .chat-message-footer .message-actions .reply-action{padding:7px 9px;font-size:10px}}
 .reply-highlight .chat-bubble{animation:reply-emphasis 1.8s ease-out}
 @keyframes reply-emphasis{0%,30%{outline:4px solid var(--blue);outline-offset:3px;background:var(--yellow)}100%{outline:0 solid transparent;outline-offset:0}}
 @media(prefers-reduced-motion:reduce){.reply-highlight .chat-bubble{animation:none;outline:3px solid var(--blue);outline-offset:2px}}
