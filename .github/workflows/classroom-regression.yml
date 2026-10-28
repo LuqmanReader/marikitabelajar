@@ -22,6 +22,10 @@ on:
       - 'fia-study.html'
       - 'productivity-core.js'
       - 'tests/classroom-regression.js'
+      - 'profile-subjects.css'
+      - 'subject-catalog.js'
+      - 'supabase/student-profile-multiple-papers.sql'
+      - 'tests/profile-multi-subject-regression.js'
       - '.github/workflows/classroom-regression.yml'
   pull_request:
     paths:
@@ -45,6 +49,10 @@ on:
       - 'fia-study.html'
       - 'productivity-core.js'
       - 'tests/classroom-regression.js'
+      - 'profile-subjects.css'
+      - 'subject-catalog.js'
+      - 'supabase/student-profile-multiple-papers.sql'
+      - 'tests/profile-multi-subject-regression.js'
   workflow_dispatch:
 permissions:
   contents: read
@@ -60,7 +68,10 @@ jobs:
         run: |
           node --check auth.js
           node --check profile-page.js
+          node --check subject-catalog.js
           node --check classroom-page.js
           node --check productivity-core.js
       - name: Test onboarding and classroom integration
         run: node tests/classroom-regression.js
+      - name: Test profile multi-subject picker
+        run: node tests/profile-multi-subject-regression.js
