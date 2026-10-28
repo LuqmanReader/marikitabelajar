@@ -24,7 +24,8 @@ function addActions(line,item,type){
  btn.addEventListener('click',()=>mine?removeItem(item,type):reportItem(item,type));
  const actions=make('div','message-actions');
  if(type==='message'){
-  const replyButton=make('button','reply-action','REPLY');replyButton.type='button';
+  const replyButton=make('button','reply-action','↩ REPLY');replyButton.type='button';
+  replyButton.setAttribute('aria-label','Reply to message from '+fullName(item.user_id));
   replyButton.title='Reply to '+fullName(item.user_id);
   replyButton.addEventListener('click',()=>selectReply(item));actions.append(replyButton);
  }
@@ -138,11 +139,14 @@ function renderMessages(force=false,older=false){
   const meta=make('div','message-meta');
   meta.append(make('strong','',mine?'YOU':fullName(item.user_id)));
   if(!mine)meta.append(make('span','at','@'+person(item.user_id).handle));
-  addActions(meta,item,'message');bubble.append(meta);
+  bubble.append(meta);
   const quote=replyQuote(item);if(quote)bubble.append(quote);
   if(item.body)bubble.append(make('p','message-body',item.body));
   appendMessageFiles(bubble,allMessageMedia.get(item.id)||[]);
-  bubble.append(make('div','message-time',formatTime(item.created_at)));
+  const footer=make('div','chat-message-footer');
+  addActions(footer,item,'message');
+  footer.append(make('div','message-time',formatTime(item.created_at)));
+  bubble.append(footer);
   row.append(bubble);list.append(row);
  }
  if(older){list.scrollTop=Math.max(0,priorTop+list.scrollHeight-priorHeight);}
