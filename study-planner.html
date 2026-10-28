@@ -1,12 +1,13 @@
 <!doctype html><html lang="en" data-lp-page="productivity"><head>
-<meta name="robots" content="noindex,follow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Study Planner · LedgerPeer</title><link rel="icon" href="favicon-32.png"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="supabase-config.js"></script><script src="auth.js"></script><link rel="stylesheet" href="productivity.css"><link rel="stylesheet" href="ledgerpeer-theme.css?v=20261011"><link rel="stylesheet" href="site-nav.css?v=20261028-unifiedback">
+<meta name="robots" content="noindex,follow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Study Planner · LedgerPeer</title><link rel="icon" href="favicon-32.png"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="supabase-config.js"></script><script src="auth.js"></script><link rel="stylesheet" href="productivity.css"><link rel="stylesheet" href="ledgerpeer-theme.css?v=20261011"><link rel="stylesheet" href="site-nav.css?v=20261028-unifiedback"><link rel="stylesheet" href="study-contributions.css?v=20261028a">
 </head><body><template id="navtemplate"><aside class="sidebar"><img src="ledgerpeer-sidebar-logo.png" alt="LedgerPeer logo"><h2>Study Planner</h2><small>LedgerPeer</small><hr><a href="index.html">⌂ Home</a><a href="hub.html">▤ Revision Dashboard</a><a href="calendar.html" data-page="calendar">▦ Calendar</a><a href="notes.html" data-page="notes">▤ FIA–ACCA Notes</a><a href="study-planner.html" data-page="study-planner">☑ Study Planner</a><a href="classroom.html" data-page="classroom">▤ Classroom</a></aside></template><script>
 (async function(){
   document.documentElement.style.visibility='hidden';
   try {
     try { if (!await PersonalHubAuth.ready()) { if(!PersonalHubAuth.isRedirectingToProfile?.())location.replace('index.html'); return; } } catch (e) { document.body.textContent='Cloud temporarily unavailable. Your work is preserved. Please reload to retry: '+e.message; return; }
     await loadScript('productivity-core.js');
-    await loadScript('study-planner-page.js');
+    await loadScript('study-contributions.js?v=20261028a');
+    await loadScript('study-planner-page.js?v=20261028a');
     PersonalHubAuth.addLockButton();
     document.documentElement.style.visibility='visible';
   } catch(error) {
