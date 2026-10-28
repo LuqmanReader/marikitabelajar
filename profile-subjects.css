@@ -1,0 +1,24 @@
+/* LedgerPeer student onboarding · multi-subject selection */
+.profile-subjects{margin:19px 0 0;padding:16px;border:2px solid #111;background:#f7f8ee;min-width:0}
+.profile-subjects legend{padding:0 8px;font:900 13px/1.45 Arial,sans-serif;color:#111;letter-spacing:.03em}
+.profile-subjects legend span{display:inline-block;margin-left:8px;padding:3px 6px;background:#d5eddf;font:800 9px/1.4 ui-monospace,Consolas,monospace}
+.profile-subjects .subject-help{margin:0 0 13px;font-size:12px;line-height:1.55;color:#464f46;letter-spacing:0}
+.subject-picker-toolbar{display:flex;align-items:end;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.subject-picker-toolbar label{flex:1;min-width:200px;display:block;font-size:10px;font-weight:900;letter-spacing:.06em}
+.subject-picker-toolbar input{display:block;width:100%;margin-top:5px;min-height:42px;background:#fff;border:2px solid #111;color:#111;padding:9px 11px;font-size:13px;letter-spacing:0}
+.subject-selected-count{display:inline-block;padding:9px 10px;border:2px solid #111;background:#d7f1df;max-width:100%;font-size:10px;font-weight:900;line-height:1.5;overflow-wrap:anywhere}
+.subject-options{background:#fff;padding:10px;max-height:400px;overflow-y:auto;border:1px solid #c6d2c8;scrollbar-color:#8abc99 #ecf1ea;scrollbar-width:thin}
+.subject-stage+.subject-stage{margin-top:17px;padding-top:13px;border-top:1px solid #dbe3db}
+.subject-stage h3{margin:2px 2px 10px;color:#324d35;font:900 11px/1.4 ui-monospace,Consolas,monospace;letter-spacing:.02em;text-transform:uppercase}
+.subject-choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.subject-choice{display:flex;align-items:center;gap:9px;min-width:0;min-height:51px;padding:9px;border:1px solid #bcc7be;background:#f9fbf9;cursor:pointer;transition:background .12s ease,border-color .12s ease;letter-spacing:0}
+.subject-choice:hover{background:#edf6ed;border-color:#5c9e6a}
+.subject-choice:has(input:checked){background:#daf3df;border-color:#177336;box-shadow:inset 3px 0 0 #177336}
+.subject-choice input{accent-color:#177336;flex:none;width:18px;height:18px;margin:0}
+.subject-choice span{display:flex;flex-direction:column;gap:2px;min-width:0;line-height:1.3}
+.subject-choice strong{font:900 12px/1.2 Arial,sans-serif;color:#153e26}
+.subject-choice small{font:500 10px/1.35 Arial,sans-serif;color:#3f5244;overflow-wrap:anywhere}
+.subject-choice:focus-within{outline:2px solid #2946d3;outline-offset:1px}
+#subjectNoMatches{margin:10px 0 0}
+@media(max-width:680px){.profile-subjects{padding:12px}.profile-subjects legend span{display:block;margin:3px 0 0}.subject-choice-grid{grid-template-columns:1fr}.subject-options{max-height:340px}.subject-picker-toolbar label{min-width:100%}}
+@media(prefers-reduced-motion:reduce){.subject-choice{transition:none}}
