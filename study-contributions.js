@@ -146,8 +146,6 @@
  }
  function mount(container,model){
   if(!container)return;
-  const scroller=container.querySelector('.study-contrib-scroll');
-  if(scroller)scroller.scrollLeft=scroller.scrollWidth;
   const detailBox=container.querySelector('#contribDetail');
   const cells=container.querySelectorAll('.study-contrib-square');
   const selectDate=(button)=>{
