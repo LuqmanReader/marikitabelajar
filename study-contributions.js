@@ -88,9 +88,9 @@
  }
  function render(model){
   const labels=['','Mon','','Wed','','Fri',''];
-  let html='<section class="panel study-contrib-panel" aria-labelledby="contribTitle">';
-  html+='<div class="study-contrib-heading"><div><span class="study-contrib-kicker">YOUR LEARNING FOOTPRINT / LAST 365 DAYS</span><h2 id="contribTitle">STUDY CONTRIBUTIONS.</h2><p>Every completed task or logged study session contributes to the calendar. No automatic or simulated activity.</p></div><div class="study-contrib-callout"><strong>'+model.activeDays+'</strong><span>ACTIVE DAYS</span></div></div>';
-  html+='<div class="study-contrib-stats"><div><strong>'+model.currentStreak+'</strong><span>Current streak</span></div><div><strong>'+model.bestStreak+'</strong><span>Best streak</span></div><div><strong>'+model.totalMinutes.toLocaleString('en-MY')+'</strong><span>Minutes logged</span></div></div>';
+  const contributions=model.totalTasks+model.totalSessions;
+  let html='<section class="study-contrib-panel" aria-labelledby="contribTitle">';
+  html+='<header class="study-contrib-heading"><h2 id="contribTitle">'+contributions.toLocaleString('en-MY')+' study contributions in the last year</h2></header>';
   html+='<div class="study-contrib-scroll" tabindex="0" role="region" aria-label="Study contribution calendar, scroll horizontally to see all months"><div class="study-contrib-calendar" style="--weeks:'+model.weeks.length+'">';
   html+='<div class="study-contrib-months">';
   for(const month of model.months)html+='<span style="grid-column:'+month.week+'">'+month.label+'</span>';
@@ -105,10 +105,10 @@
    }
   }
   html+='</div></div></div></div>';
-  html+='<div class="study-contrib-footer"><span class="study-contrib-hint">Select a square for daily details</span><div class="study-contrib-legend" aria-label="Activity levels from no activity to five or more contributions">LESS <i class="level-0"></i><i class="level-1"></i><i class="level-2"></i><i class="level-3"></i><i class="level-4"></i> MORE</div></div>';
+  html+='<footer class="study-contrib-footer"><details class="study-contrib-method"><summary>Learn how we count contributions</summary><p>1 contribution = 1 completed study task or 1 logged study session. Tasks only count when marked complete, not on their planned dates. Activity is stored in this browser and follows your device timezone. No automatic or simulated activity.</p></details><div class="study-contrib-legend" aria-label="Activity levels from no activity to five or more contributions"><span>Less</span><i class="level-0"></i><i class="level-1"></i><i class="level-2"></i><i class="level-3"></i><i class="level-4"></i><span>More</span></div></footer>';
   html+='<p class="study-contrib-detail" id="contribDetail" role="status"></p>';
-  html+='<p class="study-contrib-source">1 contribution = 1 task marked complete or 1 study session logged. Task dates use the time marked complete; planned dates do not count. Activity uses this browser’s saved data and device timezone.</p>';
-  if(!model.activeDays)html+='<p class="study-contrib-empty">Your calendar is ready. Complete a study task or log a session to earn your first green square.</p>';
+  html+='<p class="study-contrib-meta">Current streak: <strong>'+model.currentStreak+' days</strong><span aria-hidden="true"> · </span>Best streak: <strong>'+model.bestStreak+' days</strong><span aria-hidden="true"> · </span>Minutes logged: <strong>'+model.totalMinutes.toLocaleString('en-MY')+'</strong></p>';
+  if(!model.activeDays)html+='<p class="study-contrib-empty">Complete a study task or log a session to earn your first green square.</p>';
   return html+'</section>';
  }
  function mount(container,model){
