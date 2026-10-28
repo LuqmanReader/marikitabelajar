@@ -39,6 +39,9 @@ assert.ok(classPage.includes('id="replyTray"')&&classPage.includes('id="cancelRe
 assert.ok(room.includes('function selectReply(')&&room.includes('function clearReply('),'Chat must manage reply selection');
 assert.ok(room.includes('function replyQuote(')&&room.includes('function jumpToMessage('),'Quoted replies must link back to originals');
 assert.ok(room.includes('payload.reply_to_message_id=replyId'),'Reply target must persist with messages in Supabase');
+assert.ok(room.includes("const footer=make('div','chat-message-footer')")&&room.includes("addActions(footer,item,'message')"),'Reply action must appear in a visible footer below each chat message');
+assert.ok(read('classroom.css').includes('.chat-bubble .chat-message-footer .message-actions .reply-action'),'Reply must be prominent inside the message footer');
+assert.ok(classPage.includes('classroom-page.js?v=4')&&classPage.includes('classroom.css?v=4'),'Updated chat assets must bypass stale browser cache');
 assert.ok(room.includes("select('id,classroom_id,user_id,body,created_at,reply_to_message_id')"),'Message loading must include reply references');
 assert.ok(read('classroom.css').includes('.quoted-reply')&&read('classroom.css').includes('.reply-tray'),'Linked replies must have responsive presentation styles');
 assert.ok(read('supabase/classroom-replies-schema.sql').includes('on delete set null (reply_to_message_id)'),'Database must preserve valid room-scoped reply references');
