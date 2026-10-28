@@ -172,7 +172,7 @@
    const top=[[x,y-height],[x+15.2,y+3.7-height],[x+3.5,y+9.5-height],[x-11.7,y+5.8-height]];
    const bottom=top.map(([px,py])=>[px,py+height]);
    const l=c.total?c.level:0;
-   markup+='<g class="contrib-iso-column'+(height?' has-activity':'')+'" data-date="'+cell.date+'" data-count="'+c.total+'" tabindex="0" role="button" aria-label="'+detail(cell.date,c)+'">';
+   markup+='<g class="contrib-iso-column'+(height?' has-activity':'')+'" data-date="'+cell.date+'" data-count="'+c.total+'" tabindex="0" role="button" aria-pressed="false" aria-label="'+detail(cell.date,c)+'">';
    markup+='<title>'+detail(cell.date,c)+'</title>';
    if(height){
     markup+=poly([top[3],top[2],bottom[2],bottom[3]],COLORS[l],'contrib-iso-front');
@@ -231,7 +231,7 @@
   function showStats(){
    const x=statsForYear(year);
    busiest.innerHTML='<span class="contrib-stat-label">Busiest day</span><div class="contrib-stat-line"><strong>'+ (x.busiest?x.busiest.activity.total:0)+'</strong><span>contributions</span></div><span class="contrib-stat-date">'+(x.busiest?shortDate(x.busiest.date):'No study activity yet')+'</span>';
-   streaks.innerHTML='<div class="contrib-streak-block"><span class="contrib-stat-label">Longest streak</span><div class="contrib-stat-line"><strong>'+x.longest+'</strong><span>days</span></div><span class="contrib-stat-date">'+readableSpan(x.bestStart,x.bestEnd)+'</span></div><div class="contrib-streak-block"><span class="contrib-stat-label">'+(year.isCurrent?'Current streak':'Year-end streak')+'</span><div class="contrib-stat-line"><strong>'+ (year.isCurrent?model.currentStreak:x.yearEndStreak)+'</strong><span>days</span></div><span class="contrib-stat-date">'+(year.isCurrent&&model.currentStreak===0?'No active streak':readableSpan(x.currentStart,x.lastDate))+'</span></div>';
+   streaks.innerHTML='<div class="contrib-streak-block"><span class="contrib-stat-label">Longest streak</span><div class="contrib-stat-line"><strong>'+x.longest+'</strong><span>days</span></div><span class="contrib-stat-date">'+readableSpan(x.bestStart,x.bestEnd)+'</span></div><div class="contrib-streak-block"><span class="contrib-stat-label">'+(year.isCurrent?'Current streak':'Year-end streak')+'</span><div class="contrib-stat-line"><strong>'+ (year.isCurrent?model.currentStreak:x.yearEndStreak)+'</strong><span>days</span></div><span class="contrib-stat-date">'+(year.isCurrent?(model.currentStreak?'Through '+shortDate(model.todayKey):'No active streak'):readableSpan(x.currentStart,x.lastDate))+'</span></div>';
   }
   function hideTip(){tooltip.hidden=true;}
   function showTip(target,event){
@@ -250,7 +250,7 @@
   function choose(target,event){
    const date=target.getAttribute('data-date');if(!date)return;
    pinned=date;
-   for(const cell of container.querySelectorAll('.contrib-iso-column'))cell.classList.toggle('is-selected',cell===target);
+   for(const cell of container.querySelectorAll('.contrib-iso-column')){cell.classList.toggle('is-selected',cell===target);cell.setAttribute('aria-pressed',String(cell===target));}
    showTip(target,event);
    detailBox.hidden=false;detailBox.textContent=tooltip.textContent;
   }
