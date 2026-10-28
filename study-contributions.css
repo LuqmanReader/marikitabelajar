@@ -104,3 +104,11 @@
  .contrib-fixed-label{display:block;margin-left:0;margin-top:4px}
 }
 @media(prefers-reduced-motion:reduce){.contrib-iso-column polygon{transition:none}}
+
+/* A distinct green/grey 3D scene even when the user has no logged sessions yet. */
+.planner-page .contrib-no-activity{
+ margin:8px 0 2px;padding:8px 11px;background:#f0f7f1!important;color:#356446!important;
+ border:1px solid #d9e8dd!important;border-radius:4px;font:600 12px/1.5 Arial,sans-serif;
+ box-shadow:none!important;
+}
+.contrib-iso-column .contrib-iso-empty{stroke:#a8b8b0!important;stroke-width:.8!important}
