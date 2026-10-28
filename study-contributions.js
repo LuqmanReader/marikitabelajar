@@ -168,18 +168,20 @@
   let markup='<svg class="contrib-iso-svg" viewBox="0 0 '+ISO.width+' '+ISO.height+'" preserveAspectRatio="xMidYMid meet" role="group" aria-label="'+year.year+' interactive fixed-angle three-dimensional contribution columns">';
   for(const {cell,w,d} of cells){
    const c=cell.activity,x=ISO.originX+w*ISO.wx+d*ISO.dx,y=ISO.originY+w*ISO.wy+d*ISO.dy;
-   const height=c.total?Math.min(104,9+Math.sqrt(c.total)*24):0;
+   const height=c.total?Math.min(104,9+Math.sqrt(c.total)*24):4;
    const top=[[x,y-height],[x+15.2,y+3.7-height],[x+3.5,y+9.5-height],[x-11.7,y+5.8-height]];
    const bottom=top.map(([px,py])=>[px,py+height]);
    const l=c.total?c.level:0;
-   markup+='<g class="contrib-iso-column'+(height?' has-activity':'')+'" data-date="'+cell.date+'" data-count="'+c.total+'" tabindex="0" role="button" aria-pressed="false" aria-label="'+detail(cell.date,c)+'">';
+   markup+='<g class="contrib-iso-column'+(c.total?' has-activity':'')+'" data-date="'+cell.date+'" data-count="'+c.total+'" tabindex="0" role="button" aria-pressed="false" aria-label="'+detail(cell.date,c)+'">';
    markup+='<title>'+detail(cell.date,c)+'</title>';
-   if(height){
+   if(c.total){
     markup+=poly([top[3],top[2],bottom[2],bottom[3]],COLORS[l],'contrib-iso-front');
     markup+=poly([top[1],top[2],bottom[2],bottom[1]],DARK[l],'contrib-iso-side');
     markup+=poly(top,LIGHT[l],'contrib-iso-top');
    }else{
-    markup+=poly([[x,y],[x+15.2,y+3.7],[x+3.5,y+9.5],[x-11.7,y+5.8]],COLORS[0],'contrib-iso-empty');
+    markup+=poly([top[3],top[2],bottom[2],bottom[3]],COLORS[0],'contrib-iso-front contrib-iso-empty');
+    markup+=poly([top[1],top[2],bottom[2],bottom[1]],DARK[0],'contrib-iso-side contrib-iso-empty');
+    markup+=poly(top,LIGHT[0],'contrib-iso-top contrib-iso-empty');
    }
    markup+='</g>';
   }
@@ -197,10 +199,11 @@
  function render(model){
   const year=yearOf(model);
   let html='<section class="study-contrib-panel" aria-labelledby="contribTitle">';
-  html+='<header class="study-contrib-heading"><div><span class="contrib-eyebrow">LEDGERPEER / STUDY ACTIVITY</span><h2 id="contribTitle">YOUR CONTRIBUTION LANDSCAPE.</h2><p>Real study progress, in a fixed 3D view.</p></div>';
+  html+='<header class="study-contrib-heading"><div><span class="contrib-eyebrow">LEDGERPEER / 3D ACTIVITY VIEW · V2</span><h2 id="contribTitle">YOUR CONTRIBUTION LANDSCAPE.</h2><p>Real study progress, in a fixed 3D view.</p></div>';
   html+='<label class="contrib-year-label" for="contribYear">YEAR <select id="contribYear" aria-label="Select contribution year">';
   for(const option of model.years)html+='<option value="'+option.year+'"'+(year.year===option.year?' selected':'')+'>'+option.year+'</option>';
   html+='</select></label></header>';
+  if(!year.contributions)html+='<p class="contrib-no-activity">No study activity logged for '+year.year+' yet. Grey 3D tiles are empty days; complete a task or log a study session to grow green bars.</p>';
   html+='<div class="contrib-stage-scroll" tabindex="0" role="region" aria-label="Fixed 3D contribution graph, scroll horizontally on small screens"><div class="contrib-stage" id="contrib3dStage">';
   html+='<div class="contrib-iso-area" id="contrib3dCanvas">'+svgForYear(year)+'</div>';
   html+='<div class="contrib-busiest" id="contribBusiest"></div>';
@@ -277,6 +280,9 @@
    const chosen=model.years.find(item=>String(item.year)===yearPicker.value);if(!chosen)return;
    activeYear=chosen.year;year=chosen;pinned='';hideTip();detailBox.hidden=true;
    canvas.innerHTML=svgForYear(year);count.textContent=year.contributions.toLocaleString('en-MY');
+   let blank=container.querySelector('.contrib-no-activity');
+   if(year.contributions===0&&!blank){blank=document.createElement('p');blank.className='contrib-no-activity';container.querySelector('.contrib-stage-scroll').before(blank);}
+   if(blank){blank.hidden=year.contributions>0;blank.textContent='No study activity logged for '+year.year+' yet. Grey 3D tiles are empty days; complete a task or log a study session to grow green bars.';}
    container.querySelector('#contribFlatYear').textContent=String(year.year);
    container.querySelector('#contribFlatBody').innerHTML=flatForYear(year);
    showStats();
