@@ -48,7 +48,7 @@ assert.equal((html.match(/class="contrib-iso-column/g)||[]).length,301,'Render e
 assert.ok(html.includes('YOUR CONTRIBUTION LANDSCAPE.'),'Show the interactive 3D contribution heading');
 assert.ok(html.includes('class="contrib-iso-svg"')&&html.includes('class="contrib-stage-scroll"'),'Render a responsive SVG stage');
 assert.ok(html.includes('class="contrib-iso-top"')&&html.includes('class="contrib-iso-front"')&&html.includes('class="contrib-iso-side"'),'Render three faces on true 3D columns');
-assert.equal((html.match(/class="contrib-iso-column has-activity"/g)||[]).length,3,'Only three study days should contain extruded data');
+assert.equal((html.match(/class="contrib-iso-column has-activity"/g)||[]).length,2,'Only two real study dates should contain extruded columns');
 assert.ok(html.includes('id="contribYear"')&&html.includes('value="2023"'),'All four years must be available without rendering all simultaneously');
 assert.ok(html.includes('id="contribFlatView" hidden'),'Keep 2D calendar collapsed by default');
 assert.ok(html.includes('id="contribFlatToggle"'),'Make 2D fallback available on demand');
