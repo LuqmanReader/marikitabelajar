@@ -1,0 +1,37 @@
+name: LedgerPeer Study Contributions Regression
+on:
+  push:
+    paths:
+      - 'study-contributions.js'
+      - 'study-contributions.css'
+      - 'study-planner.html'
+      - 'study-planner-page.js'
+      - 'productivity-core.js'
+      - 'tests/study-contributions-regression.js'
+      - '.github/workflows/study-contributions-regression.yml'
+  pull_request:
+    paths:
+      - 'study-contributions.js'
+      - 'study-contributions.css'
+      - 'study-planner.html'
+      - 'study-planner-page.js'
+      - 'productivity-core.js'
+      - 'tests/study-contributions-regression.js'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate JavaScript syntax
+        run: |
+          node --check study-contributions.js
+          node --check study-planner-page.js
+          node --check productivity-core.js
+      - name: Run study contribution regression
+        run: node tests/study-contributions-regression.js
