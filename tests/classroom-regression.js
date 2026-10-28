@@ -52,5 +52,32 @@ for(const file of ['hub.html','index.html','notes.html','quiz.html','study-plann
 for(const file of ['notes-page.js','quiz-page.js','calendar.html','study-planner.html']){
  assert.ok(read(file).includes('isRedirectingToProfile'),'Existing app page must not override onboarding redirect: '+file);
 }
+
+const sharedNav=read('site-nav.css');
+assert.ok(sharedNav.includes('.site-back{')&&sharedNav.includes('.back-navigation-row'),'Consistent back-button style must exist in shared stylesheet');
+const backRoutes=[
+ ['classroom.html','index.html','BACK TO HOME'],
+ ['hub.html','index.html','BACK TO HOME'],
+ ['view.html','hub.html','BACK TO REVISION'],
+ ['add-exam.html','hub.html','BACK TO REVISION'],
+ ['notes.html','hub.html','BACK TO REVISION'],
+ ['quiz.html','notes.html','BACK TO STUDY LIBRARY'],
+ ['ai-tutor.html','hub.html','BACK TO REVISION'],
+ ['about.html','index.html','BACK TO HOME'],
+ ['profile.html','index.html','BACK TO HOME'],
+ ['quant-model.html','hub.html','BACK TO REVISION'],
+ ['fia-study.html','notes.html?edition=fia-2','BACK TO STUDY LIBRARY']
+];
+for(const [file,url,label] of backRoutes){
+ const html=read(file);
+ assert.ok(html.includes('site-nav.css?v=20261028-unifiedback'),file+' must load shared button CSS');
+ const anchors=[...html.matchAll(/<a\b[^>]*>[^<]*<\/a>/g)].map(m=>m[0]);
+ assert.ok(anchors.some(a=>a.includes('site-back')&&a.includes('href="'+url+'"')&&a.includes('← '+label)),file+' needs consistent back link to '+url);
+}
+for(const page of ['calendar.html','study-planner.html']){
+ assert.ok(read(page).includes('site-nav.css?v=20261028-unifiedback'),page+' must load shared back CSS');
+}
+assert.ok(read('productivity-core.js').includes('class="site-back" href="index.html">← BACK TO HOME'),'Planner and Calendar must render a labelled home button');
+assert.ok(read('classroom.html').includes('aria-label="Return to homepage"'),'Classroom home button must be outside the gated chat and visible near the top');
 assert.ok(read('ai-tutor.html').includes('PersonalHubAuth.guard()'),'AI Tutor must honor the account gate');
 console.log('PASS: classroom page, Supabase integration, client-side safety checks, and onboarding routing contracts.');
