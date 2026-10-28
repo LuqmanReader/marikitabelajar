@@ -201,12 +201,12 @@
   html+='<label class="contrib-year-label" for="contribYear">YEAR <select id="contribYear" aria-label="Select contribution year">';
   for(const option of model.years)html+='<option value="'+option.year+'"'+(year.year===option.year?' selected':'')+'>'+option.year+'</option>';
   html+='</select></label></header>';
-  html+='<div class="contrib-stage" id="contrib3dStage">';
+  html+='<div class="contrib-stage-scroll" tabindex="0" role="region" aria-label="Fixed 3D contribution graph, scroll horizontally on small screens"><div class="contrib-stage" id="contrib3dStage">';
   html+='<div class="contrib-iso-area" id="contrib3dCanvas">'+svgForYear(year)+'</div>';
   html+='<div class="contrib-busiest" id="contribBusiest"></div>';
   html+='<div class="contrib-streaks" id="contribStreaks"></div>';
   html+='<div class="contrib-3d-tooltip" id="contrib3dTooltip" role="status" hidden></div>';
-  html+='</div>';
+  html+='</div></div>';
   html+='<div class="contrib-bottom"><div class="contrib-bottom-copy"><strong id="contribYearCount">'+year.contributions.toLocaleString('en-MY')+'</strong> genuine study contributions in '+year.year+'<span class="contrib-fixed-label">FIXED VIEW · HOVER OR TAP THE BARS</span></div>';
   html+='<div class="contrib-legend" aria-label="More activity means taller, darker green bars"><span>LESS</span><i class="level-0"></i><i class="level-1"></i><i class="level-2"></i><i class="level-3"></i><i class="level-4"></i><span>MORE</span></div></div>';
   html+='<button type="button" class="contrib-flat-toggle" id="contribFlatToggle" aria-expanded="false" aria-controls="contribFlatView">Show normal chart below <span aria-hidden="true">⌄</span></button>';
