@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "LedgerPeer TYMBAFlex Bridge",
-  "version": "0.1.0",
-  "description": "Sync your own open TYMBAFlex course pages to LedgerPeer after confirmation. No password, cookies or SSO token collection.",
+  "version": "0.2.0",
+  "description": "Read-only diagnostic for ILE FA2/MA2 tutorials, chapter sets, and completion; optionally sync course outlines to LedgerPeer.",
   "permissions": [
     "tabs"
   ],
@@ -30,6 +30,16 @@
     },
     {
       "matches": [
+        "https://ile.flex.tymbaedu.com/*"
+      ],
+      "js": [
+        "parser.js",
+        "ile-diagnostic.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
         "https://luqmanreader.github.io/marikitabelajar/tymbaflex-bridge.html*"
       ],
       "js": [
@@ -37,5 +47,9 @@
       ],
       "run_at": "document_idle"
     }
-  ]
+  ],
+  "action": {
+    "default_title": "TYMBAFlex ILE Diagnostic",
+    "default_popup": "popup.html"
+  }
 }
