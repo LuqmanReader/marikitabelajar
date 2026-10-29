@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "LedgerPeer TYMBAFlex Bridge",
+  "version": "0.1.0",
+  "description": "Sync your own open TYMBAFlex course pages to LedgerPeer after confirmation. No password, cookies or SSO token collection.",
+  "permissions": [
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://flex.tymbaedu.com/*",
+    "https://ile.flex.tymbaedu.com/*",
+    "https://twofive.flex.tymbaedu.com/*",
+    "https://luqmanreader.github.io/marikitabelajar/*"
+  ],
+  "background": {
+    "service_worker": "service-worker.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://flex.tymbaedu.com/*",
+        "https://ile.flex.tymbaedu.com/*",
+        "https://twofive.flex.tymbaedu.com/*"
+      ],
+      "js": [
+        "parser.js",
+        "tymba-content.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://luqmanreader.github.io/marikitabelajar/tymbaflex-bridge.html*"
+      ],
+      "js": [
+        "ledgerpeer-content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}
