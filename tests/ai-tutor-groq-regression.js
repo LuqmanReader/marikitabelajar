@@ -20,7 +20,7 @@ assert.match(page,/ai-tutor.js\?v=groq5/);
 assert.ok(!page.includes('Copy tutor request')&&!page.includes('Open ChatGPT'),'Real AI chat must replace external copy/paste flow');
 assert.ok(page.includes('marked@18.1.0')&&page.includes('dompurify@3.4.16'),'Use pinned Markdown and sanitization libraries');
 assert.ok(page.indexOf('marked@18.1.0')<page.indexOf('ai-tutor.js?v=groq5'),'Load Markdown parser before tutor client');
-assert.ok(page.indexOf('dompurify@3.4.16')<page.indexOf('ai-tutor.js?v=groq4'),'Load sanitizer before tutor client');
+assert.ok(page.indexOf('dompurify@3.4.16')<page.indexOf('ai-tutor.js?v=groq5'),'Load sanitizer before tutor client');
 assert.ok(frontend.includes("typeof parser?.parse!=='function'||typeof cleaner?.sanitize!=='function'"),'If either dependency fails, keep safe plain text fallback');
 assert.ok(frontend.includes("cleaner.sanitize(html,{")&&frontend.includes("FORBID_TAGS:"),'Sanitize rendered Markdown before inserting into the page');
 assert.ok(frontend.includes("bubble.innerHTML=sanitized"),'Only inject sanitized Markdown');
