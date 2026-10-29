@@ -12,6 +12,8 @@ for(const file of ['spotify-study-music.js','workspace-shell.js','auth.js','prof
  assert.doesNotThrow(()=>new Function(read(file)),file+' should parse without syntax errors');
 }
 assert.ok(shell.includes('id="lpContentFrame"'),'Parent workspace must contain one content frame');
+assert.ok(shell.includes('class="lp-shell-logo"')&&shell.includes('onerror="this.remove()"'),'Shell logo must have a visible branded fallback when the image fails');
+assert.ok(css.includes('.lp-shell-logo img{position:absolute'),'Original logo should cover the branded fallback when loaded');
 assert.ok(shell.includes('spotify-study-music.js'),'Parent shell must load Spotify');
 assert.ok(shell.includes('id="workspaceMusicButton"'),'Parent shell must expose Study Music button');
 assert.ok(navigation.includes("frame.addEventListener('load'"),'Child pages must be navigable');
