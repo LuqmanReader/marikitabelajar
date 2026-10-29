@@ -45,12 +45,30 @@
      if(Array.isArray(saved.messages))messages=saved.messages.filter(x=>x&&['user','assistant'].includes(x.role)&&typeof x.content==='string').slice(-30).map(x=>({role:x.role,content:x.content.slice(0,9000)}));
      if([...paper.options].some(x=>x.value===saved.paper))paper.value=saved.paper;
      if([...mode.options].some(x=>x.value===saved.mode))mode.value=saved.mode;
-     if(Number.isInteger(saved.credits)&&saved.credits>=0&&saved.credits<=15)credits=saved.credits;
+     // Always load today's remaining messages from Supabase instead of stale browser data.
     }
    }catch{}
-   if(credits!==null)remaining.textContent=String(credits);
    render();auth.addLockButton?.();
-   info('Connected to LedgerPeer. Ask your first question.');
+   info('Connected to LedgerPeer. Checking your daily messages…');
+   try{
+    const {data:sessionData,error:sessionError}=await client.auth.getSession();
+    if(sessionError||!sessionData?.session?.access_token)throw Error('Your session needs to be refreshed.');
+    const {data:quota,error:quotaError}=await client.functions.invoke('ledgerpeer-ai',{
+     headers:{Authorization:'Bearer '+sessionData.session.access_token},
+     body:{action:'status'}
+    });
+    if(quotaError){
+     let problem=null;try{problem=await quotaError.context?.json();}catch{}
+     throw Error(problem?.error||'Daily message count unavailable.');
+    }
+    if(Number.isInteger(quota?.remaining)){
+     credits=quota.remaining;remaining.textContent=String(credits);save();
+    }
+    info('Ready. Ask your first question.');
+   }catch(e){
+    remaining.textContent='—';
+    info('AI service status: '+(e?.message||'Unavailable')+'. You can still try asking a question.',true);
+   }
    question.focus();
   }catch(e){info('Unable to open AI Tutor: '+(e?.message||e),true);}
   finally{document.documentElement.style.visibility='visible';}
