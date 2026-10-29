@@ -7,11 +7,12 @@
 <link rel="icon" href="favicon-32.png">
 <link rel="stylesheet" href="ledgerpeer-theme.css?v=20261011">
 <link rel="stylesheet" href="site-nav.css?v=20261028-unifiedback">
-<link rel="stylesheet" href="tymbaflex-revision.css?v=1">
+<link rel="stylesheet" href="tymbaflex-revision.css?v=2">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script><script src="auth.js"></script>
 <script src="tymbaflex-bridge-parser.js?v=1"></script>
 <script defer src="tymbaflex-revision.js?v=1"></script>
+<script defer src="tymbaflex-performance.js?v=1"></script>
 </head>
 <body class="tf-revision-page">
 <main class="tf-shell">
@@ -38,6 +39,44 @@
     <article><span>STUDYING NOW</span><strong id="tfStudyingCount">—</strong><small>Items marked in progress</small></article>
    </div>
  </section>
+ <section class="tf-performance" id="tfPerformance" aria-labelledby="tfPerformanceTitle">
+  <div class="tf-performance-head">
+   <div><span class="tf-eyebrow">COURSE RESULTS / ILE + GROUP B</span><h2 id="tfPerformanceTitle">TUTORIAL CONTRIBUTION DASHBOARD.</h2>
+     <p>Each square represents one question's grading outcome from a <strong>finished Moodle quiz review</strong>. It is not inferred from a “Done” indicator.</p></div>
+   <button type="button" id="tfSyncReviews" class="tf-btn tf-btn-dark">SYNC SAVED QUIZ REVIEWS ↗</button>
+  </div>
+  <div class="tf-review-guide">In Chrome: open a finished TYMBAFlex quiz <strong>Review</strong> page → extension icon → <strong>Capture Current Quiz Review</strong> → return here and choose <strong>Sync Saved Quiz Reviews</strong>. You only need to capture each attempt once.</div>
+  <div id="tfReviewMessage" class="tf-review-message" role="status" aria-live="polite">Your imported quiz results will appear here.</div>
+  <div class="tf-performance-stats">
+    <article><small>QUIZZES WITH REVIEWS</small><strong id="tfReviewedQuizzes">0</strong></article>
+    <article><small>QUESTION ANSWERS CORRECT</small><strong id="tfCorrectQuestions">0</strong></article>
+    <article><small>QUESTION ANSWERS WRONG</small><strong id="tfWrongQuestions">0</strong></article>
+    <article><small>QUIZZES WITHOUT IMPORTED REVIEWS</small><strong id="tfNotCaptured">0</strong></article>
+  </div>
+  <div class="tf-heatmap-legend" aria-label="Question result legend">
+   <span><i class="tf-square correct"></i> Correct</span>
+   <span><i class="tf-square incorrect"></i> Wrong</span>
+   <span><i class="tf-square partial"></i> Partly correct</span>
+   <span><i class="tf-square ungraded"></i> Ungraded</span>
+   <span><i class="tf-square unanswered"></i> Unanswered</span>
+  </div>
+  <div class="tf-performance-filters">
+    <label>SUBJECT <select id="tfPerformancePaper"><option value="all">FA2 + MA2</option><option value="FA2">FA2</option><option value="MA2">MA2</option></select></label>
+    <label>SOURCE <select id="tfPerformanceSource"><option value="all">ILE + Group B</option><option value="ile.flex.tymbaedu.com">ILE</option><option value="twofive.flex.tymbaedu.com">Group B</option></select></label>
+  </div>
+  <section id="tfReviewMatchSection" class="tf-review-match" hidden aria-label="Match unidentified quiz review attempts">
+    <h3>MATCH REVIEW TO TUTORIAL</h3>
+    <p>Some Moodle review pages don't identify the original quiz. Select the matching tutorial to avoid attaching results to the wrong activity.</p>
+    <div id="tfReviewMatches"></div>
+  </section>
+  <div class="tf-result-columns">
+    <section class="tf-result-panel"><div class="tf-result-title"><h3>ANSWERED TUTORIALS &amp; QUIZZES</h3><small id="tfAttemptSummary">No saved quiz attempts yet</small></div><div id="tfAttemptGraphs" class="tf-attempt-graphs"></div></section>
+    <section class="tf-result-panel"><div class="tf-result-title"><h3>NOT YET CAPTURED</h3><small id="tfUntouchedSummary">No data yet</small></div>
+      <p class="tf-revision-caveat">These activities have <strong>no imported review</strong> in LedgerPeer. That does not prove you never attempted them.</p>
+      <div id="tfUntouchedList" class="tf-untouched-list"></div>
+    </section>
+  </div>
+ </section>
  <section class="tf-workspace" aria-labelledby="tfHeading">
   <div class="tf-section-head"><div><span class="tf-eyebrow">WORKSPACE / SUBJECTS</span><h2 id="tfHeading">REVISION BY PAPER</h2><p>Choose your paper, review a course, and update individual activity revision status.</p></div><span id="tfLastSync" class="tf-sync-meta">Waiting for synced courses</span></div>
   <div class="tf-controls">
@@ -56,7 +95,7 @@
    <div><p id="tfResultCount" class="tf-results">Loading courses…</p><div id="tfCourses" class="tf-courses"></div></div>
    <aside class="tf-side">
     <section class="tf-side-card"><span class="tf-eyebrow">MY STUDY QUEUE</span><h3>NEXT TO REVISE.</h3><div id="tfQueue" class="tf-queue"><p>Connect your courses to see activities here.</p></div></section>
-    <section class="tf-side-card tf-side-yellow"><span class="tf-eyebrow">REVISION ≠ EXAM RESULTS</span><h3>TRACK THE RIGHT THING.</h3><p>“Revised” means <strong>you marked an activity as revised in LedgerPeer</strong>. It does not mean you passed the Moodle quiz. Marks and attempted-question results are not available through the current bridge.</p><a href="hub.html">OPEN LEDGERPEER EXAM ANALYSIS ↗</a></section>
+    <section class="tf-side-card tf-side-yellow"><span class="tf-eyebrow">REVISION ≠ EXAM RESULTS</span><h3>TRACK THE RIGHT THING.</h3><p>“Revised” means <strong>you marked an activity as revised in LedgerPeer</strong>. It does not mean you passed the Moodle quiz. Quiz question grading is available only for finished review pages you explicitly capture; course completion remains separate from quiz marks.</p><a href="hub.html">OPEN LEDGERPEER EXAM ANALYSIS ↗</a></section>
    </aside>
   </div>
  </section>
