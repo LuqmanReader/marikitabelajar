@@ -7,7 +7,7 @@ This is an **independent, read-only companion**, not an official TYMBAFlex integ
 3. Sign in to `https://flex.tymbaedu.com/` normally. Chrome/Edge may remember your password in their built-in password manager — LedgerPeer does not store it.
 4. Open your FA2 / MA2 course tabs (Moodle) and keep TYMBAFlex **Home** open.
 5. Visit `https://luqmanreader.github.io/marikitabelajar/tymbaflex-bridge.html`, sign in to LedgerPeer and click **Sync Open Tabs**.
-6. Only if the TYMBAFlex portal email matches your LedgerPeer account email will your course list and visible activity links be saved to your private Supabase account.
+6. Tick the ownership/permission confirmation. Your TYMBAFlex email may differ from your LedgerPeer email. Click Sync Open Tabs; only your own visible course list and activity links are saved to your private Supabase account.
 
 ## Exactly what this reads
 - Portal: account **email only for comparison**, course titles, IDs, course group and LMS domain (never passwords, SSO links, tokens, raw HTML, invoices or grades).
@@ -18,6 +18,6 @@ This is an **independent, read-only companion**, not an official TYMBAFlex integ
 ## Limitations
 - TYMBAFlex's saved HTML does not prove its private endpoints are a public or authorized API.
 - An email match is a linking check, not single sign-on.
-- If the portal and LedgerPeer emails differ, syncing is blocked; use a verified account or request an institutional integration.
+- A different portal and LedgerPeer email is allowed only for a user-confirmed, read-only course-data import. This does not link TYMBAFlex credentials or authorize silent account login.
 - The course pages show activity links, but may not show marks or full attempted-question results.
 - No auto-login or password capture. Password autofill is the browser's responsibility.
