@@ -93,6 +93,7 @@
    let payload=data;
    if(error){
     try{payload=await error.context?.json();}catch{}
+    if(Number.isInteger(payload?.remaining)){credits=payload.remaining;remaining.textContent=String(credits);save();}
     throw Error(payload?.error||'The AI service is temporarily unavailable.');
    }
    if(!payload||typeof payload.answer!=='string')throw Error(payload?.error||'No reply was received.');
