@@ -59,3 +59,34 @@ body.tutor-page{margin:0;background:var(--tutor-paper);color:var(--tutor-ink);fo
 @media(max-width:850px){.tutor-workspace{grid-template-columns:1fr}.tutor-settings{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}.tutor-section-title,.tutor-settings-divider,.tutor-settings-note,.tutor-credits,.tutor-clear{grid-column:1/-1}.tutor-settings label{margin-top:5px}.tutor-chat{height:min(77vh,750px)}}
 @media(max-width:580px){.tutor-layout{padding:17px 12px 60px}.tutor-logo img{width:48px;height:48px}.tutor-header{gap:10px}.tutor-settings{grid-template-columns:1fr;padding:16px}.tutor-chat{height:75vh;min-height:530px}.tutor-chat-log{padding:18px 12px}.tutor-message{max-width:100%}.tutor-composer{padding:12px}.tutor-keyboard{display:none}.tutor-message .tutor-bubble{font-size:12px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* Safe rendered Markdown from Groq: readable math, headings, and responsive FIA/ACCA tables. */
+.tutor-message.is-ai .tutor-bubble{white-space:normal;min-width:0;max-width:100%;overflow-x:auto}
+.tutor-message.is-ai .tutor-bubble :first-child{margin-top:0}
+.tutor-message.is-ai .tutor-bubble :last-child{margin-bottom:0}
+.tutor-message.is-ai .tutor-bubble h1,.tutor-message.is-ai .tutor-bubble h2,.tutor-message.is-ai .tutor-bubble h3,
+.tutor-message.is-ai .tutor-bubble h4{font-family:Inter,"Segoe UI",Arial,sans-serif;letter-spacing:0;line-height:1.35;margin:18px 0 9px;font-weight:800;color:#1a482b}
+.tutor-message.is-ai .tutor-bubble h1{font-size:19px}
+.tutor-message.is-ai .tutor-bubble h2{font-size:17px}
+.tutor-message.is-ai .tutor-bubble h3{font-size:15px}
+.tutor-message.is-ai .tutor-bubble h4{font-size:13px}
+.tutor-message.is-ai .tutor-bubble p{margin:9px 0}
+.tutor-message.is-ai .tutor-bubble ul,.tutor-message.is-ai .tutor-bubble ol{padding-left:23px;margin:10px 0}
+.tutor-message.is-ai .tutor-bubble li{margin:4px 0}
+.tutor-message.is-ai .tutor-bubble li>p{margin:0 0 5px}
+.tutor-message.is-ai .tutor-bubble blockquote{border-left:3px solid #6cb480;padding:4px 12px;background:#f1f8f3;color:#395a42;margin:12px 0}
+.tutor-message.is-ai .tutor-bubble code{font:500 12px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;background:#eff4ef;border-radius:3px;padding:2px 5px;overflow-wrap:anywhere}
+.tutor-message.is-ai .tutor-bubble pre{padding:13px;background:#17251c;color:#edf9f0;overflow-x:auto;border-radius:6px;margin:12px 0;max-width:100%}
+.tutor-message.is-ai .tutor-bubble pre code{padding:0;background:transparent;color:inherit;white-space:pre;overflow-wrap:normal}
+.tutor-message.is-ai .tutor-bubble table{display:table;border-collapse:collapse;width:100%;min-width:480px;font:500 12px/1.45 Inter,"Segoe UI",Arial,sans-serif;table-layout:auto;margin:12px 0}
+.tutor-message.is-ai .tutor-bubble thead{background:#e4f2e7}
+.tutor-message.is-ai .tutor-bubble th,.tutor-message.is-ai .tutor-bubble td{border:1px solid #cbdccb;padding:9px 10px;text-align:left;vertical-align:top;overflow-wrap:break-word}
+.tutor-message.is-ai .tutor-bubble th{font-weight:800;color:#205535}
+.tutor-message.is-ai .tutor-bubble tbody tr:nth-child(even){background:#f7faf8}
+.tutor-message.is-ai .tutor-bubble a{color:#1162aa;text-decoration:underline;text-underline-offset:2px}
+.tutor-message.is-ai .tutor-bubble strong{font-weight:800}
+.tutor-message.is-ai .tutor-bubble hr{border:0;border-top:1px solid #d6e5d9;margin:15px 0}
+@media(max-width:580px){
+ .tutor-message.is-ai .tutor-bubble table{font-size:11px;min-width:430px}
+ .tutor-message.is-ai .tutor-bubble th,.tutor-message.is-ai .tutor-bubble td{padding:7px 8px}
+}
