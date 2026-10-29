@@ -80,7 +80,7 @@ assert.ok(js.includes("if(!consent.checked)"),'Consent must be enforced before b
 assert.ok(!js.includes("normalize(portal.email)!==normalize(user.email)"),'Different institutional and LedgerPeer emails must not block a consented file import');
 assert.ok(js.includes("if(!portal)throw Error('Include Home - TYMBAFlex.html"),'Course authorization must be scoped to the saved TYMBAFlex home course list');
 assert.ok(page.includes('tymbaflex-bridge.js?v=2'),'Updated import script must bypass stale browser caches');
-assert.ok(page.includes('tymbaflex-bridge.css?v=2'),'Consent controls must use latest styles');
+assert.ok(page.includes('tymbaflex-bridge.css?v=3'),'Consent controls must use latest styles');
 assert.ok(js.includes("client.from('tymbaflex_bridge_courses')"),'Persist user-owned snapshots');
 assert.ok(!js.includes('setPassword')&&!js.includes('passwordInput'),'Bridge never captures passwords');
 assert.ok(style.includes('.tb-course-grid'),'Provide a course display');
