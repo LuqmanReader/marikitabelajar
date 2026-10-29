@@ -163,7 +163,7 @@
   }
  }
  function safeDestination(raw){
-  const allowed=new Set(['classroom.html','profile.html','hub.html','notes.html','quiz.html','study-planner.html','study-planner-3d.html','calendar.html','tymbaflex-bridge.html']);
+  const allowed=new Set(['classroom.html','profile.html','hub.html','notes.html','quiz.html','study-planner.html','study-planner-3d.html','calendar.html','tymbaflex-bridge.html','tymbaflex-revision.html']);
   const target=String(raw||'').trim();
   return allowed.has(target)?target:null;
  }
