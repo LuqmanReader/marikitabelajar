@@ -1,0 +1,26 @@
+*{box-sizing:border-box}
+body{margin:0;width:420px;max-width:100%;background:#faf6e9;color:#191b18;font:500 12px/1.6 Inter,"Segoe UI",Arial,sans-serif}
+main{padding:18px}header{border:3px solid #10130f;background:#c5eacf;padding:18px;box-shadow:5px 5px 0 #111;margin:0 5px 18px 0}
+.brand{font:900 9px/1.5 Arial,sans-serif;letter-spacing:.12em}h1{font:900 24px/1.1 "Arial Black",Arial,sans-serif;letter-spacing:-.045em;margin:8px 0}h1 span{color:#167543}
+header p{margin:7px 0 0;font-size:11px;color:#34493a}.status{border:1px solid #a7b7ab;background:#fff;padding:11px;margin-bottom:12px;font-size:11px}
+.status.bad{border-color:#dca1a1;color:#a13a32;background:#fff0ed}
+.controls{display:flex;gap:9px;margin-bottom:15px}.controls button{flex:1;min-height:40px;padding:8px 11px;cursor:pointer;border:2px solid #111;background:#fff;box-shadow:3px 3px 0 #111;font:900 10px/1.35 Arial,sans-serif}
+.controls .primary{background:#ffd849}.controls button:disabled{opacity:.45;cursor:not-allowed}
+.course{border-top:2px solid #111;padding-top:13px}.course small{font:900 10px Arial,sans-serif;color:#327048;letter-spacing:.06em}
+.course h2{font:900 17px/1.3 Arial,sans-serif;margin:5px 0}.course p{font-size:10px;color:#576354}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:13px 0}
+.stats article{border:2px solid #111;background:#fff;padding:9px 7px;min-width:0}
+.stats article:nth-child(2){background:#f8eaaa}.stats article:nth-child(4){background:#c5eacf}
+.stats small{display:block;font:800 8px Arial,sans-serif;letter-spacing:.025em}.stats strong{font:900 27px/1.2 Arial,sans-serif;display:block;margin-top:5px}
+.filter{display:flex;align-items:center;gap:12px;margin-bottom:11px}.filter label{font:900 10px Arial,sans-serif}
+.filter select{width:100%;height:35px;border:2px solid #111;background:#fff;color:#171b18;font:750 11px Arial,sans-serif}
+.summary{font:700 10px/1.5 Arial,sans-serif;color:#4c6451;margin-bottom:9px}
+.activities{list-style:none;padding:0;margin:0;max-height:350px;overflow:auto}
+.activities li{border:1px solid #d4e2d4;background:#fff;padding:10px;margin:0 0 7px}
+.activities li>div{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.activities a{font-weight:800;font-size:11px;color:#185c36;word-break:break-word;line-height:1.4}
+.activities small{font-size:9px;color:#68776c;display:block;margin-top:4px}
+.pill{flex:none;border-radius:3px;font:900 9px Arial,sans-serif;padding:4px 6px;background:#eceee9;color:#415046}
+.pill.done{background:#d9efdb;color:#216337}.pill.todo{background:#fae4bb;color:#77501b}
+footer{margin-top:15px;border-top:2px solid #111;padding-top:10px;font-size:10px;color:#627060}
+footer p{margin:0 0 10px}footer a{color:#24623f;font-weight:900}
