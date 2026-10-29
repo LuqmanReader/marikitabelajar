@@ -8,7 +8,10 @@ const STYLES = {
   check:"Check the student's attempted answer critically, identify specific errors, and demonstrate corrected workings.",
   quiz:"Give one relevant FIA/ACCA-style practice question and wait for their answer before marking it."
 };
-const DAY_LIMIT=50;
+// Optional Supabase secret: LEDGERPEER_AI_DAILY_LIMIT (1–100); default 50.
+const configuredLimit=Number(Deno.env.get("LEDGERPEER_AI_DAILY_LIMIT")||"50");
+const DAY_LIMIT=Number.isSafeInteger(configuredLimit)&&configuredLimit>=1
+ ?Math.min(configuredLimit,100):50;
 const headers={
  "Access-Control-Allow-Origin":PROJECT_ORIGIN,
  "Access-Control-Allow-Methods":"POST, OPTIONS",
@@ -154,7 +157,7 @@ Deno.serve(async(request:Request)=>{
   const choices=(result as {choices?:Array<{message?:{content?:string}}>}).choices;
   const answer=choices?.[0]?.message?.content;
   if(typeof answer!=="string"||!answer.trim())return reply({error:"GroqCloud returned an empty answer. Please try another question.",remaining:await refund()},502);
-  return reply({answer:answer.trim(),model:"openai/gpt-oss-120b",remaining});
+  return reply({answer:answer.trim(),model:"openai/gpt-oss-120b",remaining,limit:DAY_LIMIT});
  }catch{
   return reply({error:"The AI Tutor encountered a server error. Please try again."},500);
  }
