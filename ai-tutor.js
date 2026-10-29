@@ -3,7 +3,7 @@
  const $=id=>document.getElementById(id);
  const node=$('chatLog'),form=$('chatForm'),question=$('question');
  const paper=$('paper'),mode=$('mode'),send=$('send');
- const welcome=$('welcome'),counter=$('counter'),status=$('chatStatus'),remaining=$('remaining');
+ const welcome=$('welcome'),counter=$('counter'),status=$('chatStatus'),remaining=$('remaining'),dailyLimit=$('dailyLimit');
  let client,user,key='',messages=[],busy=false,credits=null;
  function info(message,error=false){status.textContent=message;status.classList.toggle('is-error',error)}
  function scroll(){node.scrollTop=node.scrollHeight;}
@@ -88,6 +88,7 @@
     if(Number.isInteger(quota?.remaining)){
      credits=quota.remaining;remaining.textContent=String(credits);save();
     }
+    if(Number.isInteger(quota?.limit))dailyLimit.textContent=String(quota.limit);
     info('Ready. Ask your first question.');
    }catch(e){
     remaining.textContent='—';
