@@ -1,10 +1,11 @@
 {
   "manifest_version": 3,
   "name": "LedgerPeer TYMBAFlex Bridge",
-  "version": "0.3.0",
-  "description": "Read-only Chrome diagnostics for TYMBAFlex ILE and Group B FA2/MA2 course activities, tutorials and completion.",
+  "version": "0.4.0",
+  "description": "Opt-in TYMBAFlex ILE and Group B course diagnostics plus student-owned quiz review accuracy dashboard.",
   "permissions": [
-    "tabs"
+    "tabs",
+    "storage"
   ],
   "host_permissions": [
     "https://flex.tymbaedu.com/*",
@@ -41,16 +42,27 @@
     },
     {
       "matches": [
-        "https://luqmanreader.github.io/marikitabelajar/tymbaflex-bridge.html*"
+        "https://luqmanreader.github.io/marikitabelajar/tymbaflex-bridge.html*",
+        "https://luqmanreader.github.io/marikitabelajar/tymbaflex-revision.html*"
       ],
       "js": [
         "ledgerpeer-content.js"
       ],
       "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://ile.flex.tymbaedu.com/mod/quiz/review.php*",
+        "https://twofive.flex.tymbaedu.com/mod/quiz/review.php*"
+      ],
+      "js": [
+        "quiz-review-capture.js"
+      ],
+      "run_at": "document_idle"
     }
   ],
   "action": {
-    "default_title": "TYMBAFlex Course Diagnostic (ILE + Group B)",
+    "default_title": "LedgerPeer TYMBAFlex Diagnostic & Quiz Review Capture",
     "default_popup": "popup.html"
   }
 }
