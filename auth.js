@@ -173,8 +173,8 @@
   catch{return 'index.html#access';}
  }
  function signInUrl(next){
-  const destination=safeDestination(next)||'classroom.html';
-  return 'index.html?next='+encodeURIComponent(destination)+'#access';
+  const destination=safeDestination(next);
+  return destination?'index.html?next='+encodeURIComponent(destination)+'#access':'index.html#access';
  }
  async function login(email,password){await init();const {error}=await client.auth.signInWithPassword({email,password});if(error)throw error;await hydrate();location.replace(loginLanding());}
  async function signUp(email,password){
