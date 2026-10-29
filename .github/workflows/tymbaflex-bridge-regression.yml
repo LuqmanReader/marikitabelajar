@@ -11,6 +11,7 @@ on:
       - 'tests/tymbaflex-revision-dashboard-regression.js'
       - 'extension/tymbaflex-bridge/**'
       - 'tests/tymbaflex-bridge-regression.js'
+      - 'tests/tymbaflex-ile-diagnostic-regression.js'
       - 'supabase/tymbaflex-bridge-schema.sql'
       - '.github/workflows/tymbaflex-bridge-regression.yml'
   pull_request:
@@ -24,6 +25,7 @@ on:
       - 'tests/tymbaflex-revision-dashboard-regression.js'
       - 'extension/tymbaflex-bridge/**'
       - 'tests/tymbaflex-bridge-regression.js'
+      - 'tests/tymbaflex-ile-diagnostic-regression.js'
       - 'supabase/tymbaflex-bridge-schema.sql'
   workflow_dispatch:
 permissions:
@@ -44,7 +46,11 @@ jobs:
           node --check extension/tymbaflex-bridge/tymba-content.js
           node --check extension/tymbaflex-bridge/ledgerpeer-content.js
           node --check extension/tymbaflex-bridge/service-worker.js
+          node --check extension/tymbaflex-bridge/ile-diagnostic.js
+          node --check extension/tymbaflex-bridge/popup.js
       - name: Test opt-in bridge security and parsing
         run: node tests/tymbaflex-bridge-regression.js
+      - name: Test ILE FA2 MA2 tutorial diagnostic and completion
+        run: node tests/tymbaflex-ile-diagnostic-regression.js
       - name: Test FA2 MA2 revision dashboard and private progress
         run: node tests/tymbaflex-revision-dashboard-regression.js
