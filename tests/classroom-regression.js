@@ -51,7 +51,7 @@ assert.ok(room.includes('function replyQuote(')&&room.includes('function jumpToM
 assert.ok(room.includes('payload.reply_to_message_id=replyId'),'Reply target must persist with messages in Supabase');
 assert.ok(room.includes("const footer=make('div','chat-message-footer')")&&room.includes("addActions(footer,item,'message')"),'Reply action must appear in a visible footer below each chat message');
 assert.ok(read('classroom.css').includes('.chat-bubble .chat-message-footer .message-actions .reply-action'),'Reply must be prominent inside the message footer');
-assert.ok(classPage.includes('classroom-page.js?v=6')&&classPage.includes('classroom.css?v=5'),'Updated chat assets must bypass stale browser cache');
+assert.ok(/classroom-page\\.js\\?v=[a-zA-Z0-9_-]+/.test(classPage)&&/classroom\\.css\\?v=[a-zA-Z0-9_-]+/.test(classPage),'Classroom must use versioned assets to bypass stale browser cache');
 assert.ok(room.includes("select('id,classroom_id,user_id,body,created_at,reply_to_message_id')"),'Message loading must include reply references');
 assert.ok(classPage.includes('REPLIES ENABLED · CHAT v5'),'Classroom must show a visible deployment and reply hint');
 assert.ok(read('classroom.css').includes('.quoted-reply')&&read('classroom.css').includes('.reply-tray'),'Linked replies must have responsive presentation styles');
@@ -90,4 +90,13 @@ for(const page of ['calendar.html','study-planner.html']){
 assert.ok(read('productivity-core.js').includes('class="site-back" href="index.html">← BACK TO HOME'),'Planner and Calendar must render a labelled home button');
 assert.ok(read('classroom.html').includes('aria-label="Return to homepage"'),'Classroom home button must be outside the gated chat and visible near the top');
 assert.ok(read('ai-tutor.html').includes('PersonalHubAuth.guard()'),'AI Tutor must honor the account gate');
+
+// Home routing + student navigation should remain intact.
+const homepage=read('index.html'),music=read('spotify-study-music.js');
+assert.ok(auth.includes("||'index.html#access'"),'Standard login should open the signed-in homepage workspace');
+assert.ok(homepage.includes("document.body.classList.add('lp-workspace-ready')"),'Authenticated homepage should show the student workspace immediately');
+assert.ok(homepage.includes('class="workspace-grid"')&&['notes.html?edition=fia-2','quiz.html','hub.html','classroom.html'].every(x=>homepage.includes('href="'+x+'"')),'Homepage must expose all four core student tools');
+assert.ok(homepage.includes('id="workspaceMusicButton"')&&music.includes('workspaceMusicButton'),'Study Music must open from homepage utilities');
+assert.ok(auth.includes("querySelector('#hubView .workspace-utilities')"),'Sync status must be integrated into homepage utilities');
+
 console.log('PASS: classroom page, Supabase integration, client-side safety checks, and onboarding routing contracts.');
