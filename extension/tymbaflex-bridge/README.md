@@ -9,28 +9,39 @@ This is an **independent, read-only companion**, not an official TYMBAFlex integ
 5. Visit `https://luqmanreader.github.io/marikitabelajar/tymbaflex-bridge.html`, sign in to LedgerPeer and click **Sync Open Tabs**.
 6. Tick the ownership/permission confirmation. Your TYMBAFlex email may differ from your LedgerPeer email. Click Sync Open Tabs; only your own visible course list and activity links are saved to your private Supabase account.
 
-## ILE Chrome diagnostic (FA2 and MA2)
+## Course diagnostic — ILE + Group B (Chrome extension v0.3.0)
 
-This extension now has a **TYMBAFlex ILE Diagnostic** popup.
+The same **LedgerPeer TYMBAFlex Bridge** extension now supports all four course pages:
 
-1. In Chrome, open `chrome://extensions`, enable Developer mode, and **Reload** this extension (or install it using Load unpacked).
-2. Open **MA2**: `https://ile.flex.tymbaedu.com/course/view.php?id=5`, while signed in to your own TYMBAFlex account.
-3. Click the **LedgerPeer TYMBAFlex Bridge** extension icon in Chrome (pin it if needed), then click **SCAN CURRENT ILE TAB**.
-4. The report separates **Tutorial Chapters** (MA2) from **Chapter Sets, Progress Tests and Mock Examinations** (FA2). It also counts the Moodle course-page `Done`, `To do` and `Unknown` indicators.
-5. Open **FA2**: `https://ile.flex.tymbaedu.com/course/view.php?id=11`, then repeat the scan.
-6. Click **EXPORT JSON** only if you want a local, sanitized diagnostic report; this does not send the report anywhere. Don't export account pages or attempt pages.
+| Paper | Site | Course URL |
+| --- | --- | --- |
+| MA2 Videos & Notes | ILE | `https://ile.flex.tymbaedu.com/course/view.php?id=5` |
+| FA2 Videos & Notes | ILE | `https://ile.flex.tymbaedu.com/course/view.php?id=11` |
+| Group B MA2 | TwoFive | `https://twofive.flex.tymbaedu.com/course/view.php?id=757` |
+| Group B FA2 | TwoFive | `https://twofive.flex.tymbaedu.com/course/view.php?id=758` |
 
-### Findings from the supplied saved HTML pages (29 October 2026)
-- **MA2 course 5:** 23 `Tutorial Chapter` quizzes. Four display `Done` and 19 display `To do`.
-- **FA2 course 11:** 38 chapter-set quizzes, two progress tests, and two mock examinations (42 quizzes in total).
-- The saved FA2 course page does not display a recognisable completion button for these 42 quiz items, so their completion is reported as **Unknown**, not incomplete.
-- `Done` is Moodle course-activity completion, **not** an exam grade and not necessarily a pass.
+### Update and run
+1. Download the **latest** extension ZIP under the GitHub Actions workflow's **Artifacts** section. Extract it to a local folder containing `manifest.json`.
+2. If you installed the previous unpacked extension, replace the extension files in that *same local folder*, then open `chrome://extensions` and click **Reload**. Alternatively, remove the previous version and **Load unpacked** from the extracted updated folder. The version displayed should be **0.3.0**.
+3. Sign in to TYMBAFlex using your existing browser session; open any of the course URLs above.
+4. Click the Chrome extension icon and **SCAN CURRENT COURSE**. It inspects the *currently active* course tab only, including quiz names, tutorial names, chapter sets, tests, and visible Moodle `Done`, `To do`, or `Unknown` completion indicators.
+5. Choose a category in the dropdown or click **EXPORT JSON** to save a local sanitized report. Repeat on another course tab as needed.
+
+The diagnostic recognises `Tutorial Chapter` quizzes, `Chapter N set M` quizzes (including Group B), progress tests, mocks and dated quizzes such as `Quiz 29/9/26`. Those that do not clearly belong to a category are still listed as *Other quizzes*.
+
+### What the saved course pages established (29 October 2026)
+- MA2 ILE had 23 named tutorials; four displayed `Done` and 19 displayed `To do`.
+- FA2 ILE had 42 quizzes including chapter sets, progress tests and mocks.
+- Group B MA2 and Group B FA2 course overview pages contain quiz activities with their own Group B links; this diagnostic reads those links directly from the open page.
+
+These are historic snapshots, not verified current live counts. A Moodle activity showing `Done` is not necessarily a quiz pass, and `Unknown` does not mean unfinished.
 
 ### Troubleshooting
-- If the popup says **Refresh the ILE page**, reload that course tab after reloading or installing the extension, then scan again.
-- If Chrome can't open the extension, check `chrome://extensions` for an error.
-- If the page has been updated since the saved HTML was captured, the current scan may differ from the historical findings above.
-- No password, session token, arbitrary institutional endpoint, quiz attempt text, or grade is collected by this diagnostic.
+- If the popup cannot read the page, refresh the course tab **after** reloading or installing v0.3.0.
+- Make sure the active tab is `/course/view.php?id=...` on the ILE or TwoFive Moodle host, not a quiz attempt, login, grade or dashboard page.
+- Review `chrome://extensions` for browser installation errors.
+
+This is a read-only in-page diagnostic. It does not request protected endpoints, automate login, capture passwords or tokens, inspect quiz attempts, or retrieve marks.
 
 ## Exactly what this reads
 - Portal: account **email only for comparison**, course titles, IDs, course group and LMS domain (never passwords, SSO links, tokens, raw HTML, invoices or grades).
