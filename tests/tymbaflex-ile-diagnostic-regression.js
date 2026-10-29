@@ -10,7 +10,7 @@ const css=read('extension/tymbaflex-bridge/popup.css');
 const parser=read('tymbaflex-bridge-parser.js');
 assert.equal(manifest.version,'0.3.0');
 assert.equal(manifest.action.default_popup,'popup.html');
-assert.deepEqual(manifest.permissions,['tabs'],'Do not request cookies, requests, history or passwords');
+assert.deepEqual(manifest.permissions,['tabs','storage'],'Only tab access and local storage for user-approved graded review summaries are allowed');
 const injected=manifest.content_scripts.find(s=>s.js.includes('ile-diagnostic.js'));
 assert.deepEqual(injected.matches,['https://ile.flex.tymbaedu.com/*','https://twofive.flex.tymbaedu.com/*'],'Diagnostic runs on ILE and Group B only');
 assert.ok(injected.js.indexOf('parser.js')<injected.js.indexOf('ile-diagnostic.js'),'Sanitizing parser must load first');
