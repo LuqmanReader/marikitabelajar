@@ -39,3 +39,10 @@ body.tymbabridge-page{margin:0;background:var(--tb-light);color:var(--tb-ink);fo
 .tb-remove{background:#fff;color:#b73a3a;border:1px solid #dfb5b5;padding:7px 10px;border-radius:4px;cursor:pointer;font-weight:800;font-size:10px}
 .tb-warning{margin-top:18px;font-size:12px;line-height:1.65;color:#506458;padding:15px 18px;border:1px dashed #b7cbbd;border-radius:7px}
 @media(max-width:760px){.tb-page{padding:20px 12px 50px}.tb-header{align-items:flex-start;flex-wrap:wrap}.tb-steps,.tb-actions,.tb-course-grid{grid-template-columns:1fr}.tb-panel,.tb-data{padding:17px}}
+
+/* Explicit permission acknowledgement before any cross-site import. */
+.tb-consent{padding:15px 18px;margin:0 0 18px;background:#e9f6eb;border:1px solid #bad8c3;border-radius:8px}
+.tb-consent label{display:flex;align-items:flex-start;gap:12px;cursor:pointer;font-size:12px;line-height:1.65;color:#2a5439}
+.tb-consent input[type="checkbox"]{width:19px;height:19px;min-width:19px;accent-color:#207e48;cursor:pointer;margin:2px 0 0}
+.tb-consent strong{color:#1e5934}
+.tb-consent:focus-within{outline:2px solid #269655;outline-offset:3px}
