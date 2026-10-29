@@ -5,6 +5,7 @@
 <title>TYMBAFlex Course Diagnostic · LedgerPeer</title>
 <link rel="stylesheet" href="popup.css">
 <script defer src="popup.js"></script>
+<script defer src="review-capture-popup.js"></script>
 </head>
 <body>
 <main>
@@ -20,6 +21,14 @@
   <button type="button" id="scan" class="primary">SCAN CURRENT COURSE ↗</button>
   <button type="button" id="export" disabled>EXPORT JSON</button>
  </div>
+ <section class="review-capture" aria-label="Capture finished quiz results">
+  <div class="review-title">QUIZ REVIEW → LEDGERPEER</div>
+  <p>Open a <strong>finished quiz's Review</strong> page on ILE or Group B. Capture only the question result labels (correct, wrong, partial, ungraded)—not answers or question text.</p>
+  <button id="captureReview" type="button" class="review-button">CAPTURE CURRENT QUIZ REVIEW</button>
+  <div class="review-footer"><span id="captureCount" aria-live="polite">No reviews captured yet.</span><button id="clearCaptures" type="button">CLEAR</button></div>
+  <p id="captureStatus" class="review-status" role="status" aria-live="polite"></p>
+  <a href="https://luqmanreader.github.io/marikitabelajar/tymbaflex-revision.html" target="_blank" rel="noopener noreferrer">SYNC CAPTURES IN LEDGERPEER ↗</a>
+ </section>
  <section id="results" hidden>
   <div class="course"><small id="courseId"></small><h2 id="courseTitle"></h2><p id="scannedAt"></p></div>
   <div class="stats">
