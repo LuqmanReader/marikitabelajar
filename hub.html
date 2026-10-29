@@ -441,6 +441,26 @@
 @media(max-width:720px){.lp-tf-feature>a{grid-template-columns:1fr}.lp-tf-feature-side{border-left:0;border-top:4px solid #111;min-height:150px}.lp-tf-feature-side>strong{font-size:48px;margin:10px 0}.lp-tf-feature-side>strong span{font-size:22px}.lp-tf-feature-main h2{font-size:34px}}
 </style>
 
+
+<style id="lp-hub-compact-resources">
+/* Revision first: compact learning links instead of full-width advertisements. */
+.revision-resource-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:20px 0 23px}
+.revision-resource-row>.lp-notes-feature,.revision-resource-row>.lp-tf-feature{margin:0;min-width:0;isolation:auto}
+.revision-resource-row .lp-notes-feature-link,.revision-resource-row .lp-tf-feature>a{display:flex;flex-direction:column;height:100%;min-height:196px;box-shadow:5px 5px 0 #111;grid-template-columns:none}
+.revision-resource-row .lp-notes-feature-side,.revision-resource-row .lp-tf-feature-side{display:none}
+.revision-resource-row .lp-notes-feature-copy,.revision-resource-row .lp-tf-feature-main{padding:17px 18px;height:100%}
+.revision-resource-row .lp-notes-feature-copy h2,.revision-resource-row .lp-tf-feature-main h2{font-size:clamp(20px,1.9vw,28px);line-height:1.12;letter-spacing:-.035em;margin:13px 0 8px}
+.revision-resource-row .lp-notes-feature-copy p,.revision-resource-row .lp-tf-feature-main p{font-size:11px;line-height:1.5;margin-bottom:12px}
+.revision-resource-row .lp-notes-feature-arrow,.revision-resource-row .lp-tf-feature-cta{font-size:11px;min-height:0;padding:8px 10px;margin-top:auto}
+.revision-resource-row .lp-notes-feature-eyebrow,.revision-resource-row .lp-tf-feature-main>small{font-size:10px;padding:5px 8px}
+.revision-resource-row .revision-quiz-feature{display:flex;flex-direction:column;min-width:0;background:#bcead0;color:#111;text-decoration:none;border:4px solid #111;box-shadow:5px 5px 0 #111;padding:17px 18px;transition:transform .14s,box-shadow .14s}
+.revision-resource-row .revision-quiz-feature:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #111}
+.revision-resource-row .revision-quiz-feature small{align-self:flex-start;background:#fff;border:2px solid #111;padding:5px 8px;font-size:10px;font-weight:900}
+.revision-resource-row .revision-quiz-feature h2{font:900 clamp(20px,1.9vw,28px)/1.12 "Arial Black",Impact,sans-serif;margin:13px 0 8px}
+.revision-resource-row .revision-quiz-feature p{font-size:11px;line-height:1.5;margin:0 0 12px}
+.revision-resource-row .revision-quiz-feature strong{align-self:flex-start;background:#111;color:#fff;padding:9px 11px;font-size:11px;margin-top:auto}
+@media(max-width:950px){.revision-resource-row{grid-template-columns:1fr;gap:12px}.revision-resource-row .lp-notes-feature-link,.revision-resource-row .lp-tf-feature>a{min-height:0}.revision-resource-row .revision-quiz-feature{min-height:0}}
+</style>
 </head>
 <body>
 
@@ -461,12 +481,13 @@
     <nav class="flow-steps" aria-label="Revision workflow"><span class="current">1 · Add attempt</span><span>2 · Generate AI debrief</span><span>3 · Analyze progress</span></nav>
   </header>
 
+  <div class="revision-resource-row" aria-label="Related study resources">
   <section class="lp-notes-feature" aria-label="Explore the FIA–ACCA study notes library">
     <a class="lp-notes-feature-link" href="notes.html">
       <div class="lp-notes-feature-copy">
         <span class="lp-notes-feature-eyebrow">CORE STUDY RESOURCE / 02</span>
         <h2>THE FIA–ACCA<br>NOTES LIBRARY<span aria-hidden="true">.</span></h2>
-        <p>Find all 25 FIA and ACCA papers. Explore official syllabus topics, learn from 700 original topic lessons, and practise with exam traps and self-check questions.</p>
+        <p>Study syllabus topics with original notes, worked examples and self-checks.</p>
         <span class="lp-notes-feature-arrow">EXPLORE STUDY NOTES <span aria-hidden="true">↗</span></span>
       </div>
       <div class="lp-notes-feature-side">
@@ -484,7 +505,7 @@
       <div class="lp-tf-feature-main">
         <small>CONNECTED REVISION / 03</small>
         <h2>THE TYMBAFLEX<br><em>REVISION WORKSPACE.</em></h2>
-        <p>All your imported FA2 and MA2 courses, activity links, and private revision progress in one place. Search study materials, practise quizzes, and plan what to revise next.</p>
+        <p>Review your imported FA2 and MA2 activities and choose what to revise next.</p>
         <span class="lp-tf-feature-cta">OPEN TYMBAFLEX DASHBOARD ↗</span>
       </div>
       <div class="lp-tf-feature-side">
@@ -494,7 +515,9 @@
       </div>
     </a>
   </section>
-  <nav class="lp-study-shortcuts" aria-label="Study utilities"><a class="site-back" href="study-planner.html">Study Planner</a><a class="site-back" href="classroom.html">Classroom</a><a class="site-back" href="quiz.html">Quiz Centre</a><a class="site-back" href="ai-tutor.html">AI Tutor</a><a class="site-back" href="tymbaflex-revision.html">TYMBAFlex Revision</a><a class="site-back" href="tymbaflex-bridge.html">TYMBAFlex Bridge</a><a class="site-back" href="calendar.html">Calendar</a></nav>
+    <a class="revision-quiz-feature" href="quiz.html"><small>ACTIVE PRACTICE</small><h2>QUIZ<br>CENTRE.</h2><p>Generate topic questions, take a mock and review your answers.</p><strong>START PRACTICE ↗</strong></a>
+  </div>
+  <nav class="lp-study-shortcuts" aria-label="Study utilities"><a class="site-back" href="study-planner.html">Study Planner</a><a class="site-back" href="classroom.html">Classroom</a><a class="site-back" href="ai-tutor.html">AI Tutor</a><a class="site-back" href="calendar.html">Calendar</a></nav>
   <div class="analysis-title"><h2>Quiz Centre Progress</h2><span class="tag">Practice</span></div>
   <div class="chart-panel lp-quiz-panel" id="lpQuizOverview" aria-live="polite">Loading topic practice…</div>
   <div id="subjectDash"></div>
