@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en" data-lp-page="tymbaflex-revision">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,follow"><meta name="theme-color" content="#f8f3e7">
+<title>TYMBAFlex Revision Dashboard · LedgerPeer</title>
+<link rel="icon" href="favicon-32.png">
+<link rel="stylesheet" href="ledgerpeer-theme.css?v=20261011">
+<link rel="stylesheet" href="site-nav.css?v=20261028-unifiedback">
+<link rel="stylesheet" href="tymbaflex-revision.css?v=1">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="supabase-config.js"></script><script src="auth.js"></script>
+<script src="tymbaflex-bridge-parser.js?v=1"></script>
+<script defer src="tymbaflex-revision.js?v=1"></script>
+</head>
+<body class="tf-revision-page">
+<main class="tf-shell">
+ <header class="tf-topbar">
+  <a class="tf-wordmark" href="hub.html" aria-label="Back to LedgerPeer Revision Hub"><span class="tf-logo">LP.</span><span>LEDGERPEER <small>STUDENT REVISION</small></span></a>
+  <nav class="tf-toplinks" aria-label="Revision sections">
+    <a href="hub.html">Revision Hub</a><a href="notes.html">FIA–ACCA Notes</a><a href="tymbaflex-bridge.html">TYMBAFlex Bridge</a>
+  </nav>
+ </header>
+ <section class="tf-hero">
+   <div class="tf-hero-copy"><span class="tf-eyebrow">CONNECTED LEARNING / 03</span>
+    <h1>YOUR TYMBAFLEX<br><em>REVISION.</em></h1>
+    <p>Your imported FA2 and MA2 resources, assessments and study tasks—all in one revision workspace. Track what <strong>you've revised</strong>, separately from official Moodle results.</p>
+    <div class="tf-hero-actions"><a class="tf-btn tf-btn-dark" href="tymbaflex-bridge.html">SYNC COURSE DATA <span aria-hidden="true">↗</span></a><a class="tf-btn tf-btn-outline" href="https://flex.tymbaedu.com/" target="_blank" rel="noopener noreferrer">OPEN TYMBAFLEX</a></div>
+   </div>
+   <div class="tf-hero-art" aria-hidden="true"><span class="tf-circle"></span><div class="tf-art-text">FA2<br><span>×</span>MA2</div><span class="tf-art-caption">LEARN / PRACTISE / REVISE</span></div>
+ </section>
+ <div id="tfAlert" class="tf-alert" role="status" aria-live="polite">Connecting to your LedgerPeer account…</div>
+ <section aria-label="Your imported study overview">
+   <div class="tf-stats">
+    <article><span>COURSES CONNECTED</span><strong id="tfCourseCount">—</strong><small>TYMBAFlex snapshots</small></article>
+    <article><span>ACTIVITIES AVAILABLE</span><strong id="tfActivityCount">—</strong><small>Imported course activities</small></article>
+    <article><span>MARKED REVISED</span><strong id="tfRevisedCount">—</strong><small>Your own revision status</small></article>
+    <article><span>STUDYING NOW</span><strong id="tfStudyingCount">—</strong><small>Items marked in progress</small></article>
+   </div>
+ </section>
+ <section class="tf-workspace" aria-labelledby="tfHeading">
+  <div class="tf-section-head"><div><span class="tf-eyebrow">WORKSPACE / SUBJECTS</span><h2 id="tfHeading">REVISION BY PAPER</h2><p>Choose your paper, review a course, and update individual activity revision status.</p></div><span id="tfLastSync" class="tf-sync-meta">Waiting for synced courses</span></div>
+  <div class="tf-controls">
+   <div class="tf-tabs" id="tfTabs" role="group" aria-label="Select paper">
+    <button type="button" data-paper="all" aria-pressed="true">ALL COURSES</button>
+    <button type="button" data-paper="FA2" aria-pressed="false">FA2 / FINANCIAL ACCOUNTING</button>
+    <button type="button" data-paper="MA2" aria-pressed="false">MA2 / MANAGEMENT ACCOUNTING</button>
+   </div>
+   <div class="tf-filters">
+    <label><span>FIND AN ACTIVITY</span><input id="tfSearch" type="search" placeholder="Search chapters, resources, quizzes…" autocomplete="off"></label>
+    <label><span>ACTIVITY TYPE</span><select id="tfType"><option value="all">All activity types</option><option value="quiz">Quizzes</option><option value="resource">Study materials</option><option value="assign">Assignments</option><option value="other">Other activities</option></select></label>
+    <label><span>YOUR REVISION STATUS</span><select id="tfStatus"><option value="all">Any status</option><option value="to_review">To review</option><option value="studying">Studying</option><option value="revised">Revised</option></select></label>
+   </div>
+  </div>
+  <div class="tf-layout">
+   <div><p id="tfResultCount" class="tf-results">Loading courses…</p><div id="tfCourses" class="tf-courses"></div></div>
+   <aside class="tf-side">
+    <section class="tf-side-card"><span class="tf-eyebrow">MY STUDY QUEUE</span><h3>NEXT TO REVISE.</h3><div id="tfQueue" class="tf-queue"><p>Connect your courses to see activities here.</p></div></section>
+    <section class="tf-side-card tf-side-yellow"><span class="tf-eyebrow">REVISION ≠ EXAM RESULTS</span><h3>TRACK THE RIGHT THING.</h3><p>“Revised” means <strong>you marked an activity as revised in LedgerPeer</strong>. It does not mean you passed the Moodle quiz. Marks and attempted-question results are not available through the current bridge.</p><a href="hub.html">OPEN LEDGERPEER EXAM ANALYSIS ↗</a></section>
+   </aside>
+  </div>
+ </section>
+ <footer class="tf-footer">LEDGERPEER / TYMBAFLEX STUDENT REVISION <span>INDEPENDENT, USER-CONTROLLED IMPORT — NOT AN OFFICIAL TYMBAFLEX API</span></footer>
+</main>
+</body>
+</html>
