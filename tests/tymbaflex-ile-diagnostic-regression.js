@@ -23,7 +23,7 @@ assert.ok(popup.includes('chrome.tabs.query({active:true,currentWindow:true})'),
 assert.ok(popup.includes('chrome.tabs.sendMessage(tab.id'),'Read only in-page data');
 assert.ok(popup.includes("if(!report)return;"),'Export button should require a completed scan');
 assert.ok(!/localStorage|chrome\.storage/.test(popup),'No diagnostic persistence');
-const chrome={runtime:{onMessage:{addListener:()=>{}}}},window:{TymbaBridgeParser:{}};
+const chrome={runtime:{onMessage:{addListener:()=>{}}}},window={TymbaBridgeParser:{}};
 function makeItem(name,type,buttonText,number){
  const url='https://ile.flex.tymbaedu.com/mod/'+type+'/view.php?id='+number+'&sesskey=SENSITIVE';
  const link={getAttribute:k=>k==='href'?url:'',textContent:name};
