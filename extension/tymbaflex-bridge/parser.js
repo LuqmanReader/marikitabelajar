@@ -32,7 +32,8 @@ function safeRecord(raw){
   return [{
    id:String(item.id||'').replace(/[^\d]/g,'').slice(0,12)||a.url.match(/id=(\d+)$/)?.[1]||'',
    name:compact(item.name,140),section:compact(item.section,100),
-   type:a.kind,url:a.url,completed:item.completed===true
+   type:a.kind,url:a.url,completed:item.completed===true,
+   completion_status:item.completed===true||item.completion_status==='done'?'done':item.completion_status==='todo'?'todo':'unknown'
   }];
  }):[];
  return {source_host:raw.source_host,course_id:id,title:compact(raw.title,160)||'Course '+id,
@@ -77,8 +78,13 @@ function fromMoodle(doc,url){
    const name=compact(row.querySelector('[data-activityname]')?.getAttribute('data-activityname')||row.querySelector('.instancename')?.textContent||link.textContent,140);
    if(!name)continue;
    seen.add(valid.url);
-   const complete=row.querySelector('.completioninfo.completion_complete, .completioninfo.completion_pass, [data-region="activity-information"] .badge-success');
-   activities.push({id:row.getAttribute('data-id'),name,section:sectionName,type:valid.kind,url:valid.url,completed:Boolean(complete)});
+   // Moodle Boost represents completion in its own activity dropdown.
+   // A quiz with no completion indicator is UNKNOWN, not automatically To do.
+   const button=row.querySelector('.activity-completion [data-region="completionrequirements"] button');
+   const label=compact(button?.textContent,50).toLowerCase();
+   const completion_status=/\bdone\b/.test(label)?'done':/\bto\s*do\b/.test(label)?'todo':'unknown';
+   activities.push({id:row.getAttribute('data-id'),name,section:sectionName,
+    type:valid.kind,url:valid.url,completed:completion_status==='done',completion_status});
    if(activities.length>=200)break;
   }
   if(activities.length>=200)break;
