@@ -4,7 +4,9 @@ const BRIDGE='https://luqmanreader.github.io/marikitabelajar/tymbaflex-bridge.ht
 chrome.runtime.onMessage.addListener((message,sender,reply)=>{
  if(message?.type!=='LP_COLLECT')return;
  // A request from any other page cannot trigger a TYMBAFlex sync.
- if(!sender.tab?.url||new URL(sender.tab.url).origin+'/marikitabelajar/tymbaflex-bridge.html'!==BRIDGE)return;
+ let caller;
+ try{caller=new URL(sender.tab?.url||'');}catch{return;}
+ if(caller.origin+caller.pathname!==BRIDGE||sender.frameId!==0)return;
  (async()=>{
   const tabs=(await chrome.tabs.query({url:ALLOWED})).slice(0,30);
   if(!tabs.length){reply({error:'No TYMBAFlex tabs are open. Sign in to TYMBAFlex Home and open a course first.'});return;}
