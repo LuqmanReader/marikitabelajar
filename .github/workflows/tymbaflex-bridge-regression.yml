@@ -3,6 +3,11 @@ on:
   push:
     paths:
       - 'tymbaflex-bridge.*'
+      - 'tymbaflex-revision.*'
+      - 'hub.html'
+      - 'auth.js'
+      - 'supabase/tymbaflex-revision-progress.sql'
+      - 'tests/tymbaflex-revision-dashboard-regression.js'
       - 'extension/tymbaflex-bridge/**'
       - 'tests/tymbaflex-bridge-regression.js'
       - 'supabase/tymbaflex-bridge-schema.sql'
@@ -10,6 +15,11 @@ on:
   pull_request:
     paths:
       - 'tymbaflex-bridge.*'
+      - 'tymbaflex-revision.*'
+      - 'hub.html'
+      - 'auth.js'
+      - 'supabase/tymbaflex-revision-progress.sql'
+      - 'tests/tymbaflex-revision-dashboard-regression.js'
       - 'extension/tymbaflex-bridge/**'
       - 'tests/tymbaflex-bridge-regression.js'
       - 'supabase/tymbaflex-bridge-schema.sql'
@@ -28,8 +38,11 @@ jobs:
         run: |
           node --check tymbaflex-bridge-parser.js
           node --check tymbaflex-bridge.js
+          node --check tymbaflex-revision.js
           node --check extension/tymbaflex-bridge/tymba-content.js
           node --check extension/tymbaflex-bridge/ledgerpeer-content.js
           node --check extension/tymbaflex-bridge/service-worker.js
       - name: Test opt-in bridge security and parsing
         run: node tests/tymbaflex-bridge-regression.js
+      - name: Test FA2 MA2 revision dashboard and private progress
+        run: node tests/tymbaflex-revision-dashboard-regression.js
