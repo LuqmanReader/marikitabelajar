@@ -92,6 +92,7 @@
 
     const el = (q) => shadow.querySelector(q);
     const launcher=el('.launcher'), panel=el('.panel'), close=el('.x'), select=el('select');
+    const workspaceMusicButton=document.getElementById('workspaceMusicButton');
     const slot=el('.player-slot'), footLink=el('.foot a'), customToggle=el('.custom-toggle');
     const customBox=el('.custom-box'), customInput=el('input'), status=el('.status');
     const use=el('.use');
@@ -123,10 +124,12 @@
       panel.hidden=!open;
       launcher.setAttribute('aria-expanded', String(open));
       launcher.setAttribute('aria-label',open?'Hide Study Music':'Open Study Music');
+      if(workspaceMusicButton){workspaceMusicButton.setAttribute('aria-expanded',String(open));workspaceMusicButton.setAttribute('aria-label',open?'Hide Study Music':'Open Study Music');}
       if (open) mountPlayer();
     }
     launcher.addEventListener('click',()=>openPanel(panel.hidden));
-    close.addEventListener('click',()=>{openPanel(false);launcher.focus();});
+    if(workspaceMusicButton)workspaceMusicButton.addEventListener('click',()=>openPanel(panel.hidden));
+    close.addEventListener('click',()=>{openPanel(false);(workspaceMusicButton||launcher).focus();});
     select.addEventListener('change',()=>{
       const next=select.value;
       if(next==='custom'){
@@ -161,7 +164,7 @@
     if(hubView){
       function syncSignedIn(){
         const signedIn=!hubView.hidden;
-        launcher.hidden=!signedIn;
+        launcher.hidden=!signedIn||Boolean(workspaceMusicButton);
         if(!signedIn && !panel.hidden)openPanel(false);
       }
       syncSignedIn();
