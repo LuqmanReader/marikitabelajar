@@ -17,6 +17,7 @@ assert.ok(shell.includes('id="workspaceMusicButton"'),'Parent shell must expose 
 assert.ok(navigation.includes("frame.addEventListener('load'"),'Child pages must be navigable');
 assert.ok(navigation.includes("event.stopImmediatePropagation()"),'Homepage child music must call the parent');
 assert.ok(navigation.includes('LedgerPeerStudyMusic?.open?.()'),'Single parent music controller must open');
+assert.ok(navigation.includes('#ledgerpeer-spotify-host{display:none!important}'),'Stale iframe music widgets must stay hidden');
 assert.ok(music.includes("window.frameElement?.id === 'lpContentFrame'"),'Child pages must NOT instantiate another player');
 assert.ok(music.includes('window.LedgerPeerStudyMusic={open:openPersistentMusic'),'Persistent music controller must be exported');
 assert.ok(!music.includes('window.open('),'Study Music must never spawn another tab or popup');

@@ -76,6 +76,11 @@ frame.addEventListener('load',()=>{
  changeTitle(file);
  // Homepage's original music button belongs to the child document.
  // Capture its click and open the single player in the persistent parent.
+ // Hide old Spotify launchers in the page iframe, including cached versions.
+ // The only player is in this persistent parent document.
+ const childPlayerCSS=doc.createElement('style');
+ childPlayerCSS.textContent='#ledgerpeer-spotify-host{display:none!important}';
+ doc.head.appendChild(childPlayerCSS);
  const childMusic=doc.getElementById('workspaceMusicButton');
  if(childMusic)childMusic.addEventListener('click',event=>{
   event.preventDefault();event.stopImmediatePropagation();
