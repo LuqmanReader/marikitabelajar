@@ -8,7 +8,7 @@ const popup=read('extension/tymbaflex-bridge/popup.js');
 const html=read('extension/tymbaflex-bridge/popup.html');
 const css=read('extension/tymbaflex-bridge/popup.css');
 const parser=read('tymbaflex-bridge-parser.js');
-assert.equal(manifest.version,'0.3.0');
+assert.equal(manifest.version,'0.4.0');
 assert.equal(manifest.action.default_popup,'popup.html');
 assert.deepEqual(manifest.permissions,['tabs','storage'],'Only tab access and local storage for user-approved graded review summaries are allowed');
 const injected=manifest.content_scripts.find(s=>s.js.includes('ile-diagnostic.js'));
