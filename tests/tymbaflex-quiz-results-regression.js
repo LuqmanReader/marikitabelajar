@@ -26,7 +26,7 @@ assert.ok(dashboard.includes('LP_TYMBA_REVIEWS_REQUEST')&&dashboard.includes("cl
 assert.ok(dashboard.includes('const match=resolve(c)'),'Never attach unknown quiz reviews automatically');
 assert.ok(dashboard.includes('Choose the matching')||dashboard.includes('Select matching'),'User must explicitly assign ambiguous review to tutorial');
 assert.ok(dashboard.includes("if(capture.quiz_url&&capture.quiz_url!==a.url)"),'Prevent mismapping an identified review');
-assert.ok(dashboard.includes("No imported review")||dashboard.includes("no imported review"),'Untouched list must not imply no prior attempt');
+assert.ok(dashboard.includes('without an imported review'),'Untouched list must not imply no prior attempt');
 for(const c of ['correct','incorrect','partial','ungraded','unanswered'])assert.ok(css.includes('.tf-square.'+c),'All question result colors required');
 for(const id of ['tfSyncReviews','tfReviewedQuizzes','tfCorrectQuestions','tfWrongQuestions','tfNotCaptured','tfAttemptGraphs','tfUntouchedList','tfReviewMatches'])
  assert.ok(html.includes('id="'+id+'"'),'Required dashboard element: '+id);
