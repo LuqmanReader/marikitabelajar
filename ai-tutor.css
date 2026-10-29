@@ -90,3 +90,144 @@ body.tutor-page{margin:0;background:var(--tutor-paper);color:var(--tutor-ink);fo
  .tutor-message.is-ai .tutor-bubble table{font-size:11px;min-width:430px}
  .tutor-message.is-ai .tutor-bubble th,.tutor-message.is-ai .tutor-bubble td{padding:7px 8px}
 }
+
+
+/* Readable AI Tutor v3: no raw Markdown, real code panels and exam-friendly tables. */
+body.tutor-page .tutor-message.is-ai{
+ width:100%;max-width:100%;align-items:flex-start;
+}
+body.tutor-page .tutor-message.is-ai .tutor-avatar{flex:0 0 34px}
+body.tutor-page .tutor-message.is-ai .tutor-bubble{
+ flex:1;min-width:0;width:100%;max-width:100%;
+ padding:22px 24px;font-family:Inter,"Segoe UI",Arial,sans-serif;
+ font-size:15px;line-height:1.8;white-space:normal;
+ overflow-wrap:break-word;word-break:normal;overflow-x:visible;
+ color:#202d25;border-color:#d5e5d9;
+}
+body.tutor-page .tutor-message.is-user{max-width:85%}
+body.tutor-page .tutor-chat-log{padding:25px 21px;gap:20px}
+body.tutor-page .tutor-bubble.tutor-rendered > :first-child{margin-top:0}
+body.tutor-page .tutor-bubble.tutor-rendered > :last-child{margin-bottom:0}
+body.tutor-page .tutor-bubble.tutor-rendered h2,
+body.tutor-page .tutor-bubble.tutor-rendered h3,
+body.tutor-page .tutor-bubble.tutor-rendered h4,
+body.tutor-page .tutor-bubble.tutor-rendered h5{
+ color:#205b38;margin:22px 0 11px;line-height:1.35;font-weight:800;
+ letter-spacing:-.015em;
+}
+body.tutor-page .tutor-bubble.tutor-rendered h2{font-size:19px}
+body.tutor-page .tutor-bubble.tutor-rendered h3{font-size:17px}
+body.tutor-page .tutor-bubble.tutor-rendered h4,
+body.tutor-page .tutor-bubble.tutor-rendered h5{font-size:15px}
+body.tutor-page .tutor-bubble.tutor-rendered p{margin:11px 0;line-height:1.8}
+body.tutor-page .tutor-bubble.tutor-rendered ul,
+body.tutor-page .tutor-bubble.tutor-rendered ol{padding-left:24px;margin:12px 0}
+body.tutor-page .tutor-bubble.tutor-rendered li{padding-left:4px;margin:7px 0;line-height:1.75}
+body.tutor-page .tutor-bubble.tutor-rendered strong{color:#183e2a;font-weight:800}
+body.tutor-page .tutor-bubble.tutor-rendered blockquote{
+ padding:13px 17px;margin:16px 0;background:#edf8ef;
+ border-left:4px solid #3a9460;color:#345941;border-radius:0 6px 6px 0;
+}
+body.tutor-page .tutor-bubble.tutor-rendered p code,
+body.tutor-page .tutor-bubble.tutor-rendered li code,
+body.tutor-page .tutor-bubble.tutor-rendered td code{
+ padding:3px 6px;color:#305c42;background:#eaf3ed;
+ border-radius:4px;font-size:.91em;white-space:normal;overflow-wrap:anywhere;
+}
+body.tutor-page .tutor-table-scroll{
+ max-width:100%;width:100%;overflow-x:auto;overscroll-behavior-x:contain;
+ margin:16px 0 20px;border:1px solid #d6e5db;border-radius:8px;background:white;
+}
+body.tutor-page .tutor-bubble.tutor-rendered .tutor-table-scroll table{
+ width:100%;min-width:0;border-collapse:collapse;table-layout:fixed;
+ margin:0;font:500 13px/1.6 Inter,"Segoe UI",Arial,sans-serif;
+}
+body.tutor-page .tutor-table-scroll th,
+body.tutor-page .tutor-table-scroll td{
+ padding:12px 13px;vertical-align:top;text-align:left;
+ border-right:1px solid #e4eee6;border-bottom:1px solid #e4eee6;
+ overflow-wrap:anywhere;word-break:normal;
+}
+body.tutor-page .tutor-table-scroll th:last-child,
+body.tutor-page .tutor-table-scroll td:last-child{border-right:0}
+body.tutor-page .tutor-table-scroll tr:last-child td{border-bottom:0}
+body.tutor-page .tutor-table-scroll th{background:#e8f4ec;color:#235b39;font-weight:800}
+body.tutor-page .tutor-table-scroll tbody tr:nth-child(even){background:#f7faf8}
+body.tutor-page .tutor-code-card{
+ width:100%;max-width:100%;overflow:hidden;margin:17px 0 20px;
+ border-radius:8px;border:1px solid #2d4536;background:#18281f;
+ box-shadow:0 2px 8px rgba(16,49,26,.09);
+}
+body.tutor-page .tutor-code-toolbar{
+ display:flex;align-items:center;justify-content:space-between;gap:10px;
+ min-height:43px;padding:8px 12px;background:#2d4134;color:#d6eadb;
+ font:800 11px/1.3 ui-monospace,Consolas,monospace;text-transform:uppercase;
+}
+body.tutor-page .tutor-code-copy{
+ min-height:30px;white-space:nowrap;background:#e8f5ed;color:#175635;
+ border:0;border-radius:4px;padding:5px 12px;box-shadow:none;
+ font:800 11px/1.3 Inter,"Segoe UI",Arial,sans-serif;cursor:pointer;
+}
+body.tutor-page .tutor-code-copy:hover{background:#fff}
+body.tutor-page .tutor-bubble.tutor-rendered .tutor-code-card pre{
+ max-width:100%;margin:0;padding:17px 18px;overflow-x:auto;
+ background:transparent;color:#eaf7ef;border:0;border-radius:0;
+ font:500 13px/1.72 ui-monospace,SFMono-Regular,Consolas,monospace;
+ white-space:pre;tab-size:2;
+}
+body.tutor-page .tutor-bubble.tutor-rendered .tutor-code-card pre code{
+ color:inherit;background:transparent;padding:0;white-space:pre;
+ overflow-wrap:normal;font:inherit;
+}
+body.tutor-page .tutor-math{
+ color:#143f27;font-size:1.06em;overflow-wrap:anywhere;
+}
+body.tutor-page .tutor-math-display{
+ display:block;max-width:100%;margin:16px 0;padding:13px 15px;
+ border-radius:8px;border:1px solid #d7e8db;background:#f5faf6;
+ overflow-x:auto;text-align:center;line-height:1.9;white-space:normal;
+}
+body.tutor-page .tutor-math .katex-display{margin:0;overflow-x:auto;overflow-y:hidden}
+body.tutor-page .tutor-math .katex{font-size:1.05em}
+body.tutor-page .tutor-text-toggle{
+ margin-left:auto;min-height:34px;padding:6px 10px;border:1px solid #b9d4c2;
+ border-radius:5px;background:#fff;color:#276341;box-shadow:none;
+ font:800 10px/1.3 Inter,"Segoe UI",Arial,sans-serif;white-space:nowrap;cursor:pointer;
+}
+body.tutor-page .tutor-text-toggle[aria-pressed="true"]{background:#dbf3e2;border-color:#6ca783}
+body.tutor-page .tutor-version{margin-left:0}
+body.tutor-page .tutor-large-text .tutor-message.is-ai .tutor-bubble{font-size:18px;line-height:1.85}
+body.tutor-page .tutor-large-text .tutor-code-card pre{font-size:15px}
+body.tutor-page .tutor-large-text .tutor-table-scroll table{font-size:15px}
+@media(max-width:700px){
+ body.tutor-page .tutor-chat-head{flex-wrap:wrap;gap:8px;padding:13px}
+ body.tutor-page .tutor-text-toggle{margin-left:auto}
+ body.tutor-page .tutor-version{display:none}
+ body.tutor-page .tutor-chat-log{padding:14px 11px;gap:14px}
+ body.tutor-page .tutor-message.is-ai .tutor-avatar{display:none}
+ body.tutor-page .tutor-message.is-ai .tutor-bubble{padding:16px 13px;font-size:14.5px}
+ body.tutor-page .tutor-table-scroll{overflow-x:visible;border:0;background:transparent}
+ body.tutor-page .tutor-bubble.tutor-rendered .tutor-table-scroll table,
+ body.tutor-page .tutor-table-scroll tbody,
+ body.tutor-page .tutor-table-scroll tr,
+ body.tutor-page .tutor-table-scroll td{display:block;width:100%;min-width:0}
+ body.tutor-page .tutor-table-scroll thead{display:none}
+ body.tutor-page .tutor-table-scroll tr{
+  margin:0 0 11px;padding:4px 0;background:#fff!important;
+  border:1px solid #d6e5db;border-radius:7px;overflow:hidden;
+ }
+ body.tutor-page .tutor-table-scroll td{
+  display:grid;grid-template-columns:minmax(75px,34%) minmax(0,1fr);
+  gap:10px;border:0;border-bottom:1px solid #edf1ec;
+  padding:9px 11px;font-size:12.5px;line-height:1.55;
+ }
+ body.tutor-page .tutor-table-scroll td:last-child{border-bottom:0}
+ body.tutor-page .tutor-table-scroll td::before{
+  content:attr(data-heading);color:#27633e;font-size:11px;font-weight:800;
+  overflow-wrap:anywhere;line-height:1.5;
+ }
+ body.tutor-page .tutor-bubble.tutor-rendered .tutor-code-card pre{
+  padding:12px;font-size:12px;
+ }
+ body.tutor-page .tutor-math-display{padding:10px 8px}
+}
