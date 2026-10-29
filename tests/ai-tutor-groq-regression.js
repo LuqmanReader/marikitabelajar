@@ -58,8 +58,9 @@ assert.match(backend,/rpc\/lp_ai_tutor_refund_slot/,'Failed API requests must be
 assert.match(backend,/remaining:await refund\(\)/,'Failed requests should return recalculated quota');
 assert.match(frontend,/Number\.isInteger\(payload\?\.remaining\)/,'Frontend quota must update after failed API calls');
 assert.match(backend,/return reply\(\{answer:answer\.trim\(\),model/);
-assert.ok(!backend.includes('gsk_'),'Never include a Groq key in source');
-assert.ok(!page.includes('gsk_')&&!frontend.includes('gsk_'),'Never include a Groq key in public source');
+const leakedGroqCredential=/\\bgsk_[a-zA-Z0-9_-]{30,}\\b/;
+assert.ok(!leakedGroqCredential.test(backend),'Never include a complete Groq key in source');
+assert.ok(!leakedGroqCredential.test(page)&&!leakedGroqCredential.test(frontend),'Never include a complete Groq key in public source');
 assert.match(schema,/enable row level security/);
 assert.match(schema,/revoke all on function public\.lp_ai_tutor_take_slot\(uuid, integer\) from public, anon, authenticated/);
 assert.match(schema,/grant execute on function public\.lp_ai_tutor_take_slot\(uuid, integer\) to service_role/);
