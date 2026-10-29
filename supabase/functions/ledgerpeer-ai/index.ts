@@ -79,6 +79,14 @@ Deno.serve(async(request:Request)=>{
   let input:Record<string,unknown>;
   try{input=JSON.parse(raw);}catch{return reply({error:"Invalid chat request."},400);}
   if(!input||typeof input!=="object")return reply({error:"Invalid chat request."},400);
+  if(input.action==="status"){
+   const today=new Date().toISOString().slice(0,10);
+   const usage=await privileged(url,service,"lp_ai_tutor_daily_usage?select=requests&user_id=eq."+encodeURIComponent(userId)+"&usage_day=eq."+today,undefined,"GET");
+   if(!usage.ok)return reply({error:"Could not check remaining messages."},503);
+   const rows=await usage.json();
+   const used=Array.isArray(rows)&&rows.length?Number(rows[0].requests)||0:0;
+   return reply({remaining:Math.max(0,DAY_LIMIT-used),limit:DAY_LIMIT,model:"openai/gpt-oss-120b"});
+  }
   const question=typeof input.question==="string"?input.question.trim():"";
   const paper=typeof input.paper==="string"?input.paper:"";
   const style=typeof input.style==="string"?input.style:"";
