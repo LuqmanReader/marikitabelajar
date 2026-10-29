@@ -12,7 +12,7 @@ const activePages=[
 const renderedByCore=new Set(['calendar.html','study-planner.html','study-planner-3d.html']);
 const core=read('productivity-core.js');
 const coreHeader=core.match(/function header\(title,desc\)\{return (['"])([\s\S]*?)\1\}/)?.[2]||'';
-assert.ok(coreHeader.includes('class=\\"site-back\\"')&&coreHeader.includes('href=\\"index.html\\"')&&coreHeader.includes('← BACK TO HOME'),'Shared Calendar/Planner renderer must expose Back to Home in its header');
+assert.ok(coreHeader.includes('class="site-back"')&&coreHeader.includes('href="index.html"')&&coreHeader.includes('← BACK TO HOME'),'Shared Calendar/Planner renderer must expose Back to Home in its header');
 assert.ok(core.includes('header(title,desc)+content'),'Calendar/Planner shell must render the header');
 const backAnchor=/<a\b[^>]*>[^<]*← BACK TO HOME<\/a>/g;
 for(const file of activePages){
