@@ -4,21 +4,25 @@ on:
     paths:
       - 'ai-tutor.html'
       - 'ai-tutor.js'
+      - 'tutor-answer-renderer.js'
       - 'ai-tutor.css'
       - 'supabase/functions/ledgerpeer-ai/**'
       - 'supabase/ai-tutor-groq-usage.sql'
       - 'supabase/ai-tutor-groq-refund.sql'
       - 'tests/ai-tutor-groq-regression.js'
+      - 'tests/ai-tutor-answer-renderer-regression.js'
       - '.github/workflows/ai-tutor-groq-regression.yml'
   pull_request:
     paths:
       - 'ai-tutor.html'
       - 'ai-tutor.js'
+      - 'tutor-answer-renderer.js'
       - 'ai-tutor.css'
       - 'supabase/functions/ledgerpeer-ai/**'
       - 'supabase/ai-tutor-groq-usage.sql'
       - 'supabase/ai-tutor-groq-refund.sql'
       - 'tests/ai-tutor-groq-regression.js'
+      - 'tests/ai-tutor-answer-renderer-regression.js'
   workflow_dispatch:
 permissions:
   contents: read
@@ -34,3 +38,5 @@ jobs:
         run: node --check ai-tutor.js
       - name: Verify AI Tutor integration contract
         run: node tests/ai-tutor-groq-regression.js
+      - name: Verify student-safe answer rendering
+        run: node tests/ai-tutor-answer-renderer-regression.js
