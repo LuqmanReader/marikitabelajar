@@ -168,8 +168,9 @@
   return allowed.has(target)?target:null;
  }
  function loginLanding(){
-  try{return safeDestination(new URL(location.href).searchParams.get('next'))||'hub.html';}
-  catch{return 'hub.html';}
+  // The homepage workspace is the default after login; keep explicit deep links intact.
+  try{return safeDestination(new URL(location.href).searchParams.get('next'))||'index.html#access';}
+  catch{return 'index.html#access';}
  }
  function signInUrl(next){
   const destination=safeDestination(next)||'classroom.html';
