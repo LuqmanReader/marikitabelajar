@@ -1,0 +1,61 @@
+/* LedgerPeer GroqCloud AI Tutor – original functional chat UI */
+:root{--tutor-ink:#19221c;--tutor-paper:#f7f4eb;--tutor-green:#167b43;--tutor-muted:#718075;--tutor-line:#cbd6cb}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body.tutor-page{margin:0;background:var(--tutor-paper);color:var(--tutor-ink);font-family:Inter,"Segoe UI",Arial,sans-serif}
+.tutor-layout{max-width:1240px;margin:0 auto;padding:32px 24px 70px}
+.tutor-header{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:9px}
+.tutor-brand{display:flex;align-items:center;gap:15px}.tutor-logo{display:flex;align-items:center}.tutor-logo img{width:62px;height:62px;object-fit:contain}
+.tutor-brand span{font-size:10px;letter-spacing:.16em;font-weight:900;color:#356b45}.tutor-brand h1{margin:2px 0 0;font-size:clamp(25px,4vw,43px);line-height:1.08;font-family:"Arial Black",Arial,sans-serif;letter-spacing:-.045em}
+.tutor-cursor{color:var(--tutor-green)}
+.tutor-back{border:1px solid var(--tutor-line)!important;border-radius:5px!important;background:#fff!important;box-shadow:none!important;color:var(--tutor-ink)!important}
+.tutor-intro{font-size:14px;line-height:1.65;color:#4e6253;max-width:690px;margin:13px 0 22px}
+.tutor-workspace{display:grid;grid-template-columns:minmax(230px,275px) minmax(0,1fr);gap:18px;align-items:stretch}
+.tutor-settings,.tutor-chat{background:#fff;border:1px solid var(--tutor-line);border-radius:10px;box-shadow:0 4px 24px #23432b0c;min-width:0}
+.tutor-settings{padding:22px}
+.tutor-section-title{display:flex;align-items:center;gap:10px;margin-bottom:18px;font-size:11px;letter-spacing:.1em;font-weight:900;color:#293d2f}
+.tutor-section-title span{display:grid;place-items:center;border:1px solid #a1c7a9;background:#e1f4e4;border-radius:5px;width:25px;height:25px;font-size:10px;color:var(--tutor-green)}
+.tutor-settings label{display:block;margin:16px 0 7px;font-size:11px;font-weight:900;letter-spacing:.05em;color:#344d38}
+.tutor-settings select{width:100%;min-height:42px;padding:10px;border:1px solid #b8c8bb;border-radius:6px;background:#f8faf8;color:#233f2b;font-size:13px;font-weight:650}
+.tutor-settings select:focus-visible,.tutor-clear:focus-visible,.tutor-composer textarea:focus-visible,.tutor-composer button:focus-visible{outline:2px solid #248c55;outline-offset:2px}
+.tutor-settings-divider{height:1px;background:#e1e8e1;margin:24px 0}
+.tutor-credits{display:flex;align-items:center;gap:12px;background:#f1faf3;padding:16px;border-radius:8px;border:1px solid #d2e8d7}
+.tutor-credits strong{font-size:37px;line-height:1;color:#16743e;font-weight:900;font-variant-numeric:tabular-nums}
+.tutor-credits span{font-size:12px;font-weight:800;line-height:1.45}.tutor-credits small{font-size:10px;font-weight:500;color:#647766}
+.tutor-settings-note{font-size:11px;line-height:1.6;color:#657568;margin:14px 0}
+.tutor-clear{width:100%;min-height:42px;border:1px solid #b9cbbc;background:#fff;color:#265a36;font-weight:900;font-size:11px;letter-spacing:.035em;border-radius:6px;cursor:pointer}
+.tutor-clear:hover{background:#edf6ef}
+.tutor-chat{display:flex;flex-direction:column;height:min(76vh,800px);min-height:560px;overflow:hidden}
+.tutor-chat-head{display:flex;align-items:center;gap:9px;padding:17px 20px;border-bottom:1px solid #dde8dd;background:#fbfefb}
+.tutor-online{background:#29a955;border-radius:50%;width:11px;height:11px;box-shadow:0 0 0 3px #daf4df}
+.tutor-chat-head strong{display:block;font-size:12px;letter-spacing:.065em}.tutor-chat-head small{display:block;margin-top:3px;color:#718074;font-size:10px}
+.tutor-version{margin-left:auto;font-size:10px;color:#24683a;background:#e4f4e9;padding:6px 9px;border-radius:99px;font-weight:900}
+.tutor-chat-log{display:flex;flex-direction:column;gap:15px;flex:1;padding:26px 22px;min-height:0;overflow-y:auto;overscroll-behavior:contain;background:radial-gradient(#d6e5d640 1px,transparent 1px);background-size:23px 23px}
+.tutor-message{display:flex;gap:10px;align-items:flex-start;max-width:95%}
+.tutor-message.is-user{align-self:flex-end;flex-direction:row-reverse}
+.tutor-avatar{display:grid;place-items:center;flex:0 0 31px;width:31px;height:31px;border-radius:7px;background:#d3ebd9;color:#167b43;font-size:11px;font-weight:900}
+.tutor-message.is-user .tutor-avatar{background:#edf0f1;color:#52645a}
+.tutor-bubble{max-width:100%;min-width:0;border-radius:9px;padding:13px 16px;background:#fff;border:1px solid #d1e0d4;box-shadow:0 2px 7px #1c45200b;font-size:13px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere}
+.tutor-message.is-user .tutor-bubble{background:#def4e4;border-color:#a8d7b4}
+.tutor-message.is-pending .tutor-bubble{color:#587462;font-style:italic}
+.tutor-welcome{margin:auto;text-align:center;max-width:510px;padding:16px 8px}
+.tutor-welcome-icon{display:grid;place-items:center;width:56px;height:56px;margin:0 auto 15px;background:#daf4e1;border:2px solid #6eb181;border-radius:15px;color:#167b43;font-weight:900;font-size:19px}
+.tutor-welcome h2{font-family:"Arial Black",Arial,sans-serif;font-size:clamp(19px,3vw,28px);letter-spacing:-.04em;margin:0 0 9px}
+.tutor-welcome p{font-size:13px;color:#617966;margin:0 0 20px}
+.tutor-starters{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.tutor-starters button{background:white;border:1px solid #bed3c3;border-radius:7px;padding:10px 13px;color:#27623d;font-size:11px;font-weight:800;cursor:pointer}
+.tutor-starters button:hover{background:#e7f7eb}
+.tutor-composer{border-top:1px solid #d9e6dc;background:white;padding:15px 20px 12px}
+#chatStatus{min-height:18px;margin:0 0 8px;color:#607667;font-size:11px;font-weight:700}
+#chatStatus.is-error{color:#ad3939}
+#chatForm{border:1px solid #aebfb2;border-radius:9px;overflow:hidden}
+#question{width:100%;max-height:180px;min-height:60px;resize:vertical;border:0!important;border-radius:0!important;box-shadow:none!important;font:500 13px/1.6 Inter,"Segoe UI",Arial,sans-serif;color:#243b2b;padding:12px 14px;background:white}
+.tutor-compose-actions{display:flex;align-items:center;gap:12px;padding:7px 9px 9px 13px}
+#counter{font-size:10px;color:#829086;font-weight:700}.tutor-keyboard{font-size:10px;color:#829086;margin-right:auto}
+#send{min-height:36px;background:#21804a;color:#fff;border:1px solid #16713e;border-radius:6px;padding:8px 13px;font-size:11px;font-weight:900;cursor:pointer}
+#send:disabled{opacity:.55;cursor:not-allowed}
+.tutor-footnote{margin:7px 0 0;font-size:10px;color:#728177;line-height:1.5}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:850px){.tutor-workspace{grid-template-columns:1fr}.tutor-settings{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}.tutor-section-title,.tutor-settings-divider,.tutor-settings-note,.tutor-credits,.tutor-clear{grid-column:1/-1}.tutor-settings label{margin-top:5px}.tutor-chat{height:min(77vh,750px)}}
+@media(max-width:580px){.tutor-layout{padding:17px 12px 60px}.tutor-logo img{width:48px;height:48px}.tutor-header{gap:10px}.tutor-settings{grid-template-columns:1fr;padding:16px}.tutor-chat{height:75vh;min-height:530px}.tutor-chat-log{padding:18px 12px}.tutor-message{max-width:100%}.tutor-composer{padding:12px}.tutor-keyboard{display:none}.tutor-message .tutor-bubble{font-size:12px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
