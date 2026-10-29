@@ -54,3 +54,10 @@ jobs:
         run: node tests/tymbaflex-ile-diagnostic-regression.js
       - name: Test FA2 MA2 revision dashboard and private progress
         run: node tests/tymbaflex-revision-dashboard-regression.js
+      - name: Package installable Chrome extension
+        uses: actions/upload-artifact@v4
+        with:
+          name: LedgerPeer-TYMBAFlex-ILE-Chrome
+          path: extension/tymbaflex-bridge/
+          if-no-files-found: error
+          retention-days: 30
