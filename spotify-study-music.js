@@ -4,6 +4,9 @@
 */
 (() => {
   'use strict';
+  // A single player lives in the parent workspace shell. Pages inside its
+  // same-origin content iframe never mount another Spotify iframe.
+  if (window.frameElement?.id === 'lpContentFrame') return;
   if (window.__ledgerpeerSpotifyWidgetLoaded) return;
   window.__ledgerpeerSpotifyWidgetLoaded = true;
 
@@ -91,7 +94,7 @@
             <button type="button" class="use">USE PLAYLIST</button>
             <span class="status" role="status" aria-live="polite"></span>
           </div>
-          <div class="foot"><span>${standalone ? "Keep this music window open while studying in other LedgerPeer pages." : "Open a separate window to keep music playing across pages."}</span><a href="https://open.spotify.com" target="_blank" rel="noopener noreferrer">OPEN SPOTIFY ↗</a></div>
+          <div class="foot"><span>${standalone ? 'Study Music inside LedgerPeer.' : 'Music stays playing as you navigate the same LedgerPeer tab.'}</span><a href="https://open.spotify.com" target="_blank" rel="noopener noreferrer">OPEN SPOTIFY ↗</a></div>
         </div>
       </section>`;
     document.body.appendChild(host);
@@ -133,25 +136,23 @@
       if(workspaceMusicButton){workspaceMusicButton.setAttribute('aria-expanded',String(open));workspaceMusicButton.setAttribute('aria-label',open?'Hide Study Music':'Open Study Music');}
       if (open) mountPlayer();
     }
-    function openDetachedPlayer(){
-      // Reuse the named window without reloading the Spotify iframe.
-      const url=new URL('study-music.html',location.href).href;
-      let player;
-      try{player=window.open('',PLAYER_NAME,'popup=yes,width=465,height=740,resizable=yes,scrollbars=yes');}
-      catch(error){player=null;}
-      if(!player){
+    function openPersistentMusic(){
+      // There is only one LedgerPeer tab. Its shell owns the Spotify iframe;
+      // navigating the content frame never destroys music playback.
+      if(/\/workspace\.html$/i.test(location.pathname)){
         openPanel(true);
-        el('.foot span').textContent='Pop-ups blocked. Allow LedgerPeer pop-ups to keep music playing across pages.';
         return;
       }
-      try{
-        if(player.location.href==='about:blank')player.location.replace(url);
-        else if(!player.location.href.startsWith(url))player.location.replace(url);
-        player.focus();
-      }catch(error){try{player.location.replace(url);}catch(_){}}
+      const page=location.pathname.split('/').pop()||'index.html';
+      const route=page+location.search+(location.hash||((page==='index.html')?'#access':''));
+      location.assign('workspace.html?music=1#'+encodeURIComponent(route));
     }
-    launcher.addEventListener('click',()=>standalone?openPanel(panel.hidden):openDetachedPlayer());
-    if(workspaceMusicButton)workspaceMusicButton.addEventListener('click',openDetachedPlayer);
+    window.LedgerPeerStudyMusic={open:openPersistentMusic,close:()=>openPanel(false)};
+    launcher.addEventListener('click',openPersistentMusic);
+    if(workspaceMusicButton){
+      workspaceMusicButton.addEventListener('click',openPersistentMusic);
+      launcher.hidden=true;
+    }
     close.addEventListener('click',()=>{openPanel(false);(workspaceMusicButton||launcher).focus();});
     select.addEventListener('change',()=>{
       const next=select.value;
@@ -183,6 +184,11 @@
     customInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();use.click();}});
 
     if(standalone){launcher.hidden=true;openPanel(true);return;}
+    if(/\/workspace\.html$/i.test(location.pathname)&&new URLSearchParams(location.search).get('music')==='1'){
+      openPanel(true);
+      const clean=new URL(location.href);clean.searchParams.delete('music');
+      history.replaceState(history.state,'',clean.pathname+clean.search+clean.hash);
+    }
     // The homepage contains the public login as well as #hubView. Show only after sign-in.
     const hubView=document.getElementById('hubView');
     if(hubView){

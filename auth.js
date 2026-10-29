@@ -185,9 +185,12 @@
   return allowed.has(target)?target:null;
  }
  function loginLanding(){
-  // The homepage workspace is the default after login; keep explicit deep links intact.
-  try{return safeDestination(new URL(location.href).searchParams.get('next'))||'index.html#access';}
-  catch{return 'index.html#access';}
+  // Keep the Spotify player alive in one top-level LedgerPeer workspace tab.
+  // When login runs in the shell iframe, navigate only that frame.
+  let next=null;
+  try{next=safeDestination(new URL(location.href).searchParams.get('next'));}catch{}
+  const destination=next||'index.html#access';
+  return window.self!==window.top?destination:'workspace.html#'+encodeURIComponent(destination);
  }
  function signInUrl(next){
   const destination=safeDestination(next);
@@ -333,7 +336,7 @@
 ;(() => {
   if (document.querySelector('script[data-ledgerpeer-spotify="true"]')) return;
   const script = document.createElement('script');
-  script.src = 'spotify-study-music.js?v=20261029-persistent-popout1';
+  script.src = 'spotify-study-music.js?v=20261029-single-tab-shell1';
   script.async = true;
   script.dataset.ledgerpeerSpotify = 'true';
   document.head.appendChild(script);

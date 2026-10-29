@@ -132,7 +132,8 @@ byId('profileForm').addEventListener('submit',async event=>{
   status('Profile saved. Opening your workspace…');
   const requested=new URLSearchParams(location.search).get('next');
   const destination=PersonalHubAuth.safeDestination(requested);
-  location.replace(destination&&destination!=='profile.html'?destination:'index.html#access');
+  const route=destination&&destination!=='profile.html'?destination:'index.html#access';
+  location.replace(window.self!==window.top?route:'workspace.html#'+encodeURIComponent(route));
  }catch(e){
   const duplicate=e?.code==='23505'||/duplicate key|unique constraint/i.test(e?.message||'');
   status(duplicate?'That username is already taken. Choose another.':('Could not save your profile: '+(e?.message||e)),true);

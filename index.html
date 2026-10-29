@@ -10,7 +10,7 @@
 <meta content="https://luqmanreader.github.io/marikitabelajar/" property="og:url"/>
 <meta content="https://luqmanreader.github.io/marikitabelajar/ledgerpeer-idle.png" property="og:image"/>
 <meta content="summary_large_image" name="twitter:card"/>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "LedgerPeer", "url": "https://luqmanreader.github.io/marikitabelajar/", "description": "LedgerPeer helps FIA and ACCA students turn exam attempts into focused revision, learn from original syllabus-aligned notes, and plan study sessions in one workspace."}</script><link href="favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="apple-touch-icon.png" rel="apple-touch-icon"/><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="supabase-config.js"></script><script src="auth.js?v=20261029-persistent-popout1"></script><style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "LedgerPeer", "url": "https://luqmanreader.github.io/marikitabelajar/", "description": "LedgerPeer helps FIA and ACCA students turn exam attempts into focused revision, learn from original syllabus-aligned notes, and plan study sessions in one workspace."}</script><link href="favicon-32.png" rel="icon" sizes="32x32" type="image/png"/><link href="apple-touch-icon.png" rel="apple-touch-icon"/><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="supabase-config.js"></script><script src="auth.js?v=20261029-single-tab-shell1"></script><style>
 /* LEDGERPEER — VIBRANT NEOBRUTALISM / v2
    Typeface is copied from the original Revision Hub CSS:
    headings: Arial Black -> Helvetica Neue -> Impact
@@ -433,7 +433,7 @@ body.lp-workspace-ready .header-actions .quiet-link{display:none}
     <div class="workspace-welcome"><span class="workspace-overline">MY LEDGERPEER · STUDENT WORKSPACE</span>
       <h2>WHAT ARE WE STUDYING TODAY?</h2>
       <p>Choose where you want to learn, practise, or review.</p></div>
-    <div class="workspace-utilities"><button id="workspaceMusicButton" type="button" title="Open persistent Study Music window">♫ STUDY MUSIC</button><button id="lockButton" class="lockbtn" type="button">SIGN OUT</button></div>
+    <div class="workspace-utilities"><button id="workspaceMusicButton" type="button" title="Keep Study Music playing while navigating LedgerPeer">♫ STUDY MUSIC</button><button id="lockButton" class="lockbtn" type="button">SIGN OUT</button></div>
   </div>
   <div class="workspace-start">
     <div><span class="workspace-overline">START HERE</span><strong>Ready for your next session?</strong><p>Open the notes library to choose an FIA–ACCA topic.</p></div>
@@ -539,6 +539,12 @@ authView.hidden=false;hubView.hidden=true;
     const ok=await A.ready();
     if(ok){
       const next=A.safeDestination(new URL(location.href).searchParams.get('next'));
+      // The public login can remain standalone; signed-in students use the
+      // persistent one-tab shell unless already inside its content iframe.
+      if(window.self===window.top){
+        location.replace('workspace.html#'+encodeURIComponent(next&&next!=='profile.html'?next:'index.html#access'));
+        return;
+      }
       if(next&&next!=='profile.html'){location.replace(next);return;}
       authView.hidden=true;hubView.hidden=false;
       document.body.classList.add('lp-workspace-ready');

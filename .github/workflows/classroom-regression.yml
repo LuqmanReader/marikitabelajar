@@ -2,6 +2,10 @@ name: LedgerPeer Classroom Regression
 on:
   push:
     paths:
+      - 'workspace.html'
+      - 'workspace-shell.js'
+      - 'workspace-shell.css'
+      - 'profile-page.js'
       - 'spotify-study-music.js'
       - 'study-music.html'
       - 'tests/study-music-persistence-regression.js'
@@ -36,6 +40,10 @@ on:
       - '.github/workflows/classroom-regression.yml'
   pull_request:
     paths:
+      - 'workspace.html'
+      - 'workspace-shell.js'
+      - 'workspace-shell.css'
+      - 'profile-page.js'
       - 'spotify-study-music.js'
       - 'study-music.html'
       - 'tests/study-music-persistence-regression.js'
