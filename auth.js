@@ -28,10 +28,27 @@
   return (a>>>0).toString(36)+'.'+(b>>>0).toString(36)+'.'+serialized.length;
  }
  function status(s,fail=false){
-  let el=document.getElementById('rhSyncStatus');
-  if(!el&&document.body){el=document.createElement('div');el.id='rhSyncStatus';el.setAttribute('role','status');el.setAttribute('aria-live','polite');el.style.cssText='position:fixed;bottom:12px;left:12px;z-index:99998;padding:8px 12px;border:3px solid #111;background:#ffcf24;color:#111;font:800 12px ui-monospace,monospace;max-width:min(330px,calc(100vw - 95px));box-shadow:3px 3px 0 #111';document.body.append(el);}
-  if(el){el.textContent=s;el.style.background=fail?'#ffcec8':'#ffcf24';}
- }
+   let el=document.getElementById('rhSyncStatus');
+   if(!el&&document.body){
+    el=document.createElement('div');
+    el.id='rhSyncStatus';el.setAttribute('role','status');el.setAttribute('aria-live','polite');
+    document.body.append(el);
+   }
+   if(!el)return;
+   const homeHost=document.querySelector('#hubView .workspace-utilities');
+   if(homeHost){
+    if(el.parentElement!==homeHost)homeHost.insertBefore(el,homeHost.querySelector('#lockButton'));
+    el.style.cssText='position:static;display:inline-flex;align-items:center;min-height:36px;max-width:200px;border:2px solid #111;background:#fff;color:#111;padding:5px 8px;font:800 11px ui-monospace,monospace;box-shadow:2px 2px 0 #111;white-space:nowrap;overflow:hidden;text-overflow:ellipsis';
+    el.textContent=fail?'Sync needs attention':(/pending|syncing|temporarily unavailable/i.test(s)?'Sync pending':(/on this device/i.test(s)?'Saved locally':'✓ Saved'));
+    el.title=s;el.style.background=fail?'#ffcec8':'#fff';
+   }else{
+    // Only errors float on study pages. Routine autosave feedback stays available to screen readers.
+    el.textContent=s;
+    el.style.cssText=fail
+     ?'position:fixed;right:14px;bottom:78px;z-index:99998;padding:9px 11px;border:3px solid #111;background:#ffcec8;color:#111;font:800 12px ui-monospace,monospace;max-width:min(340px,calc(100vw - 28px));box-shadow:3px 3px 0 #111'
+     :'position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap';
+   }
+  }
  function markDirty(){
   if(applying)return;
   const currentOwner=user?.id||get(OWNER);
