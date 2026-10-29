@@ -64,7 +64,7 @@ assert.equal(tags(root,'table').length,1,'Markdown table should become a semanti
 assert.equal(tags(root,'th').length,3,'Proper table headings should be created');
 assert.equal(tags(root,'td').length,6,'Table body must contain three columns');
 assert.equal(tags(root,'ol').length,1,'Numbered instructions should become a list');
-assert.equal(tags(root,'strong').length>=2,'Bold terms should be emphasized');
+assert.ok(tags(root,'strong').length>=2,'Bold terms should be emphasized');
 assert.equal(tags(root,'em').length,1,'Italics should be emphasized');
 assert.equal(tags(root,'pre').length,1,'Fenced code should become a code block');
 assert.equal(tags(root,'button').length,1,'Code blocks should have a copy button');
