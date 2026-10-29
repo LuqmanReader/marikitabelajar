@@ -1,0 +1,15 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs');
+const read=p=>fs.readFileSync(p,'utf8'),js=read('spotify-study-music.js'),page=read('study-music.html');
+assert.doesNotThrow(()=>new Function(js),'Study Music must parse');
+assert.ok(js.includes("window.open('',PLAYER_NAME"),'Player must open in reusable named window');
+assert.ok(js.includes("player.location.href==='about:blank'"),'Existing player must not navigate on re-opening');
+assert.ok(js.includes("player.location.replace(url)"),'New window loads player');
+assert.ok(js.includes("workspaceMusicButton.addEventListener('click',openDetachedPlayer)"),'Homepage button starts persistent player');
+assert.ok(js.includes('if(standalone)'),'Standalone mode must be supported');
+assert.ok(page.includes('data-ledgerpeer-music-player="true"')&&page.includes('spotify-study-music.js?v='),'Standalone popup must render player');
+assert.ok(page.includes('favicon-512.png'),'Preserve existing LedgerPeer logo');
+assert.ok(!page.includes('auth.js'),'Music window is independent of login page navigation');
+assert.ok(read('auth.js').includes('spotify-study-music.js?v=20261029-persistent-popout1'),'Active pages must load new music controller');
+assert.ok(read('index.html').includes('auth.js?v=20261029-persistent-popout1'),'Homepage must bust the old cache');
+console.log('PASS: independent persistent music window across LedgerPeer navigation');

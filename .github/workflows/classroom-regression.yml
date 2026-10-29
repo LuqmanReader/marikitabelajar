@@ -2,6 +2,9 @@ name: LedgerPeer Classroom Regression
 on:
   push:
     paths:
+      - 'spotify-study-music.js'
+      - 'study-music.html'
+      - 'tests/study-music-persistence-regression.js'
       - 'auth.js'
       - 'profile*'
       - 'classroom*'
@@ -33,6 +36,9 @@ on:
       - '.github/workflows/classroom-regression.yml'
   pull_request:
     paths:
+      - 'spotify-study-music.js'
+      - 'study-music.html'
+      - 'tests/study-music-persistence-regression.js'
       - 'auth.js'
       - 'profile*'
       - 'classroom*'
@@ -76,7 +82,9 @@ jobs:
           node --check classroom-page.js
           node --check productivity-core.js
       - name: Test onboarding and classroom integration
-        run: node tests/classroom-regression.js
+        run: |
+          node tests/classroom-regression.js
           node tests/back-navigation-regression.js
+          node tests/study-music-persistence-regression.js
       - name: Test profile multi-subject picker
         run: node tests/profile-multi-subject-regression.js

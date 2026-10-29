@@ -14,6 +14,8 @@
     piano: {label:'Peaceful Piano', id:'2CjqpIIpT2yriVzOqBIdiP'}
   });
   const KEY = 'ledgerpeer.spotify.playlist.v1';
+  const standalone = document.documentElement.dataset.ledgerpeerMusicPlayer === 'true';
+  const PLAYER_NAME = 'LedgerPeerStudyMusic';
   const readSaved = () => { try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch { return null; } };
   const save = (data) => { try { localStorage.setItem(KEY, JSON.stringify(data)); } catch { /* storage optional */ } };
   const spotifyPlaylist = (id) => `https://open.spotify.com/playlist/${id}`;
@@ -32,7 +34,8 @@
     if (document.getElementById('ledgerpeer-spotify-host')) return;
     const host = document.createElement('div');
     host.id = 'ledgerpeer-spotify-host';
-    host.style.cssText = 'position:fixed;inset:0;z-index:2147483000;pointer-events:none;';
+    host.style.cssText = standalone ? 'position:relative;z-index:1;pointer-events:auto;' : 'position:fixed;inset:0;z-index:2147483000;pointer-events:none;';
+    if(standalone)host.classList.add('standalone');
     const shadow = host.attachShadow({mode:'open'});
     shadow.innerHTML = `
       <style>
@@ -62,7 +65,10 @@
         .foot a{color:var(--lp-blue);text-decoration:underline;font-weight:900}
         .foot span{color:#444;max-width:205px}
         @keyframes up{from{transform:translateY(12px);opacity:0}to{transform:translateY(0);opacity:1}}
-        @media (max-width:400px){.body{padding:11px}.spotify-frame{height:220px}.panel{bottom:calc(72px + env(safe-area-inset-bottom,0px))}}
+        :host(.standalone) .launcher{display:none!important}
+        :host(.standalone) .panel{position:relative;left:auto;bottom:auto;width:min(440px,100%);max-height:none;overflow:visible;margin:0 auto;animation:none}
+        :host(.standalone) .x{display:none!important}
+        @media (max-width:400px){.body{padding:11px}.spotify-frame{height:220px}.panel{bottom:calc(72px + env(safe-area-inset-bottom,0px))}:host(.standalone) .panel{bottom:auto}}
         @media (prefers-reduced-motion:reduce){.panel{animation:none}.launcher{transition:none}}
       </style>
       <button class="launcher" type="button" aria-label="Open Study Music" aria-expanded="false" aria-controls="lp-spotify-panel"><span class="dot" aria-hidden="true"></span><span>♫ STUDY MUSIC</span></button>
@@ -85,7 +91,7 @@
             <button type="button" class="use">USE PLAYLIST</button>
             <span class="status" role="status" aria-live="polite"></span>
           </div>
-          <div class="foot"><span>Tap play yourself. Switching pages reloads this player.</span><a href="https://open.spotify.com" target="_blank" rel="noopener noreferrer">OPEN SPOTIFY ↗</a></div>
+          <div class="foot"><span>${standalone ? "Keep this music window open while studying in other LedgerPeer pages." : "Open a separate window to keep music playing across pages."}</span><a href="https://open.spotify.com" target="_blank" rel="noopener noreferrer">OPEN SPOTIFY ↗</a></div>
         </div>
       </section>`;
     document.body.appendChild(host);
@@ -127,8 +133,25 @@
       if(workspaceMusicButton){workspaceMusicButton.setAttribute('aria-expanded',String(open));workspaceMusicButton.setAttribute('aria-label',open?'Hide Study Music':'Open Study Music');}
       if (open) mountPlayer();
     }
-    launcher.addEventListener('click',()=>openPanel(panel.hidden));
-    if(workspaceMusicButton)workspaceMusicButton.addEventListener('click',()=>openPanel(panel.hidden));
+    function openDetachedPlayer(){
+      // Reuse the named window without reloading the Spotify iframe.
+      const url=new URL('study-music.html',location.href).href;
+      let player;
+      try{player=window.open('',PLAYER_NAME,'popup=yes,width=465,height=740,resizable=yes,scrollbars=yes');}
+      catch(error){player=null;}
+      if(!player){
+        openPanel(true);
+        el('.foot span').textContent='Pop-ups blocked. Allow LedgerPeer pop-ups to keep music playing across pages.';
+        return;
+      }
+      try{
+        if(player.location.href==='about:blank')player.location.replace(url);
+        else if(!player.location.href.startsWith(url))player.location.replace(url);
+        player.focus();
+      }catch(error){try{player.location.replace(url);}catch(_){}}
+    }
+    launcher.addEventListener('click',()=>standalone?openPanel(panel.hidden):openDetachedPlayer());
+    if(workspaceMusicButton)workspaceMusicButton.addEventListener('click',openDetachedPlayer);
     close.addEventListener('click',()=>{openPanel(false);(workspaceMusicButton||launcher).focus();});
     select.addEventListener('change',()=>{
       const next=select.value;
@@ -159,6 +182,7 @@
     });
     customInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();use.click();}});
 
+    if(standalone){launcher.hidden=true;openPanel(true);return;}
     // The homepage contains the public login as well as #hubView. Show only after sign-in.
     const hubView=document.getElementById('hubView');
     if(hubView){

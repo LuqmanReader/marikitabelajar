@@ -333,7 +333,7 @@
 ;(() => {
   if (document.querySelector('script[data-ledgerpeer-spotify="true"]')) return;
   const script = document.createElement('script');
-  script.src = 'spotify-study-music.js?v=20261029-workspace-ux';
+  script.src = 'spotify-study-music.js?v=20261029-persistent-popout1';
   script.async = true;
   script.dataset.ledgerpeerSpotify = 'true';
   document.head.appendChild(script);
