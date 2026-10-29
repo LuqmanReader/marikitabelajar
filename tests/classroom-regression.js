@@ -89,7 +89,7 @@ for(const page of ['calendar.html','study-planner.html']){
 }
 assert.ok(read('productivity-core.js').includes('class="site-back" href="index.html">← BACK TO HOME'),'Planner and Calendar must render a labelled home button');
 assert.ok(read('classroom.html').includes('aria-label="Return to homepage"'),'Classroom home button must be outside the gated chat and visible near the top');
-assert.ok(read('ai-tutor.html').includes('PersonalHubAuth.guard()'),'AI Tutor must honor the account gate');
+assert.ok(read('ai-tutor.html').includes('ai-tutor.js?v=')&&read('ai-tutor.js').includes('await auth.ready()')&&read('ai-tutor.js').includes('auth.isRedirectingToProfile'),'AI Tutor must enforce the authenticated profile-aware account gate');
 
 // Home routing + student navigation should remain intact.
 const homepage=read('index.html'),music=read('spotify-study-music.js');
