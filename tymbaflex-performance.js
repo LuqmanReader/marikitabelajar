@@ -56,7 +56,7 @@ function resolve(capture){
  const matches=[];
  for(const c of courses){
   if(c.source_host!==capture.source_host)continue;
-  if(capture.course_id&&c.course_id!==capture.course_id)continue;
+  if(!capture.quiz_url&&capture.course_id&&c.course_id!==capture.course_id)continue;
   for(const a of quizRows(c)){
    if(capture.quiz_url&&a.url!==capture.quiz_url)continue;
    matches.push({course:c,activity:a});
@@ -71,7 +71,7 @@ async function saveCapture(capture,target){
  if(!c||!a||c.source_host!==capture.source_host||
   !quizRows(c).some(x=>x.url===a.url))throw Error('Invalid course or quiz mapping.');
  if(capture.quiz_url&&capture.quiz_url!==a.url)throw Error('This review belongs to another quiz.');
- if(capture.course_id&&capture.course_id!==c.course_id)throw Error('This review belongs to another course.');
+ if(!capture.quiz_url&&capture.course_id&&capture.course_id!==c.course_id)throw Error('This review belongs to another course.');
  const row={user_id:user.id,source_host:c.source_host,course_id:c.course_id,
   quiz_url:a.url,attempt_id:capture.attempt_id,question_states:capture.question_states,
   captured_at:capture.captured_at};
@@ -82,7 +82,7 @@ async function saveCapture(capture,target){
 function selectOptions(capture){
  const options=[];
  for(const c of courses){
-  if(c.source_host!==capture.source_host||(capture.course_id&&capture.course_id!==c.course_id))continue;
+  if(c.source_host!==capture.source_host||(!capture.quiz_url&&capture.course_id&&capture.course_id!==c.course_id))continue;
   for(const q of quizRows(c)){
    if(capture.quiz_url&&q.url!==capture.quiz_url)continue;
    options.push({course:c,activity:q});
@@ -207,6 +207,26 @@ function render(){
   }
   details.append(list);untouched.append(details);
  }
+ const todoList=$('tfMoodleTodoList');
+ todoList.replaceChildren();
+ let todoTotal=0;
+ for(const c of selected){
+  const todo=c.activities.filter(a=>a.completion_status==='todo');
+  if(!todo.length)continue;
+  todoTotal+=todo.length;
+  const details=el('details',undefined,'tf-untouched-group');
+  const summary=el('summary',c.paper+' · '+(c.source_host.startsWith('ile.')?'ILE':'GROUP B')+' · '+todo.length+' marked To do');
+  details.append(summary);
+  const list=el('ol');
+  for(const activity of todo){
+   const li=el('li'),a=el('a',activity.name);
+   a.href=activity.url;a.target='_blank';a.rel='noopener noreferrer';
+   li.append(a);list.append(li);
+  }
+  details.append(list);todoList.append(details);
+ }
+ $('tfMoodleTodoCount').textContent=todoTotal+' To do activities in last imported snapshots';
+ if(!todoTotal)todoList.append(el('p','No explicit To do indicators are present in the saved course snapshots. Refresh the Bridge to import the latest completion labels.','tf-result-empty'));
  showPending();
 }
 async function importReviews(records){
