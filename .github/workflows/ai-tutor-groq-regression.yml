@@ -1,0 +1,34 @@
+name: LedgerPeer Groq AI Tutor Regression
+on:
+  push:
+    paths:
+      - 'ai-tutor.html'
+      - 'ai-tutor.js'
+      - 'ai-tutor.css'
+      - 'supabase/functions/ledgerpeer-ai/**'
+      - 'supabase/ai-tutor-groq-usage.sql'
+      - 'tests/ai-tutor-groq-regression.js'
+      - '.github/workflows/ai-tutor-groq-regression.yml'
+  pull_request:
+    paths:
+      - 'ai-tutor.html'
+      - 'ai-tutor.js'
+      - 'ai-tutor.css'
+      - 'supabase/functions/ledgerpeer-ai/**'
+      - 'supabase/ai-tutor-groq-usage.sql'
+      - 'tests/ai-tutor-groq-regression.js'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check browser script
+        run: node --check ai-tutor.js
+      - name: Verify AI Tutor integration contract
+        run: node tests/ai-tutor-groq-regression.js
