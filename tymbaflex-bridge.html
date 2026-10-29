@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" data-lp-page="tymbaflex-bridge">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#f7f4eb">
+<title>TYMBAFlex Bridge · LedgerPeer</title>
+<link rel="icon" href="favicon-32.png">
+<link rel="stylesheet" href="ledgerpeer-theme.css?v=20261011">
+<link rel="stylesheet" href="site-nav.css?v=20261028-unifiedback">
+<link rel="stylesheet" href="tymbaflex-bridge.css?v=1">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="supabase-config.js"></script><script src="auth.js"></script>
+<script defer src="tymbaflex-bridge-parser.js?v=1"></script>
+<script defer src="tymbaflex-bridge.js?v=1"></script>
+</head>
+<body class="tymbabridge-page">
+<main class="tb-page">
+ <header class="tb-header">
+  <div><p class="tb-overline">LEDGERPEER / CONNECTED LEARNING</p><h1>TYMBAFLEX <span>BRIDGE.</span></h1>
+   <p class="tb-subtitle">Import your own course list and activity links from TYMBAFlex into LedgerPeer. No passwords, copied sessions or unofficial login requests.</p></div>
+  <a class="tb-back" href="hub.html">← BACK TO LEDGERPEER</a>
+ </header>
+ <div id="tbStatus" role="status" aria-live="polite" class="tb-status">Checking your LedgerPeer account…</div>
+ <section class="tb-steps" aria-label="How to connect">
+  <div class="tb-step"><b>01 / SIGN IN</b><p>Open <a href="https://flex.tymbaedu.com/" target="_blank" rel="noopener noreferrer">TYMBAFlex</a> and sign in normally. Your browser's password manager can remember your password securely.</p></div>
+  <div class="tb-step"><b>02 / VERIFY</b><p>For safety, the portal email must match your verified LedgerPeer account email. The bridge never uploads the raw TYMBAFlex HTML.</p></div>
+  <div class="tb-step"><b>03 / SYNC</b><p>Use the browser extension with open course tabs, or import HTML pages you've saved yourself. Sync again to refresh course activities.</p></div>
+ </section>
+ <section class="tb-actions" aria-label="Connect TYMBAFlex">
+  <div class="tb-panel">
+   <h2>SYNC OPEN TYMBAFLEX TABS</h2>
+   <p>Install the LedgerPeer TYMBAFlex Bridge extension and keep your portal and FA2 / MA2 course tabs open. Click below to read those pages under your existing TYMBAFlex login.</p>
+   <button type="button" id="tbSyncTabs" class="tb-primary" disabled>SYNC OPEN TABS ↗</button>
+   <a class="tb-inline" href="https://github.com/LuqmanReader/marikitabelajar/tree/main/extension/tymbaflex-bridge" target="_blank" rel="noopener noreferrer">Extension setup files and instructions</a>
+  </div>
+  <div class="tb-panel">
+   <h2>IMPORT SAVED HTML FILES</h2>
+   <p>Already downloaded course pages? Choose your TYMBAFlex home page <strong>and</strong> any FA2 / MA2 course pages. Files are parsed in your browser; only sanitized course/activity fields are saved.</p>
+   <label class="tb-file-label" for="tbFiles">CHOOSE HTML FILES</label>
+   <input id="tbFiles" type="file" accept=".html,.htm,text/html" multiple disabled>
+   <button type="button" id="tbImport" class="tb-primary" disabled>IMPORT SELECTED FILES</button>
+  </div>
+ </section>
+ <section class="tb-data" aria-label="Saved courses">
+  <div class="tb-data-title"><div><p class="tb-overline">YOUR PRIVATE SNAPSHOTS</p><h2>CONNECTED COURSES</h2></div><button id="tbRefresh" type="button" disabled>REFRESH</button></div>
+  <p id="tbCount" class="tb-count">No courses loaded yet.</p>
+  <div id="tbCourses" class="tb-course-grid"></div>
+ </section>
+ <div class="tb-warning"><strong>Not an official TYMBAFlex API.</strong> The bridge imports visible course information from your own authenticated pages; it does not submit quizzes, read hidden grades, or automate login. Same email is an identity check, not a login token. If TYMBAFlex enables Moodle web services or official SSO integration, use that instead.</div>
+</main>
+</body>
+</html>
