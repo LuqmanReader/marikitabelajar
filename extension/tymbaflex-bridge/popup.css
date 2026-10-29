@@ -24,3 +24,16 @@ header p{margin:7px 0 0;font-size:11px;color:#34493a}.status{border:1px solid #a
 .pill.done{background:#d9efdb;color:#216337}.pill.todo{background:#fae4bb;color:#77501b}
 footer{margin-top:15px;border-top:2px solid #111;padding-top:10px;font-size:10px;color:#627060}
 footer p{margin:0 0 10px}footer a{color:#24623f;font-weight:900}
+
+.review-capture{background:#fff;border:2px solid #171a16;box-shadow:3px 3px 0 #111;padding:13px;margin:15px 3px 16px 0}
+.review-title{font:900 12px/1.4 Arial,sans-serif;letter-spacing:.055em;color:#144a2a}
+.review-capture p{color:#475a4c;font-size:10px;line-height:1.65;margin:7px 0 10px}
+.review-button{display:block;width:100%;padding:11px 8px;min-height:40px;border:2px solid #101810;background:#c5eacf;color:#18241b;font:900 11px Arial,sans-serif;cursor:pointer}
+.review-button:disabled{opacity:.55;cursor:not-allowed}
+.review-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:11px 0}
+.review-footer span{font-size:10px;font-weight:800}
+.review-footer button{cursor:pointer;background:#fff;border:1px solid #d8a5a5;color:#9d3636;font-size:9px;font-weight:900;padding:6px 8px}
+.review-capture .review-status{background:#f3f7f3;border:1px solid #c3d7c7;padding:8px;margin-top:8px}
+.review-capture .review-status:empty{display:none}
+.review-capture .review-status.bad{background:#ffe9e7;color:#a13d34;border-color:#d7a3a1}
+.review-capture a{display:inline-block;color:#185d35;font-weight:900;font-size:10px;text-decoration:underline;margin-top:5px}
