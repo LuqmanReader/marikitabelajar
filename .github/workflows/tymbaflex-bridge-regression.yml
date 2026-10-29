@@ -12,6 +12,9 @@ on:
       - 'extension/tymbaflex-bridge/**'
       - 'tests/tymbaflex-bridge-regression.js'
       - 'tests/tymbaflex-ile-diagnostic-regression.js'
+      - 'tests/tymbaflex-quiz-results-regression.js'
+      - 'supabase/tymbaflex-quiz-review-attempts.sql'
+      - 'tymbaflex-performance.js'
       - 'supabase/tymbaflex-bridge-schema.sql'
       - '.github/workflows/tymbaflex-bridge-regression.yml'
   pull_request:
@@ -26,6 +29,9 @@ on:
       - 'extension/tymbaflex-bridge/**'
       - 'tests/tymbaflex-bridge-regression.js'
       - 'tests/tymbaflex-ile-diagnostic-regression.js'
+      - 'tests/tymbaflex-quiz-results-regression.js'
+      - 'supabase/tymbaflex-quiz-review-attempts.sql'
+      - 'tymbaflex-performance.js'
       - 'supabase/tymbaflex-bridge-schema.sql'
   workflow_dispatch:
 permissions:
@@ -48,16 +54,21 @@ jobs:
           node --check extension/tymbaflex-bridge/service-worker.js
           node --check extension/tymbaflex-bridge/ile-diagnostic.js
           node --check extension/tymbaflex-bridge/popup.js
+          node --check extension/tymbaflex-bridge/quiz-review-capture.js
+          node --check extension/tymbaflex-bridge/review-capture-popup.js
+          node --check tymbaflex-performance.js
       - name: Test opt-in bridge security and parsing
         run: node tests/tymbaflex-bridge-regression.js
       - name: Test ILE FA2 MA2 tutorial diagnostic and completion
         run: node tests/tymbaflex-ile-diagnostic-regression.js
       - name: Test FA2 MA2 revision dashboard and private progress
         run: node tests/tymbaflex-revision-dashboard-regression.js
+      - name: Test student-owned quiz-review heatmap and Chrome extension bridge
+        run: node tests/tymbaflex-quiz-results-regression.js
       - name: Package installable Chrome extension
         uses: actions/upload-artifact@v4
         with:
-          name: LedgerPeer-TYMBAFlex-ILE-GroupB-Chrome-v0.3
+          name: LedgerPeer-TYMBAFlex-Quiz-Results-Chrome-v0.4
           path: extension/tymbaflex-bridge/
           if-no-files-found: error
           retention-days: 30
