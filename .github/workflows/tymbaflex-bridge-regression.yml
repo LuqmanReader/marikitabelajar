@@ -1,0 +1,35 @@
+name: LedgerPeer TYMBAFlex Bridge Regression
+on:
+  push:
+    paths:
+      - 'tymbaflex-bridge.*'
+      - 'extension/tymbaflex-bridge/**'
+      - 'tests/tymbaflex-bridge-regression.js'
+      - 'supabase/tymbaflex-bridge-schema.sql'
+      - '.github/workflows/tymbaflex-bridge-regression.yml'
+  pull_request:
+    paths:
+      - 'tymbaflex-bridge.*'
+      - 'extension/tymbaflex-bridge/**'
+      - 'tests/tymbaflex-bridge-regression.js'
+      - 'supabase/tymbaflex-bridge-schema.sql'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check browser code
+        run: |
+          node --check tymbaflex-bridge-parser.js
+          node --check tymbaflex-bridge.js
+          node --check extension/tymbaflex-bridge/tymba-content.js
+          node --check extension/tymbaflex-bridge/ledgerpeer-content.js
+          node --check extension/tymbaflex-bridge/service-worker.js
+      - name: Test opt-in bridge security and parsing
+        run: node tests/tymbaflex-bridge-regression.js
