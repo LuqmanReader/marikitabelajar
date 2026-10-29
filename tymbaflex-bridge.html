@@ -8,11 +8,11 @@
 <link rel="icon" href="favicon-32.png">
 <link rel="stylesheet" href="ledgerpeer-theme.css?v=20261011">
 <link rel="stylesheet" href="site-nav.css?v=20261028-unifiedback">
-<link rel="stylesheet" href="tymbaflex-bridge.css?v=1">
+<link rel="stylesheet" href="tymbaflex-bridge.css?v=2">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script><script src="auth.js"></script>
 <script defer src="tymbaflex-bridge-parser.js?v=1"></script>
-<script defer src="tymbaflex-bridge.js?v=1"></script>
+<script defer src="tymbaflex-bridge.js?v=2"></script>
 </head>
 <body class="tymbabridge-page">
 <main class="tb-page">
@@ -24,8 +24,14 @@
  <div id="tbStatus" role="status" aria-live="polite" class="tb-status">Checking your LedgerPeer account…</div>
  <section class="tb-steps" aria-label="How to connect">
   <div class="tb-step"><b>01 / SIGN IN</b><p>Open <a href="https://flex.tymbaedu.com/" target="_blank" rel="noopener noreferrer">TYMBAFlex</a> and sign in normally. Your browser's password manager can remember your password securely.</p></div>
-  <div class="tb-step"><b>02 / VERIFY</b><p>For safety, the portal email must match your verified LedgerPeer account email. The bridge never uploads the raw TYMBAFlex HTML.</p></div>
+  <div class="tb-step"><b>02 / VERIFY</b><p>Review the five HTML pages you saved. If you use a different email on TYMBAFlex, you can still import your own pages with explicit consent. We never copy passwords or sign-in sessions.</p></div>
   <div class="tb-step"><b>03 / SYNC</b><p>Use the browser extension with open course tabs, or import HTML pages you've saved yourself. Sync again to refresh course activities.</p></div>
+ </section>
+ <section class="tb-consent" aria-label="Permission to import">
+  <label for="tbConsent">
+    <input type="checkbox" id="tbConsent">
+    <span><strong>I confirm these are my own TYMBAFlex pages, or that I have permission to import them.</strong> I understand this is a course-data import, not an automatic login. My TYMBAFlex and LedgerPeer emails may be different.</span>
+  </label>
  </section>
  <section class="tb-actions" aria-label="Connect TYMBAFlex">
   <div class="tb-panel">
@@ -36,7 +42,7 @@
   </div>
   <div class="tb-panel">
    <h2>IMPORT SAVED HTML FILES</h2>
-   <p>Already downloaded course pages? Choose your TYMBAFlex home page <strong>and</strong> any FA2 / MA2 course pages. Files are parsed in your browser; only sanitized course/activity fields are saved.</p>
+   <p>Already downloaded course pages? Select all five HTML files together: <strong>TYMBAFlex Home</strong>, both FA2 pages and both MA2 pages. Files are parsed in your browser; only sanitized course/activity fields are saved.</p>
    <label class="tb-file-label" for="tbFiles">CHOOSE HTML FILES</label>
    <input id="tbFiles" type="file" accept=".html,.htm,text/html" multiple disabled>
    <button type="button" id="tbImport" class="tb-primary" disabled>IMPORT SELECTED FILES</button>
@@ -47,7 +53,7 @@
   <p id="tbCount" class="tb-count">No courses loaded yet.</p>
   <div id="tbCourses" class="tb-course-grid"></div>
  </section>
- <div class="tb-warning"><strong>Not an official TYMBAFlex API.</strong> The bridge imports visible course information from your own authenticated pages; it does not submit quizzes, read hidden grades, or automate login. Same email is an identity check, not a login token. If TYMBAFlex enables Moodle web services or official SSO integration, use that instead.</div>
+ <div class="tb-warning"><strong>Not an official TYMBAFlex API.</strong> The bridge imports visible course information from your own authenticated pages; it does not submit quizzes, read hidden grades, or automate login. A different email is allowed only after you explicitly confirm ownership of the uploaded pages. An email match is never a login token. If TYMBAFlex enables Moodle web services or official SSO integration, use that instead.</div>
 </main>
 </body>
 </html>
