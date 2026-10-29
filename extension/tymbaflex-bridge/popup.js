@@ -1,24 +1,27 @@
-/* User-triggered, strictly read-only ILE diagnostic. No persistent storage,
+/* User-triggered, strictly read-only ILE and Group B course diagnostic. No persistent storage,
  * no remote requests, no cookies, passwords, Moodle tokens or attempt data. */
 (()=>{
 'use strict';
 const $=id=>document.getElementById(id);
 const status=$('status'),scan=$('scan'),exportBtn=$('export'),results=$('results'),list=$('activityList');
 let report=null;
+const ALLOWED_HOSTS=new Set(['ile.flex.tymbaedu.com','twofive.flex.tymbaedu.com']);
+const MODS=new Set(['quiz','resource','assign','page','forum','lesson','url','book','folder','h5pactivity','scorm']);
 const show=(message,error=false)=>{status.textContent=message;status.classList.toggle('bad',error);};
 const text=(id,value)=>{$(id).textContent=String(value);};
-const safeItem=item=>{
+const safeItem=(item,host)=>{
  if(!item||typeof item!=='object')return null;
  try{
   const u=new URL(item.url);
-  if(u.protocol!=='https:'||u.hostname!=='ile.flex.tymbaedu.com'
-    ||!/^\/mod\/[a-z_]+\/view\.php$/.test(u.pathname)
+  const match=/^\/mod\/([a-z_]+)\/view\.php$/.exec(u.pathname);
+  if(u.protocol!=='https:'||!ALLOWED_HOSTS.has(host)||u.hostname!==host
+    ||!match||!MODS.has(match[1])
     ||!/^\d{1,12}$/.test(u.searchParams.get('id')||''))return null;
   const category=String(item.category||'other').slice(0,32);
   return {name:String(item.name||'').slice(0,140),chapter:String(item.chapter||'').slice(0,105),
    category,kind:String(item.kind||'').slice(0,25),
    completion:['done','todo'].includes(item.completion)?item.completion:'unknown',
-   url:'https://ile.flex.tymbaedu.com'+u.pathname+'?id='+u.searchParams.get('id')};
+   url:'https://'+host+u.pathname+'?id='+u.searchParams.get('id')};
  }catch{return null;}
 };
 function render(){
@@ -49,24 +52,27 @@ async function diagnose(){
   const tabs=await chrome.tabs.query({active:true,currentWindow:true}),tab=tabs?.[0];
   if(!Number.isInteger(tab?.id))throw Error('No active Chrome tab could be found.');
   const u=new URL(tab.url||'');
-  if(u.origin!=='https://ile.flex.tymbaedu.com'||u.pathname!=='/course/view.php')
-   throw Error('Open an ILE course page (FA2 or MA2) and try again.');
-  show('Inspecting visible course activities in the current ILE tab…');
+  if(u.protocol!=='https:'||!ALLOWED_HOSTS.has(u.hostname)||u.pathname!=='/course/view.php'||!/^[0-9]{1,12}$/.test(u.searchParams.get('id')||''))
+   throw Error('Open an ILE or Group B FA2/MA2 course overview and try again.');
+  show('Inspecting visible course activities in the current TYMBAFlex tab…');
   let result;
-  try{result=await chrome.tabs.sendMessage(tab.id,{type:'LP_DIAG_ILE_COURSE'});}
-  catch{throw Error('Chrome cannot read this tab yet. Refresh the ILE page, or reload the extension at chrome://extensions.');}
-  if(!result?.ok)throw Error(result?.error||'Unsupported ILE page or not signed in.');
-  const items=(Array.isArray(result.items)?result.items:[]).slice(0,200).map(safeItem).filter(Boolean);
+  try{result=await chrome.tabs.sendMessage(tab.id,{type:'LP_DIAG_TYMBA_COURSE'});}
+  catch{throw Error('Chrome cannot read this tab yet. Refresh the FA2/MA2 course page, or reload the extension at chrome://extensions.');}
+  if(!result?.ok)throw Error(result?.error||'Unsupported Moodle course page or not signed in.');
+  if(result.host!==u.hostname||String(result.course_id)!==u.searchParams.get('id'))
+   throw Error('The course report does not match the active tab. Please refresh and scan again.');
+  const items=(Array.isArray(result.items)?result.items:[]).slice(0,200).map(item=>safeItem(item,u.hostname)).filter(Boolean);
   if(!items.length)throw Error('No visible course activities found. Check you are signed in and viewing an actual course overview.');
-  report={version:1,source:'ILE course overview',course_id:String(result.course_id||''),
-   course_url:'https://ile.flex.tymbaedu.com/course/view.php?id='+encodeURIComponent(result.course_id),
+  const site=u.hostname.startsWith('twofive.')?'GROUP B / TWOFIVE':'ILE';
+  report={version:2,source:site+' course overview',host:u.hostname,course_id:String(result.course_id||''),
+   course_url:'https://'+u.hostname+'/course/view.php?id='+encodeURIComponent(result.course_id),
    title:String(result.title||'').slice(0,150),
    scanned_at:new Date().toISOString(),items};
   const totals={quiz:items.filter(x=>x.kind==='quiz').length,
    tutorials:items.filter(x=>x.category==='tutorial').length,
    chapterSets:items.filter(x=>x.category==='chapter_set').length,
    done:items.filter(x=>x.completion==='done').length};
-  text('courseId','ILE COURSE '+report.course_id);
+  text('courseId',site+' · COURSE '+report.course_id);
   text('courseTitle',report.title);
   text('scannedAt','Scanned '+new Date(report.scanned_at).toLocaleString()+' · '+items.length+' activities');
   text('quizCount',totals.quiz);text('tutorialCount',totals.tutorials);
@@ -84,7 +90,7 @@ function exportReport(){
  const blob=new Blob([JSON.stringify(report,null,2)],{type:'application/json'});
  const url=URL.createObjectURL(blob);
  const a=document.createElement('a');a.href=url;
- a.download='tymbaflex-ile-course-'+report.course_id+'-diagnostic.json';a.click();
+ a.download='tymbaflex-'+(report.host.startsWith('twofive.')?'group-b':'ile')+'-course-'+report.course_id+'-diagnostic.json';a.click();
  setTimeout(()=>URL.revokeObjectURL(url),3000);
 }
 scan.addEventListener('click',diagnose);
