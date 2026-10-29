@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "LedgerPeer TYMBAFlex Bridge",
-  "version": "0.2.0",
-  "description": "Read-only diagnostic for ILE FA2/MA2 tutorials, chapter sets, and completion; optionally sync course outlines to LedgerPeer.",
+  "version": "0.3.0",
+  "description": "Read-only Chrome diagnostics for TYMBAFlex ILE and Group B FA2/MA2 course activities, tutorials and completion.",
   "permissions": [
     "tabs"
   ],
@@ -30,7 +30,8 @@
     },
     {
       "matches": [
-        "https://ile.flex.tymbaedu.com/*"
+        "https://ile.flex.tymbaedu.com/*",
+        "https://twofive.flex.tymbaedu.com/*"
       ],
       "js": [
         "parser.js",
@@ -49,7 +50,7 @@
     }
   ],
   "action": {
-    "default_title": "TYMBAFlex ILE Diagnostic",
+    "default_title": "TYMBAFlex Course Diagnostic (ILE + Group B)",
     "default_popup": "popup.html"
   }
 }
