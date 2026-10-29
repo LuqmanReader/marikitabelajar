@@ -11,7 +11,7 @@
 <script src="supabase-config.js"></script><script src="auth.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/marked@18.1.0/lib/marked.umd.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/dompurify@3.4.16/dist/purify.min.js"></script>
-<script defer src="ai-tutor.js?v=groq4"></script>
+<script defer src="ai-tutor.js?v=groq5"></script>
 </head>
 <body class="tutor-page">
 <main class="tutor-layout">
@@ -34,7 +34,7 @@
   <select id="mode"><option value="explain">Explain step by step</option><option value="hints">Guide me with hints</option><option value="check">Check my answer</option><option value="quiz">Quiz me</option></select>
   <div class="tutor-settings-divider"></div>
   <div class="tutor-section-title"><span>02</span> DAILY ACCESS</div>
-  <div class="tutor-credits"><strong id="remaining">—</strong><span>messages remaining<br><small>maximum 50 / UTC day</small></span></div>
+  <div class="tutor-credits"><strong id="remaining">—</strong><span>messages remaining<br><small>maximum <span id="dailyLimit">50</span> / UTC day</small></span></div>
   <p class="tutor-settings-note">GroqCloud's free tier has shared limits. Replies may temporarily be unavailable when the site's allowance is reached.</p>
   <button type="button" id="clear" class="tutor-clear">↻ NEW CONVERSATION</button>
   <p class="tutor-settings-note">Chats stay in this browser tab's session, not in a public classroom. Avoid sharing personal or confidential information.</p>
