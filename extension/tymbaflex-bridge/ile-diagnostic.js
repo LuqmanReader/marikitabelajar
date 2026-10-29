@@ -1,8 +1,8 @@
-/* ILE course-page diagnostic. Read-only; never reads account info, passwords,
+/* TYMBAFlex ILE + Group B Moodle course diagnostic. Read-only; no passwords,
  * auth headers, CSRF tokens, cookies, grades, quiz attempts, or source HTML. */
 (function(){
 'use strict';
-const HOST='ile.flex.tymbaedu.com';
+const HOSTS=new Set(['ile.flex.tymbaedu.com','twofive.flex.tymbaedu.com']);
 const MAX=200;
 const clean=(v,n=120)=>String(v||'').replace(/\s+/g,' ').trim().slice(0,n);
 function classify(name,type){
@@ -26,16 +26,16 @@ function completion(row){
 function inspect(doc,url){
  let page;
  try{page=new URL(url);}catch{return {ok:false,error:'Invalid course URL.'};}
- if(page.protocol!=='https:'||page.hostname!==HOST||page.pathname!=='/course/view.php'
+ if(page.protocol!=='https:'||!HOSTS.has(page.hostname)||page.pathname!=='/course/view.php'
     ||!/^\d{1,12}$/.test(page.searchParams.get('id')||''))
-  return {ok:false,error:'Open an ILE FA2 or MA2 course overview (course/view.php?id=...).'};
- const courseId=page.searchParams.get('id'),items=[],seen=new Set(),sections=doc.querySelectorAll('.course-section');
+  return {ok:false,error:'Open a TYMBAFlex ILE or Group B FA2/MA2 course overview (course/view.php?id=...).'};
+ const host=page.hostname,courseId=page.searchParams.get('id'),items=[],seen=new Set(),sections=doc.querySelectorAll('.course-section');
  for(const section of sections){
   const chapter=clean(section.getAttribute('data-sectionname')||section.querySelector('.sectionname')?.textContent||'General',105);
   for(const row of section.querySelectorAll('li.activity[data-id]')){
    const anchor=row.querySelector('.activityname a[href]');
    if(!anchor)continue;
-   const link=window.TymbaBridgeParser?.safeActivity(anchor.getAttribute('href'),HOST);
+   const link=window.TymbaBridgeParser?.safeActivity(anchor.getAttribute('href'),host);
    if(!link||seen.has(link.url))continue;
    seen.add(link.url);
    const name=clean(row.querySelector('.activity-item[data-activityname]')?.getAttribute('data-activityname')||
@@ -61,15 +61,17 @@ function inspect(doc,url){
   unknown:items.filter(x=>x.completion==='unknown').length
  };
  return {
-  ok:true,host:HOST,course_id:courseId,course_url:'https://'+HOST+'/course/view.php?id='+courseId,
+  ok:true,host,site:host.startsWith('twofive.')?'Group B / TwoFive':'ILE',course_id:courseId,course_url:'https://'+host+'/course/view.php?id='+courseId,
   title,scanned_at:new Date().toISOString(),sections:sections.length,totals,
   items,notes:['Activity completion is not a quiz grade.','Unknown means the overview has no recognizable Done/To do indicator.','This report reflects only the open course page, not private attempt results.']
  };
 }
-window.LedgerPeerILEDiagnostic={inspect,classify,completion};
+window.LedgerPeerCourseDiagnostic={inspect,classify,completion};
+// Preserve the previous ILE diagnostic API for existing clients.
+window.LedgerPeerILEDiagnostic=window.LedgerPeerCourseDiagnostic;
 if(typeof chrome!=='undefined'&&chrome.runtime?.onMessage){
  chrome.runtime.onMessage.addListener((message,sender,respond)=>{
-  if(message?.type!=='LP_DIAG_ILE_COURSE')return;
+  if(!['LP_DIAG_ILE_COURSE','LP_DIAG_TYMBA_COURSE'].includes(message?.type))return;
   // Popup may ask, but only this page's DOM can be inspected.
   respond(inspect(document,location.href));
  });
