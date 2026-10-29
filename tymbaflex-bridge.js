@@ -2,12 +2,12 @@
 (()=>{'use strict';
 const $=id=>document.getElementById(id);
 const status=$('tbStatus'), courses=$('tbCourses'), count=$('tbCount');
-const importBtn=$('tbImport'),syncBtn=$('tbSyncTabs'),refreshBtn=$('tbRefresh'),fileInput=$('tbFiles');
+const importBtn=$('tbImport'),syncBtn=$('tbSyncTabs'),refreshBtn=$('tbRefresh'),fileInput=$('tbFiles'),consent=$('tbConsent');
 const parser=window.TymbaBridgeParser;
 let client,user,busy=false,pendingSync=null;
 function notify(text,error=false){status.textContent=text;status.classList.toggle('error',Boolean(error));}
 function setBusy(on){
- busy=on;importBtn.disabled=on||!user;syncBtn.disabled=on||!user;refreshBtn.disabled=on||!user;fileInput.disabled=on||!user;
+ busy=on;importBtn.disabled=on||!user||!consent.checked;syncBtn.disabled=on||!user||!consent.checked;refreshBtn.disabled=on||!user;fileInput.disabled=on||!user;
 }
 function create(tag,text,className){
  const node=document.createElement(tag);if(text!==undefined)node.textContent=String(text);
@@ -20,10 +20,14 @@ function normalize(s){return String(s||'').trim().toLowerCase();}
 function sourceCourses(snapshots){
  if(!Array.isArray(snapshots))throw Error('No readable TYMBAFlex pages were found.');
  if(snapshots.length>30)throw Error('Maximum 30 pages per sync.');
- const portal=snapshots.find(x=>x?.kind==='portal'&&typeof x.email==='string');
- if(!portal)throw Error('Open or upload the TYMBAFlex HOME page too, so we can verify your account email.');
- if(!user?.email||normalize(portal.email)!==normalize(user.email))
-  throw Error('The TYMBAFlex email does not match your LedgerPeer sign-in email. For security, the bridge cannot connect these accounts automatically.');
+ if(!consent.checked)throw Error('Confirm that you own these TYMBAFlex pages before importing.');
+ const portal=snapshots.find(x=>x?.kind==='portal'&&Array.isArray(x.courses));
+ if(!portal)throw Error('Include Home - TYMBAFlex.html with the course pages so we can verify the course list.');
+ // Portal and LedgerPeer email addresses may legitimately differ. This is
+ // an explicitly consented course-data import, NEVER single sign-on.
+ // The portal email is used only locally, not uploaded to LedgerPeer.
+ const sameEmail=Boolean(user?.email&&portal.email&&normalize(portal.email)===normalize(user.email));
+ if(!sameEmail&&typeof portal.email!=='string')throw Error('Invalid TYMBAFlex Home page.');
  const allowed=new Set((portal.courses||[]).map(c=>c.source_host+':'+c.course_id));
  if(!allowed.size)throw Error('Your TYMBAFlex portal page contains no recognized courses.');
  const map=new Map();
@@ -46,7 +50,7 @@ async function persist(snapshots){
  const {error}=await client.from('tymbaflex_bridge_courses')
    .upsert(upserts,{onConflict:'user_id,source_host,course_id'});
  if(error)throw Error(error.message||'Unable to save course snapshots.');
- notify('Saved '+rows.length+' course(s) to your private LedgerPeer account. No passwords, SSO links or raw HTML were transferred.');
+ notify('Imported '+rows.length+' course(s). Your TYMBAFlex password, email, SSO links and original HTML were not saved.');
  await load();
 }
 function courseCard(c){
@@ -97,6 +101,7 @@ async function load(){
 }
 async function importSaved(){
  if(busy)return;
+ if(!consent.checked){notify('Confirm ownership of these course pages before importing.',true);return;}
  const files=[...fileInput.files];
  if(!files.length){notify('Choose TYMBAFlex HTML files first.',true);return;}
  if(files.length>30){notify('Import up to 30 files at once.',true);return;}
@@ -117,6 +122,7 @@ async function importSaved(){
 }
 function syncTabs(){
  if(busy)return;
+ if(!consent.checked){notify('Confirm that you own your TYMBAFlex pages before syncing.',true);return;}
  if(pendingSync){notify('A sync request is already running.',true);return;}
  const requestId=crypto.randomUUID();
  notify('Checking open, signed-in TYMBAFlex tabs through the optional browser extension…');
@@ -152,6 +158,7 @@ async function start(){
   setBusy(false);await load();
  }catch(e){notify(e.message||'Cannot open the bridge.',true);setBusy(true);}
 }
+consent.addEventListener('change',()=>{setBusy(busy);if(consent.checked)notify('Import permission confirmed. Choose all five HTML files or sync your open TYMBAFlex tabs.');});
 importBtn.addEventListener('click',importSaved);
 syncBtn.addEventListener('click',syncTabs);
 refreshBtn.addEventListener('click',async()=>{setBusy(true);try{await load();notify('Your saved courses are up to date.');}catch(e){notify(e.message,true);}finally{setBusy(false);}});
