@@ -312,6 +312,46 @@ body > .lp-header {z-index:50;}
 @media (prefers-reduced-motion:reduce) {
  #lpHomepageField.lp-home-interactive-field{opacity:.65}
 }
+
+/* Signed-in student workspace (2026-10-29): compact, task-first navigation. */
+#hubView .workspace-head{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;margin:2px 0 18px}
+#hubView .workspace-welcome{flex:1 1 320px}
+#hubView .workspace-overline{display:block;font-size:10px;font-weight:900;letter-spacing:.1em;margin-bottom:6px}
+#hubView .workspace-welcome h2{font-size:clamp(26px,3vw,40px);line-height:1.05;margin:6px 0}
+#hubView .workspace-welcome p{margin:0;font-size:13px;font-weight:700}
+#hubView .workspace-utilities{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+#hubView #workspaceMusicButton{border:3px solid #111;background:#fff;padding:10px 13px;box-shadow:3px 3px 0 #111;font-size:11px;font-weight:900;min-height:44px;cursor:pointer}
+#hubView #workspaceMusicButton:hover{background:#36d98b}
+#hubView .lockbtn{min-height:44px}
+#hubView .workspace-start{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;padding:16px 20px;background:#fff7e4;border:3px solid #111;box-shadow:4px 4px 0 #111;margin:0 0 22px}
+#hubView .workspace-start strong{display:block;font:900 18px/1.2 "Arial Black",Impact,sans-serif}
+#hubView .workspace-start p{font-size:12px;margin:4px 0 0}
+#hubView .workspace-start-link{display:inline-flex;background:#2956ff;border:3px solid #111;box-shadow:3px 3px 0 #111;color:white;text-decoration:none;padding:10px 13px;min-height:44px;align-items:center;font-size:11px;font-weight:900}
+#hubView .workspace-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+#hubView .workspace-card{display:flex;flex-direction:column;min-width:0;padding:20px 22px;min-height:184px;border:4px solid #111;box-shadow:5px 5px 0 #111;color:#111;text-decoration:none;transition:transform .12s ease,box-shadow .12s ease}
+#hubView .workspace-card:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 #111}
+#hubView .workspace-label{align-self:flex-start;font-size:10px;font-weight:900;letter-spacing:.05em;padding:5px 8px;background:#fff;border:2px solid #111}
+#hubView .workspace-card h3{font-size:clamp(22px,2vw,29px);line-height:1.1;margin:13px 0 8px}
+#hubView .workspace-card p{font-size:12px;line-height:1.55;margin:0 0 17px}
+#hubView .workspace-open{font-size:11px;font-weight:900;align-self:flex-start;border-bottom:2px solid #111;margin-top:auto}
+#hubView .notes-card{background:#c8d4ff}#hubView .quiz-card{background:#ffda4b}#hubView .revision-card{background:#bcead0}#hubView .classroom-card{background:#ffab87}
+#hubView .workspace-more{margin:24px 0 10px}#hubView .workspace-more h3{font-size:14px;margin:0 0 12px}
+#hubView .workspace-other{display:flex;flex-wrap:wrap;gap:11px}
+#hubView .workspace-other a{display:inline-flex;align-items:center;background:#fff;border:3px solid #111;box-shadow:3px 3px 0 #111;color:#111;padding:9px 12px;min-height:44px;text-decoration:none;font-size:11px;font-weight:900}
+#hubView .workspace-other a:hover{background:#ffda4b}
+body.lp-workspace-ready #top > :not(.portal-zone){display:none!important}
+body.lp-workspace-ready .portal-zone{margin-top:26px;margin-bottom:40px}
+body.lp-workspace-ready .portal-heading{display:none}
+body.lp-workspace-ready .header-actions .quiet-link{display:none}
+@media(max-width:740px){
+ #hubView .workspace-grid{grid-template-columns:1fr;gap:14px}
+ #hubView .workspace-card{min-height:0;padding:18px}
+ #hubView .workspace-card h3{font-size:24px}
+ #hubView .workspace-start-link{width:100%;justify-content:center}
+ #hubView .workspace-utilities{width:100%}
+ #hubView .workspace-utilities .lockbtn{margin-left:auto}
+}
+@media(prefers-reduced-motion:reduce){#hubView .workspace-card{transition:none}}
 </style><script defer src="homepage-reactive.js?v=20261022scrollsynced3"></script></head><body><canvas id="lpHomepageField" class="lp-home-interactive-field" aria-hidden="true"></canvas><div aria-hidden="true" class="colour-ribbon"></div><header class="lp-header">
 <a aria-label="LedgerPeer homepage" class="brand" href="#top">
 <img alt="" height="45" src="ledgerpeer-sidebar-logo.png" width="45"/>
@@ -387,7 +427,34 @@ body > .lp-header {z-index:50;}
 <p>LESS GUESSWORK. MORE PROGRESS.</p>
 <h2>STUDY SMARTER.<br/><span>GROW BOLDER.</span></h2>
 <a class="outro-cta" href="#access">LET'S GET STARTED ↗</a>
-</section><section aria-label="Student access" class="portal-zone"><div class="portal-heading"><div><span class="pill">STUDENT ACCESS</span><h2>YOUR SPACE STARTS HERE.</h2></div><p>No forced intro. Log in anytime—or return straight to your workspace when you are signed in.</p></div><main class="wrap" id="access"><section class="lockbox" hidden="" id="authView"><span class="locktag">Student account · Self-registration</span><h2 id="authTitle">Student Log In</h2><div class="auth-tabs" id="authTabs"><button class="active" id="loginTab" type="button">Log In</button><button id="signupTab" type="button">Sign Up</button></div><p id="authCopy"></p><label class="field-label" for="email">Email address</label><input autocomplete="off" id="email" placeholder="Student email address" required="" type="email"/><label class="field-label" for="password">Password</label><input autocomplete="off" id="password" placeholder="Password" type="password"/><label class="field-label" for="confirm" id="confirmLabel" hidden>Confirm password</label><input autocomplete="new-password" hidden="" id="confirm" placeholder="Confirm password" type="password"/><label class="field-label" for="verifyCode" id="verifyLabel" hidden>8-digit verification code</label><input id="verifyCode" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{8}" maxlength="8" placeholder="Enter 8-digit code" hidden/><button class="btn" id="authButton">Log In →</button><div class="auth-links"><button class="auth-link" id="forgotButton" type="button">Forgot password?</button><button class="auth-link" hidden="" id="resendCodeButton" type="button">Resend verification code</button><button class="auth-link" hidden="" id="backButton" type="button">← Back to log in</button></div><p class="notice" id="notice" role="status"></p><div class="error" id="error" role="alert"></div></section><section hidden="" id="hubView"><div class="topbar"><button class="lockbtn" id="lockButton">Lock hub</button></div><div class="grid"><a class="card dashboard" href="hub.html"><span class="tag">Section 01 · Academic</span><h2>Revision Dashboard</h2><p><strong>Academic performance &amp; revision section.</strong> Turn exam attempts into useful revision decisions and see what to work on next.</p><div class="features">EXAM DEBRIEFS · CONFIDENCE CALIBRATION<br/>TOPIC MASTERY · RETRY MISTAKES · PROGRESS</div><span class="go">Enter academic section →</span></a><a class="card notes" href="notes.html?edition=fia-2"><span class="tag">Section 02 · Learning</span><h2>FIA–ACCA Notes Library</h2><p><strong>Study the topic you got wrong.</strong> Explore syllabus-aligned explanations, accounting workings, formulas, exam traps and quick self-checks.</p><div class="features">10 FIA PAPERS · 15 ACCA PAPERS<br/>700 SYLLABUS HEADINGS · EXPANDED CORE LESSONS<br/>OFFICIAL ACCA STUDY RESOURCES</div><span class="go">Explore the notes library →</span></a><a class="card tymbaflex" href="tymbaflex-revision.html"><span class="tag">Section 03 · TYMBAFlex</span><h2>TYMBAFlex Revision</h2><p><strong>Your college revision workspace.</strong> Organise imported FA2 and MA2 activities, find course materials, and track what to revise next.</p><div class="features">FA2 &amp; MA2 COURSE WORKSPACES<br/>QUIZZES · VIDEOS &amp; NOTES · STUDY MATERIALS<br/>PERSONAL REVISION QUEUE · PROGRESS</div><span class="go">Enter TYMBAFlex revision →</span></a></div><nav class="quick-links"><a class="go" href="classroom.html">▤ CLASSROOM / STUDY COMMONS →</a><a class="go" href="ai-tutor.html">✦ AI Tutor →</a><a class="go" href="calendar.html">▦ Calendar →</a><a class="go" href="study-planner.html">☑ Study Planner →</a></nav></section><footer>LedgerPeer · Cloud-backed student accounts</footer></main></section></main><footer class="site-footer"><span>© LEDGERPEER · STUDENT WORKSPACE</span><a href="#top">BACK TO HOME ↗</a><span>MADE TO MAKE PROGRESS VISIBLE.</span></footer><script>
+</section><section aria-label="Student access" class="portal-zone"><div class="portal-heading"><div><span class="pill">STUDENT ACCESS</span><h2>YOUR SPACE STARTS HERE.</h2></div><p>No forced intro. Log in anytime—or return straight to your workspace when you are signed in.</p></div><main class="wrap" id="access"><section class="lockbox" hidden="" id="authView"><span class="locktag">Student account · Self-registration</span><h2 id="authTitle">Student Log In</h2><div class="auth-tabs" id="authTabs"><button class="active" id="loginTab" type="button">Log In</button><button id="signupTab" type="button">Sign Up</button></div><p id="authCopy"></p><label class="field-label" for="email">Email address</label><input autocomplete="off" id="email" placeholder="Student email address" required="" type="email"/><label class="field-label" for="password">Password</label><input autocomplete="off" id="password" placeholder="Password" type="password"/><label class="field-label" for="confirm" id="confirmLabel" hidden>Confirm password</label><input autocomplete="new-password" hidden="" id="confirm" placeholder="Confirm password" type="password"/><label class="field-label" for="verifyCode" id="verifyLabel" hidden>8-digit verification code</label><input id="verifyCode" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{8}" maxlength="8" placeholder="Enter 8-digit code" hidden/><button class="btn" id="authButton">Log In →</button><div class="auth-links"><button class="auth-link" id="forgotButton" type="button">Forgot password?</button><button class="auth-link" hidden="" id="resendCodeButton" type="button">Resend verification code</button><button class="auth-link" hidden="" id="backButton" type="button">← Back to log in</button></div><p class="notice" id="notice" role="status"></p><div class="error" id="error" role="alert"></div></section>
+<section hidden="" id="hubView" aria-label="Student workspace">
+  <div class="workspace-head">
+    <div class="workspace-welcome"><span class="workspace-overline">MY LEDGERPEER · STUDENT WORKSPACE</span>
+      <h2>WHAT ARE WE STUDYING TODAY?</h2>
+      <p>Choose where you want to learn, practise, or review.</p></div>
+    <div class="workspace-utilities"><button id="workspaceMusicButton" type="button">♫ STUDY MUSIC</button><button id="lockButton" class="lockbtn" type="button">SIGN OUT</button></div>
+  </div>
+  <div class="workspace-start">
+    <div><span class="workspace-overline">START HERE</span><strong>Ready for your next session?</strong><p>Open the notes library to choose an FIA–ACCA topic.</p></div>
+    <a class="workspace-start-link" href="notes.html?edition=fia-2">EXPLORE TOPICS →</a>
+  </div>
+  <nav class="workspace-grid" aria-label="Main student tools">
+    <a class="workspace-card notes-card" href="notes.html?edition=fia-2"><span class="workspace-label">LEARN</span><h3>STUDY LIBRARY</h3><p>Understand topics with notes and worked examples.</p><span class="workspace-open">OPEN NOTES →</span></a>
+    <a class="workspace-card quiz-card" href="quiz.html"><span class="workspace-label">PRACTISE</span><h3>QUIZ CENTRE</h3><p>Answer topic questions and mock exams.</p><span class="workspace-open">START PRACTICE →</span></a>
+    <a class="workspace-card revision-card" href="hub.html"><span class="workspace-label">IMPROVE</span><h3>MY REVISION</h3><p>Review attempts, mistakes and study progress.</p><span class="workspace-open">VIEW PROGRESS →</span></a>
+    <a class="workspace-card classroom-card" href="classroom.html"><span class="workspace-label">CONNECT</span><h3>CLASSROOM</h3><p>Chat with classmates and find shared resources.</p><span class="workspace-open">OPEN CLASSROOM →</span></a>
+  </nav>
+  <section class="workspace-more" aria-label="Additional study tools">
+    <h3>MORE STUDY TOOLS</h3>
+    <nav class="workspace-other" aria-label="Additional student tools">
+      <a href="study-planner.html">☑ STUDY PLANNER</a>
+      <a href="calendar.html">▦ CALENDAR</a>
+      <a href="tymbaflex-revision.html">▤ TYMBAFLEX REVISION</a>
+      <a href="ai-tutor.html">✦ AI TUTOR</a>
+    </nav>
+  </section>
+</section><footer>LedgerPeer · Cloud-backed student accounts</footer></main></section></main><footer class="site-footer"><span>© LEDGERPEER · STUDENT WORKSPACE</span><a href="#top">BACK TO HOME ↗</a><span>MADE TO MAKE PROGRESS VISIBLE.</span></footer><script>
 const incomingAuthCallback=location.href;
  const A=PersonalHubAuth,authView=document.getElementById('authView'),hubView=document.getElementById('hubView'),error=document.getElementById('error');
 const password=document.getElementById('password'),email=document.getElementById('email'),button=document.getElementById('authButton'),confirmInput=document.getElementById('confirm'),notice=document.getElementById('notice');
@@ -474,6 +541,7 @@ authView.hidden=false;hubView.hidden=true;
       const next=A.safeDestination(new URL(location.href).searchParams.get('next'));
       if(next&&next!=='profile.html'){location.replace(next);return;}
       authView.hidden=true;hubView.hidden=false;
+      document.body.classList.add('lp-workspace-ready');
     }
     else if(A.isRedirectingToProfile?.()){authView.hidden=true;hubView.hidden=true;}
     else{authView.hidden=false;hubView.hidden=true;show('login');error.textContent='Email confirmed, but the workspace could not load. Please sign in again.';}
