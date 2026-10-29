@@ -16,7 +16,7 @@ assert.match(page,/id="mode"/);
 assert.match(page,/id="remaining"/);
 assert.match(page,/id="question"/);
 assert.match(page,/ai-tutor.css\?v=groq1/);
-assert.match(page,/ai-tutor.js\?v=groq2/);
+assert.match(page,/ai-tutor.js\?v=groq3/);
 assert.ok(!page.includes('Copy tutor request')&&!page.includes('Open ChatGPT'),'Real AI chat must replace external copy/paste flow');
 assert.ok(!frontend.includes('innerHTML'),'Chat text must be rendered as text, never parsed as HTML');
 assert.match(frontend,/bubble\.textContent=content/);
