@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TYMBAFlex ILE Diagnostic · LedgerPeer</title>
+<link rel="stylesheet" href="popup.css">
+<script defer src="popup.js"></script>
+</head>
+<body>
+<main>
+ <header>
+  <small class="brand">LEDGERPEER / TYMBAFLEX BRIDGE</small>
+  <h1>ILE DIAGNOSTIC<span>.</span></h1>
+  <p>Check the open FA2 or MA2 course page for tutorials, chapter sets and activity completion.</p>
+ </header>
+ <section class="status" id="status" role="status" aria-live="polite">
+  Open an ILE FA2 or MA2 course tab, then run the scan.
+ </section>
+ <div class="controls">
+  <button type="button" id="scan" class="primary">SCAN CURRENT ILE TAB ↗</button>
+  <button type="button" id="export" disabled>EXPORT JSON</button>
+ </div>
+ <section id="results" hidden>
+  <div class="course"><small id="courseId"></small><h2 id="courseTitle"></h2><p id="scannedAt"></p></div>
+  <div class="stats">
+   <article><small>QUIZZES</small><strong id="quizCount">0</strong></article>
+   <article><small>TUTORIALS</small><strong id="tutorialCount">0</strong></article>
+   <article><small>CHAPTER SETS</small><strong id="setCount">0</strong></article>
+   <article><small>DONE</small><strong id="doneCount">0</strong></article>
+  </div>
+  <div class="filter"><label for="category">SHOW</label><select id="category">
+   <option value="all">All activities</option>
+   <option value="tutorial">Tutorial chapters</option>
+   <option value="chapter_set">FA2 chapter sets</option>
+   <option value="progress_test">Progress tests</option>
+   <option value="mock">Mock examinations</option>
+   <option value="material">Course materials</option>
+   <option value="other_quiz">Other quizzes</option>
+  </select></div>
+  <div id="summary" class="summary"></div>
+  <ol id="activityList" class="activities"></ol>
+ </section>
+ <footer>
+  <p><b>Read-only inspection.</b> “Done” refers to Moodle's course-page indicator, not a score. “Unknown” means no recognisable indicator. No passwords, session tokens or attempt answers are collected.</p>
+  <a href="https://luqmanreader.github.io/marikitabelajar/tymbaflex-revision.html" target="_blank" rel="noopener noreferrer">OPEN LEDGERPEER REVISION ↗</a>
+ </footer>
+</main>
+</body></html>
