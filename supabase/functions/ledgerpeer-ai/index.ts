@@ -64,8 +64,10 @@ Deno.serve(async(request:Request)=>{
  if(!token)return reply({error:"Please sign in to LedgerPeer first."},401);
  const url=Deno.env.get("SUPABASE_URL");
  const pub=publicKey(),service=secretKey();
- const groq=Deno.env.get("GROQ_API_KEY");
- if(!url||!pub||!service||!groq)return reply({error:"AI Tutor is not configured on the server. Contact the site administrator."},503);
+ // Accept pasted whitespace or accidental wrapping quotes; never send raw secrets to the browser.
+ const groq=(Deno.env.get("GROQ_API_KEY")||"").trim().replace(/^["']|["']$/g,"");
+ if(!url||!pub||!service||!groq)return reply({error:"AI Tutor is not configured. Confirm that GROQ_API_KEY is saved under Supabase Edge Function Secrets."},503);
+ if(!/^gsk_[A-Za-z0-9_-]{20,}$/.test(groq))return reply({error:"The GROQ_API_KEY secret does not look like a complete GroqCloud API key. Replace it with the entire newly generated key from GroqCloud (not an example or key name)."},503);
  try{
   const userId=await getVerifiedUser(url,token,pub);
   if(!userId)return reply({error:"Your session expired. Sign in again."},401);
@@ -95,9 +97,20 @@ Deno.serve(async(request:Request)=>{
   const history=cleanHistory(input.history);
   const slot=await privileged(url,service,"rpc/lp_ai_tutor_take_slot",{p_user_id:userId,p_max:DAY_LIMIT});
   if(!slot.ok)return reply({error:"AI usage checks are temporarily unavailable. Try again shortly."},503);
-  const remaining=await slot.json();
+  let remaining=await slot.json();
   if(typeof remaining!=="number")return reply({error:"AI usage checks returned an invalid response."},503);
   if(remaining<0)return reply({error:"You have used your 15 AI Tutor messages for today (UTC). Try again tomorrow.",remaining:0},429);
+  // Reserve atomically but return the slot when Groq rejects the request or times out.
+  const refund=async()=>{
+   try{
+    const result=await privileged(url,service,"rpc/lp_ai_tutor_refund_slot",{p_user_id:userId});
+    if(result.ok){
+     const used=Number(await result.json());
+     if(Number.isFinite(used))remaining=Math.max(0,DAY_LIMIT-used);
+    }
+   }catch{} // Do not turn an upstream failure into an unhandled exception.
+   return remaining;
+  };
   const instruction=[
    "You are LedgerPeer AI Tutor, a careful tutor for FIA and ACCA accounting students.",
    "Selected paper: "+paper+". Teaching mode: "+STYLES[style as keyof typeof STYLES],
@@ -120,21 +133,24 @@ Deno.serve(async(request:Request)=>{
      messages,
      max_completion_tokens:1200,
      reasoning_effort:"low",
-     reasoning_format:"hidden",
+     include_reasoning:false,
      temperature:0.3,
      stream:false
     }),
     signal:AbortSignal.timeout(25000)
    });
   }catch{
-   return reply({error:"GroqCloud did not respond in time. Please try again.",remaining},504);
+   return reply({error:"GroqCloud did not respond in time. Please try again.",remaining:await refund()},504);
   }
-  if(upstream.status===429)return reply({error:"GroqCloud's shared free-tier allowance is temporarily exhausted. Please try again later.",remaining},429);
-  if(upstream.status===401||upstream.status===403)return reply({error:"The GroqCloud API key was rejected. Please notify the LedgerPeer administrator.",remaining},503);
-  if(!upstream.ok)return reply({error:"GroqCloud could not complete that answer ("+upstream.status+"). Please retry.",remaining},502);
-  const result=await upstream.json();
-  const answer=result?.choices?.[0]?.message?.content;
-  if(typeof answer!=="string"||!answer.trim())return reply({error:"GroqCloud returned an empty answer. Please try another question.",remaining},502);
+  if(upstream.status===429)return reply({error:"GroqCloud's shared free-tier quota was exceeded. Please try again later.",remaining:await refund()},429);
+  if(upstream.status===401)return reply({error:"GroqCloud returned HTTP 401: the API key saved in Supabase is invalid, incomplete, or revoked. Generate a new GroqCloud key and save its full value under GROQ_API_KEY in Supabase Edge Function Secrets.",remaining:await refund()},503);
+  if(upstream.status===403)return reply({error:"GroqCloud returned HTTP 403: your Groq organization or API key is not permitted to access the requested model. Check model permissions and restrictions in GroqCloud Console.",remaining:await refund()},503);
+  if(!upstream.ok)return reply({error:"GroqCloud rejected the request (HTTP "+upstream.status+"). Check the model's API requirements and retry.",remaining:await refund()},502);
+  let result:Record<string,unknown>;
+  try{result=await upstream.json();}catch{return reply({error:"GroqCloud returned an unreadable answer.",remaining:await refund()},502);}
+  const choices=(result as {choices?:Array<{message?:{content?:string}}>}).choices;
+  const answer=choices?.[0]?.message?.content;
+  if(typeof answer!=="string"||!answer.trim())return reply({error:"GroqCloud returned an empty answer. Please try another question.",remaining:await refund()},502);
   return reply({answer:answer.trim(),model:"openai/gpt-oss-120b",remaining});
  }catch{
   return reply({error:"The AI Tutor encountered a server error. Please try again."},500);
