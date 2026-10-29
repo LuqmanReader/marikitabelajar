@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TYMBAFlex ILE Diagnostic · LedgerPeer</title>
+<title>TYMBAFlex Course Diagnostic · LedgerPeer</title>
 <link rel="stylesheet" href="popup.css">
 <script defer src="popup.js"></script>
 </head>
@@ -10,14 +10,14 @@
 <main>
  <header>
   <small class="brand">LEDGERPEER / TYMBAFLEX BRIDGE</small>
-  <h1>ILE DIAGNOSTIC<span>.</span></h1>
-  <p>Check the open FA2 or MA2 course page for tutorials, chapter sets and activity completion.</p>
+  <h1>COURSE DIAGNOSTIC<span>.</span></h1>
+  <p>Scan ILE and Group B FA2/MA2 courses for tutorials, chapter sets, progress tests and activity completion.</p>
  </header>
  <section class="status" id="status" role="status" aria-live="polite">
-  Open an ILE FA2 or MA2 course tab, then run the scan.
+  Open an ILE or Group B FA2/MA2 course tab, then run the scan.
  </section>
  <div class="controls">
-  <button type="button" id="scan" class="primary">SCAN CURRENT ILE TAB ↗</button>
+  <button type="button" id="scan" class="primary">SCAN CURRENT COURSE ↗</button>
   <button type="button" id="export" disabled>EXPORT JSON</button>
  </div>
  <section id="results" hidden>
@@ -31,7 +31,7 @@
   <div class="filter"><label for="category">SHOW</label><select id="category">
    <option value="all">All activities</option>
    <option value="tutorial">Tutorial chapters</option>
-   <option value="chapter_set">FA2 chapter sets</option>
+   <option value="chapter_set">Chapter sets (FA2/MA2)</option>
    <option value="progress_test">Progress tests</option>
    <option value="mock">Mock examinations</option>
    <option value="material">Course materials</option>
