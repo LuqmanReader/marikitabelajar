@@ -46,3 +46,8 @@ body.tymbabridge-page{margin:0;background:var(--tb-light);color:var(--tb-ink);fo
 .tb-consent input[type="checkbox"]{width:19px;height:19px;min-width:19px;accent-color:#207e48;cursor:pointer;margin:2px 0 0}
 .tb-consent strong{color:#1e5934}
 .tb-consent:focus-within{outline:2px solid #269655;outline-offset:3px}
+
+.tb-data-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.tb-revision-link{display:inline-flex;align-items:center;min-height:38px;border:2px solid #151914;background:#f4ce4c;color:#111;padding:9px 13px;text-decoration:none;font:900 10px/1.25 Inter,Arial,sans-serif;letter-spacing:.035em}
+.tb-revision-link:hover{background:#e5f4e8}
+@media(max-width:620px){.tb-data-title{align-items:flex-start;flex-direction:column}.tb-data-actions{width:100%}}
