@@ -51,7 +51,7 @@ assert.ok(room.includes('function replyQuote(')&&room.includes('function jumpToM
 assert.ok(room.includes('payload.reply_to_message_id=replyId'),'Reply target must persist with messages in Supabase');
 assert.ok(room.includes("const footer=make('div','chat-message-footer')")&&room.includes("addActions(footer,item,'message')"),'Reply action must appear in a visible footer below each chat message');
 assert.ok(read('classroom.css').includes('.chat-bubble .chat-message-footer .message-actions .reply-action'),'Reply must be prominent inside the message footer');
-assert.ok(/classroom-page\\.js\\?v=[a-zA-Z0-9_-]+/.test(classPage)&&/classroom\\.css\\?v=[a-zA-Z0-9_-]+/.test(classPage),'Classroom must use versioned assets to bypass stale browser cache');
+assert.ok(classPage.includes('classroom-page.js?v=')&&classPage.includes('classroom.css?v='),'Classroom must use versioned assets to bypass stale browser cache');
 assert.ok(room.includes("select('id,classroom_id,user_id,body,created_at,reply_to_message_id')"),'Message loading must include reply references');
 assert.ok(classPage.includes('REPLIES ENABLED · CHAT v5'),'Classroom must show a visible deployment and reply hint');
 assert.ok(read('classroom.css').includes('.quoted-reply')&&read('classroom.css').includes('.reply-tray'),'Linked replies must have responsive presentation styles');
