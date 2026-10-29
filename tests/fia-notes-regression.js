@@ -68,7 +68,7 @@ assert(!script.includes('ACROSS 7 PAPERS'),'Outdated FIA-only topic count found'
 assert(script.includes("paper=arg;qualification=qualificationOf(arg)"),'Deep linked ACCA subjects must switch qualification automatically');
 assert(script.includes("content.append(makeLesson("),'Lesson renderer missing');
 const home=fs.readFileSync('index.html','utf8');
-assert(home.includes('FIA–ACCA Notes Library')&&!home.includes('financial-manager.html'),'Home still promotes finance instead of notes');
+assert(home.includes('class="workspace-card notes-card"')&&home.includes('href="notes.html?edition=fia-2"')&&!home.includes('financial-manager.html'),'Home must promote FIA–ACCA notes, not retired finance');
 const hub=fs.readFileSync('hub.html','utf8');
 assert(hub.includes('href="notes.html"')&&!hub.includes('achievements.html'),'Revision navigation not updated');
 for(const page of ['calendar.html','study-planner.html']){
