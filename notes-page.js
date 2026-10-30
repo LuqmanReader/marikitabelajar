@@ -9,7 +9,7 @@ function qualificationOf(code){return FIA_PAPERS.some(p=>p.code===code)?'fia':AC
 const syllabus=root.LedgerNotesSyllabi?.papers||{};
 const lessons=root.LedgerFiaNotes||{};
 const outcomeLessons=root.LedgerOutcomeLessons||{};
-const textbookLessons=Object.assign({},root.LedgerSupplementalTextbooks||{},root.LedgerSupplementalTextbooksA2||{},root.LedgerSupplementalTextbooksProfessional||{},root.LedgerSupplementalTextbooksA3Foundation||{},root.LedgerSupplementalTextbooksA3Professional||{},root.LedgerSupplementalTextbooksBatch4A||{},root.LedgerSupplementalTextbooksBatch4B||{},root.LedgerSupplementalTextbooksBatch4C||{},root.LedgerSupplementalTextbooksBatch4D||{},root.LedgerTextbookFA1A||{},root.LedgerTextbookFA1B||{},root.LedgerTextbookMA1||{},root.LedgerTextbookMA2A||{},root.LedgerTextbookMA2B||{},root.LedgerTextbookFA2A||{},root.LedgerTextbookFA2B||{},root.LedgerTextbookFA2C||{});
+const textbookLessons=Object.assign({},root.LedgerStructuredLessonChapters||{},root.LedgerSupplementalTextbooks||{},root.LedgerSupplementalTextbooksA2||{},root.LedgerSupplementalTextbooksProfessional||{},root.LedgerSupplementalTextbooksA3Foundation||{},root.LedgerSupplementalTextbooksA3Professional||{},root.LedgerSupplementalTextbooksBatch4A||{},root.LedgerSupplementalTextbooksBatch4B||{},root.LedgerSupplementalTextbooksBatch4C||{},root.LedgerSupplementalTextbooksBatch4D||{},root.LedgerTextbookFA1A||{},root.LedgerTextbookFA1B||{},root.LedgerTextbookMA1||{},root.LedgerTextbookMA2A||{},root.LedgerTextbookMA2B||{},root.LedgerTextbookFA2A||{},root.LedgerTextbookFA2B||{},root.LedgerTextbookFA2C||{});
 const integratedCases=root.LedgerMasterCases||{};
 const renderChapterVisual=root.renderLedgerChapterVisual||null;
 const renderNumericalTable=root.renderLedgerNumericalTable||null;
@@ -83,12 +83,13 @@ function appendOutcomeTeaching(parent,paperCode,topicCode){
 }
 function appendTextbook(parent,paperCode,topicCode){
  const chapterData=textbookLessons[paperCode+':'+topicCode];if(!chapterData)return false;
+ const provisional=chapterData.sourceKind==='structured-expansion';
  const chapter=node('section','lp-textbook');
- chapter.append(node('p','lp-textbook-eyebrow','LEDGERPEER TEXTBOOK · '+paperCode+' / '+topicCode));
+ chapter.append(node('p','lp-textbook-eyebrow',(provisional?'LEDGERPEER STRUCTURED TEACHING DRAFT':'LEDGERPEER TEXTBOOK')+' · '+paperCode+' / '+topicCode));
  chapter.append(node('h3','lp-textbook-title',chapterData.title));
  if(renderChapterVisual)renderChapterVisual(chapter,{paper:paperCode,code:topicCode,title:chapterData.title,note:lessons[paperCode+':'+topicCode],book:chapterData});
  if(renderNumericalTable)renderNumericalTable(chapter,paperCode,topicCode);
- chapter.append(node('p','lp-textbook-intro','Original teaching with separate concepts, full calculation examples and exam applications. This is not ACCA-published text. Individual 2026–27 learning-outcome equivalence still requires external checking.'));
+ chapter.append(node('p','lp-textbook-intro',provisional?'This topic has a longer structured teaching draft, built from its existing topic-specific explanations and problems. It is NOT an independently authored, full-syllabus chapter. Detailed syllabus outcomes and challenge quality still require review.':'Original independently written teaching and worked examples. This is not ACCA-published text. Individual 2026–27 learning-outcome equivalence still requires external checking.'));
  const nav=node('nav','lp-textbook-contents');
  nav.setAttribute('aria-label','Contents for '+paperCode+' '+topicCode);
  nav.append(node('strong','','IN THIS CHAPTER'));
@@ -146,10 +147,10 @@ function makeLesson(n,src,paperCode){
      if(renderNumericalTable)renderNumericalTable(main,paperCode,n.code);
      // The complete textbook is primary teaching, not optional buried material.
      // Keep visual drills above it, but never make students discover the full chapter.
-     main.append(node('p','notes-lesson-scope','FULL TEXTBOOK CHAPTER · STEP-BY-STEP TEACHING AND EXAM APPLICATIONS'));
+     main.append(node('p','notes-lesson-scope',textbookLessons[key].sourceKind==='structured-expansion'?'STRUCTURED LEARNING DRAFT · CONTENT REVIEW REQUIRED':'FULL TEXTBOOK CHAPTER · STEP-BY-STEP TEACHING AND EXAM APPLICATIONS'));
      appendTextbook(main,paperCode,n.code);
    }else{
-     main.append(node('p','notes-lesson-scope','LONG-FORM TEXTBOOK CHAPTER · ORIGINAL TEACHING'));
+     main.append(node('p','notes-lesson-scope',textbookLessons[key].sourceKind==='structured-expansion'?'STRUCTURED LEARNING DRAFT · CONTENT REVIEW REQUIRED':'LONG-FORM TEXTBOOK CHAPTER · ORIGINAL TEACHING'));
      appendTextbook(main,paperCode,n.code);
    }
    const extras=node('details','lp-legacy-notes');
@@ -212,7 +213,7 @@ function buildTopic(paperCode,item,index){
  const summary=node('summary');
  const c=node('span','notes-topic-code',tag.code);
  const title=node('div','notes-topic-title');
- title.append(node('strong','',tag.title),node('small','',paperCode+' · '+(illustratedLessons[paperCode+':'+tag.code]?'ILLUSTRATED ACCOUNTING WORKBOOK':textbookLessons[paperCode+':'+tag.code]?'EXTENDED TOPIC TEACHING':outcomeLessons[paperCode+':'+tag.code]?'EXPANDED OUTCOMES · EDITION RECHECK PENDING':n?'INTRODUCTORY TOPIC LESSON':'SYLLABUS OUTLINE / OFFICIAL RESOURCE')));
+ title.append(node('strong','',tag.title),node('small','',paperCode+' · '+(illustratedLessons[paperCode+':'+tag.code]?'ILLUSTRATED ACCOUNTING WORKBOOK':textbookLessons[paperCode+':'+tag.code]?.sourceKind==='structured-expansion'?'STRUCTURED TEACHING DRAFT · REVIEW PENDING':textbookLessons[paperCode+':'+tag.code]?'EXTENDED TOPIC TEACHING':outcomeLessons[paperCode+':'+tag.code]?'EXPANDED OUTCOMES · EDITION RECHECK PENDING':n?'INTRODUCTORY TOPIC LESSON':'SYLLABUS OUTLINE / OFFICIAL RESOURCE')));
  summary.append(c,title,node('span','notes-expand','+'));el.append(summary);
  const content=node('div','notes-topic-detail');
  let loaded=false;
@@ -238,11 +239,13 @@ function renderIntro(codes){
  left.append(node('h3','',paper==='ALL'?qualification==='all'?'EVERY FIA AND ACCA SYLLABUS TOPIC':qualification==='acca'?'ALL ACCA QUALIFICATION TOPICS':'ALL FIA SYLLABUS TOPICS':paper+' / '+info(paper).name));
  left.append(node('p','',paper==='ALL'?'Search the published 2026–27 syllabus topic index across '+visiblePapers().length+' papers. Core lessons include teaching points, worked examples and self-checks. Use the coverage map to identify remaining gaps; each paper’s detailed learning outcomes and exam practice require separate review.':info(paper).description+' · VARIANT '+info(paper).variant+' · '+info(paper).topics.length+' syllabus headings · '+(info(paper).edition||'check current examinable edition')));
  const total=codes.reduce((sum,code)=>sum+info(code).topics.length,0);
- const extended=codes.reduce((sum,code)=>sum+info(code).topics.filter(t=>{
-  const parsed=syllabusCode(t);return Boolean(textbookLessons[code+':'+parsed.code]);
+ const authored=codes.reduce((sum,code)=>sum+info(code).topics.filter(t=>{
+  const parsed=syllabusCode(t);const book=textbookLessons[code+':'+parsed.code];
+  return Boolean(book&&book.sourceKind!=='structured-expansion');
  }).length,0);
+ const structured=total-authored;
  const coverage=node('p','notes-chapter-coverage',
-  'EXTENDED CHAPTERS '+extended+' / '+total+' · '+(total-extended)+' topics currently have introductory learning material only. Complete examination coverage has not been certified.');
+  'STUDY PAGES '+total+' / '+total+' · '+authored+' independently authored extended chapters · '+structured+' structured teaching drafts still awaiting subject-specific development. Full examinable-outcome coverage is NOT certified.');
  coverage.setAttribute('role','status');
  left.append(coverage);
  area.append(left);
@@ -269,7 +272,7 @@ function render(){
   for(const item of all){
    const t=syllabusCode(item),lesson=lessons[code+':'+t.code];
    if(lesson)detailCount++;
-   if(filter==='visual'&&!illustratedLessons[code+':'+t.code]||filter==='lesson'&&!textbookLessons[code+':'+t.code]||filter==='outline'&&Boolean(textbookLessons[code+':'+t.code]))continue;
+   if(filter==='visual'&&!illustratedLessons[code+':'+t.code]||filter==='lesson'&&(!textbookLessons[code+':'+t.code]||textbookLessons[code+':'+t.code]?.sourceKind==='structured-expansion')||filter==='outline'&&textbookLessons[code+':'+t.code]?.sourceKind!=='structured-expansion')continue;
    if(q){
      const extra=outcomeLessons[code+':'+t.code],book=textbookLessons[code+':'+t.code],illustrated=illustratedLessons[code+':'+t.code];
       const hay=[code,item,info(code).name,lesson?.summary,lesson?.formula,lesson?.trap,lesson?.example,...(lesson?.steps||[]),...Object.values(extra?.outcomes||{}).flatMap(o=>[o.title,o.explanation]),...(book?.sections||[]).flat(),...(book?.workings||[]).flat(),...(illustrated?.sections||[]).flatMap(v=>[v.heading,...v.paras]),...(illustrated?.drills||[]).flatMap(v=>[v.question,v.answer])].filter(Boolean).join(' ').toLowerCase();
