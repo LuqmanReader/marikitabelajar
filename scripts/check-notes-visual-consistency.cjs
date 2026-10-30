@@ -72,7 +72,21 @@ for(const [paper,syll] of Object.entries(syllabus)){
    for(const t of textNodes){
     if(t.attrs['font-family']!=='Arial, Helvetica, sans-serif')badFonts++;
     const x=Number(t.attrs.x),y=Number(t.attrs.y);
-    if(!Number.isFinite(x)||!Number.isFinite(y)||x<0||y<0||x>1200||y>734)errors.push(key+' text outside viewBox');
+    if(!Number.isFinite(x)||!Number.isFinite(y)||x<0||y<0||x>1200||y>734)
+      errors.push(key+' text outside viewBox');
+    const size=Number(t.attrs['font-size']),weight=Number(t.attrs['font-weight']);
+    const approximateWidth=[...t.textContent].reduce((sum,ch)=>{
+      const heavy=weight>=700;
+      const cw="ilI1|.,:;!' ".includes(ch)?size*.28:
+        'MW@%'.includes(ch)?size*.85:
+        /[A-Z]/.test(ch)?size*(heavy?.66:.61):size*(heavy?.58:.52);
+      return sum+cw;
+    },0);
+    let right=1190;
+    if(x===72)right=1150;
+    if(x===114||x===703)right=x+447;
+    if(x===53||x===642)right=x+502;
+    if(x+approximateWidth>right+1)errors.push(key+' text overflow at ('+x+','+y+')');
    }
    const paths=collect(svg,n=>n.tag==='line'||n.tag==='path');
    if(!isWorkflow&&paths.length){badArrows++;errors.push(key+' shows a false concept sequence')}
