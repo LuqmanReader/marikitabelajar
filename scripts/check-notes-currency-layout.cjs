@@ -11,6 +11,9 @@ const files=[
  'textbook-fa1-part-a.js','textbook-fa1-part-b.js','textbook-ma1.js',
  'textbook-fa2-part-a.js','textbook-fa2-part-b.js','textbook-fa2-part-c.js',
  'textbook-ma2-part-a.js','textbook-ma2-part-b.js','textbook-integrated-cases.js',
+ 'textbook-crossqual-a1.js','textbook-crossqual-a2-foundation.js',
+ 'textbook-crossqual-a2-professional.js','textbook-crossqual-a3-foundation.js',
+ 'textbook-crossqual-a3-professional.js',
  'notes-visual-workbook-data.js','notes-visual-workbook.js',
  'notes-worked-tables-data.js','notes-worked-tables.js',
  'notes-page.js','fia-study-data-v2.js','fia-study-content-v2.js',
@@ -46,14 +49,26 @@ const sourceAssets=[
  'textbook-fa1-part-a.js','textbook-fa1-part-b.js','textbook-ma1.js',
  'textbook-fa2-part-a.js','textbook-fa2-part-b.js','textbook-fa2-part-c.js',
  'textbook-ma2-part-a.js','textbook-ma2-part-b.js','textbook-integrated-cases.js',
+ 'textbook-crossqual-a1.js','textbook-crossqual-a2-foundation.js',
+ 'textbook-crossqual-a2-professional.js','textbook-crossqual-a3-foundation.js',
+ 'textbook-crossqual-a3-professional.js',
  'notes-visual-workbook-data.js','notes-worked-tables-data.js','notes-visual-all.js',
  'notes-visual-workbook.js'
 ];
+const assetVersions={
+ 'notes-visual-all.js':'20261031chapters2',
+ 'textbook-crossqual-a1.js':'20261031v2',
+ 'textbook-crossqual-a2-foundation.js':'20261031v1',
+ 'textbook-crossqual-a2-professional.js':'20261031v1',
+ 'textbook-crossqual-a3-foundation.js':'20261031v1',
+ 'textbook-crossqual-a3-professional.js':'20261031v1'
+};
 for(const filename of sourceAssets){
- if(!html.includes('src="'+filename+'?v='+(filename==='notes-visual-all.js'?'20261030v8':'20261030usd5')))
+ const expected=assetVersions[filename]||'20261030usd5';
+ if(!html.includes('src="'+filename+'?v='+expected))
  errors.push('Outdated/missing cache-bust query: '+filename);
 }
-if(!html.includes('href="notes.css?v=20261030v8"'))errors.push('Stylesheet cache query outdated');
+if(!html.includes('href="notes.css?v=20261031chapters1"'))errors.push('Stylesheet cache query outdated');
 if(!read('notes-visual-workbook.js').includes("src+'?v=20261030v8'"))
  errors.push('Static illustrations will remain cached in previous currency');
 console.log(JSON.stringify({inspected:files.length,exampleDollarOccurrences:dollars,failures:errors.length},null,2));
