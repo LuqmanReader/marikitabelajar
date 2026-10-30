@@ -11,6 +11,8 @@ const lessons=root.LedgerFiaNotes||{};
 const outcomeLessons=root.LedgerOutcomeLessons||{};
 const textbookLessons=Object.assign({},root.LedgerTextbookFA1A||{},root.LedgerTextbookFA1B||{},root.LedgerTextbookMA1||{},root.LedgerTextbookMA2A||{},root.LedgerTextbookMA2B||{},root.LedgerTextbookFA2A||{},root.LedgerTextbookFA2B||{},root.LedgerTextbookFA2C||{});
 const integratedCases=root.LedgerMasterCases||{};
+const renderChapterVisual=root.renderLedgerChapterVisual||null;
+const renderNumericalTable=root.renderLedgerNumericalTable||null;
 const illustratedLessons=root.LedgerVisualWorkbook?.topics||{};
 const officialSyllabusPages={FA2:'https://www.accaglobal.com/my/en/student/exam-support-resources/foundation-level-study-resources/fa2/fa2-syllabus-study-guide.html',MA2:'https://www.accaglobal.com/my/en/student/exam-support-resources/foundation-level-study-resources/ma2/ma2-syllabus-study-guide.html'};
 const financialExaminableDocs={FA2:'https://www.accaglobal.com/content/dam/acca/global/PDF-students/fia/fa2_ffa_s26_j27_examinable_docs.pdf',FA:'https://www.accaglobal.com/content/dam/acca/global/PDF-students/fia/fa2_ffa_s26_j27_examinable_docs.pdf',FFA:'https://www.accaglobal.com/content/dam/acca/global/PDF-students/fia/fa2_ffa_s26_j27_examinable_docs.pdf'};
@@ -84,6 +86,8 @@ function appendTextbook(parent,paperCode,topicCode){
  const chapter=node('section','lp-textbook');
  chapter.append(node('p','lp-textbook-eyebrow','LEDGERPEER TEXTBOOK · '+paperCode+' / '+topicCode));
  chapter.append(node('h3','lp-textbook-title',chapterData.title));
+ if(renderChapterVisual)renderChapterVisual(chapter,{paper:paperCode,code:topicCode,title:chapterData.title,note:lessons[paperCode+':'+topicCode],book:chapterData});
+ if(renderNumericalTable)renderNumericalTable(chapter,paperCode,topicCode);
  chapter.append(node('p','lp-textbook-intro','Original teaching with separate concepts, full calculation examples and exam applications. This is not ACCA-published text. Individual 2026–27 learning-outcome equivalence still requires external checking.'));
  const nav=node('nav','lp-textbook-contents');
  nav.setAttribute('aria-label','Contents for '+paperCode+' '+topicCode);
@@ -131,6 +135,7 @@ function appendTextbook(parent,paperCode,topicCode){
 function makeLesson(n,src,paperCode){
  const layout=node('div','notes-lesson-layout');
  const main=node('div','notes-lesson-main');
+ layout.classList.add('notes-lesson-layout--visual');
  const isTextbook=Boolean(textbookLessons[paperCode+':'+n.code]);
  if(illustratedLessons[paperCode+':'+n.code])layout.classList.add('notes-lesson-layout--visual');
  const detailed=Boolean(outcomeLessons[paperCode+':'+n.code]);
@@ -138,6 +143,7 @@ function makeLesson(n,src,paperCode){
    const key=paperCode+':'+n.code;
    if(illustratedLessons[key]&&root.renderLedgerVisualWorkbook){
      root.renderLedgerVisualWorkbook(main,key);
+     if(renderNumericalTable)renderNumericalTable(main,paperCode,n.code);
      const previous=node('details','vw-previous-chapter');
      previous.append(node('summary','','Additional chapter notes (earlier text version)'));
      appendTextbook(previous,paperCode,n.code);
@@ -157,10 +163,18 @@ function makeLesson(n,src,paperCode){
    main.append(node('p','notes-lesson-scope',detailed?'PREVIOUS-EDITION OUTCOME EXPANSION · RECHECK REQUIRED':'SHORT LESSON · NOT FULL SYLLABUS TEACHING'));
    if(!detailed)main.append(node('p','notes-review-status','Individual learning-outcome teaching is not yet written for this heading.'));
    if(n.reviewStatus)main.append(node('p','notes-review-status',n.reviewStatus+' · '+(n.updatedAt||'2026-10-23')));
-   main.append(node('p','',n.summary));
+   if(renderChapterVisual)renderChapterVisual(main,{paper:paperCode,code:n.code,title:syllabus[paperCode]?.topics?.find(t=>t.startsWith(n.code+' · '))?.split(' · ').slice(1).join(' · ')||n.code,note:n});
+   const summaryBlock=node('section','lv-short-revision');
+   summaryBlock.append(node('h3','','CORE INTRODUCTION'),node('p','',n.summary));
+   const method=node('ol','lv-checklist');
+   (n.steps||[]).forEach(step=>method.append(node('li','',step)));
+   summaryBlock.append(node('h4','','STARTER PROCEDURE'),method);
+   if(n.formula)summaryBlock.append(node('h4','','FORMULA OR RULE'),node('p','lv-formula',n.formula));
+   main.append(summaryBlock);
    if(detailed)appendOutcomeTeaching(main,paperCode,n.code);
    const chapterKey=root.LedgerFiaGuides?.topicChapters?.[paperCode+':'+n.code];
    if(chapterKey&&root.appendFiaTeaching)root.appendFiaTeaching(main,paperCode,chapterKey);
+   main.append(node('p','notes-review-status','Not yet a comprehensive textbook chapter. The diagram and procedure are topic-specific study aids, not confirmation of full 2026–27 syllabus coverage.'));
  }
  const side=node('aside','notes-sidebox');
  textBlock(side,'EXAM TRAP',n.trap);
