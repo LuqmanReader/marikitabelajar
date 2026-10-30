@@ -13,7 +13,9 @@ const files=[
 'textbook-fa1-part-a.js','textbook-fa1-part-b.js','textbook-ma1.js',
 'textbook-ma2-part-a.js','textbook-ma2-part-b.js','textbook-fa2-part-a.js',
 'textbook-fa2-part-b.js','textbook-fa2-part-c.js',
-'textbook-crossqual-a1.js','notes-visual-all.js'
+'textbook-crossqual-a1.js','textbook-crossqual-a2-foundation.js',
+ 'textbook-crossqual-a2-professional.js','textbook-crossqual-a3-foundation.js',
+ 'textbook-crossqual-a3-professional.js','notes-visual-all.js'
 ];
 const ctx={LedgerFiaNotes:{},LedgerPublishedSyllabi:{papers:{}},console};
 ctx.window=ctx;ctx.globalThis=ctx;
@@ -24,9 +26,11 @@ for(const file of files){
 const catalog=ctx.SubjectCatalog.papers;
 assert.equal(catalog.length,25,'The qualification index must contain 25 papers');
 const chapterSets=[
-'LedgerTextbookFA1A','LedgerTextbookFA1B','LedgerTextbookMA1',
-'LedgerTextbookMA2A','LedgerTextbookMA2B','LedgerTextbookFA2A',
-'LedgerTextbookFA2B','LedgerTextbookFA2C','LedgerSupplementalTextbooks'];
+'LedgerSupplementalTextbooks','LedgerSupplementalTextbooksA2',
+'LedgerSupplementalTextbooksProfessional','LedgerSupplementalTextbooksA3Foundation',
+'LedgerSupplementalTextbooksA3Professional','LedgerTextbookFA1A','LedgerTextbookFA1B',
+'LedgerTextbookMA1','LedgerTextbookMA2A','LedgerTextbookMA2B','LedgerTextbookFA2A',
+'LedgerTextbookFA2B','LedgerTextbookFA2C'];
 const chapters=Object.assign({},...chapterSets.map(name=>ctx[name]||{}));
 let topics=0,short=0,extended=0;
 for(const paper of catalog){
@@ -50,17 +54,26 @@ for(const paper of catalog){
   topics++;
  }
 }
-for(const [key,chapter] of Object.entries(ctx.LedgerSupplementalTextbooks)){
+const allSupplemental=Object.assign({},ctx.LedgerSupplementalTextbooks,ctx.LedgerSupplementalTextbooksA2,ctx.LedgerSupplementalTextbooksProfessional,ctx.LedgerSupplementalTextbooksA3Foundation,ctx.LedgerSupplementalTextbooksA3Professional);
+for(const [key,chapter] of Object.entries(allSupplemental)){
  assert(chapter.title&&chapter.sections.length>=3,key+': insufficient sections');
  assert(chapter.workings.length>0,key+': no worked examination application');
  for(const [heading,body] of chapter.sections)
-  assert(heading.length>5&&body.length>=100,key+': short teaching section');
+  assert(heading.length>5&&body.length>=320,key+': short teaching section');
  for(const [title,question,answer] of chapter.workings)
-  assert(title.length>4&&question.length>30&&answer.length>100,
+  assert(title.length>4&&question.length>30&&answer.length>=130,
     key+': weak worked scenario');
 }
 assert.equal(topics,700,'Unexpected syllabus count; update audit after rechecking curriculum');
-assert.equal(Object.keys(ctx.LedgerSupplementalTextbooks).length,21);
-assert.equal(extended,95,'Extended lesson count changed; review all new/remapped chapters');
-assert.equal(short,605,'Introductory chapter count changed; update coverage audit');
+assert.equal(Object.keys(allSupplemental).length,71,'Expected expanded FIA and ACCA A1-A3 teaching');
+assert.equal(extended,137,'Unique extended lesson count changed; review overlaps and depth');
+assert.equal(short,563,'Introductory chapter count changed; update coverage audit');
+const html=fs.readFileSync(path.join(root,'notes.html'),'utf8');
+const page=fs.readFileSync(path.join(root,'notes-page.js'),'utf8');
+for(const file of files.filter(x=>x.startsWith('textbook-crossqual'))){
+ assert(html.includes(file+'?v='),'Missing chapter script '+file);
+ assert(html.indexOf(file)<html.indexOf('notes-page.js'),'Script order must precede reader '+file);
+}
+assert(page.includes('notes-chapter-coverage'),'The reader must display genuine chapter coverage');
+assert(page.indexOf('root.LedgerSupplementalTextbooksA3Professional||{}')<page.indexOf('root.LedgerTextbookFA1A||{}'),'Existing detailed FIA chapters must retain priority');
 console.log('PASS: '+topics+' FIA/ACCA topic cards, '+extended+' extended teaching chapters, '+short+' introductory lessons requiring authoring.');
