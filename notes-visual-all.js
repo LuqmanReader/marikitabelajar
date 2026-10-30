@@ -84,16 +84,26 @@ function sections(opts){
  }
  const n=opts.note||{};
  const steps=Array.isArray(n.steps)?n.steps.filter(Boolean):[];
- const labels=['Key principle','Accounting treatment','Practical application'];
- const result=steps.slice(0,3).map((detail,i)=>({heading:labels[i],detail:clean(detail)}));
- if(result.length===0&&n.summary)result.push({heading:'Core concept',detail:clean(n.summary)});
- if(n.formula)result.push({heading:'Formula / rule',detail:clean(n.formula)});
- if(n.trap)result.push({heading:'Common mistake',detail:clean(n.trap)});
- if(n.example)result.push({heading:'Illustrative example',detail:clean(n.example)});
- while(result.length<4){
-  result.push({heading:'Further teaching required',detail:'A complete worked explanation has not yet been authored for this part of the topic.'});
- }
- return result.slice(0,4);
+ // Every panel must actually teach: do not elevate one-sentence steps to a
+ // misleading four-card 'complete lesson'. Use distinct, topic-specific material.
+ const result=[];
+ const mode=topicMode(opts.paper).type;
+ const names={
+  law:['Legal principle','Applying the legal test','Scenario and implications','Exam interpretation'],
+  audit:['Assurance principle','Audit reasoning','Practical audit scenario','Professional judgement'],
+  tax:['Tax principle','Computational approach','Tax scenario','Exam pitfalls'],
+  management:['Underlying concept','Calculation and decision method','Worked application','Interpretation and pitfalls'],
+  finance:['Financial principle','Analysis and method','Applied finance scenario','Interpretation and risks'],
+  reporting:['Reporting principle','Accounting and measurement method','Reporting illustration','Interpretation and pitfalls'],
+  business:['Business principle','Analytical framework','Applied business scenario','Evaluation and judgement'],
+  bookkeeping:['Bookkeeping principle','Recording and treatment','Worked illustration','Exam traps']
+ }[mode]||['Core principle','Decision method','Applied illustration','Exam interpretation'];
+ const paragraph=(...v)=>v.filter(Boolean).map(x=>String(x).trim()).filter(Boolean).join('\n\n');
+ result.push({heading:names[0],detail:paragraph(n.summary,steps[0])});
+ result.push({heading:names[1],detail:paragraph(...steps.slice(1),n.formula?'Relevant rule or relationship: '+n.formula:'')});
+ result.push({heading:names[2],detail:paragraph(n.example,n.check?'Try this yourself: '+n.check:'',n.answer?'Explanation: '+n.answer:'')});
+ result.push({heading:names[3],detail:paragraph(n.trap?'Avoid this common error: '+n.trap:'',n.formula?'Recheck the treatment using: '+n.formula:'')});
+ return result.filter(x=>x.detail);
 }
 function header(svg,opts,mode,subtitle){
  rect(svg,24,20,1152,118,ink,10,ink,1);
@@ -286,6 +296,7 @@ function workedPanel(opts){
   'The illustration and self-check are separate. They are not presented as a fully verified worked examination solution.'));
  return fig;
 }
+root.LedgerChapterSections=sections;
 root.renderLedgerChapterVisual=function(parent,opts){
  if(!opts?.paper||!opts.code)return false;
  const special=opts.paper==='FA1'&&opts.code==='A2';
