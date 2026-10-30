@@ -10,6 +10,7 @@ const syllabus=root.LedgerNotesSyllabi?.papers||{};
 const lessons=root.LedgerFiaNotes||{};
 const outcomeLessons=root.LedgerOutcomeLessons||{};
 const textbookLessons=Object.assign({},root.LedgerTextbookFA1A||{},root.LedgerTextbookFA1B||{},root.LedgerTextbookMA1||{},root.LedgerTextbookMA2A||{},root.LedgerTextbookMA2B||{},root.LedgerTextbookFA2A||{},root.LedgerTextbookFA2B||{},root.LedgerTextbookFA2C||{});
+const integratedCases=root.LedgerMasterCases||{};
 const officialSyllabusPages={FA2:'https://www.accaglobal.com/my/en/student/exam-support-resources/foundation-level-study-resources/fa2/fa2-syllabus-study-guide.html',MA2:'https://www.accaglobal.com/my/en/student/exam-support-resources/foundation-level-study-resources/ma2/ma2-syllabus-study-guide.html'};
 const financialExaminableDocs={FA2:'https://www.accaglobal.com/content/dam/acca/global/PDF-students/fia/fa2_ffa_s26_j27_examinable_docs.pdf',FA:'https://www.accaglobal.com/content/dam/acca/global/PDF-students/fia/fa2_ffa_s26_j27_examinable_docs.pdf',FFA:'https://www.accaglobal.com/content/dam/acca/global/PDF-students/fia/fa2_ffa_s26_j27_examinable_docs.pdf'};
 const verifiedFiaSources={FA2:'https://www.accaglobal.com/content/dam/acca/global/PDF-students/fia/studyguides/FA2%20S25-A26%20syllabus%20and%20study%20guide%20-%20final.pdf',MA2:'https://www.accaglobal.com/content/dam/acca/global/PDF-students/fia/studyguides/MA2%20S25-A26%20syllabus%20and%20study%20guide%20-%20final.pdf'};
@@ -110,6 +111,18 @@ function appendTextbook(parent,paperCode,topicCode){
    article.append(answer);practice.append(article);
  });
  chapter.append(practice);
+ const fullCase=integratedCases[paperCode+':'+topicCode];
+ if(fullCase){
+   const caseArticle=node('section','lp-integrated-case');
+   caseArticle.append(node('p','lp-case-marker','COMPLETE ACCOUNTING CASE STUDY'));
+   caseArticle.append(node('h4','',fullCase.title),node('p','lp-case-context',fullCase.context));
+   const steps=node('ol','lp-case-steps');
+   for(const step of fullCase.steps)steps.append(node('li','',step));
+   caseArticle.append(steps);
+   caseArticle.append(node('h5','','RECONCILIATION / CONCLUSION'),node('p','',fullCase.reconciliation));
+   caseArticle.append(node('h5','','EXAM TRAP'),node('p','',fullCase.pitfall));
+   chapter.append(caseArticle);
+ }
  chapter.append(node('p','lp-textbook-end','END OF CHAPTER · Review the formulae and practise variations.'));
  parent.append(chapter);
  return true;
