@@ -62,12 +62,12 @@ const doc={
 vm.runInNewContext(fs.readFileSync('notes-build.js','utf8'),{window:win,document:doc,URL,Date,console},{filename:'notes-build.js'});
 (async()=>{
  await new Promise(resolve=>setImmediate(resolve));
- assert.match(stamp.textContent,/2026\.10\.30\.8/);
+ assert.match(stamp.textContent,/2026\.10\.31\.1/);
  assert.equal(ids.notesReleaseStatus.hidden,true,'No false update banner when current');
  latest='2026.10.31.2';
  await win.LedgerNotesCheckForUpdates();
  assert.equal(ids.notesReleaseStatus.hidden,false,'A newer manifest must show update banner');
- assert.match(ids.notesReleaseMessage.textContent,/2026\.10\.30\.9/);
+ assert.match(ids.notesReleaseMessage.textContent,/2026\.10\.31\.2/);
  assert(ids.notesReleaseReload.events.click,'Reload button must work');
  ids.notesReleaseReload.events.click();
  const u=new URL(assigned);
