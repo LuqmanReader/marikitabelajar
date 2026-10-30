@@ -28,8 +28,8 @@
       ],
       [
         "Owner capital",
-        "An individual sets up a sole trader business with RM15,000 cash and immediately withdraws RM1,000 for personal use.",
-        "Assets and equity rise RM15,000 on investment, then both fall RM1,000 on drawings. Withdrawals are not operating expenses."
+        "An individual sets up a sole trader business with $15,000 cash and immediately withdraws $1,000 for personal use.",
+        "Assets and equity rise $15,000 on investment, then both fall $1,000 on drawings. Withdrawals are not operating expenses."
       ]
     ]
   },
@@ -61,8 +61,8 @@
       ],
       [
         "Report context",
-        "Costs rose RM4,000 from RM20,000 to RM24,000 while output rose 1,000 from 4,000 to 5,000 units.",
-        "Old unit cost RM5; new RM4.80. Higher total spending alone does not indicate inefficiency."
+        "Costs rose $4,000 from $20,000 to $24,000 while output rose 1,000 from 4,000 to 5,000 units.",
+        "Old unit cost $5; new $4.80. Higher total spending alone does not indicate inefficiency."
       ]
     ]
   },
@@ -89,8 +89,8 @@
     "workings": [
       [
         "Batch control",
-        "Five approved invoices total RM3,800, but system posts only RM3,200.",
-        "Batch control mismatch RM600. Identify missing/incorrect invoice by document ID before accepting the run."
+        "Five approved invoices total $3,800, but system posts only $3,200.",
+        "Batch control mismatch $600. Identify missing/incorrect invoice by document ID before accepting the run."
       ],
       [
         "Validation versus verification",
@@ -127,8 +127,8 @@
       ],
       [
         "Miscoding",
-        "RM1,500 machine maintenance is coded to administration instead of production.",
-        "Reclassify RM1,500 from admin expense to factory overhead in management records; the organisation-wide expense may be unchanged, but reported product cost is wrong."
+        "$1,500 machine maintenance is coded to administration instead of production.",
+        "Reclassify $1,500 from admin expense to factory overhead in management records; the organisation-wide expense may be unchanged, but reported product cost is wrong."
       ]
     ]
   },
@@ -155,13 +155,13 @@
     "workings": [
       [
         "High-low",
-        "At 600 units cost RM6,600; at 1,000 units cost RM9,000.",
-        "Variable rate=(9,000−6,600)/(1,000−600)=RM6/unit. Fixed cost=9,000−1,000×6=RM3,000. Forecast at 800 units RM7,800."
+        "At 600 units cost $6,600; at 1,000 units cost $9,000.",
+        "Variable rate=(9,000−6,600)/(1,000−600)=$6/unit. Fixed cost=9,000−1,000×6=$3,000. Forecast at 800 units $7,800."
       ],
       [
         "Prime and production cost",
-        "Direct material RM4,000, labour RM2,000, direct expenses RM600 and production overhead RM1,500.",
-        "Prime cost RM6,600; production cost RM8,100. Exclude selling cost from manufacturing inventory cost."
+        "Direct material $4,000, labour $2,000, direct expenses $600 and production overhead $1,500.",
+        "Prime cost $6,600; production cost $8,100. Exclude selling cost from manufacturing inventory cost."
       ]
     ]
   },
@@ -188,12 +188,12 @@
     "workings": [
       [
         "Service cost unit",
-        "Bus operates 300 km with 30 average passengers and costs RM9,000.",
-        "Passenger-km =300×30=9,000; cost per passenger-km RM1."
+        "Bus operates 300 km with 30 average passengers and costs $9,000.",
+        "Passenger-km =300×30=9,000; cost per passenger-km $1."
       ],
       [
         "Investment-centre metric",
-        "Division makes profit RM24,000 on capital employed RM200,000.",
+        "Division makes profit $24,000 on capital employed $200,000.",
         "Simple ROI =24,000/200,000 ×100%=12%. Interpretation requires comparable accounting policies and investment risk."
       ]
     ]
@@ -221,8 +221,8 @@
     "workings": [
       [
         "FIFO issue",
-        "Opening 50 units @RM4; purchase 100 @RM5; issue 90.",
-        "Issue cost=50×4+40×5=RM400; closing 60 units at RM5 =RM300."
+        "Opening 50 units @$4; purchase 100 @$5; issue 90.",
+        "Issue cost=50×4+40×5=$400; closing 60 units at $5 =$300."
       ],
       [
         "Reorder",
@@ -254,13 +254,13 @@
     "workings": [
       [
         "Gross/net labour",
-        "40 hours at RM16 and 5 overtime hours at double rate; deductions RM120.",
-        "Basic 40×16=RM640, overtime 5×32=RM160; gross RM800, net RM680."
+        "40 hours at $16 and 5 overtime hours at double rate; deductions $120.",
+        "Basic 40×16=$640, overtime 5×32=$160; gross $800, net $680."
       ],
       [
         "Direct and indirect",
-        "Total labour RM9,000; 70% traceable to individual products.",
-        "Direct RM6,300; indirect factory labour RM2,700, assuming remaining all supports production."
+        "Total labour $9,000; 70% traceable to individual products.",
+        "Direct $6,300; indirect factory labour $2,700, assuming remaining all supports production."
       ]
     ]
   },
@@ -287,13 +287,13 @@
     "workings": [
       [
         "Rent apportionment",
-        "Factory rent RM30,000 for A 600m² and B 400m².",
-        "Total floor space = 600+400=1,000m². Department A occupies 60%, so allocate RM30,000×60%=RM18,000. Department B occupies 40%, so allocate RM30,000×40%=RM12,000. Reconcile combined allocation RM18,000+RM12,000=RM30,000; no rent cost is lost or duplicated."
+        "Factory rent $30,000 for A 600m² and B 400m².",
+        "Total floor space = 600+400=1,000m². Department A occupies 60%, so allocate $30,000×60%=$18,000. Department B occupies 40%, so allocate $30,000×40%=$12,000. Reconcile combined allocation $18,000+$12,000=$30,000; no rent cost is lost or duplicated."
       ],
       [
         "Prepayment",
-        "Annual factory insurance RM12,000 paid 1 July, year end 31 December.",
-        "Six months expense RM6,000; closing prepaid asset RM6,000, assuming level annual coverage."
+        "Annual factory insurance $12,000 paid 1 July, year end 31 December.",
+        "Six months expense $6,000; closing prepaid asset $6,000, assuming level annual coverage."
       ]
     ]
   },
@@ -320,13 +320,13 @@
     "workings": [
       [
         "Unit cost",
-        "Material RM8,000, labour RM6,000, direct expenses RM1,000, production overhead RM5,000; 2,000 good units.",
-        "Production cost RM20,000; cost per good unit RM10."
+        "Material $8,000, labour $6,000, direct expenses $1,000, production overhead $5,000; 2,000 good units.",
+        "Production cost $20,000; cost per good unit $10."
       ],
       [
         "Markup",
-        "Production job cost RM1,500, required 20% markup on cost.",
-        "Profit RM300; selling price RM1,800. For 20% margin on sales, price would be RM1,875."
+        "Production job cost $1,500, required 20% markup on cost.",
+        "Profit $300; selling price $1,800. For 20% margin on sales, price would be $1,875."
       ]
     ]
   },
@@ -353,13 +353,13 @@
     "workings": [
       [
         "Absolute reference",
-        "A2=10 units; B1=RM7 fixed price; create a formula in C2 copied down with varying units in A rows.",
+        "A2=10 units; B1=$7 fixed price; create a formula in C2 copied down with varying units in A rows.",
         "Use =A2*$B$1. The price cell remains B1 as rows change."
       ],
       [
         "Validate SUM",
         "Expense values B2:B6 are 100, 200, 300, 400, 500; formula =SUM(B2:B5).",
-        "Formula gives 1,000 but should include B6 and give RM1,500. The formula is syntactically valid yet incomplete."
+        "Formula gives 1,000 but should include B6 and give $1,500. The formula is syntactically valid yet incomplete."
       ]
     ]
   },
@@ -387,7 +387,7 @@
       [
         "Contribution formula",
         "Column A has units, B price, C variable cost per unit. Row 2 has 250, 30 and 18.",
-        "In D2 formula =(B2-C2)*A2 gives RM3,000 contribution. For new rows, use relative references unless using a fixed tax/discount assumption cell."
+        "In D2 formula =(B2-C2)*A2 gives $3,000 contribution. For new rows, use relative references unless using a fixed tax/discount assumption cell."
       ],
       [
         "IF function",
@@ -419,8 +419,8 @@
     "workings": [
       [
         "Misleading graph",
-        "Monthly cost is RM10,000 then RM10,200. A chart's y-axis begins at RM9,990.",
-        "A narrow axis can exaggerate the apparent movement. Explain actual increase RM200 / 2%, and use appropriate scaling."
+        "Monthly cost is $10,000 then $10,200. A chart's y-axis begins at $9,990.",
+        "A narrow axis can exaggerate the apparent movement. Explain actual increase $200 / 2%, and use appropriate scaling."
       ],
       [
         "Printing problem",
