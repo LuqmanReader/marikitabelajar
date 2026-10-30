@@ -207,3 +207,37 @@ footer{margin-top:60px;border-top:2px solid var(--ink);padding-top:20px;font-siz
 @media(max-width:830px){.vw-statement-grid,.vw-account-grid{grid-template-columns:1fr}}
 @media(max-width:570px){.vw-reader{font-size:15px}.vw-reader p{font-size:15px}.vw-objectives,.vw-full-case,.vw-mistakes,.vw-drills{padding:13px}.vw-table{font-size:12px;min-width:520px}.vw-table th,.vw-table td{padding:8px}.vw-figure{padding:4px}.vw-t-item{font-size:11px}}
 @media print{.vw-full-case,.vw-objectives,.vw-mistakes{box-shadow:none}.vw-prose-section,.vw-t-account,.vw-figure{break-inside:avoid}.vw-scroll{overflow:visible}.vw-reader{font-size:12pt}}
+
+
+/* 2026 all-chapter illustrated teaching layout. Diagrams are substantive topic maps,
+   derived from each topic's authored steps, with accessible text equivalents. */
+.lv-all-figure{display:block;margin:20px 0 26px;max-width:100%;padding:10px;background:#fff;border:3px solid #151515;box-shadow:5px 5px 0 #151515}
+.lv-all-figure svg{display:block;width:100%;height:auto;max-width:100%;background:#fffaf1}
+.lv-all-figure figcaption{font:700 12px/1.6 Arial,Helvetica,sans-serif;color:#3b3b3b;padding:10px 3px 3px;border-top:1px solid #bfb9ab;max-width:100ch}
+.lv-all-worked{margin:28px 0;padding:0;border:3px solid #151515;background:#faf6e9;max-width:100%}
+.lv-all-worked>figcaption{display:block;background:#151515;color:#ffe062;font:900 14px/1.4 "Arial Black",Arial,sans-serif;padding:13px 17px;letter-spacing:.045em}
+.lv-all-worked-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0}
+.lv-all-worked-card{padding:17px 20px;min-width:0;border-right:2px solid #151515;overflow-wrap:anywhere}
+.lv-all-worked-card:last-child{border-right:0;background:#e6f5e5}
+.lv-all-worked-card:first-child{background:#fff}
+.lv-all-worked-card>strong{display:block;margin:0 0 10px;font:900 13px/1.3 "Arial Black",Arial,sans-serif}
+.lv-all-worked-card p{margin:0!important;font-size:14px!important;line-height:1.7!important}
+.lv-all-worked-warning{margin:0!important;border-top:2px solid #151515;font:650 12px/1.5 Arial,sans-serif;padding:10px 16px;background:#f8efe1}
+.lv-short-revision{margin:30px 0;padding:23px;border:3px solid #151515;background:#fff}
+.lv-short-revision>h3{font:900 22px/1.3 "Arial Black",Arial,sans-serif;margin:0 0 14px}
+.lv-short-revision>h4{font:900 15px/1.3 "Arial Black",Arial,sans-serif;margin:22px 0 9px}
+.lv-short-revision p{font-size:16px;line-height:1.75}
+.lv-checklist{counter-reset:less;list-style:none;padding:0!important;margin:15px 0!important}
+.lv-checklist li{counter-increment:less;position:relative;border:2px solid #171717;padding:13px 15px 13px 59px;margin:12px 0;background:#fffbf1;min-height:50px;line-height:1.6}
+.lv-checklist li::before{content:counter(less);position:absolute;left:12px;top:12px;width:28px;height:28px;display:grid;place-items:center;font:900 14px Arial,sans-serif;color:#fff;background:#141414;border-radius:50%}
+.lv-short-revision .lv-formula{border-left:6px solid #151515;background:#fff0bf;padding:13px 18px;font-weight:750}
+.lp-textbook{font-family:Arial,Helvetica,sans-serif}
+.lp-textbook-section{background:#fff;padding:24px 28px;margin:21px 0;border:2px solid #151515;border-left:8px solid #ffcf2c}
+.lp-textbook-section p{max-width:90ch;font-size:16px;line-height:1.85}
+.lp-textbook-title{margin-bottom:12px}
+.lp-textbook .lp-textbook-contents{margin-top:32px}
+.notes-lesson-layout--visual{grid-template-columns:minmax(0,1fr)!important}
+.notes-lesson-layout--visual .notes-sidebox{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:13px}
+@media(max-width:920px){.lv-all-worked-grid{grid-template-columns:1fr}.lv-all-worked-card{border-right:0;border-bottom:2px solid #151515}.lv-all-worked-card:last-child{border-bottom:0}}
+@media(max-width:600px){.lv-all-figure{padding:3px}.lv-all-figure svg{min-width:640px}.lv-all-figure{overflow-x:auto}.lv-short-revision{padding:13px}.lp-textbook-section{padding:15px 16px;margin:14px 0}}
+@media print{.lv-all-figure,.lv-all-worked{box-shadow:none;break-inside:avoid}.lv-all-figure svg{min-width:0}}
