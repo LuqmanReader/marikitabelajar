@@ -9,7 +9,7 @@ function qualificationOf(code){return FIA_PAPERS.some(p=>p.code===code)?'fia':AC
 const syllabus=root.LedgerNotesSyllabi?.papers||{};
 const lessons=root.LedgerFiaNotes||{};
 const outcomeLessons=root.LedgerOutcomeLessons||{};
-const textbookLessons=Object.assign({},root.LedgerTextbookFA1A||{},root.LedgerTextbookFA1B||{},root.LedgerTextbookMA1||{},root.LedgerTextbookMA2A||{},root.LedgerTextbookMA2B||{},root.LedgerTextbookFA2A||{},root.LedgerTextbookFA2B||{},root.LedgerTextbookFA2C||{},root.LedgerSupplementalTextbooks||{},root.LedgerSupplementalTextbooksA2||{},root.LedgerSupplementalTextbooksProfessional||{},root.LedgerSupplementalTextbooksA3Foundation||{},root.LedgerSupplementalTextbooksA3Professional||{});
+const textbookLessons=Object.assign({},root.LedgerSupplementalTextbooks||{},root.LedgerSupplementalTextbooksA2||{},root.LedgerSupplementalTextbooksProfessional||{},root.LedgerSupplementalTextbooksA3Foundation||{},root.LedgerSupplementalTextbooksA3Professional||{},root.LedgerTextbookFA1A||{},root.LedgerTextbookFA1B||{},root.LedgerTextbookMA1||{},root.LedgerTextbookMA2A||{},root.LedgerTextbookMA2B||{},root.LedgerTextbookFA2A||{},root.LedgerTextbookFA2B||{},root.LedgerTextbookFA2C||{});
 const integratedCases=root.LedgerMasterCases||{};
 const renderChapterVisual=root.renderLedgerChapterVisual||null;
 const renderNumericalTable=root.renderLedgerNumericalTable||null;
@@ -237,6 +237,14 @@ function renderIntro(codes){
  left.append(label);
  left.append(node('h3','',paper==='ALL'?qualification==='all'?'EVERY FIA AND ACCA SYLLABUS TOPIC':qualification==='acca'?'ALL ACCA QUALIFICATION TOPICS':'ALL FIA SYLLABUS TOPICS':paper+' / '+info(paper).name));
  left.append(node('p','',paper==='ALL'?'Search the published 2026–27 syllabus topic index across '+visiblePapers().length+' papers. Core lessons include teaching points, worked examples and self-checks. Use the coverage map to identify remaining gaps; each paper’s detailed learning outcomes and exam practice require separate review.':info(paper).description+' · VARIANT '+info(paper).variant+' · '+info(paper).topics.length+' syllabus headings · '+(info(paper).edition||'check current examinable edition')));
+ const total=codes.reduce((sum,code)=>sum+info(code).topics.length,0);
+ const extended=codes.reduce((sum,code)=>sum+info(code).topics.filter(t=>{
+  const parsed=syllabusCode(t);return Boolean(textbookLessons[code+':'+parsed.code]);
+ }).length,0);
+ const coverage=node('p','notes-chapter-coverage',
+  'EXTENDED CHAPTERS '+extended+' / '+total+' · '+(total-extended)+' topics currently have introductory learning material only. Complete examination coverage has not been certified.');
+ coverage.setAttribute('role','status');
+ left.append(coverage);
  area.append(left);
  const right=node('div');
  if(paper!=='ALL'){
