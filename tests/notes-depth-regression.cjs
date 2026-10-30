@@ -15,7 +15,8 @@ const files=[
 'textbook-fa2-part-b.js','textbook-fa2-part-c.js',
 'textbook-crossqual-a1.js','textbook-crossqual-a2-foundation.js',
  'textbook-crossqual-a2-professional.js','textbook-crossqual-a3-foundation.js',
- 'textbook-crossqual-a3-professional.js','notes-visual-all.js'
+ 'textbook-crossqual-a3-professional.js',
+ 'textbook-crossqual-batch4a.js','textbook-crossqual-batch4b.js','textbook-crossqual-batch4c.js','textbook-crossqual-batch4d.js''notes-visual-all.js'
 ];
 const ctx={LedgerFiaNotes:{},LedgerPublishedSyllabi:{papers:{}},console};
 ctx.window=ctx;ctx.globalThis=ctx;
@@ -28,7 +29,9 @@ assert.equal(catalog.length,25,'The qualification index must contain 25 papers')
 const chapterSets=[
 'LedgerSupplementalTextbooks','LedgerSupplementalTextbooksA2',
 'LedgerSupplementalTextbooksProfessional','LedgerSupplementalTextbooksA3Foundation',
-'LedgerSupplementalTextbooksA3Professional','LedgerTextbookFA1A','LedgerTextbookFA1B',
+'LedgerSupplementalTextbooksA3Professional',
+'LedgerSupplementalTextbooksBatch4A','LedgerSupplementalTextbooksBatch4B',
+'LedgerSupplementalTextbooksBatch4C','LedgerSupplementalTextbooksBatch4D','LedgerTextbookFA1A','LedgerTextbookFA1B',
 'LedgerTextbookMA1','LedgerTextbookMA2A','LedgerTextbookMA2B','LedgerTextbookFA2A',
 'LedgerTextbookFA2B','LedgerTextbookFA2C'];
 const chapters=Object.assign({},...chapterSets.map(name=>ctx[name]||{}));
@@ -54,7 +57,8 @@ for(const paper of catalog){
   topics++;
  }
 }
-const allSupplemental=Object.assign({},ctx.LedgerSupplementalTextbooks,ctx.LedgerSupplementalTextbooksA2,ctx.LedgerSupplementalTextbooksProfessional,ctx.LedgerSupplementalTextbooksA3Foundation,ctx.LedgerSupplementalTextbooksA3Professional);
+const allSupplemental=Object.assign({},ctx.LedgerSupplementalTextbooks,ctx.LedgerSupplementalTextbooksA2,ctx.LedgerSupplementalTextbooksProfessional,ctx.LedgerSupplementalTextbooksA3Foundation,ctx.LedgerSupplementalTextbooksA3Professional,ctx.LedgerSupplementalTextbooksBatch4A,
+ctx.LedgerSupplementalTextbooksBatch4B,ctx.LedgerSupplementalTextbooksBatch4C,ctx.LedgerSupplementalTextbooksBatch4D);
 for(const [key,chapter] of Object.entries(allSupplemental)){
  assert(chapter.title&&chapter.sections.length>=3,key+': insufficient sections');
  assert(chapter.workings.length>0,key+': no worked examination application');
@@ -65,9 +69,9 @@ for(const [key,chapter] of Object.entries(allSupplemental)){
     key+': weak worked scenario');
 }
 assert.equal(topics,700,'Unexpected syllabus count; update audit after rechecking curriculum');
-assert.equal(Object.keys(allSupplemental).length,71,'Expected expanded FIA and ACCA A1-A3 teaching');
-assert.equal(extended,137,'Unique extended lesson count changed; review overlaps and depth');
-assert.equal(short,563,'Introductory chapter count changed; update coverage audit');
+assert.equal(Object.keys(allSupplemental).length,143,'Expected extended original FIA and ACCA teaching');
+assert.equal(extended,209,'Unique extended lesson count changed; review overlaps and depth');
+assert.equal(short,491,'Introductory chapter count changed; update coverage audit');
 const html=fs.readFileSync(path.join(root,'notes.html'),'utf8');
 const page=fs.readFileSync(path.join(root,'notes-page.js'),'utf8');
 for(const file of files.filter(x=>x.startsWith('textbook-crossqual'))){
@@ -75,5 +79,5 @@ for(const file of files.filter(x=>x.startsWith('textbook-crossqual'))){
  assert(html.indexOf(file)<html.indexOf('notes-page.js'),'Script order must precede reader '+file);
 }
 assert(page.includes('notes-chapter-coverage'),'The reader must display genuine chapter coverage');
-assert(page.indexOf('root.LedgerSupplementalTextbooksA3Professional||{}')<page.indexOf('root.LedgerTextbookFA1A||{}'),'Existing detailed FIA chapters must retain priority');
+assert(page.indexOf('root.LedgerSupplementalTextbooksBatch4D||{}')<page.indexOf('root.LedgerTextbookFA1A||{}'),'Existing detailed FIA chapters must retain priority');
 console.log('PASS: '+topics+' FIA/ACCA topic cards, '+extended+' extended teaching chapters, '+short+' introductory lessons requiring authoring.');
