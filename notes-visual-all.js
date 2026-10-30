@@ -192,7 +192,7 @@ function workflow(opts){
  for(let i=0;i<steps.length;i++){
   const [heading,description,evidence]=steps[i];
   const li=node('li','lv-purchase-step');
-  if(i<steps.length-1)li.classList.add('lv-purchase-step-connected');
+  if(i<steps.length-1)li.className='lv-purchase-step lv-purchase-step-connected';
   const detail=node('details','lv-purchase-step-detail');
   detail.open=true;
   const summary=node('summary','lv-purchase-step-summary');
