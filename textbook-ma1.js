@@ -288,7 +288,7 @@
       [
         "Rent apportionment",
         "Factory rent RM30,000 for A 600m² and B 400m².",
-        "A RM18,000, B RM12,000. Combined equals RM30,000."
+        "Total floor space = 600+400=1,000m². Department A occupies 60%, so allocate RM30,000×60%=RM18,000. Department B occupies 40%, so allocate RM30,000×40%=RM12,000. Reconcile combined allocation RM18,000+RM12,000=RM30,000; no rent cost is lost or duplicated."
       ],
       [
         "Prepayment",
