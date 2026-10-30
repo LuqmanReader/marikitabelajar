@@ -308,5 +308,5 @@ root.renderLedgerChapterVisual=function(parent,opts){
  parent.append(workedPanel(opts));
  return true;
 };
-root.LedgerNotesVisualBuild='2026.10.30.8';
+root.LedgerNotesVisualBuild='2026.10.31.1';
 })(window);
