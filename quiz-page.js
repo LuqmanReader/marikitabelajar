@@ -58,9 +58,10 @@ function setMode(next){
 function qTitle(q){const t=getTopics(active.paper).find(x=>x.code===q.key.split(':')[1]);return t?.title||q.key;}
 function makeQuiz(){
  const paper=$('paper').value,topics=mode==='mock'?null:getSelection(),count=mode==='mock'?50:Number($('count').value);
- const records=engine.readHistory(root.localStorage).filter(r=>r.paper===paper).slice(0,3);
+ const records=engine.readHistory(root.localStorage).filter(r=>r.paper===paper).slice(0,100);
  const recentIds=records.flatMap(r=>(r.items||[]).map(q=>q.id)).concat(recentlyGenerated);
- active=engine.generate({paper,topics,count,mode,recentIds,lessons,syllabus:syllabi});
+ const recentGroups=records.flatMap(r=>(r.items||[]).map(q=>q.key&&q.group?q.key+'|'+q.group:null).filter(Boolean));
+ active=engine.generate({paper,topics,count,mode,recentIds,recentGroups,lessons,syllabus:syllabi});
  active.selectedTopic=mode==='mock'?'all':$('topic').value;
  recentlyGenerated=recentlyGenerated.concat(active.questions.map(q=>q.id)).slice(-400);
  answers={};phase='answering';saved=false;
@@ -72,7 +73,7 @@ function makeQuiz(){
  $('quizSection').hidden=false;$('results').hidden=true;$('saveStatus').textContent='';$('save').disabled=false;
  const narrow=mode==='mock'?' / PAPER-WIDE MOCK PRACTICE':topics?' / '+topics.join(', '):' / MIXED TOPICS';
  $('quizTitle').textContent=mode==='mock'?'50-QUESTION MOCK PRACTICE':'TOPIC PRACTICE SET';
- $('quizSummary').textContent=paper+narrow+' · '+active.available+' original questions · '+active.actualMix.mcq+' MCQ / '+active.actualMix.numeric+' numerical · '+active.topicsCovered+' topics'+(!active.complete?' · LIMITED: '+active.available+' of '+active.requested+' requested; no repeated-skill filler.':'')+' · Not official ACCA/Kaplan.';
+ $('quizSummary').textContent=paper+narrow+' · '+active.available+' original questions · '+active.actualMix.mcq+' MCQ / '+active.actualMix.numeric+' numerical · '+active.topicsCovered+' topics / '+active.familiesCovered+' distinct reasoning families'+(!active.complete?' · LIMITED: '+active.available+' of '+active.requested+' requested; no repeated-skill filler.':'')+' · Not official ACCA/Kaplan.';
  if(!active.complete)setMessage('QUESTION BANK SHORTAGE · '+active.reason+' Try mixed-topic practice for more distinct questions.');
  $('review').hidden=false;
  renderQuestions();$('quizSection').scrollIntoView({block:'start',behavior:'smooth'});
@@ -146,7 +147,7 @@ function saveQuiz(){
  if(outcome.marked!==outcome.total)return;
  const record={id:new Date().toISOString()+'-'+Math.floor(Math.random()*100000),at:new Date().toISOString(),
    paper:active.paper,topic:active.selectedTopic,mode:active.mode,correct:outcome.correct,total:outcome.total,percent:outcome.percent,
-   automatic:outcome.automatic,selfMarked:outcome.selfMarked,items:outcome.items,
+   automatic:outcome.automatic,selfMarked:outcome.selfMarked,items:outcome.items.map((item,i)=>({...item,group:active.questions[i].group})),
    edition:syllabi[active.paper]?.edition||null};
  try{
    engine.saveHistory(root.localStorage,record);
