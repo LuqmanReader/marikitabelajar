@@ -11,6 +11,7 @@ const lessons=root.LedgerFiaNotes||{};
 const outcomeLessons=root.LedgerOutcomeLessons||{};
 const textbookLessons=Object.assign({},root.LedgerTextbookFA1A||{},root.LedgerTextbookFA1B||{},root.LedgerTextbookMA1||{},root.LedgerTextbookMA2A||{},root.LedgerTextbookMA2B||{},root.LedgerTextbookFA2A||{},root.LedgerTextbookFA2B||{},root.LedgerTextbookFA2C||{});
 const integratedCases=root.LedgerMasterCases||{};
+const illustratedLessons=root.LedgerVisualWorkbook?.topics||{};
 const officialSyllabusPages={FA2:'https://www.accaglobal.com/my/en/student/exam-support-resources/foundation-level-study-resources/fa2/fa2-syllabus-study-guide.html',MA2:'https://www.accaglobal.com/my/en/student/exam-support-resources/foundation-level-study-resources/ma2/ma2-syllabus-study-guide.html'};
 const financialExaminableDocs={FA2:'https://www.accaglobal.com/content/dam/acca/global/PDF-students/fia/fa2_ffa_s26_j27_examinable_docs.pdf',FA:'https://www.accaglobal.com/content/dam/acca/global/PDF-students/fia/fa2_ffa_s26_j27_examinable_docs.pdf',FFA:'https://www.accaglobal.com/content/dam/acca/global/PDF-students/fia/fa2_ffa_s26_j27_examinable_docs.pdf'};
 const verifiedFiaSources={FA2:'https://www.accaglobal.com/content/dam/acca/global/PDF-students/fia/studyguides/FA2%20S25-A26%20syllabus%20and%20study%20guide%20-%20final.pdf',MA2:'https://www.accaglobal.com/content/dam/acca/global/PDF-students/fia/studyguides/MA2%20S25-A26%20syllabus%20and%20study%20guide%20-%20final.pdf'};
@@ -131,10 +132,20 @@ function makeLesson(n,src,paperCode){
  const layout=node('div','notes-lesson-layout');
  const main=node('div','notes-lesson-main');
  const isTextbook=Boolean(textbookLessons[paperCode+':'+n.code]);
+ if(illustratedLessons[paperCode+':'+n.code])layout.classList.add('notes-lesson-layout--visual');
  const detailed=Boolean(outcomeLessons[paperCode+':'+n.code]);
  if(isTextbook){
-   main.append(node('p','notes-lesson-scope','LONG-FORM TEXTBOOK CHAPTER · ORIGINAL TEACHING'));
-   appendTextbook(main,paperCode,n.code);
+   const key=paperCode+':'+n.code;
+   if(illustratedLessons[key]&&root.renderLedgerVisualWorkbook){
+     root.renderLedgerVisualWorkbook(main,key);
+     const previous=node('details','vw-previous-chapter');
+     previous.append(node('summary','','Additional chapter notes (earlier text version)'));
+     appendTextbook(previous,paperCode,n.code);
+     main.append(previous);
+   }else{
+     main.append(node('p','notes-lesson-scope','LONG-FORM TEXTBOOK CHAPTER · ORIGINAL TEACHING'));
+     appendTextbook(main,paperCode,n.code);
+   }
    const extras=node('details','lp-legacy-notes');
    extras.append(node('summary','','Earlier revision notes and prior-edition learning outcomes'));
    extras.append(node('p','',n.summary));
@@ -169,7 +180,7 @@ function buildTopic(paperCode,item,index){
  const summary=node('summary');
  const c=node('span','notes-topic-code',tag.code);
  const title=node('div','notes-topic-title');
- title.append(node('strong','',tag.title),node('small','',paperCode+' · '+(textbookLessons[paperCode+':'+tag.code]?'ORIGINAL TEXTBOOK TEACHING CHAPTER':outcomeLessons[paperCode+':'+tag.code]?'EXPANDED OUTCOMES · EDITION RECHECK PENDING':n?'INTRODUCTORY TOPIC LESSON':'SYLLABUS OUTLINE / OFFICIAL RESOURCE')));
+ title.append(node('strong','',tag.title),node('small','',paperCode+' · '+(illustratedLessons[paperCode+':'+tag.code]?'ILLUSTRATED ACCOUNTING WORKBOOK':textbookLessons[paperCode+':'+tag.code]?'ORIGINAL TEXTBOOK TEACHING CHAPTER':outcomeLessons[paperCode+':'+tag.code]?'EXPANDED OUTCOMES · EDITION RECHECK PENDING':n?'INTRODUCTORY TOPIC LESSON':'SYLLABUS OUTLINE / OFFICIAL RESOURCE')));
  summary.append(c,title,node('span','notes-expand','+'));el.append(summary);
  const content=node('div','notes-topic-detail');
  let loaded=false;
@@ -218,10 +229,10 @@ function render(){
   for(const item of all){
    const t=syllabusCode(item),lesson=lessons[code+':'+t.code];
    if(lesson)detailCount++;
-   if(filter==='lesson'&&!textbookLessons[code+':'+t.code]||filter==='outline'&&Boolean(textbookLessons[code+':'+t.code]))continue;
+   if(filter==='visual'&&!illustratedLessons[code+':'+t.code]||filter==='lesson'&&!textbookLessons[code+':'+t.code]||filter==='outline'&&Boolean(textbookLessons[code+':'+t.code]))continue;
    if(q){
-     const extra=outcomeLessons[code+':'+t.code],book=textbookLessons[code+':'+t.code];
-      const hay=[code,item,info(code).name,lesson?.summary,lesson?.formula,lesson?.trap,lesson?.example,...(lesson?.steps||[]),...Object.values(extra?.outcomes||{}).flatMap(o=>[o.title,o.explanation]),...(book?.sections||[]).flat(),...(book?.workings||[]).flat()].filter(Boolean).join(' ').toLowerCase();
+     const extra=outcomeLessons[code+':'+t.code],book=textbookLessons[code+':'+t.code],illustrated=illustratedLessons[code+':'+t.code];
+      const hay=[code,item,info(code).name,lesson?.summary,lesson?.formula,lesson?.trap,lesson?.example,...(lesson?.steps||[]),...Object.values(extra?.outcomes||{}).flatMap(o=>[o.title,o.explanation]),...(book?.sections||[]).flat(),...(book?.workings||[]).flat(),...(illustrated?.sections||[]).flatMap(v=>[v.heading,...v.paras]),...(illustrated?.drills||[]).flatMap(v=>[v.question,v.answer])].filter(Boolean).join(' ').toLowerCase();
      if(!hay.includes(q))continue;
    }
    const el=buildTopic(code,item,rendered);

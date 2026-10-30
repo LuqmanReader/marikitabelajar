@@ -142,3 +142,68 @@ footer{margin-top:60px;border-top:2px solid var(--ink);padding-top:20px;font-siz
 .lp-integrated-case h5{margin:20px 0 7px;font-size:12px;font-weight:900;letter-spacing:.07em}
 .lp-integrated-case h5+p{background:#fff;padding:12px;border-left:4px solid #111;margin:0 0 8px}
 @media(max-width:650px){.lp-integrated-case{padding:13px}.lp-case-steps{padding-left:18px}}
+
+
+/* ACCOUNTING VISUAL WORKBOOK: teaching, not novel-style article. */
+.notes-lesson-layout--visual{grid-template-columns:minmax(0,1fr)!important}
+.notes-lesson-layout--visual>.notes-sidebox{display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:15px;align-content:start}
+.vw-reader{width:100%;max-width:100%;overflow-wrap:break-word;color:#171717;font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.72}
+.vw-reader p{font-family:Arial,Helvetica,sans-serif;line-height:1.75!important;font-size:16px;color:#252525;margin:0 0 15px}
+.vw-reader .vw-kicker{display:inline-block;background:#101010;color:#ffe07e!important;font-size:11px;font-weight:900;letter-spacing:.12em;padding:8px 13px;margin:0 0 13px}
+.vw-reader .vw-title{font:900 clamp(24px,3.6vw,42px)/1.12 "Arial Black",Arial,sans-serif;letter-spacing:-.035em;margin:7px 0 16px}
+.vw-reader .vw-subtitle{font-size:17px!important;max-width:78ch}
+.vw-objectives{border:3px solid #111;background:#ffe26b;margin:24px 0 26px;padding:18px 23px;box-shadow:5px 5px 0 #111}
+.vw-reader h3{font:900 clamp(18px,2.2vw,25px)/1.3 "Arial Black",Arial,sans-serif;letter-spacing:-.015em;margin:0 0 17px}
+.vw-objectives h3{margin-bottom:12px}
+.vw-objectives ol{margin:0;padding-left:25px}
+.vw-objectives li{margin:5px 0;font-weight:650;line-height:1.5}
+.vw-figure{background:#fffaf1;border:3px solid #111;margin:23px 0 28px;padding:10px;max-width:100%}
+.vw-figure img{width:100%;height:auto;display:block;object-fit:contain}
+.vw-figure figcaption{font-size:12px;color:#343434;font-weight:650;padding:9px 6px 4px;border-top:1px solid #bbb}
+.vw-prose-section{border-top:3px solid #111;padding:25px 0 17px;margin:18px 0 0}
+.vw-prose-section h3{display:flex;align-items:center}
+.vw-reader .vw-prose-section p{max-width:100ch}
+.vw-table-section{margin:25px 0}
+.vw-reader .vw-minor-heading{font:900 16px/1.4 "Arial Black",Arial,sans-serif;letter-spacing:0;margin:0 0 12px!important;text-transform:none}
+.vw-scroll{max-width:100%;overflow:auto;border:2px solid #111;background:#fff;scrollbar-width:thin}
+.vw-table{width:100%;min-width:590px;border-collapse:collapse;font-size:14px;line-height:1.5;font-variant-numeric:tabular-nums}
+.vw-table caption{position:absolute;clip-path:inset(50%);height:1px;width:1px;overflow:hidden}
+.vw-table th,.vw-table td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid #d1cec5;border-right:1px solid #e5e2da}
+.vw-table thead th{background:#171717;color:#fff;font-size:12px;text-transform:uppercase;letter-spacing:.035em;white-space:nowrap}
+.vw-table tbody tr:nth-child(even){background:#fbf3df}
+.vw-table .vw-row-label{font-weight:850;white-space:nowrap}
+.vw-table .vw-money{text-align:right;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;white-space:nowrap;font-weight:700}
+.vw-table tr.vw-table-total{background:#ffe071!important;font-weight:900;border-top:3px solid #111}
+.vw-full-case{background:#f7f1e5;border:4px solid #111;padding:clamp(13px,2.7vw,28px);margin:35px 0}
+.vw-full-case>h3{background:#ffcf25;padding:17px;margin:0 0 20px}
+.vw-reader .vw-lead{font-weight:600;font-size:16px}
+.vw-case-details{border:2px solid #111;padding:12px;background:#fff;margin:25px 0}
+.vw-case-details>summary{cursor:pointer;font-weight:900;font-size:15px;margin:4px}
+.vw-accounts{border-top:3px solid #111;padding-top:23px;margin:26px 0}
+.vw-account-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.vw-t-account{border:2px solid #111;background:#fff;min-width:0}
+.vw-t-account h4{font:900 16px/1.4 Arial,sans-serif;text-align:center;background:#ffdb55;margin:0!important;padding:12px;border-bottom:3px solid #111}
+.vw-t-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.vw-t-col{padding:0 9px 8px;min-width:0}
+.vw-t-col:first-child{border-right:2px solid #111}
+.vw-t-side{display:block;text-align:center;font-weight:900;padding:9px 0;border-bottom:2px solid #111}
+.vw-t-item{display:flex;justify-content:space-between;align-items:baseline;gap:7px;border-bottom:1px dotted #a8a8a8;font-size:12px;padding:8px 1px;min-height:30px;overflow-wrap:anywhere}
+.vw-t-item .vw-num{font-family:ui-monospace,Consolas,monospace;font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:750}
+.vw-t-balance{font-size:12px!important;font-weight:900;background:#e3f3e4;border-top:2px solid #111;margin:0!important;padding:9px}
+.vw-reader .vw-note{border-left:5px solid #111;background:#fff;padding:13px 18px;margin:18px 0 26px}
+.vw-statement-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:26px 0}
+.vw-statement-grid .vw-table-section{min-width:0}
+.vw-statement-grid .vw-table{min-width:290px}
+.vw-mistakes{border:3px solid #151515;background:#fff3d0;padding:20px;margin:30px 0}
+.vw-mistakes li{padding:6px 0;max-width:90ch}
+.vw-drills{margin:32px 0;padding:21px;border:3px solid #111;background:#f3e8f8}
+.vw-drill{margin:11px 0;border:2px solid #111;background:#fff}
+.vw-drill summary{padding:15px 18px;cursor:pointer;font-weight:800}
+.vw-drill-answer{padding:17px 18px;border-top:2px solid #111;background:#e9f8e5}
+.vw-drill-answer strong{font-size:11px;font-weight:900;letter-spacing:.06em}
+.vw-reader .vw-credit{font-size:12px;line-height:1.5!important;border-top:2px solid #111;padding:14px 0}
+.vw-previous-chapter{margin-top:26px;border:2px solid #111;background:#f7f7f4;padding:14px}
+.vw-previous-chapter>summary{font-weight:850;cursor:pointer}
+@media(max-width:830px){.vw-statement-grid,.vw-account-grid{grid-template-columns:1fr}}
+@media(max-width:570px){.vw-reader{font-size:15px}.vw-reader p{font-size:15px}.vw-objectives,.vw-full-case,.vw-mistakes,.vw-drills{padding:13px}.vw-table{font-size:12px;min-width:520px}.vw-table th,.vw-table td{padding:8px}.vw-figure{padding:4px}.vw-t-item{font-size:11px}}
+@media print{.vw-full-case,.vw-objectives,.vw-mistakes{box-shadow:none}.vw-prose-section,.vw-t-account,.vw-figure{break-inside:avoid}.vw-scroll{overflow:visible}.vw-reader{font-size:12pt}}

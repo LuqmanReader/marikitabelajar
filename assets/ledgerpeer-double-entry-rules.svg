@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 468" role="img" aria-labelledby="title desc"><title id="title">Double-entry debit and credit rules</title><desc id="desc">Debits increase assets, expenses, and drawings. Credits increase liabilities, capital and income. For every transaction, total debits equal total credits.</desc>
+<rect width="1180" height="468" fill="#fffaf1"/><g fill="#151515" font-family="Arial,sans-serif">
+<text x="33" y="48" font-size="30" font-weight="900">DOUBLE-ENTRY: TWO SIDES, ONE BALANCED TRANSACTION</text>
+<rect x="30" y="80" width="540" height="282" rx="5" fill="#e4efff" stroke="#151515" stroke-width="5"/>
+<rect x="609" y="80" width="540" height="282" rx="5" fill="#ffce25" stroke="#151515" stroke-width="5"/>
+<text x="57" y="124" font-size="32" font-weight="900">DEBIT (Dr)</text><text x="637" y="124" font-size="32" font-weight="900">CREDIT (Cr)</text>
+<g font-size="21"><text x="57" y="164">Increase ASSETS (bank, stock, debtors)</text><text x="57" y="202">Increase EXPENSES (rent, wages)</text><text x="57" y="240">Increase DRAWINGS</text><text x="637" y="164">Increase LIABILITIES (loans, creditors)</text><text x="637" y="202">Increase CAPITAL / EQUITY</text><text x="637" y="240">Increase REVENUE (sales)</text></g>
+<g font-size="17"><text x="57" y="290" font-weight="700">The reverse direction is a CREDIT.</text><text x="637" y="290" font-weight="700">The reverse direction is a DEBIT.</text>
+<text x="57" y="333">Example: bank receives RM 2,000</text><text x="637" y="333">Example: owner capital RM 2,000</text></g>
+<rect x="30" y="386" width="1119" height="56" fill="#181818"/><text x="51" y="421" fill="#ffce25" font-size="25" font-weight="900">EVERY JOURNAL: SUM OF Dr AMOUNTS = SUM OF Cr AMOUNTS</text>
+</g></svg>
