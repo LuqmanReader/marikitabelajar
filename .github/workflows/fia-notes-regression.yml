@@ -30,6 +30,7 @@ on:
       - 'tests/notes-coverage-regression.js'
       - 'tests/notes-reader-regression.js'
       - '.github/workflows/fia-notes-regression.yml'
+  pull_request:
   workflow_dispatch:
 permissions:
   contents: read
