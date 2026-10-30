@@ -96,7 +96,7 @@ function renderQuestions(){
     });
     card.append(choices);
   }else if(q.type==='numeric'){
-    const field=element('label','numeric-label','YOUR ANSWER ('+(q.unit||'RM')+')');
+    const field=element('label','numeric-label','YOUR ANSWER ('+(q.unit||'$')+')');
     const input=element('input','numeric-answer');
     input.type='text';input.inputMode='decimal';input.autocomplete='off';
     input.placeholder='Enter a number, e.g. 2500 or 2,500';
@@ -113,7 +113,7 @@ function reviewQuiz(){
     engine.parseNumber(answers[q.id])===null:
     answers[q.id]===undefined||answers[q.id]==='');
  if(unanswered){
-  setMessage('Complete every multiple-choice or numerical answer before submitting. Numerical answers may contain commas and RM.');
+  setMessage('Complete every multiple-choice or numerical answer before submitting. Numerical answers may contain commas and $.');
   const index=active.questions.indexOf(unanswered);
   $('practice-'+index).scrollIntoView({block:'center',behavior:'smooth'});
   return;
