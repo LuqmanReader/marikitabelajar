@@ -46,7 +46,7 @@ for(const paper of catalog){
   assert(note,key+': missing core teaching');
   const cards=ctx.LedgerChapterSections({paper:paper.code,code:m[1],note,
     book:chapters[key]});
-  assert(cards.length>=3,key+': fewer than three concept panels');
+  assert(cards.length===4,key+': chapter must display four substantial concept panels');
   for(const c of cards){
    assert(c.heading&&c.detail&&c.detail.length>=85,
      key+': trivial or empty concept panel');
