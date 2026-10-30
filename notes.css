@@ -567,3 +567,17 @@ footer{margin-top:60px;border-top:2px solid var(--ink);padding-top:20px;font-siz
   .notes-shell .lv-purchase-steps::before{display:none}
   .notes-shell .lv-purchase-step-detail{break-inside:avoid;box-shadow:none}
 }
+
+
+/* More-specific legacy !important fonts must not override the brand body font. */
+.notes-shell .lv-interactive-map .lv-card-content .lv-card-paragraph,
+.notes-shell .lv-interactive-map .lv-interactive-subtitle,
+.notes-shell .lv-purchase-workflow .lv-purchase-step-body p,
+.notes-shell .lv-purchase-workflow .lv-purchase-evidence,
+.notes-shell .lv-all-worked .lv-all-worked-card p,
+.notes-shell .vw-reader .vw-prose-section p,
+.notes-shell .lv-document-lesson>p{
+  font-family:var(--lp-type-body)!important;
+  letter-spacing:0!important;
+  line-height:var(--lp-type-leading)!important;
+}
