@@ -229,12 +229,12 @@
   }
   function parseNumber(value){
     if(typeof value==='number')return Number.isFinite(value)?value:null;
-    const s=String(value??'').trim().replace(/,/g,'').replace(/^(RM|£|\$)\s*/i,'');
+    const s=String(value??'').trim().replace(/,/g,'').replace(/^\((.+)\)$/,'-$1').replace(/^([+-]?)\s*(?:RM|£|\$)\s*/i,'$1');
     if(!/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(s))return null;
     const n=Number(s);return Number.isFinite(n)?n:null;
   }
   function isNumericCorrect(value,expected){
-    const n=parseNumber(value);return n!==null&&Number.isFinite(expected)&&Math.abs(n-expected)<=0.011;
+    const n=parseNumber(value);return n!==null&&Number.isFinite(expected)&&Math.abs(n-expected)<0.005;
   }
   function score(questions,answers){
     let correct=0,marked=0,automatic=0;
@@ -246,7 +246,7 @@
       return {id:q.id,key:q.key,type:q.type,attempted,correct:attempted?passed:null};
     });
     return {correct,marked,total:questions.length,automatic,selfMarked:0,items,
-      percent:marked?Math.round(100*correct/marked):0};
+      percent:questions.length?Math.round(100*correct/questions.length):0};
   }
   function readHistory(storage){
     try{const a=JSON.parse(storage.getItem(STUDY_KEY)||'[]');return Array.isArray(a)?a.slice(0,250):[];}catch(e){return [];}
