@@ -330,3 +330,51 @@ footer{margin-top:60px;border-top:2px solid var(--ink);padding-top:20px;font-siz
  .lv-all-figure svg{min-width:0}
  .lv-document-lesson{box-shadow:none;break-inside:avoid}
 }
+
+
+/* Accessible interactive chapter cards: never truncate explanations into dead ellipses.
+   Native <details>/<summary> works with touch, keyboard and without JS controls.
+   Cards start expanded; the student controls collapse/expand as needed. */
+.lv-interactive-map{margin:22px 0 30px;border:3px solid #171717;background:#fffaf0;box-shadow:5px 5px 0 #171717;max-width:100%;overflow:hidden;font-family:Arial,Helvetica,sans-serif;color:#171717}
+.lv-interactive-banner{background:#171717;padding:23px clamp(17px,3vw,32px);color:#fff}
+.lv-interactive-map .lv-interactive-eyebrow{color:#ffdc57!important;font:850 13px/1.5 Arial,Helvetica,sans-serif!important;letter-spacing:.06em;margin:0 0 11px}
+.lv-interactive-map .lv-interactive-title{color:#fff!important;font:900 clamp(21px,2.8vw,31px)/1.23 Arial,Helvetica,sans-serif!important;letter-spacing:-.025em;margin:0 0 11px;overflow-wrap:anywhere}
+.lv-interactive-map .lv-interactive-subtitle{color:#e9e5de!important;font:600 13px/1.65 Arial,Helvetica,sans-serif!important;margin:0!important;max-width:100ch}
+.lv-interactive-actions{display:flex;align-items:center;justify-content:flex-end;gap:9px;flex-wrap:wrap;padding:13px 21px;border-bottom:2px solid #171717;background:#f7f0df}
+.lv-interactive-help{font:650 12px/1.5 Arial,Helvetica,sans-serif;flex:1 1 200px}
+.lv-interactive-actions .lv-all-toggle{display:inline-flex;align-items:center;justify-content:center;border:2px solid #171717;background:#fff;color:#171717;min-height:38px;padding:8px 13px;font:800 12px/1.4 Arial,Helvetica,sans-serif;cursor:pointer;box-shadow:2px 2px 0 #171717}
+.lv-interactive-actions .lv-all-toggle:hover{background:#ffe27a}
+.lv-interactive-actions .lv-all-toggle:focus-visible,.lv-interactive-card>summary:focus-visible{outline:4px solid #2476c5;outline-offset:3px}
+.lv-interactive-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px;padding:21px}
+.lv-interactive-card{border:3px solid #171717;border-radius:14px;background:#fff;min-width:0;align-self:start;overflow:hidden;box-shadow:2px 2px 0 #171717}
+.lv-interactive-card[data-theme="tinted"]{background:#f4eadb}
+.lv-interactive-card>summary{display:grid;grid-template-columns:46px minmax(0,1fr) auto 18px;align-items:center;gap:12px;min-height:80px;padding:18px;cursor:pointer;list-style:none;user-select:none;color:#171717}
+.lv-interactive-card>summary::-webkit-details-marker{display:none}
+.lv-interactive-card>summary::marker{content:""}
+.lv-card-number{display:grid;place-items:center;background:#171717;color:#ffe062;width:44px;height:44px;border-radius:50%;font:900 21px/1 Arial,Helvetica,sans-serif}
+.lv-card-heading{font:850 clamp(16px,1.8vw,20px)/1.36 Arial,Helvetica,sans-serif;letter-spacing:-.02em;overflow-wrap:anywhere}
+.lv-card-action{white-space:nowrap;font:800 11px/1.3 Arial,Helvetica,sans-serif;text-decoration:underline;text-underline-offset:3px;color:#313131}
+.lv-card-chevron{display:block;width:11px;height:11px;transform:rotate(45deg);border-bottom:3px solid #171717;border-right:3px solid #171717;transition:transform .14s ease}
+.lv-interactive-card[open] .lv-card-chevron{transform:rotate(225deg)}
+.lv-action-show{display:none}
+.lv-interactive-card:not([open]) .lv-action-hide{display:none}
+.lv-interactive-card:not([open]) .lv-action-show{display:inline}
+.lv-interactive-card[open]>summary{border-bottom:2px solid #171717}
+.lv-interactive-card>summary:hover{background:rgba(255,208,56,.22)}
+.lv-card-content{padding:18px 22px 22px}
+.lv-interactive-map .lv-card-content .lv-card-paragraph{font:500 16px/1.75 Arial,Helvetica,sans-serif!important;letter-spacing:0;margin:0 0 14px!important;max-width:none;white-space:pre-wrap;overflow-wrap:anywhere;color:#171717}
+.lv-interactive-map .lv-card-content .lv-card-paragraph:last-child{margin-bottom:0!important}
+.lv-interactive-map .lv-interactive-footer{border-top:2px solid #171717;background:#fff8e8;padding:13px 21px;margin:0!important;font:650 12px/1.6 Arial,Helvetica,sans-serif!important;color:#383333}
+@media(max-width:900px){.lv-interactive-grid{grid-template-columns:1fr}}
+@media(max-width:560px){
+ .lv-interactive-grid{padding:12px;gap:12px}
+ .lv-interactive-card>summary{grid-template-columns:42px minmax(0,1fr) 17px;gap:10px;padding:13px;min-height:66px}
+ .lv-card-number{height:40px;width:40px;font-size:18px}
+ .lv-card-action{grid-column:2;grid-row:2;justify-self:start}
+ .lv-card-chevron{grid-column:3;grid-row:1}
+ .lv-card-content{padding:14px 15px 18px}
+ .lv-interactive-map .lv-card-content .lv-card-paragraph{font-size:15px!important}
+ .lv-interactive-actions{padding:12px}
+}
+@media(prefers-reduced-motion:reduce){.lv-card-chevron{transition:none}}
+@media print{.lv-interactive-map{box-shadow:none}.lv-interactive-card{break-inside:avoid;box-shadow:none}.lv-interactive-actions{display:none}.lv-interactive-card:not([open]) .lv-card-content{display:block}}
