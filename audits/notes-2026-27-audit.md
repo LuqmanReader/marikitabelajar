@@ -1,3 +1,5 @@
+> **ARCHIVED AUDIT SNAPSHOT (BEFORE TEXTBOOK REWRITE).** Figures below describe the previous starter-note format. The Notes Library now has 74 separately authored textbook chapters across FA1, MA1, FA2 and MA2, plus 163 worked solutions and seven integrated cases. See [current textbook release](../TEXTBOOK_STATUS_2026-27.md). The remaining 626 headings are not yet rewritten in the same format.
+
 # LedgerPeer 2026–27 Notes — Comprehensive Quality-Gate Audit
 
 **Audit run:** 30 October 2026  
