@@ -83,13 +83,13 @@
     "workings": [
       {
         "title": "Straight-line versus reducing balance",
-        "question": "Equipment costs RM48,000, residual RM8,000, useful life five years. Compare straight-line to 25% reducing balance for the first two years.",
-        "solution": "Straight-line annual charge = (48,000−8,000)/5 = RM8,000; carrying amount after two years RM32,000. Reducing balance year 1 = 48,000×25%=RM12,000; year 2 = 36,000×25%=RM9,000; carrying amount RM27,000. They are alternative policies, not cumulative charges."
+        "question": "Equipment costs $48,000, residual $8,000, useful life five years. Compare straight-line to 25% reducing balance for the first two years.",
+        "solution": "Straight-line annual charge = (48,000−8,000)/5 = $8,000; carrying amount after two years $32,000. Reducing balance year 1 = 48,000×25%=$12,000; year 2 = 36,000×25%=$9,000; carrying amount $27,000. They are alternative policies, not cumulative charges."
       },
       {
         "title": "Disposal and part exchange",
-        "question": "Old vehicle cost RM60,000; accumulated depreciation RM42,000; supplier allows RM20,000 trade-in against a new vehicle costing RM85,000.",
-        "solution": "Old vehicle carrying amount = 60,000−42,000 = RM18,000; gain = 20,000−18,000 = RM2,000. Record new vehicle Dr RM85,000; settle RM20,000 through disposal consideration and RM65,000 through bank/payable. Remove the old cost and accumulated depreciation; credit RM2,000 gain."
+        "question": "Old vehicle cost $60,000; accumulated depreciation $42,000; supplier allows $20,000 trade-in against a new vehicle costing $85,000.",
+        "solution": "Old vehicle carrying amount = 60,000−42,000 = $18,000; gain = 20,000−18,000 = $2,000. Record new vehicle Dr $85,000; settle $20,000 through disposal consideration and $65,000 through bank/payable. Remove the old cost and accumulated depreciation; credit $2,000 gain."
       }
     ]
   },
@@ -131,12 +131,12 @@
     "workings": [
       {
         "title": "Prepayment with two reporting periods",
-        "question": "A business pays RM12,000 on 1 October for annual insurance. Its year ends on 31 December.",
-        "solution": "Three months belong to the current year: 12,000×3/12 = RM3,000 expense; nine months = RM9,000 prepaid asset. Adjust Dr prepayment 9,000 / Cr insurance expense 9,000 if the full cash payment was initially expensed."
+        "question": "A business pays $12,000 on 1 October for annual insurance. Its year ends on 31 December.",
+        "solution": "Three months belong to the current year: 12,000×3/12 = $3,000 expense; nine months = $9,000 prepaid asset. Adjust Dr prepayment 9,000 / Cr insurance expense 9,000 if the full cash payment was initially expensed."
       },
       {
         "title": "Accrued electricity",
-        "question": "December electricity of RM1,400 is invoiced and paid in January.",
+        "question": "December electricity of $1,400 is invoiced and paid in January.",
         "solution": "At December year end Dr electricity expense 1,400 / Cr accrued expense liability 1,400. In January, reverse if the system uses reversing journals, then enter the invoice once."
       }
     ]
@@ -204,13 +204,13 @@
     "workings": [
       {
         "title": "Write-off followed by allowance adjustment",
-        "question": "Gross trade receivables RM40,000; write off RM2,000; opening allowance RM1,400; required closing allowance 5% of surviving balances.",
-        "solution": "After write-off, gross balance RM38,000. Closing allowance = RM1,900, an increase of RM500. Period charge = RM2,000 write-off + RM500 allowance increase = RM2,500. Net closing receivables RM36,100."
+        "question": "Gross trade receivables $40,000; write off $2,000; opening allowance $1,400; required closing allowance 5% of surviving balances.",
+        "solution": "After write-off, gross balance $38,000. Closing allowance = $1,900, an increase of $500. Period charge = $2,000 write-off + $500 allowance increase = $2,500. Net closing receivables $36,100."
       },
       {
         "title": "Receivables/payables contra",
-        "question": "A business owes Supplier X RM5,000 and is owed RM3,200 by the same counterparty; permitted set-off is agreed.",
-        "solution": "Dr payables RM3,200; Cr receivables RM3,200. Remaining payable RM1,800; no effect on profit."
+        "question": "A business owes Supplier X $5,000 and is owed $3,200 by the same counterparty; permitted set-off is agreed.",
+        "solution": "Dr payables $3,200; Cr receivables $3,200. Remaining payable $1,800; no effect on profit."
       }
     ]
   },
@@ -272,13 +272,13 @@
     "workings": [
       {
         "title": "Fixed versus flexed comparison",
-        "question": "Original plan: 1,000 units; material RM5/unit; fixed overhead RM2,000. Actual: 1,200 units, materials RM6,400, overhead RM2,100.",
-        "solution": "Fixed budget total = 1,000×5+2,000 = RM7,000. Flexed budget at 1,200 units = 1,200×5+2,000 = RM8,000. Actual cost = RM8,500. Total adverse variance against flexed budget RM500 (materials RM400 A; overhead RM100 A). Comparing to fixed budget would misleadingly show RM1,500 A."
+        "question": "Original plan: 1,000 units; material $5/unit; fixed overhead $2,000. Actual: 1,200 units, materials $6,400, overhead $2,100.",
+        "solution": "Fixed budget total = 1,000×5+2,000 = $7,000. Flexed budget at 1,200 units = 1,200×5+2,000 = $8,000. Actual cost = $8,500. Total adverse variance against flexed budget $500 (materials $400 A; overhead $100 A). Comparing to fixed budget would misleadingly show $1,500 A."
       },
       {
         "title": "Revenue comparison",
-        "question": "Budget selling price RM30 and actual volume 1,200; actual revenue RM36,600.",
-        "solution": "Flexed revenue = 1,200×30 = RM36,000. Actual revenue exceeds flexed revenue by RM600 favourable; evaluate causes rather than assuming all variance is collection efficiency."
+        "question": "Budget selling price $30 and actual volume 1,200; actual revenue $36,600.",
+        "solution": "Flexed revenue = 1,200×30 = $36,000. Actual revenue exceeds flexed revenue by $600 favourable; evaluate causes rather than assuming all variance is collection efficiency."
       }
     ]
   },
@@ -330,8 +330,8 @@
     "workings": [
       {
         "title": "Gross and net payroll",
-        "question": "A worker works 40 hours at RM15/hour plus 6 hours overtime at time-and-a-half. Employee deductions RM85.",
-        "solution": "Basic RM600; overtime 6×RM22.50=RM135; gross pay RM735; net pay RM650. The RM85 deduction is not a second wage expense."
+        "question": "A worker works 40 hours at $15/hour plus 6 hours overtime at time-and-a-half. Employee deductions $85.",
+        "solution": "Basic $600; overtime 6×$22.50=$135; gross pay $735; net pay $650. The $85 deduction is not a second wage expense."
       },
       {
         "title": "Labour ratios",
@@ -398,18 +398,18 @@
     "workings": [
       {
         "title": "Cost-centre apportionment",
-        "question": "Factory rent RM12,000; production department P occupies 600 m² and Q occupies 400 m². Shared maintenance overhead of RM5,000 is split 60% P and 40% Q.",
-        "solution": "Rent apportionment: P RM7,200; Q RM4,800. Maintenance reapportionment: P RM3,000; Q RM2,000. Resulting production-centre overhead: P RM10,200; Q RM6,800, before other overheads."
+        "question": "Factory rent $12,000; production department P occupies 600 m² and Q occupies 400 m². Shared maintenance overhead of $5,000 is split 60% P and 40% Q.",
+        "solution": "Rent apportionment: P $7,200; Q $4,800. Maintenance reapportionment: P $3,000; Q $2,000. Resulting production-centre overhead: P $10,200; Q $6,800, before other overheads."
       },
       {
         "title": "Overhead absorption rate",
-        "question": "P's budgeted overhead RM60,000 and budgeted machine hours 12,000. Actual hours 11,000; actual overhead RM58,000.",
-        "solution": "OAR = 60,000/12,000 = RM5/machine hour. Absorbed = 11,000×5 = RM55,000. Actual overhead RM58,000, so underabsorbed RM3,000; adjustment generally decreases profit."
+        "question": "P's budgeted overhead $60,000 and budgeted machine hours 12,000. Actual hours 11,000; actual overhead $58,000.",
+        "solution": "OAR = 60,000/12,000 = $5/machine hour. Absorbed = 11,000×5 = $55,000. Actual overhead $58,000, so underabsorbed $3,000; adjustment generally decreases profit."
       },
       {
         "title": "Step-down allocation",
-        "question": "Support centre S1 costs RM10,000; it provides services: P 50%, Q 30%, S2 20%. S2's original cost RM4,000, and it serves P and Q equally.",
-        "solution": "Allocate S1: P RM5,000; Q RM3,000; S2 RM2,000. S2 now has RM6,000; allocate P RM3,000 and Q RM3,000. Final allocations P RM8,000; Q RM6,000. The amounts reconcile to total support costs RM14,000."
+        "question": "Support centre S1 costs $10,000; it provides services: P 50%, Q 30%, S2 20%. S2's original cost $4,000, and it serves P and Q equally.",
+        "solution": "Allocate S1: P $5,000; Q $3,000; S2 $2,000. S2 now has $6,000; allocate P $3,000 and Q $3,000. Final allocations P $8,000; Q $6,000. The amounts reconcile to total support costs $14,000."
       }
     ]
   },
@@ -451,13 +451,13 @@
     "workings": [
       {
         "title": "Reconciliation from inventory movement",
-        "question": "Production 10,000 units; sales 8,000; fixed production overhead absorbed at RM6 per unit. Ignore other reconciling differences.",
-        "solution": "Closing inventory increases by 2,000 units. Absorption profit exceeds marginal profit by 2,000×RM6=RM12,000 because fixed manufacturing overhead is deferred in inventory."
+        "question": "Production 10,000 units; sales 8,000; fixed production overhead absorbed at $6 per unit. Ignore other reconciling differences.",
+        "solution": "Closing inventory increases by 2,000 units. Absorption profit exceeds marginal profit by 2,000×$6=$12,000 because fixed manufacturing overhead is deferred in inventory."
       },
       {
         "title": "Contribution and break even link",
-        "question": "Selling price RM25; variable production cost RM12; variable selling cost RM3; fixed costs RM50,000.",
-        "solution": "Contribution/unit = 25−12−3 = RM10. Break-even sales volume = 50,000/10 = 5,000 units. Fixed cost is deducted once, not included in variable unit cost."
+        "question": "Selling price $25; variable production cost $12; variable selling cost $3; fixed costs $50,000.",
+        "solution": "Contribution/unit = 25−12−3 = $10. Break-even sales volume = 50,000/10 = 5,000 units. Fixed cost is deducted once, not included in variable unit cost."
       }
     ]
   },
@@ -468,7 +468,7 @@
       "a": {
         "level": "S",
         "title": "Contribution and contribution/sales ratio",
-        "explanation": "Unit contribution = price − variable cost; C/S ratio = total contribution/sales revenue ×100% = unit contribution/price ×100% for a uniform product. It indicates contribution generated per RM1 of sales."
+        "explanation": "Unit contribution = price − variable cost; C/S ratio = total contribution/sales revenue ×100% = unit contribution/price ×100% for a uniform product. It indicates contribution generated per $1 of sales."
       },
       "b": {
         "level": "K",
@@ -499,13 +499,13 @@
     "workings": [
       {
         "title": "Break-even, target profit, margin of safety",
-        "question": "Price RM50, variable cost RM30/unit, fixed cost RM80,000; planned sales 6,000 units; target profit RM40,000.",
-        "solution": "Unit contribution RM20; C/S ratio 20/50=40%. Break-even 80,000/20 = 4,000 units or RM200,000 revenue. Margin of safety 6,000−4,000=2,000 units (33.33% of planned volume). Target profit requires (80,000+40,000)/20 = 6,000 units."
+        "question": "Price $50, variable cost $30/unit, fixed cost $80,000; planned sales 6,000 units; target profit $40,000.",
+        "solution": "Unit contribution $20; C/S ratio 20/50=40%. Break-even 80,000/20 = 4,000 units or $200,000 revenue. Margin of safety 6,000−4,000=2,000 units (33.33% of planned volume). Target profit requires (80,000+40,000)/20 = 6,000 units."
       },
       {
         "title": "Change in selling price",
-        "question": "Using the previous costs, price falls from RM50 to RM45.",
-        "solution": "New contribution 45−30=RM15; break-even rises to 80,000/15=5,333.33 units, so 5,334 whole units are needed to break even (assuming whole units)."
+        "question": "Using the previous costs, price falls from $50 to $45.",
+        "solution": "New contribution 45−30=$15; break-even rises to 80,000/15=5,333.33 units, so 5,334 whole units are needed to break even (assuming whole units)."
       }
     ]
   }
