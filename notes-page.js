@@ -164,12 +164,30 @@ function makeLesson(n,src,paperCode){
    if(!detailed)main.append(node('p','notes-review-status','Individual learning-outcome teaching is not yet written for this heading.'));
    if(n.reviewStatus)main.append(node('p','notes-review-status',n.reviewStatus+' · '+(n.updatedAt||'2026-10-23')));
    if(renderChapterVisual)renderChapterVisual(main,{paper:paperCode,code:n.code,title:syllabus[paperCode]?.topics?.find(t=>t.startsWith(n.code+' · '))?.split(' · ').slice(1).join(' · ')||n.code,note:n});
-   const summaryBlock=node('section','lv-short-revision');
-   summaryBlock.append(node('h3','','CORE INTRODUCTION'),node('p','',n.summary));
+   // Publish all available topic-specific teaching rather than reducing the
+   // lesson to three bullets; never call a short introduction a finished book.
+   const summaryBlock=node('article','lv-short-revision');
+   summaryBlock.append(node('h3','','THE PRINCIPLE AND WHY IT MATTERS'),node('p','',n.summary));
    const method=node('ol','lv-checklist');
    (n.steps||[]).forEach(step=>method.append(node('li','',step)));
-   summaryBlock.append(node('h4','','STARTER PROCEDURE'),method);
-   if(n.formula)summaryBlock.append(node('h4','','FORMULA OR RULE'),node('p','lv-formula',n.formula));
+   summaryBlock.append(node('h3','','HOW TO APPLY THE METHOD'),method);
+   if(n.formula)summaryBlock.append(node('h4','','FORMULA, TEST OR RULE'),node('p','lv-formula',n.formula));
+   if(n.example){
+     const application=node('section','lv-topic-application');
+     application.append(node('h3','','ILLUSTRATED APPLICATION'),node('p','',n.example));
+     summaryBlock.append(application);
+   }
+   if(n.trap){
+     const pitfall=node('section','lv-topic-pitfall');
+     pitfall.append(node('h3','','WHERE STUDENTS LOSE MARKS'),node('p','',n.trap));
+     summaryBlock.append(pitfall);
+   }
+   if(n.check){
+     const exercise=node('details','lv-topic-exercise');
+     exercise.append(node('summary','','TEST YOUR UNDERSTANDING · '+n.check));
+     exercise.append(node('p','',n.answer||'Refer to the relevant rule above and explain your conclusion.'));
+     summaryBlock.append(exercise);
+   }
    main.append(summaryBlock);
    if(detailed)appendOutcomeTeaching(main,paperCode,n.code);
    const chapterKey=root.LedgerFiaGuides?.topicChapters?.[paperCode+':'+n.code];
