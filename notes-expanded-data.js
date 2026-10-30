@@ -1378,7 +1378,7 @@
       "Relevant costs are future incremental cash flows that differ between alternatives. Sunk costs are not relevant."
     ],
     "formula": "Total cost = Total fixed cost + Variable cost per unit × Activity.",
-    "example": "Fixed rent RM3,000 plus RM8/unit variable materials at 400 units gives total RM6,200.",
+    "example": "Fixed rent $3,000 plus $8/unit variable materials at 400 units gives total $6,200.",
     "trap": "A fixed cost is not necessarily irrelevant: a future fixed cost that differs by decision is relevant.",
     "check": "Is last month's non-refundable machine purchase relevant to today's special order decision?",
     "answer": "No; it is a sunk cost.",
@@ -1486,10 +1486,10 @@
       "Cost per unit is useful for inventory valuation and pricing, but selling price must also reflect market constraints."
     ],
     "formula": "Prime cost = Direct materials + Direct labour + Direct expenses.",
-    "example": "Direct materials RM1,400, labour RM900, direct machine hire RM100 and production overhead RM600: production cost RM3,000.",
+    "example": "Direct materials $1,400, labour $900, direct machine hire $100 and production overhead $600: production cost $3,000.",
     "trap": "Avoid adding selling expenses into factory production cost when valuing inventory.",
-    "check": "A batch of 100 items costs RM3,000 to produce. Unit production cost?",
-    "answer": "RM30.",
+    "check": "A batch of 100 items costs $3,000 to produce. Unit production cost?",
+    "answer": "$30.",
     "adaptedFrom": "MA1:D4",
     "scope": "Core topic lesson",
     "reviewStatus": "Editorial review pending"
@@ -1612,7 +1612,7 @@
       "Use only future incremental cash flows, including relevant working capital, disposal and tax where specified."
     ],
     "formula": "NPV = Σ Cash flow at t ÷ (1+r)^t − Initial investment.",
-    "example": "Invest RM10,000; receive RM6,000 at end of each of two years; discount rate 10%. NPV ≈ 6,000/1.1 + 6,000/1.1² − 10,000 = RM413.",
+    "example": "Invest $10,000; receive $6,000 at end of each of two years; discount rate 10%. NPV ≈ 6,000/1.1 + 6,000/1.1² − 10,000 = $413.",
     "trap": "Accounting profit is not the same as project cash flow; depreciation is a non-cash charge.",
     "check": "A project has positive NPV. What does that indicate?",
     "answer": "It is expected to earn above the assumed required return under the model's assumptions.",
@@ -1830,7 +1830,7 @@
       "Relevant costs are future incremental cash flows that differ between alternatives. Sunk costs are not relevant."
     ],
     "formula": "Total cost = Total fixed cost + Variable cost per unit × Activity.",
-    "example": "Fixed rent RM3,000 plus RM8/unit variable materials at 400 units gives total RM6,200.",
+    "example": "Fixed rent $3,000 plus $8/unit variable materials at 400 units gives total $6,200.",
     "trap": "A fixed cost is not necessarily irrelevant: a future fixed cost that differs by decision is relevant.",
     "check": "Is last month's non-refundable machine purchase relevant to today's special order decision?",
     "answer": "No; it is a sunk cost.",
@@ -1942,10 +1942,10 @@
       "Cost per unit is useful for inventory valuation and pricing, but selling price must also reflect market constraints."
     ],
     "formula": "Prime cost = Direct materials + Direct labour + Direct expenses.",
-    "example": "Direct materials RM1,400, labour RM900, direct machine hire RM100 and production overhead RM600: production cost RM3,000.",
+    "example": "Direct materials $1,400, labour $900, direct machine hire $100 and production overhead $600: production cost $3,000.",
     "trap": "Avoid adding selling expenses into factory production cost when valuing inventory.",
-    "check": "A batch of 100 items costs RM3,000 to produce. Unit production cost?",
-    "answer": "RM30.",
+    "check": "A batch of 100 items costs $3,000 to produce. Unit production cost?",
+    "answer": "$30.",
     "adaptedFrom": "MA:C1",
     "scope": "Core topic lesson",
     "reviewStatus": "Editorial review pending"
@@ -2073,7 +2073,7 @@
       "Use only future incremental cash flows, including relevant working capital, disposal and tax where specified."
     ],
     "formula": "NPV = Σ Cash flow at t ÷ (1+r)^t − Initial investment.",
-    "example": "Invest RM10,000; receive RM6,000 at end of each of two years; discount rate 10%. NPV ≈ 6,000/1.1 + 6,000/1.1² − 10,000 = RM413.",
+    "example": "Invest $10,000; receive $6,000 at end of each of two years; discount rate 10%. NPV ≈ 6,000/1.1 + 6,000/1.1² − 10,000 = $413.",
     "trap": "Accounting profit is not the same as project cash flow; depreciation is a non-cash charge.",
     "check": "A project has positive NPV. What does that indicate?",
     "answer": "It is expected to earn above the assumed required return under the model's assumptions.",
@@ -2298,10 +2298,10 @@
       "Use the financial position equation to identify missing amounts and distinguish capital from profit."
     ],
     "formula": "Net assets = Assets − Liabilities = Equity.",
-    "example": "If total assets are RM80,000 and liabilities RM31,000, closing equity is RM49,000. This is not automatically profit, because equity also changes with capital introduced and drawings.",
+    "example": "If total assets are $80,000 and liabilities $31,000, closing equity is $49,000. This is not automatically profit, because equity also changes with capital introduced and drawings.",
     "trap": "A rent prepayment is an asset; unpaid rent is a liability.",
-    "check": "If equity rises RM20,000 after new capital of RM8,000 and drawings of RM3,000, what is profit?",
-    "answer": "Profit = 20,000 − 8,000 + 3,000 = RM15,000.",
+    "check": "If equity rises $20,000 after new capital of $8,000 and drawings of $3,000, what is profit?",
+    "answer": "Profit = 20,000 − 8,000 + 3,000 = $15,000.",
     "adaptedFrom": "FA2:B1",
     "scope": "Core topic lesson",
     "reviewStatus": "Editorial review pending"
@@ -2388,10 +2388,10 @@
       "Post both sides even when accounts belong to different ledger systems."
     ],
     "formula": "Debits = Credits.",
-    "example": "Credit sale of RM900: Dr trade receivables RM900; Cr sales revenue RM900.",
+    "example": "Credit sale of $900: Dr trade receivables $900; Cr sales revenue $900.",
     "trap": "An increase in liability is usually a credit, even though it may feel like something owed.",
-    "check": "Borrow RM4,000 from the bank. Double entry?",
-    "answer": "Dr bank RM4,000 / Cr loan payable RM4,000.",
+    "check": "Borrow $4,000 from the bank. Double entry?",
+    "answer": "Dr bank $4,000 / Cr loan payable $4,000.",
     "adaptedFrom": "FA1:B1",
     "scope": "Core topic lesson",
     "reviewStatus": "Editorial review pending"
@@ -2406,10 +2406,10 @@
       "Narrate corrections, accruals, prepayments and depreciation; then post them to the ledger."
     ],
     "formula": "Total debits = Total credits.",
-    "example": "Accrue RM350 electricity used but unpaid: Dr electricity expense RM350 / Cr accrued expense payable RM350. Settle later: Dr accrued expense payable / Cr bank.",
+    "example": "Accrue $350 electricity used but unpaid: Dr electricity expense $350 / Cr accrued expense payable $350. Settle later: Dr accrued expense payable / Cr bank.",
     "trap": "Never use a suspense account merely because the narrative looks difficult; first identify both affected accounts.",
-    "check": "How do you record an owner injecting RM5,000 into the bank?",
-    "answer": "Dr bank RM5,000 / Cr capital RM5,000.",
+    "check": "How do you record an owner injecting $5,000 into the bank?",
+    "answer": "Dr bank $5,000 / Cr capital $5,000.",
     "adaptedFrom": "FA2:C1",
     "scope": "Core topic lesson",
     "reviewStatus": "Editorial review pending"
@@ -2424,10 +2424,10 @@
       "With a tax-inclusive figure, divide by 1 + tax rate to recover the net sales/purchase amount."
     ],
     "formula": "Net amount = Tax-inclusive amount ÷ (1 + tax rate).",
-    "example": "An invoice totals RM1,080 including 8% tax. Net purchase RM1,000; input tax RM80. The payable is RM1,080.",
+    "example": "An invoice totals $1,080 including 8% tax. Net purchase $1,000; input tax $80. The payable is $1,080.",
     "trap": "Gross profit is reduced by sales returns, not by purchase returns treated as a sales expense.",
-    "check": "If credit sales of RM540 include 8% tax, how much is revenue before tax?",
-    "answer": "RM500 revenue; RM40 output tax.",
+    "check": "If credit sales of $540 include 8% tax, how much is revenue before tax?",
+    "answer": "$500 revenue; $40 output tax.",
     "adaptedFrom": "FA2:D1",
     "scope": "Core topic lesson",
     "reviewStatus": "Editorial review pending"
@@ -2442,10 +2442,10 @@
       "Unpresented cheques and outstanding lodgements are timing items for reconciliation, not duplicate ledger entries."
     ],
     "formula": "Adjusted cash-book balance = Existing balance ± unrecorded bank transactions.",
-    "example": "The bank statement shows a RM40 fee absent from the cash book: Dr bank charges RM40 / Cr bank RM40. Then reconcile timing differences.",
+    "example": "The bank statement shows a $40 fee absent from the cash book: Dr bank charges $40 / Cr bank $40. Then reconcile timing differences.",
     "trap": "Bank overdraft is a liability, not a negative cash asset on the statement of financial position.",
-    "check": "A direct credit of RM700 appears on the bank statement but not in the cash book. Which side changes?",
-    "answer": "Dr bank RM700; Cr the account corresponding to the payer or income.",
+    "check": "A direct credit of $700 appears on the bank statement but not in the cash book. Which side changes?",
+    "answer": "Dr bank $700; Cr the account corresponding to the payer or income.",
     "adaptedFrom": "FA2:D2",
     "scope": "Core topic lesson",
     "reviewStatus": "Editorial review pending"
@@ -2460,10 +2460,10 @@
       "Under periodic weighted average, recompute average unit cost from total available units and costs; do not replace it with the latest purchase price."
     ],
     "formula": "Cost of sales = Opening inventory + Purchases − Closing inventory.",
-    "example": "100 units cost RM400 and 200 units cost RM1,000; weighted average = RM1,400/300 = RM4.6667/unit. An issue of 90 units costs RM420 under periodic weighted average.",
+    "example": "100 units cost $400 and 200 units cost $1,000; weighted average = $1,400/300 = $4.6667/unit. An issue of 90 units costs $420 under periodic weighted average.",
     "trap": "LIFO is not permitted under IAS 2; do not assume it is acceptable just because it appears in management costing questions.",
-    "check": "An inventory item costs RM70 and its NRV is RM64. Carry it at what amount?",
-    "answer": "RM64, the lower of cost and NRV.",
+    "check": "An inventory item costs $70 and its NRV is $64. Carry it at what amount?",
+    "answer": "$64, the lower of cost and NRV.",
     "adaptedFrom": "FA2:D3",
     "scope": "Core topic lesson",
     "reviewStatus": "Editorial review pending"
@@ -2478,10 +2478,10 @@
       "On disposal, remove original cost and accumulated depreciation; compare proceeds with carrying amount to determine gain or loss."
     ],
     "formula": "Straight line/year = (Cost − Residual value) ÷ Useful life.",
-    "example": "Machine costs RM23,000, residual RM3,000, life five years. Annual depreciation = RM4,000. After two full years, carrying amount RM15,000.",
+    "example": "Machine costs $23,000, residual $3,000, life five years. Annual depreciation = $4,000. After two full years, carrying amount $15,000.",
     "trap": "Do not expense routine repairs as a new asset or treat sale proceeds as disposal profit.",
-    "check": "If a machine carrying amount is RM7,000 and sale proceeds are RM8,500, what is the gain?",
-    "answer": "RM1,500 gain on disposal.",
+    "check": "If a machine carrying amount is $7,000 and sale proceeds are $8,500, what is the gain?",
+    "answer": "$1,500 gain on disposal.",
     "adaptedFrom": "FA2:D4",
     "scope": "Core topic lesson",
     "reviewStatus": "Editorial review pending"
@@ -2496,10 +2496,10 @@
       "On disposal, remove original cost and accumulated depreciation; compare proceeds with carrying amount to determine gain or loss."
     ],
     "formula": "Straight line/year = (Cost − Residual value) ÷ Useful life.",
-    "example": "Machine costs RM23,000, residual RM3,000, life five years. Annual depreciation = RM4,000. After two full years, carrying amount RM15,000.",
+    "example": "Machine costs $23,000, residual $3,000, life five years. Annual depreciation = $4,000. After two full years, carrying amount $15,000.",
     "trap": "Do not expense routine repairs as a new asset or treat sale proceeds as disposal profit.",
-    "check": "If a machine carrying amount is RM7,000 and sale proceeds are RM8,500, what is the gain?",
-    "answer": "RM1,500 gain on disposal.",
+    "check": "If a machine carrying amount is $7,000 and sale proceeds are $8,500, what is the gain?",
+    "answer": "$1,500 gain on disposal.",
     "adaptedFrom": "FA2:D4",
     "scope": "Core topic lesson",
     "reviewStatus": "Editorial review pending"
@@ -2514,10 +2514,10 @@
       "Accrued income: earned now, collected later; asset. Deferred income: collected now, earned later; liability."
     ],
     "formula": "Expense for period = Cash paid + Closing accrual − Opening accrual − Closing prepayment + Opening prepayment.",
-    "example": "Pay RM1,200 annual insurance on 1 October for a 31 December year-end. Three months expense RM300; nine months prepayment RM900.",
+    "example": "Pay $1,200 annual insurance on 1 October for a 31 December year-end. Three months expense $300; nine months prepayment $900.",
     "trap": "Accrued income is not the same as deferred income; one is receivable, the other is still owed in services.",
-    "check": "At year-end, RM450 electricity remains unpaid. What is the entry?",
-    "answer": "Dr electricity expense RM450 / Cr accrued expenses RM450.",
+    "check": "At year-end, $450 electricity remains unpaid. What is the entry?",
+    "answer": "Dr electricity expense $450 / Cr accrued expenses $450.",
     "adaptedFrom": "FA2:D5",
     "scope": "Core topic lesson",
     "reviewStatus": "Editorial review pending"
@@ -2533,10 +2533,10 @@
       "Provisions are liabilities of uncertain timing or amount; recognise where there is a present obligation, probable outflow and reliable estimate."
     ],
     "formula": "Net receivables = Gross receivables − Closing allowance.",
-    "example": "Gross receivables RM20,000; write off RM1,000; new allowance 5% of remaining RM19,000 = RM950. Net receivables RM18,050. If old allowance was RM600, increase expense by RM350.",
+    "example": "Gross receivables $20,000; write off $1,000; new allowance 5% of remaining $19,000 = $950. Net receivables $18,050. If old allowance was $600, increase expense by $350.",
     "trap": "A specific write-off is not automatically an increase in the general allowance; calculate the remaining base first.",
-    "check": "The allowance falls from RM700 to RM500. Is the change an expense?",
-    "answer": "No: recognise a RM200 credit (decrease in irrecoverable debt expense).",
+    "check": "The allowance falls from $700 to $500. Is the change an expense?",
+    "answer": "No: recognise a $200 credit (decrease in irrecoverable debt expense).",
     "adaptedFrom": "FA2:D6",
     "scope": "Core topic lesson",
     "reviewStatus": "Editorial review pending"
@@ -2551,10 +2551,10 @@
       "Split debt into current and non-current parts according to when contractual repayments fall due."
     ],
     "formula": "Closing capital = Opening capital + Additional capital + Profit − Drawings.",
-    "example": "Loan RM30,000 with RM6,000 principal repayable in the next 12 months: classify RM6,000 current and RM24,000 non-current, ignoring any other contractual terms.",
+    "example": "Loan $30,000 with $6,000 principal repayable in the next 12 months: classify $6,000 current and $24,000 non-current, ignoring any other contractual terms.",
     "trap": "Do not record the whole loan repayment as an expense: only the interest element is a finance cost.",
-    "check": "Owner withdraws RM800 cash for personal use. Effect?",
-    "answer": "Dr drawings RM800 / Cr cash RM800; no operating expense.",
+    "check": "Owner withdraws $800 cash for personal use. Effect?",
+    "answer": "Dr drawings $800 / Cr cash $800; no operating expense.",
     "adaptedFrom": "FA2:D7",
     "scope": "Core topic lesson",
     "reviewStatus": "Editorial review pending"
@@ -2569,9 +2569,9 @@
       "Use a consistent sign convention when balancing a bank overdraft."
     ],
     "formula": "Corrected cash book ± Timing differences = Bank statement balance.",
-    "example": "Corrected bank ledger RM4,200 debit; deposits not yet credited RM800; unpresented cheques RM500. Bank statement = 4,200 − 800 + 500 = RM3,900.",
+    "example": "Corrected bank ledger $4,200 debit; deposits not yet credited $800; unpresented cheques $500. Bank statement = 4,200 − 800 + 500 = $3,900.",
     "trap": "A bank fee not recorded in the books is not an outstanding cheque; post it before reconciling.",
-    "check": "The bank statement is RM1,000 higher than cash book because of a payment not yet presented. What is the payment's effect?",
+    "check": "The bank statement is $1,000 higher than cash book because of a payment not yet presented. What is the payment's effect?",
     "answer": "The cash book already records payment, but the bank statement has not yet reduced; bank statement is higher.",
     "adaptedFrom": "FA2:E1",
     "scope": "Core topic lesson",
@@ -2587,7 +2587,7 @@
       "Reconcile invoice references and dates before making corrections; some items are only timing differences."
     ],
     "formula": "Supplier ledger balance ± Reconciling items = Supplier statement balance.",
-    "example": "Our ledger RM2,800 payable; supplier statement RM3,200 because a RM400 invoice reached the supplier ledger but is missing from ours. Verify invoice then Dr purchases / Cr payables RM400.",
+    "example": "Our ledger $2,800 payable; supplier statement $3,200 because a $400 invoice reached the supplier ledger but is missing from ours. Verify invoice then Dr purchases / Cr payables $400.",
     "trap": "Do not adjust the ledger for an invoice that genuinely belongs to a different supplier.",
     "check": "A supplier credit note appears in our books but not on the supplier statement. What explains the difference?",
     "answer": "A timing difference; our payable may be lower until the supplier processes that credit note.",
@@ -2605,7 +2605,7 @@
       "Investigate when debit and credit totals differ; a suspense account may temporarily capture an unresolved difference."
     ],
     "formula": "Trial balance debit total = Trial balance credit total.",
-    "example": "Cash RM2,000 Dr, receivables RM4,000 Dr, expenses RM1,000 Dr, payables RM2,000 Cr and capital RM5,000 Cr: both sides RM7,000.",
+    "example": "Cash $2,000 Dr, receivables $4,000 Dr, expenses $1,000 Dr, payables $2,000 Cr and capital $5,000 Cr: both sides $7,000.",
     "trap": "Errors of omission, original entry, complete reversal and principle may leave a balanced trial balance.",
     "check": "Does a balanced trial balance prove sales are complete?",
     "answer": "No; entire omitted transactions can leave both sides equal.",
@@ -2623,10 +2623,10 @@
       "For complete double-entry errors, correct both substantive accounts; no suspense may be needed."
     ],
     "formula": "Correcting journal = Reverse incorrect effect + Record correct treatment.",
-    "example": "Office equipment RM900 was debited to repairs instead of non-current assets (credit bank correct). Correction: Dr office equipment RM900 / Cr repairs RM900.",
+    "example": "Office equipment $900 was debited to repairs instead of non-current assets (credit bank correct). Correction: Dr office equipment $900 / Cr repairs $900.",
     "trap": "The wrong amount being posted equally to both sides is an error of original entry and does not unbalance the trial balance.",
-    "check": "A cash receipt of RM600 is correctly debited to bank but credited to receivables by only RM60. Which type?",
-    "answer": "Single-sided numerical error causing a RM540 trial balance discrepancy; correct the credit side.",
+    "check": "A cash receipt of $600 is correctly debited to bank but credited to receivables by only $60. Which type?",
+    "answer": "Single-sided numerical error causing a $540 trial balance discrepancy; correct the credit side.",
     "adaptedFrom": "FA2:F2",
     "scope": "Core topic lesson",
     "reviewStatus": "Editorial review pending"
@@ -2641,10 +2641,10 @@
       "For incomplete records, reconstruct missing revenue, purchases or cash using control accounts, margins and changes in net assets."
     ],
     "formula": "Gross profit = Net revenue − Cost of sales; Profit = Gross profit − Operating expenses ± Other items.",
-    "example": "Revenue RM50,000, returns RM2,000; opening inventory RM5,000, purchases RM24,000, closing inventory RM7,000. Net revenue RM48,000; cost of sales RM22,000; gross profit RM26,000.",
+    "example": "Revenue $50,000, returns $2,000; opening inventory $5,000, purchases $24,000, closing inventory $7,000. Net revenue $48,000; cost of sales $22,000; gross profit $26,000.",
     "trap": "Loan proceeds and additional owner capital are not revenue, even when they increase bank.",
-    "check": "If opening net assets RM25,000, closing RM35,000, drawings RM3,000 and new capital RM5,000, profit?",
-    "answer": "RM8,000 = 35,000 − 25,000 + 3,000 − 5,000.",
+    "check": "If opening net assets $25,000, closing $35,000, drawings $3,000 and new capital $5,000, profit?",
+    "answer": "$8,000 = 35,000 − 25,000 + 3,000 − 5,000.",
     "adaptedFrom": "FA2:G1",
     "scope": "Core topic lesson",
     "reviewStatus": "Editorial review pending"
@@ -2931,10 +2931,10 @@
       "Use the financial position equation to identify missing amounts and distinguish capital from profit."
     ],
     "formula": "Net assets = Assets − Liabilities = Equity.",
-    "example": "If total assets are RM80,000 and liabilities RM31,000, closing equity is RM49,000. This is not automatically profit, because equity also changes with capital introduced and drawings.",
+    "example": "If total assets are $80,000 and liabilities $31,000, closing equity is $49,000. This is not automatically profit, because equity also changes with capital introduced and drawings.",
     "trap": "A rent prepayment is an asset; unpaid rent is a liability.",
-    "check": "If equity rises RM20,000 after new capital of RM8,000 and drawings of RM3,000, what is profit?",
-    "answer": "Profit = 20,000 − 8,000 + 3,000 = RM15,000.",
+    "check": "If equity rises $20,000 after new capital of $8,000 and drawings of $3,000, what is profit?",
+    "answer": "Profit = 20,000 − 8,000 + 3,000 = $15,000.",
     "adaptedFrom": "FA:A3",
     "scope": "Core topic lesson",
     "reviewStatus": "Editorial review pending"
@@ -3025,10 +3025,10 @@
       "Post both sides even when accounts belong to different ledger systems."
     ],
     "formula": "Debits = Credits.",
-    "example": "Credit sale of RM900: Dr trade receivables RM900; Cr sales revenue RM900.",
+    "example": "Credit sale of $900: Dr trade receivables $900; Cr sales revenue $900.",
     "trap": "An increase in liability is usually a credit, even though it may feel like something owed.",
-    "check": "Borrow RM4,000 from the bank. Double entry?",
-    "answer": "Dr bank RM4,000 / Cr loan payable RM4,000.",
+    "check": "Borrow $4,000 from the bank. Double entry?",
+    "answer": "Dr bank $4,000 / Cr loan payable $4,000.",
     "adaptedFrom": "FA:C1",
     "scope": "Core topic lesson",
     "reviewStatus": "Editorial review pending"
@@ -3043,10 +3043,10 @@
       "Narrate corrections, accruals, prepayments and depreciation; then post them to the ledger."
     ],
     "formula": "Total debits = Total credits.",
-    "example": "Accrue RM350 electricity used but unpaid: Dr electricity expense RM350 / Cr accrued expense payable RM350. Settle later: Dr accrued expense payable / Cr bank.",
+    "example": "Accrue $350 electricity used but unpaid: Dr electricity expense $350 / Cr accrued expense payable $350. Settle later: Dr accrued expense payable / Cr bank.",
     "trap": "Never use a suspense account merely because the narrative looks difficult; first identify both affected accounts.",
-    "check": "How do you record an owner injecting RM5,000 into the bank?",
-    "answer": "Dr bank RM5,000 / Cr capital RM5,000.",
+    "check": "How do you record an owner injecting $5,000 into the bank?",
+    "answer": "Dr bank $5,000 / Cr capital $5,000.",
     "adaptedFrom": "FA:C2",
     "scope": "Core topic lesson",
     "reviewStatus": "Editorial review pending"
@@ -3061,10 +3061,10 @@
       "With a tax-inclusive figure, divide by 1 + tax rate to recover the net sales/purchase amount."
     ],
     "formula": "Net amount = Tax-inclusive amount ÷ (1 + tax rate).",
-    "example": "An invoice totals RM1,080 including 8% tax. Net purchase RM1,000; input tax RM80. The payable is RM1,080.",
+    "example": "An invoice totals $1,080 including 8% tax. Net purchase $1,000; input tax $80. The payable is $1,080.",
     "trap": "Gross profit is reduced by sales returns, not by purchase returns treated as a sales expense.",
-    "check": "If credit sales of RM540 include 8% tax, how much is revenue before tax?",
-    "answer": "RM500 revenue; RM40 output tax.",
+    "check": "If credit sales of $540 include 8% tax, how much is revenue before tax?",
+    "answer": "$500 revenue; $40 output tax.",
     "adaptedFrom": "FA:D1",
     "scope": "Core topic lesson",
     "reviewStatus": "Editorial review pending"
@@ -3079,10 +3079,10 @@
       "Unpresented cheques and outstanding lodgements are timing items for reconciliation, not duplicate ledger entries."
     ],
     "formula": "Adjusted cash-book balance = Existing balance ± unrecorded bank transactions.",
-    "example": "The bank statement shows a RM40 fee absent from the cash book: Dr bank charges RM40 / Cr bank RM40. Then reconcile timing differences.",
+    "example": "The bank statement shows a $40 fee absent from the cash book: Dr bank charges $40 / Cr bank $40. Then reconcile timing differences.",
     "trap": "Bank overdraft is a liability, not a negative cash asset on the statement of financial position.",
-    "check": "A direct credit of RM700 appears on the bank statement but not in the cash book. Which side changes?",
-    "answer": "Dr bank RM700; Cr the account corresponding to the payer or income.",
+    "check": "A direct credit of $700 appears on the bank statement but not in the cash book. Which side changes?",
+    "answer": "Dr bank $700; Cr the account corresponding to the payer or income.",
     "adaptedFrom": "FA:D2",
     "scope": "Core topic lesson",
     "reviewStatus": "Editorial review pending"
@@ -3097,10 +3097,10 @@
       "Under periodic weighted average, recompute average unit cost from total available units and costs; do not replace it with the latest purchase price."
     ],
     "formula": "Cost of sales = Opening inventory + Purchases − Closing inventory.",
-    "example": "100 units cost RM400 and 200 units cost RM1,000; weighted average = RM1,400/300 = RM4.6667/unit. An issue of 90 units costs RM420 under periodic weighted average.",
+    "example": "100 units cost $400 and 200 units cost $1,000; weighted average = $1,400/300 = $4.6667/unit. An issue of 90 units costs $420 under periodic weighted average.",
     "trap": "LIFO is not permitted under IAS 2; do not assume it is acceptable just because it appears in management costing questions.",
-    "check": "An inventory item costs RM70 and its NRV is RM64. Carry it at what amount?",
-    "answer": "RM64, the lower of cost and NRV.",
+    "check": "An inventory item costs $70 and its NRV is $64. Carry it at what amount?",
+    "answer": "$64, the lower of cost and NRV.",
     "adaptedFrom": "FA:D3",
     "scope": "Core topic lesson",
     "reviewStatus": "Editorial review pending"
@@ -3115,10 +3115,10 @@
       "On disposal, remove original cost and accumulated depreciation; compare proceeds with carrying amount to determine gain or loss."
     ],
     "formula": "Straight line/year = (Cost − Residual value) ÷ Useful life.",
-    "example": "Machine costs RM23,000, residual RM3,000, life five years. Annual depreciation = RM4,000. After two full years, carrying amount RM15,000.",
+    "example": "Machine costs $23,000, residual $3,000, life five years. Annual depreciation = $4,000. After two full years, carrying amount $15,000.",
     "trap": "Do not expense routine repairs as a new asset or treat sale proceeds as disposal profit.",
-    "check": "If a machine carrying amount is RM7,000 and sale proceeds are RM8,500, what is the gain?",
-    "answer": "RM1,500 gain on disposal.",
+    "check": "If a machine carrying amount is $7,000 and sale proceeds are $8,500, what is the gain?",
+    "answer": "$1,500 gain on disposal.",
     "adaptedFrom": "FA:D4",
     "scope": "Core topic lesson",
     "reviewStatus": "Editorial review pending"
@@ -3133,10 +3133,10 @@
       "On disposal, remove original cost and accumulated depreciation; compare proceeds with carrying amount to determine gain or loss."
     ],
     "formula": "Straight line/year = (Cost − Residual value) ÷ Useful life.",
-    "example": "Machine costs RM23,000, residual RM3,000, life five years. Annual depreciation = RM4,000. After two full years, carrying amount RM15,000.",
+    "example": "Machine costs $23,000, residual $3,000, life five years. Annual depreciation = $4,000. After two full years, carrying amount $15,000.",
     "trap": "Do not expense routine repairs as a new asset or treat sale proceeds as disposal profit.",
-    "check": "If a machine carrying amount is RM7,000 and sale proceeds are RM8,500, what is the gain?",
-    "answer": "RM1,500 gain on disposal.",
+    "check": "If a machine carrying amount is $7,000 and sale proceeds are $8,500, what is the gain?",
+    "answer": "$1,500 gain on disposal.",
     "adaptedFrom": "FA:D5",
     "scope": "Core topic lesson",
     "reviewStatus": "Editorial review pending"
@@ -3170,10 +3170,10 @@
       "Accrued income: earned now, collected later; asset. Deferred income: collected now, earned later; liability."
     ],
     "formula": "Expense for period = Cash paid + Closing accrual − Opening accrual − Closing prepayment + Opening prepayment.",
-    "example": "Pay RM1,200 annual insurance on 1 October for a 31 December year-end. Three months expense RM300; nine months prepayment RM900.",
+    "example": "Pay $1,200 annual insurance on 1 October for a 31 December year-end. Three months expense $300; nine months prepayment $900.",
     "trap": "Accrued income is not the same as deferred income; one is receivable, the other is still owed in services.",
-    "check": "At year-end, RM450 electricity remains unpaid. What is the entry?",
-    "answer": "Dr electricity expense RM450 / Cr accrued expenses RM450.",
+    "check": "At year-end, $450 electricity remains unpaid. What is the entry?",
+    "answer": "Dr electricity expense $450 / Cr accrued expenses $450.",
     "adaptedFrom": "FA:D7",
     "scope": "Core topic lesson",
     "reviewStatus": "Editorial review pending"
@@ -3189,10 +3189,10 @@
       "Provisions are liabilities of uncertain timing or amount; recognise where there is a present obligation, probable outflow and reliable estimate."
     ],
     "formula": "Net receivables = Gross receivables − Closing allowance.",
-    "example": "Gross receivables RM20,000; write off RM1,000; new allowance 5% of remaining RM19,000 = RM950. Net receivables RM18,050. If old allowance was RM600, increase expense by RM350.",
+    "example": "Gross receivables $20,000; write off $1,000; new allowance 5% of remaining $19,000 = $950. Net receivables $18,050. If old allowance was $600, increase expense by $350.",
     "trap": "A specific write-off is not automatically an increase in the general allowance; calculate the remaining base first.",
-    "check": "The allowance falls from RM700 to RM500. Is the change an expense?",
-    "answer": "No: recognise a RM200 credit (decrease in irrecoverable debt expense).",
+    "check": "The allowance falls from $700 to $500. Is the change an expense?",
+    "answer": "No: recognise a $200 credit (decrease in irrecoverable debt expense).",
     "adaptedFrom": "FA:D8",
     "scope": "Core topic lesson",
     "reviewStatus": "Editorial review pending"
@@ -3226,10 +3226,10 @@
       "Split debt into current and non-current parts according to when contractual repayments fall due."
     ],
     "formula": "Closing capital = Opening capital + Additional capital + Profit − Drawings.",
-    "example": "Loan RM30,000 with RM6,000 principal repayable in the next 12 months: classify RM6,000 current and RM24,000 non-current, ignoring any other contractual terms.",
+    "example": "Loan $30,000 with $6,000 principal repayable in the next 12 months: classify $6,000 current and $24,000 non-current, ignoring any other contractual terms.",
     "trap": "Do not record the whole loan repayment as an expense: only the interest element is a finance cost.",
-    "check": "Owner withdraws RM800 cash for personal use. Effect?",
-    "answer": "Dr drawings RM800 / Cr cash RM800; no operating expense.",
+    "check": "Owner withdraws $800 cash for personal use. Effect?",
+    "answer": "Dr drawings $800 / Cr cash $800; no operating expense.",
     "adaptedFrom": "FA:D10",
     "scope": "Core topic lesson",
     "reviewStatus": "Editorial review pending"
@@ -3244,9 +3244,9 @@
       "Use a consistent sign convention when balancing a bank overdraft."
     ],
     "formula": "Corrected cash book ± Timing differences = Bank statement balance.",
-    "example": "Corrected bank ledger RM4,200 debit; deposits not yet credited RM800; unpresented cheques RM500. Bank statement = 4,200 − 800 + 500 = RM3,900.",
+    "example": "Corrected bank ledger $4,200 debit; deposits not yet credited $800; unpresented cheques $500. Bank statement = 4,200 − 800 + 500 = $3,900.",
     "trap": "A bank fee not recorded in the books is not an outstanding cheque; post it before reconciling.",
-    "check": "The bank statement is RM1,000 higher than cash book because of a payment not yet presented. What is the payment's effect?",
+    "check": "The bank statement is $1,000 higher than cash book because of a payment not yet presented. What is the payment's effect?",
     "answer": "The cash book already records payment, but the bank statement has not yet reduced; bank statement is higher.",
     "adaptedFrom": "FA:E1",
     "scope": "Core topic lesson",
@@ -3262,7 +3262,7 @@
       "Reconcile invoice references and dates before making corrections; some items are only timing differences."
     ],
     "formula": "Supplier ledger balance ± Reconciling items = Supplier statement balance.",
-    "example": "Our ledger RM2,800 payable; supplier statement RM3,200 because a RM400 invoice reached the supplier ledger but is missing from ours. Verify invoice then Dr purchases / Cr payables RM400.",
+    "example": "Our ledger $2,800 payable; supplier statement $3,200 because a $400 invoice reached the supplier ledger but is missing from ours. Verify invoice then Dr purchases / Cr payables $400.",
     "trap": "Do not adjust the ledger for an invoice that genuinely belongs to a different supplier.",
     "check": "A supplier credit note appears in our books but not on the supplier statement. What explains the difference?",
     "answer": "A timing difference; our payable may be lower until the supplier processes that credit note.",
@@ -3280,7 +3280,7 @@
       "Investigate when debit and credit totals differ; a suspense account may temporarily capture an unresolved difference."
     ],
     "formula": "Trial balance debit total = Trial balance credit total.",
-    "example": "Cash RM2,000 Dr, receivables RM4,000 Dr, expenses RM1,000 Dr, payables RM2,000 Cr and capital RM5,000 Cr: both sides RM7,000.",
+    "example": "Cash $2,000 Dr, receivables $4,000 Dr, expenses $1,000 Dr, payables $2,000 Cr and capital $5,000 Cr: both sides $7,000.",
     "trap": "Errors of omission, original entry, complete reversal and principle may leave a balanced trial balance.",
     "check": "Does a balanced trial balance prove sales are complete?",
     "answer": "No; entire omitted transactions can leave both sides equal.",
@@ -3298,10 +3298,10 @@
       "For complete double-entry errors, correct both substantive accounts; no suspense may be needed."
     ],
     "formula": "Correcting journal = Reverse incorrect effect + Record correct treatment.",
-    "example": "Office equipment RM900 was debited to repairs instead of non-current assets (credit bank correct). Correction: Dr office equipment RM900 / Cr repairs RM900.",
+    "example": "Office equipment $900 was debited to repairs instead of non-current assets (credit bank correct). Correction: Dr office equipment $900 / Cr repairs $900.",
     "trap": "The wrong amount being posted equally to both sides is an error of original entry and does not unbalance the trial balance.",
-    "check": "A cash receipt of RM600 is correctly debited to bank but credited to receivables by only RM60. Which type?",
-    "answer": "Single-sided numerical error causing a RM540 trial balance discrepancy; correct the credit side.",
+    "check": "A cash receipt of $600 is correctly debited to bank but credited to receivables by only $60. Which type?",
+    "answer": "Single-sided numerical error causing a $540 trial balance discrepancy; correct the credit side.",
     "adaptedFrom": "FA:F2",
     "scope": "Core topic lesson",
     "reviewStatus": "Editorial review pending"
@@ -3430,10 +3430,10 @@
       "For incomplete records, reconstruct missing revenue, purchases or cash using control accounts, margins and changes in net assets."
     ],
     "formula": "Gross profit = Net revenue − Cost of sales; Profit = Gross profit − Operating expenses ± Other items.",
-    "example": "Revenue RM50,000, returns RM2,000; opening inventory RM5,000, purchases RM24,000, closing inventory RM7,000. Net revenue RM48,000; cost of sales RM22,000; gross profit RM26,000.",
+    "example": "Revenue $50,000, returns $2,000; opening inventory $5,000, purchases $24,000, closing inventory $7,000. Net revenue $48,000; cost of sales $22,000; gross profit $26,000.",
     "trap": "Loan proceeds and additional owner capital are not revenue, even when they increase bank.",
-    "check": "If opening net assets RM25,000, closing RM35,000, drawings RM3,000 and new capital RM5,000, profit?",
-    "answer": "RM8,000 = 35,000 − 25,000 + 3,000 − 5,000.",
+    "check": "If opening net assets $25,000, closing $35,000, drawings $3,000 and new capital $5,000, profit?",
+    "answer": "$8,000 = 35,000 − 25,000 + 3,000 − 5,000.",
     "adaptedFrom": "FA:G6",
     "scope": "Core topic lesson",
     "reviewStatus": "Editorial review pending"
@@ -7134,7 +7134,7 @@
       "Closing cash = opening cash + receipts − payments; an overdraft is a negative closing cash balance."
     ],
     "formula": "Closing cash = Opening cash + Total receipts − Total payments.",
-    "example": "Opening bank RM1,400; collections RM8,000; payments RM9,900 → forecast closing overdraft RM500.",
+    "example": "Opening bank $1,400; collections $8,000; payments $9,900 → forecast closing overdraft $500.",
     "trap": "Depreciation is an expense but not a cash payment in the cash budget.",
     "check": "If customers pay one month after sale, where does October's credit sale appear?",
     "answer": "Normally in November cash receipts, assuming no bad debts and full one-month delay.",
@@ -7315,7 +7315,7 @@
       "Use only future incremental cash flows, including relevant working capital, disposal and tax where specified."
     ],
     "formula": "NPV = Σ Cash flow at t ÷ (1+r)^t − Initial investment.",
-    "example": "Invest RM10,000; receive RM6,000 at end of each of two years; discount rate 10%. NPV ≈ 6,000/1.1 + 6,000/1.1² − 10,000 = RM413.",
+    "example": "Invest $10,000; receive $6,000 at end of each of two years; discount rate 10%. NPV ≈ 6,000/1.1 + 6,000/1.1² − 10,000 = $413.",
     "trap": "Accounting profit is not the same as project cash flow; depreciation is a non-cash charge.",
     "check": "A project has positive NPV. What does that indicate?",
     "answer": "It is expected to earn above the assumed required return under the model's assumptions.",
@@ -7333,7 +7333,7 @@
       "Use only future incremental cash flows, including relevant working capital, disposal and tax where specified."
     ],
     "formula": "NPV = Σ Cash flow at t ÷ (1+r)^t − Initial investment.",
-    "example": "Invest RM10,000; receive RM6,000 at end of each of two years; discount rate 10%. NPV ≈ 6,000/1.1 + 6,000/1.1² − 10,000 = RM413.",
+    "example": "Invest $10,000; receive $6,000 at end of each of two years; discount rate 10%. NPV ≈ 6,000/1.1 + 6,000/1.1² − 10,000 = $413.",
     "trap": "Accounting profit is not the same as project cash flow; depreciation is a non-cash charge.",
     "check": "A project has positive NPV. What does that indicate?",
     "answer": "It is expected to earn above the assumed required return under the model's assumptions.",
@@ -7518,7 +7518,7 @@
       "Use only future incremental cash flows, including relevant working capital, disposal and tax where specified."
     ],
     "formula": "NPV = Σ Cash flow at t ÷ (1+r)^t − Initial investment.",
-    "example": "Invest RM10,000; receive RM6,000 at end of each of two years; discount rate 10%. NPV ≈ 6,000/1.1 + 6,000/1.1² − 10,000 = RM413.",
+    "example": "Invest $10,000; receive $6,000 at end of each of two years; discount rate 10%. NPV ≈ 6,000/1.1 + 6,000/1.1² − 10,000 = $413.",
     "trap": "Accounting profit is not the same as project cash flow; depreciation is a non-cash charge.",
     "check": "A project has positive NPV. What does that indicate?",
     "answer": "It is expected to earn above the assumed required return under the model's assumptions.",
@@ -8437,9 +8437,9 @@
       "Margin of safety compares expected activity with break-even activity; C/S ratio relates contribution to sales."
     ],
     "formula": "Break-even units = Fixed cost ÷ Contribution/unit; C/S ratio = Contribution ÷ Sales.",
-    "example": "Price RM50; variable cost RM30; fixed cost RM12,000. Contribution RM20/unit, break-even 600 units. At 850 units, margin of safety = 250 units.",
+    "example": "Price $50; variable cost $30; fixed cost $12,000. Contribution $20/unit, break-even 600 units. At 850 units, margin of safety = 250 units.",
     "trap": "Margin of safety % usually uses budgeted/actual sales as denominator, not break-even sales.",
-    "check": "Contribution per unit RM15, fixed costs RM9,000, expected sales 1,000 units. Break-even and MOS?",
+    "check": "Contribution per unit $15, fixed costs $9,000, expected sales 1,000 units. Break-even and MOS?",
     "answer": "600 units break-even; 400 units margin of safety (40%).",
     "adaptedFrom": "MA2:D1",
     "scope": "Core topic lesson",
@@ -10515,7 +10515,7 @@
       "Use only future incremental cash flows, including relevant working capital, disposal and tax where specified."
     ],
     "formula": "NPV = Σ Cash flow at t ÷ (1+r)^t − Initial investment.",
-    "example": "Invest RM10,000; receive RM6,000 at end of each of two years; discount rate 10%. NPV ≈ 6,000/1.1 + 6,000/1.1² − 10,000 = RM413.",
+    "example": "Invest $10,000; receive $6,000 at end of each of two years; discount rate 10%. NPV ≈ 6,000/1.1 + 6,000/1.1² − 10,000 = $413.",
     "trap": "Accounting profit is not the same as project cash flow; depreciation is a non-cash charge.",
     "check": "A project has positive NPV. What does that indicate?",
     "answer": "It is expected to earn above the assumed required return under the model's assumptions.",
