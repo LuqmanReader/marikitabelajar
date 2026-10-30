@@ -80,7 +80,7 @@ function topicMode(paper){
 function sections(opts){
  const book=opts.book;
  if(Array.isArray(book?.sections)&&book.sections.length){
-  return book.sections.map(([heading,prose])=>({heading:clean(heading),detail:clean(prose)})).slice(0,4);
+  return book.sections.map(([heading,prose])=>({heading:clean(heading),detail:String(prose||'').trim()})).slice(0,4);
  }
  const n=opts.note||{};
  const steps=Array.isArray(n.steps)?n.steps.filter(Boolean):[];
@@ -112,17 +112,63 @@ function panel(svg,x,y,item,index,colour){
  // Explanation is below the heading, not floating in an empty panel.
  blockText(svg,x+24,y+123,item.detail,{width:502,size:18,weight:500,max:5,leading:27});
 }
-function conceptMap(opts){
+function interactiveMap(opts){
+ // Real HTML controls replace the noninteractive SVG text boxes.
+ // Each details panel contains the COMPLETE chapter section, never an SVG excerpt.
  const mode=topicMode(opts.paper);
- const svg=svgNode('svg',{viewBox:'0 0 1200 734',
-  role:'img','aria-label':opts.paper+' '+opts.code+' concept overview: '+opts.title,
-  xmlns:SVG_NS});
- svg.append(svgNode('rect',{width:1200,height:734,fill:paper}));
- header(svg,opts,mode,'CONCEPT OVERVIEW · FOUR RELATED PARTS OF THIS CHAPTER · NOT A STEP-BY-STEP WORKFLOW');
- const entries=sections(opts);
- const positions=[[29,163],[618,163],[29,438],[618,438]];
- entries.forEach((item,i)=>panel(svg,positions[i][0],positions[i][1],item,i,i%2?mode.colour:'#ffffff'));
- return svg;
+ const map=node('section','lv-interactive-map');
+ map.setAttribute('aria-label',opts.paper+' '+opts.code+' · '+opts.title+' · expandable explanations');
+ const banner=node('div','lv-interactive-banner');
+ const eyebrow=node('p','lv-interactive-eyebrow',mode.name+'  /  '+opts.paper+' '+opts.code);
+ const title=node('h3','lv-interactive-title',opts.title);
+ const sub=node('p','lv-interactive-subtitle','CONCEPT OVERVIEW · Open explanations are displayed in full. Select any heading to collapse or reopen it.');
+ banner.append(eyebrow,title,sub);
+ map.append(banner);
+ const actions=node('div','lv-interactive-actions');
+ const label=node('span','lv-interactive-help','Each card is interactive · Keyboard: Tab, then Enter');
+ const collapse=node('button','lv-all-toggle','Collapse all');
+ collapse.type='button';
+ collapse.setAttribute('aria-label','Collapse all explanations for '+opts.paper+' '+opts.code);
+ const expand=node('button','lv-all-toggle','Expand all');
+ expand.type='button';
+ expand.setAttribute('aria-label','Expand all explanations for '+opts.paper+' '+opts.code);
+ actions.append(label,collapse,expand);
+ map.append(actions);
+ const grid=node('div','lv-interactive-grid');
+ const cards=[];
+ const items=sections(opts);
+ items.forEach((entry,i)=>{
+   const card=node('details','lv-interactive-card');
+   card.open=true;
+   card.setAttribute('data-panel-number',String(i+1));
+   card.setAttribute('data-theme',i%2?'tinted':'white');
+   const summary=node('summary','lv-card-summary');
+   const num=node('span','lv-card-number',String(i+1));
+   const heading=node('span','lv-card-heading',entry.heading);
+   const action=node('span','lv-card-action');
+   action.setAttribute('aria-hidden','true');
+   action.append(node('span','lv-action-hide','Collapse explanation'),
+                 node('span','lv-action-show','Read full explanation'));
+   const chevron=node('span','lv-card-chevron','');
+   chevron.setAttribute('aria-hidden','true');
+   summary.append(num,heading,action,chevron);
+   const content=node('div','lv-card-content');
+   const paragraphs=String(entry.detail||'').split(/\n\s*\n/).map(t=>t.trim()).filter(Boolean);
+   for(const para of paragraphs)content.append(node('p','lv-card-paragraph',para));
+   card.append(summary,content);
+   grid.append(card);
+   cards.push(card);
+ });
+ collapse.addEventListener('click',()=>{
+   cards.forEach(card=>{card.open=false});
+ });
+ expand.addEventListener('click',()=>{
+   cards.forEach(card=>{card.open=true});
+ });
+ map.append(grid);
+ map.append(node('p','lv-interactive-footer',
+  'THESE ARE RELATED TOPIC CONCEPTS, NOT A REQUIRED ORDER OF TRANSACTIONS. The individual sections below contain further examples and study notes.'));
+ return map;
 }
 function connector(svg,x1,x2,y){
  const start=x1+3,tip=x2-10;
@@ -240,12 +286,14 @@ root.renderLedgerChapterVisual=function(parent,opts){
  if(!opts?.paper||!opts.code)return false;
  const figure=node('figure','lv-all-figure');
  const special=opts.paper==='FA1'&&opts.code==='A2';
- figure.append(special?workflow(opts):conceptMap(opts));
+ if(special)figure.append(workflow(opts));
  figure.append(node('figcaption','',
-  special?'Original purchase-to-pay evidence diagram. Arrows denote transaction order; the mismatched invoice must be investigated.':
-  'Chapter concept map. Numbered panels organise the teaching; they do not imply that these concepts occur in a fixed order. Continue below for the complete explanations.'));
- parent.append(figure);
- if(special)businessDocuments(parent);
+  'Original purchase-to-pay evidence diagram. Arrows denote transaction order; the mismatched invoice must be investigated.'));
+ if(special){
+   parent.append(figure);
+   businessDocuments(parent);
+ }
+ parent.append(interactiveMap(opts));
  parent.append(workedPanel(opts));
  return true;
 };
