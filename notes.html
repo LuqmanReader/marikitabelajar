@@ -3,7 +3,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,follow"><meta name="theme-color" content="#f4eedd">
 <title>FIA–ACCA Notes Library · LedgerPeer</title><link rel="icon" href="favicon-32.png">
-<link rel="stylesheet" href="notes.css?v=20261030outcomes1"><link rel="stylesheet" href="site-nav.css?v=20261028-unifiedback">
+<link rel="stylesheet" href="notes.css?v=20261030textbook2"><link rel="stylesheet" href="site-nav.css?v=20261028-unifiedback">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script><script src="auth.js?v=20261029-single-tab-shell1"></script>
 <script defer src="subject-catalog.js?v=20261022acca25v2"></script>
@@ -14,7 +14,16 @@
 <script defer src="notes-outcome-lessons.js?v=20261030outcomes1"></script>
 <script defer src="fia-study-data-v2.js"></script>
 <script defer src="fia-study-content-v2.js"></script>
-<script defer src="notes-page.js?v=20261030quality2"></script>
+<script defer src="textbook-fa1-part-a.js?v=20261030textbook2"></script>
+<script defer src="textbook-fa1-part-b.js?v=20261030textbook2"></script>
+<script defer src="textbook-ma1.js?v=20261030textbook2"></script>
+<script defer src="textbook-ma2-part-a.js?v=20261030textbook1"></script>
+<script defer src="textbook-ma2-part-b.js?v=20261030textbook1"></script>
+<script defer src="textbook-fa2-part-a.js?v=20261030textbook1"></script>
+<script defer src="textbook-fa2-part-b.js?v=20261030textbook1"></script>
+<script defer src="textbook-fa2-part-c.js?v=20261030textbook1"></script>
+<script defer src="textbook-integrated-cases.js?v=20261030textbook2"></script>
+<script defer src="notes-page.js?v=20261030textbook1"></script>
 </head><body>
 <header class="notes-top">
   <a class="notes-brand" href="index.html"><img src="ledgerpeer-sidebar-logo.png" width="52" height="52" alt=""><span>LEDGERPEER <small>/ STUDY LIBRARY</small></span></a>
@@ -25,13 +34,13 @@
   <section class="notes-hero">
     <span class="notes-eyebrow">FIA FOUNDATION + ACCA / SYLLABUS AUDIT 2026–27</span>
     <h1>KNOW IT.<br><em>DON'T JUST MEMORISE IT.</em></h1>
-    <p>Browse all 25 FIA and ACCA paper outlines, with original lessons and a transparent outcome-by-outcome audit. Selected FA2/MA2 topics now include separate K/S outcomes and detailed calculations. Other headings remain introductory or editorially unverified; this library is not yet a complete 2026–27 textbook. Check jurisdiction and examinable edition for each paper.</p>
+    <p>Browse all 25 FIA and ACCA paper outlines. FA1, MA1, FA2 and MA2 now contain separate original long-form teaching chapters for every indexed topic, including methods, journals, worked calculations and integrated accounting cases. The other 21 papers still require the same textbook expansion; no paper is yet certified as covering every detailed 2026–27 outcome. Check jurisdiction and examinable edition for each paper.</p>
     <div class="notes-hero-actions"><a href="#library" class="notes-primary">EXPLORE TOPICS ↓</a><a href="quiz.html" class="notes-secondary">OPEN QUIZ CENTRE →</a><a href="https://www.accaglobal.com/my/en/student/your-study-options/studyhub.html" target="_blank" rel="noopener noreferrer" class="notes-secondary">OFFICIAL ACCA STUDY HUB ↗</a></div>
   </section>
   <section class="notes-orientation" aria-label="Library principles">
     <p><strong>CURRICULUM-ALIGNED</strong><span>Includes 10 FIA papers and 15 ACCA papers, using published paper-specific syllabus codes.</span></p>
     <p><strong>ORIGINAL LEARNING NOTES</strong><span>Original explanations, worked examples, common mistakes and self-check answers. New content is pending editorial review.</span></p>
-    <p><strong>TRANSPARENT COVERAGE</strong><span>The 2026–27 FA2 and MA2 guides are published by ACCA. All 700 headings have starter notes, but only 8 have individually expanded K/S outcomes—based on 2025–26 guides and not yet certified for 2026–27.</span></p>
+    <p><strong>TRANSPARENT COVERAGE</strong><span>The 2026–27 FA2 and MA2 guides are published by ACCA. All 700 headings have starter notes. FA1, MA1, FA2 and MA2 now have individual original teaching chapters. Detailed 2026–27 learning-outcome certification remains outstanding.</span></p>
   </section>
   <section class="notes-main" id="library" aria-labelledby="libraryTitle">
     <div class="notes-title-line"><div><span class="notes-eyebrow">THE STUDENT'S WORKBENCH</span><h2 id="libraryTitle">NOTES LIBRARY.</h2></div><span id="notesCount" class="notes-count">LOADING...</span></div>
@@ -51,12 +60,12 @@
     <div class="notes-toolbar">
       <label for="paperSelect">PAPER<select id="paperSelect" aria-label="Select FIA or ACCA paper"></select></label>
       <label for="notesSearch" class="notes-search">SEARCH SYLLABUS / TOPIC<input id="notesSearch" type="search" placeholder="e.g. D6, receivables, break-even, payroll..." autocomplete="off"></label>
-      <label for="notesFilter">CONTENT<select id="notesFilter"><option value="all">All syllabus topics</option><option value="lesson">Outcome-expanded topics</option><option value="outline">Needs detailed outcome expansion</option></select></label>
+      <label for="notesFilter">CONTENT<select id="notesFilter"><option value="all">All syllabus topics</option><option value="lesson">Textbook teaching chapters</option><option value="outline">Chapters not yet rewritten</option></select></label>
     </div>
     <details class="notes-coverage" id="coveragePanel">
       <summary>FULL SYLLABUS MAP <span id="coverageSummary">Checking all 25 papers…</span></summary>
-      <p>The first number counts headings with introductory notes, not fully taught outcomes. The second counts sections expanded against individual learning outcomes, using the last directly verified ACCA 2025–26 FA2 and MA2 guides; <strong>none of these has yet been certified against the 2026–27 revision</strong>. Shared chapters alone do not establish complete syllabus coverage. <a href="https://github.com/LuqmanReader/marikitabelajar/blob/main/audits/notes-2026-27-audit.md" target="_blank" rel="noopener noreferrer">READ FULL CONTENT AUDIT ↗</a></p>
-      <div class="notes-coverage-scroll"><table><caption>FIA–ACCA core lesson coverage by paper</caption><thead><tr><th scope="col">Paper / variant</th><th scope="col">Starter lessons</th><th scope="col">Outcome-expanded</th><th scope="col">Missing starter</th><th scope="col">Study</th></tr></thead><tbody id="coverageRows"></tbody></table></div>
+      <p>The heading index is not the same as textbook completeness. FA1, MA1, FA2 and MA2 now have dedicated long-form teaching chapters with explanations and worked calculations. Other papers still need equivalent chapters, and the individual 2026–27 outcome-level verification is not finished. Shared chapters alone do not establish complete syllabus coverage. <a href="https://github.com/LuqmanReader/marikitabelajar/blob/main/TEXTBOOK_STATUS_2026-27.md" target="_blank" rel="noopener noreferrer">VIEW TEXTBOOK RELEASE COVERAGE ↗</a></p>
+      <div class="notes-coverage-scroll"><table><caption>FIA–ACCA core lesson coverage by paper</caption><thead><tr><th scope="col">Paper / variant</th><th scope="col">Starter lessons</th><th scope="col">Textbook chapters</th><th scope="col">Prior outcome maps</th><th scope="col">Missing starter</th><th scope="col">Study</th></tr></thead><tbody id="coverageRows"></tbody></table></div>
     </details>
     <div id="paperIntro" class="notes-paper-intro" role="status">Loading FIA and ACCA study materials…</div>
     <div id="topicList" class="notes-topic-list" aria-live="polite"></div>
