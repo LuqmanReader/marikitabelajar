@@ -594,3 +594,15 @@ footer{margin-top:60px;border-top:2px solid var(--ink);padding-top:20px;font-siz
  letter-spacing:0;
  overflow-wrap:anywhere;
 }
+
+/* Students attempt multi-step cases before opening the official teaching solution. */
+.notes-shell .lp-textbook-answer>summary{
+ cursor:pointer;list-style:revert;
+ font-family:var(--lp-type-body)!important;
+ font-weight:800;font-size:0.85rem;line-height:1.5;
+ letter-spacing:0;overflow-wrap:anywhere;
+}
+.notes-shell .lp-textbook-answer>summary:focus-visible{
+ outline:3px solid #111;outline-offset:4px;
+}
+.notes-shell .lp-textbook-answer[open]>summary{margin-bottom:12px}
