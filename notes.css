@@ -265,3 +265,15 @@ footer{margin-top:60px;border-top:2px solid var(--ink);padding-top:20px;font-siz
 .lv-math-checks span{display:block}
 @media(max-width:760px){.lv-math-checks{grid-template-columns:1fr}.lv-math-caution{border-left:0;border-top:2px solid #151515}.lv-math-case{box-shadow:3px 3px 0 #151515}.lv-math-table{min-width:560px}}
 @media print{.lv-math-case{box-shadow:none;break-inside:avoid}.lv-math-scroll{overflow:visible}.lv-math-table{min-width:0}}
+
+
+/* Editorial reading typography: eliminate the old wall-of-monospaced prose. */
+.notes-lesson-layout--visual .notes-lesson-main{font-family:Arial,Helvetica,sans-serif}
+.notes-lesson-layout--visual .notes-lesson-main>p,
+.notes-lesson-layout--visual .notes-lesson-main .lv-short-revision p{font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.85;max-width:89ch}
+.notes-lesson-layout--visual .notes-lesson-main h3,
+.notes-lesson-layout--visual .notes-lesson-main h4{font-family:Arial,Helvetica,sans-serif}
+.notes-lesson-layout--visual .lp-textbook-section p{font-family:Arial,Helvetica,sans-serif;max-width:83ch;line-height:1.85}
+.notes-lesson-layout--visual .lp-textbook-section p+p{margin-top:15px}
+.notes-lesson-layout--visual .notes-review-status{max-width:96ch}
+@media(prefers-reduced-motion:reduce){.lv-all-figure,.lv-all-worked,.lv-math-case{scroll-behavior:auto}}
