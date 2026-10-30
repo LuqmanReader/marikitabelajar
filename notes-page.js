@@ -8,6 +8,8 @@ function visiblePapers(){return qualification==='fia'?FIA_PAPERS:qualification==
 function qualificationOf(code){return FIA_PAPERS.some(p=>p.code===code)?'fia':ACCA_PAPERS.some(p=>p.code===code)?'acca':'all'}
 const syllabus=root.LedgerNotesSyllabi?.papers||{};
 const lessons=root.LedgerFiaNotes||{};
+const outcomeLessons=root.LedgerOutcomeLessons||{};
+const verifiedFiaSources={FA2:'https://www.accaglobal.com/content/dam/acca/global/PDF-students/fia/studyguides/FA2%20S25-A26%20syllabus%20and%20study%20guide%20-%20final.pdf',MA2:'https://www.accaglobal.com/content/dam/acca/global/PDF-students/fia/studyguides/MA2%20S25-A26%20syllabus%20and%20study%20guide%20-%20final.pdf'};
 let paper='ALL',qualification='all',filter='all',query='';
 const searchParams=new URLSearchParams(location.search);
 function node(tag,cls,text){const x=document.createElement(tag);if(cls)x.className=cls;if(text!==undefined)x.textContent=text;return x}
@@ -20,7 +22,7 @@ function link(label,url,cls){
  return a;
 }
 function syllabusCode(t){const m=/^([A-Z]\d+)\s*·\s*(.*)$/.exec(t);return m?{code:m[1],title:m[2]}:{code:'—',title:t}}
-function info(code){const p=PAPERS.find(x=>x.code===code);return {name:p?.name||code,description:p?.stage||'',topics:syllabus[code]?.topics||[],source:syllabus[code]?.source||null,edition:syllabus[code]?.edition||null,variant:syllabus[code]?.variant||'GLO'}}
+function info(code){const p=PAPERS.find(x=>x.code===code);return {name:p?.name||code,description:p?.stage||'',topics:syllabus[code]?.topics||[],source:verifiedFiaSources[code]||syllabus[code]?.source||null,edition:verifiedFiaSources[code]?'VERIFIED 2025–26 GUIDE · 2026–27 VERIFICATION PENDING':syllabus[code]?.edition||null,variant:syllabus[code]?.variant||'GLO'}}
 function stageLabel(){return qualification==='fia'?'FIA / FOUNDATION':qualification==='acca'?'ACCA / FULL QUALIFICATION':'FIA + ACCA / ALL 25 PAPERS'}
 function updateQualificationButtons(){
  document.querySelectorAll('[data-notes-qualification]').forEach(btn=>{
@@ -51,12 +53,36 @@ function changeQualification(next){
 function textBlock(parent,title,text,cls){
  const block=node('div',cls||'');block.append(node('h4','',title),node('p','',text));parent.append(block);return block
 }
+function appendOutcomeTeaching(parent,paperCode,topicCode){
+ const d=outcomeLessons[paperCode+':'+topicCode];if(!d)return false;
+ const section=node('section','notes-outcome-teaching');
+ section.append(node('h3','','INDIVIDUAL SYLLABUS LEARNING OUTCOMES'));
+ section.append(node('p','notes-review-status',d.edition+' · ACCA outcome IDs; original LedgerPeer explanations'));
+ const intro=node('p','','Each outcome below has its own K (knowledge) or S (skill) requirement. These notes are an independently authored expansion, not official ACCA study text or a certification of the 2026–27 edition.');section.append(intro);
+ for(const [id,o] of Object.entries(d.outcomes)){
+  const article=node('article','notes-outcome-card');
+  const head=node('h4','');head.append(node('span','notes-outcome-code',topicCode+'.'+id+' ['+o.level+']'),document.createTextNode(' '+o.title));
+  article.append(head,node('p','',o.explanation));section.append(article);
+ }
+ if(d.workings?.length){
+  section.append(node('h3','','STEP-BY-STEP EXAM WORKINGS'));
+  for(const w of d.workings){
+   const work=node('article','notes-outcome-worked');
+   work.append(node('h4','',w.title),node('p','',w.question),node('h5','','WORKING AND ANSWER'),node('p','',w.solution));section.append(work);
+  }
+ }
+ section.append(link('VERIFIED REFERENCE: ACCA 2025–26 STUDY GUIDE ↗',d.source));
+ parent.append(section);return true;
+}
 function makeLesson(n,src,paperCode){
  const layout=node('div','notes-lesson-layout');
  const main=node('div','notes-lesson-main');
- main.append(node('p','notes-lesson-scope',(n.scope||'Core topic lesson').toUpperCase()+' · INTRODUCTION + WORKED APPLICATION'));
+ const detailed=Boolean(outcomeLessons[paperCode+':'+n.code]);
+  main.append(node('p','notes-lesson-scope',detailed?'EXPANDED OUTCOME-BY-OUTCOME TEACHING · 2025–26 VERIFIED SOURCE':'INTRODUCTORY LESSON · DETAILED OUTCOME COVERAGE NOT YET CERTIFIED'));
+  if(!detailed)main.append(node('p','notes-review-status','This topic needs an individual learning-outcome audit before it can be marked syllabus-complete.'));
  if(n.reviewStatus)main.append(node('p','notes-review-status',n.reviewStatus+' · '+(n.updatedAt||'2026-10-23')));
  main.append(node('p','',n.summary));
+  if(detailed)appendOutcomeTeaching(main,paperCode,n.code);
  const chapterKey=root.LedgerFiaGuides?.topicChapters?.[paperCode+':'+n.code];
  if(chapterKey&&root.appendFiaTeaching)root.appendFiaTeaching(main,paperCode,chapterKey);
  main.append(node('h4','', 'HOW IT WORKS'));
@@ -72,7 +98,7 @@ function makeLesson(n,src,paperCode){
  const answer=node('div','notes-check-answer',n.answer);
  check.append(node('h4','', 'SELF CHECK'),summary,answer);side.append(check);
  side.append(link('PRACTICE '+paperCode+' / '+n.code+' →','quiz.html?paper='+paperCode+'&topic='+n.code,'notes-guide-link'));
- side.append(link('OFFICIAL SYLLABUS ↗',src || resourceLink(paperCode)));
+ side.append(link(verifiedFiaSources[paperCode]?'LAST VERIFIED OFFICIAL GUIDE (2025–26) ↗':'OFFICIAL SYLLABUS ↗',src || resourceLink(paperCode)));
  layout.append(main,side);return layout;
 }
 function buildTopic(paperCode,item,index){
@@ -82,7 +108,7 @@ function buildTopic(paperCode,item,index){
  const summary=node('summary');
  const c=node('span','notes-topic-code',tag.code);
  const title=node('div','notes-topic-title');
- title.append(node('strong','',tag.title),node('small','',paperCode+' · '+(n?'CORE TOPIC LESSON':'SYLLABUS OUTLINE / OFFICIAL RESOURCE')));
+ title.append(node('strong','',tag.title),node('small','',paperCode+' · '+(outcomeLessons[paperCode+':'+tag.code]?'EXPANDED INDIVIDUAL OUTCOMES · EDITION RECHECK PENDING':n?'INTRODUCTORY TOPIC LESSON':'SYLLABUS OUTLINE / OFFICIAL RESOURCE')));
  summary.append(c,title,node('span','notes-expand','+'));el.append(summary);
  const content=node('div','notes-topic-detail');
  let loaded=false;
@@ -111,7 +137,7 @@ function renderIntro(codes){
  const right=node('div');
  if(paper!=='ALL'){
    const source=info(paper).source;
-   right.append(link('ACCA 2026–27 SYLLABUS ↗',source||resourceLink(paper)));
+   right.append(link(verifiedFiaSources[paper]?'LAST VERIFIED OFFICIAL GUIDE (2025–26) ↗':'OFFICIAL PAPER SYLLABUS ↗',source||resourceLink(paper)));
    right.append(document.createTextNode(' '));
    right.append(link('EXAM SUPPORT ↗',resourceLink(paper)));
  }else{right.append(link('ACCA EXAM RESOURCE FINDER ↗','https://www.accaglobal.com/my/en/student/exam-support-resources.html'))}
@@ -130,9 +156,10 @@ function render(){
   for(const item of all){
    const t=syllabusCode(item),lesson=lessons[code+':'+t.code];
    if(lesson)detailCount++;
-   if(filter==='lesson'&&!lesson||filter==='outline'&&lesson)continue;
+   if(filter==='lesson'&&!outcomeLessons[code+':'+t.code]||filter==='outline'&&Boolean(outcomeLessons[code+':'+t.code]))continue;
    if(q){
-     const hay=[code,item,info(code).name,lesson?.summary,lesson?.formula,lesson?.trap,lesson?.example,...(lesson?.steps||[])].filter(Boolean).join(' ').toLowerCase();
+     const extra=outcomeLessons[code+':'+t.code];
+      const hay=[code,item,info(code).name,lesson?.summary,lesson?.formula,lesson?.trap,lesson?.example,...(lesson?.steps||[]),...Object.values(extra?.outcomes||{}).flatMap(o=>[o.title,o.explanation])].filter(Boolean).join(' ').toLowerCase();
      if(!hay.includes(q))continue;
    }
    const el=buildTopic(code,item,rendered);
@@ -141,7 +168,7 @@ function render(){
  }
  byId('notesEmpty').hidden=rendered!==0;
  const suffix=paper==='ALL'?'ACROSS '+activePapers.length+' PAPERS':paper+' SYLLABUS';
- byId('notesCount').textContent=rendered+' MATCHING TOPICS · '+detailCount+' CORE LESSONS / '+total+' HEADINGS · '+suffix;
+ byId('notesCount').textContent=rendered+' MATCHING TOPICS · '+detailCount+' STARTER LESSONS / '+total+' HEADINGS · '+activePapers.reduce((n,p)=>n+Object.keys(outcomeLessons).filter(k=>k.startsWith(p+':')).length,0)+' OUTCOME-EXPANDED · '+suffix;
  if(searchParams.has('topic') && !query && filter==='all'){
    const code=searchParams.get('topic')?.toUpperCase();
    const desired=byId('topic-'+paper+'-'+code);
@@ -150,18 +177,20 @@ function render(){
 }
 
 function renderCoverage(){
- const rows=byId('coverageRows');rows.replaceChildren();let total=0,taught=0;
+ const rows=byId('coverageRows');rows.replaceChildren();let total=0,taught=0,expanded=0;
  for(const p of PAPERS){
   const data=info(p.code),count=data.topics.filter(t=>lessons[p.code+':'+syllabusCode(t).code]).length;
-  total+=data.topics.length;taught+=count;
+  const detailedCount=data.topics.filter(t=>Boolean(outcomeLessons[p.code+':'+syllabusCode(t).code])).length;
+   total+=data.topics.length;taught+=count;expanded+=detailedCount;
   const row=node('tr');
   const name=node('th');name.scope='row';name.append(node('strong','',p.code+' / '+data.variant),node('small','',p.name));
   const available=node('td','',count+' / '+data.topics.length);
+   const audited=node('td','',String(detailedCount)+' / '+data.topics.length);
   const missing=node('td','',String(data.topics.length-count));
   const destination=node('td');destination.append(link('OPEN '+p.code+' →','notes.html?paper='+p.code));
-  row.append(name,available,missing,destination);rows.append(row);
+  row.append(name,available,audited,missing,destination);rows.append(row);
  }
- byId('coverageSummary').textContent=taught+' / '+total+' HEADINGS WITH CORE LESSONS';
+ byId('coverageSummary').textContent=taught+' / '+total+' STARTER LESSONS · '+expanded+' OUTCOME-EXPANDED (NOT 2026–27 CERTIFIED)';
 }
 
 async function init(){
