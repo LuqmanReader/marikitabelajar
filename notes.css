@@ -428,3 +428,17 @@ footer{margin-top:60px;border-top:2px solid var(--ink);padding-top:20px;font-siz
 }
 @media(prefers-reduced-motion:reduce){.lv-purchase-step-chevron{transition:none}}
 @media print{.lv-purchase-step-detail{box-shadow:none}.lv-purchase-step{break-inside:avoid}}
+
+
+/* Notes release diagnostics: make stale deployments visible and recoverable. */
+.notes-build-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:0 0 14px;font-family:Arial,Helvetica,sans-serif}
+.notes-build-stamp{border:2px solid #171717;background:#fff9d7;color:#171717;box-shadow:2px 2px 0 #171717;padding:7px 11px;font:900 11px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.04em;cursor:pointer}
+.notes-build-stamp:hover,.notes-build-stamp:focus-visible{background:#ffd53a}
+.notes-build-row>span{font:600 11px/1.4 Arial,Helvetica,sans-serif;max-width:56ch}
+.notes-release-banner{display:flex;align-items:center;gap:15px;justify-content:space-between;flex-wrap:wrap;margin:0 0 21px;padding:15px 18px;border:3px solid #171717;background:#ffdc6b;box-shadow:4px 4px 0 #171717;font-family:Arial,Helvetica,sans-serif}
+.notes-release-banner p{flex:1 1 270px;margin:0;font:800 14px/1.6 Arial,Helvetica,sans-serif}
+.notes-release-banner button{border:2px solid #171717;background:#171717;color:#fff;padding:11px 15px;font:900 12px/1.4 Arial,Helvetica,sans-serif;cursor:pointer;min-height:42px}
+.notes-release-banner button:hover{background:#383838}
+.notes-release-banner button:focus-visible{outline:4px solid #2476c5;outline-offset:3px}
+@media(max-width:600px){.notes-build-row{align-items:flex-start}.notes-release-banner{padding:12px}}
+@media print{.notes-build-row,.notes-release-banner{display:none!important}}
