@@ -11,10 +11,11 @@ function fillPapers(){
  let group,stage='';
  for(const p of papers){
    if(stage!==p.stage){stage=p.stage;group=element('optgroup');group.label=stage;$('paper').append(group);}
-   const o=element('option',null,p.label);o.value=p.code;group.append(o);
+   const supported=engine.SUPPORTED_EXAM_PAPERS?.includes(p.code);
+   const o=element('option',null,p.label+(supported?'':' · QUESTION BANK IN DEVELOPMENT'));o.value=p.code;o.disabled=!supported;group.append(o);
  }
  const selected=params.get('paper')?.toUpperCase();
- $('paper').value=papers.some(p=>p.code===selected)?selected:'FA2';
+ $('paper').value=engine.SUPPORTED_EXAM_PAPERS?.includes(selected)?selected:'FA2';
 }
 function fillTopics(){
  const paper=$('paper').value,topics=getTopics(paper),select=$('topic'),prior=params.get('topic')?.toUpperCase()||select.value;
@@ -29,7 +30,7 @@ function fillTopics(){
  select.value=topics.some(t=>t.code===prior)?prior:'all';
  if(!params.has('topic'))select.value='all';
  params.delete('topic');
- setMessage(covered+' of '+topics.length+' syllabus headings have source-backed objective questions. FA1/MA1 are MCQ-only; FA2/MA2 include numerical entry where appropriate.');
+ setMessage(covered+' syllabus headings mapped to '+paper+'. Questions are original, authored and calculation-based. Some topics have fewer than 20 distinct questions; there is no paragraph-matching filler.');
  updateReadLink();
 }
 function updateReadLink(){
@@ -49,8 +50,8 @@ function setMode(next){
  $('countField').hidden=isMock;
  $('readTopic').hidden=isMock;
  $('modeDescription').textContent=isMock
-  ?(['FA2','MA2'].includes($('paper').value)?'50-question mock: 35 multiple-choice (70%) and 15 numerical entry (30%). All automatically graded.':'50-question mock: MCQ-only for this paper. All automatically graded.')
-  :(['FA2','MA2'].includes($('paper').value)?'20-question topic drill: 10 MCQs (50%) and 10 numerical entry questions (50%). A 10-question drill splits 5/5; 5 questions split 3/2.':'Topic practice: MCQ-only for this paper. All questions are automatically marked.');
+  ?(['FA2','MA2'].includes($('paper').value)?'50-question foundation-style practice: 35 MCQ and 15 numerical entries; this does not replicate all official CBE question types.':'50-question foundation-style practice with MCQs; not an official ACCA examination.')
+  :(['FA2','MA2'].includes($('paper').value)?'Up to 20 original questions; target 10 MCQ and 10 numeric where the bank has distinct skills.':'Original multiple-choice practice. Question count depends on available independent skills.');
  $('generate').textContent=isMock?'GENERATE 50-QUESTION MOCK →':'GENERATE '+$('count').value+' QUESTIONS →';
 }
 
@@ -65,13 +66,14 @@ function makeQuiz(){
  answers={};phase='answering';saved=false;
  if(!active.questions.length){
    $('quizSection').hidden=true;
-   setMessage('There are no authored questions for the selected topic yet. Open its study resources or select another syllabus topic. No questions will be invented.');
+   setMessage(active.reason||'No original questions for this topic; try another topic.');
    return;
  }
  $('quizSection').hidden=false;$('results').hidden=true;$('saveStatus').textContent='';$('save').disabled=false;
  const narrow=mode==='mock'?' / PAPER-WIDE MOCK PRACTICE':topics?' / '+topics.join(', '):' / MIXED TOPICS';
  $('quizTitle').textContent=mode==='mock'?'50-QUESTION MOCK PRACTICE':'TOPIC PRACTICE SET';
- $('quizSummary').textContent=paper+narrow+' · '+active.available+' questions · '+active.actualMix.mcq+' MCQ / '+active.actualMix.numeric+' numerical entry · '+active.topicsCovered+' topics covered'+(active.available<count?' · INCOMPLETE: insufficient questions for required ratio.':'')+' · All automatically marked.';
+ $('quizSummary').textContent=paper+narrow+' · '+active.available+' original questions · '+active.actualMix.mcq+' MCQ / '+active.actualMix.numeric+' numerical · '+active.topicsCovered+' topics'+(!active.complete?' · LIMITED: '+active.available+' of '+active.requested+' requested; no repeated-skill filler.':'')+' · Not official ACCA/Kaplan.';
+ if(!active.complete)setMessage('QUESTION BANK SHORTAGE · '+active.reason+' Try mixed-topic practice for more distinct questions.');
  $('review').hidden=false;
  renderQuestions();$('quizSection').scrollIntoView({block:'start',behavior:'smooth'});
 }
@@ -96,7 +98,7 @@ function renderQuestions(){
     });
     card.append(choices);
   }else if(q.type==='numeric'){
-    const field=element('label','numeric-label','YOUR ANSWER ('+(q.unit||'RM')+')');
+    const field=element('label','numeric-label','YOUR ANSWER ('+(q.unit||'$')+')');
     const input=element('input','numeric-answer');
     input.type='text';input.inputMode='decimal';input.autocomplete='off';
     input.placeholder='Enter a number, e.g. 2500 or 2,500';
@@ -113,7 +115,7 @@ function reviewQuiz(){
     engine.parseNumber(answers[q.id])===null:
     answers[q.id]===undefined||answers[q.id]==='');
  if(unanswered){
-  setMessage('Complete every multiple-choice or numerical answer before submitting. Numerical answers may contain commas and RM.');
+  setMessage('Complete every multiple-choice or numerical answer before submitting. Numerical answers may contain commas and $.');
   const index=active.questions.indexOf(unanswered);
   $('practice-'+index).scrollIntoView({block:'center',behavior:'smooth'});
   return;
