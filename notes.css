@@ -442,3 +442,128 @@ footer{margin-top:60px;border-top:2px solid var(--ink);padding-top:20px;font-siz
 .notes-release-banner button:focus-visible{outline:4px solid #2476c5;outline-offset:3px}
 @media(max-width:600px){.notes-build-row{align-items:flex-start}.notes-release-banner{padding:12px}}
 @media print{.notes-build-row,.notes-release-banner{display:none!important}}
+
+
+/* NOTES DESIGN SYSTEM v8: LedgerPeer brand typography, consistently applied.
+   Display: original LedgerPeer heavy geometric headings.
+   Body: original LedgerPeer monospaced reading/coding type.
+   Do not introduce separate Arial/Helvetica prose into individual lesson modules. */
+.notes-shell{
+  --lp-type-display:"Arial Black","Helvetica Neue",Impact,Arial,sans-serif;
+  --lp-type-body:ui-monospace,"JetBrains Mono","Space Mono",Menlo,Consolas,monospace;
+  --lp-type-size:15px;
+  --lp-type-leading:1.72;
+  font-family:var(--lp-type-body);
+}
+.notes-shell :is(p,li,td,th,summary,figcaption,button,input,select,small,span,strong,em,label,blockquote,pre,code){
+  font-family:var(--lp-type-body)!important;
+}
+.notes-shell :is(h1,h2,h3,h4,h5,h6,
+  .notes-topic-title strong,.lp-textbook-contents>strong,
+  .lv-card-heading,.lv-card-number,
+  .lv-purchase-step-heading,.lv-purchase-step-num,
+  .lv-purchase-match-card strong,.lv-purchase-match-card h5,
+  .lv-math-case-title strong,.lv-all-worked>figcaption,
+  .vw-t-account h4,.vw-title){
+  font-family:var(--lp-type-display)!important;
+}
+.notes-shell :is(.lv-interactive-map,.lv-document-lesson,.lv-purchase-workflow,
+ .lv-math-case,.lv-all-worked,.lp-textbook,.vw-reader,
+ .lv-short-revision,.lv-doc-table-inner,.vw-table){
+  font-family:var(--lp-type-body)!important;
+}
+.notes-shell :is(.lp-textbook-section p,.lp-textbook-work p,.lv-card-paragraph,
+ .lv-purchase-step-body p,.lv-document-lesson p,.lv-math-case p,
+ .vw-reader p,.vw-note,.lv-all-worked-card p,.lv-all-worked-warning){
+  font-family:var(--lp-type-body)!important;
+  font-size:var(--lp-type-size)!important;
+  line-height:var(--lp-type-leading)!important;
+  letter-spacing:0!important;
+  overflow-wrap:break-word;
+}
+.notes-shell :is(.lv-interactive-map .lv-interactive-title,
+ .lv-purchase-banner h3,.lv-document-lesson h3){
+  font-family:var(--lp-type-display)!important;
+  letter-spacing:-.025em!important;
+}
+.notes-shell :is(.lv-interactive-map .lv-interactive-subtitle,
+ .lv-purchase-banner p,.lv-purchase-match-card p){
+  font-family:var(--lp-type-body)!important;
+}
+.notes-shell :is(.lv-card-heading,.lv-purchase-step-heading){
+  font-size:clamp(16px,1.6vw,19px)!important;
+  line-height:1.36!important;
+  letter-spacing:-.018em!important;
+  overflow-wrap:anywhere;
+  word-break:normal;
+  white-space:normal!important;
+}
+/* The previous 5-column workflow forced long labels to collide with arrows.
+   A vertical, numbered timeline is readable at every container width. */
+.notes-shell .lv-purchase-steps{
+  position:relative;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:17px!important;
+  max-width:950px;
+  margin:0 auto!important;
+  padding:24px 28px!important;
+}
+.notes-shell .lv-purchase-steps::before{
+  content:"";
+  position:absolute;
+  inset-block:28px;
+  left:13px;
+  width:3px;
+  background:var(--ink);
+  pointer-events:none;
+}
+.notes-shell .lv-purchase-step{
+  min-width:0;
+  width:100%;
+  margin:0!important;
+  padding:0!important;
+}
+.notes-shell .lv-purchase-step-connected::after{display:none!important;content:none!important}
+.notes-shell .lv-purchase-step-detail{
+  display:block;
+  width:100%;
+  min-width:0;
+  height:auto;
+  border-radius:5px;
+  box-shadow:3px 3px 0 var(--ink);
+}
+.notes-shell .lv-purchase-step-summary{
+  display:flex;
+  min-height:72px;
+  align-items:center;
+  gap:15px;
+  padding:15px 22px!important;
+}
+.notes-shell .lv-purchase-step-heading{flex:1 1 auto;min-width:0}
+.notes-shell .lv-purchase-step-body{
+  max-width:none;
+  padding:18px 23px 20px!important;
+}
+.notes-shell .lv-purchase-step-body p{max-width:88ch}
+.notes-shell .lv-purchase-match-grid{gap:14px}
+.notes-shell .lv-purchase-match-card{min-width:0;overflow-wrap:anywhere}
+.notes-shell .lv-purchase-match-card h5{
+  font-size:clamp(14px,1.4vw,17px)!important;
+  line-height:1.4!important;
+  overflow-wrap:anywhere;
+  white-space:normal!important;
+}
+.notes-shell .lv-purchase-exception{overflow-wrap:break-word}
+@media(max-width:650px){
+  .notes-shell .lv-purchase-steps{padding:13px 11px 16px 23px!important;gap:14px!important}
+  .notes-shell .lv-purchase-steps::before{left:9px;inset-block:18px}
+  .notes-shell .lv-purchase-step-summary{padding:13px!important}
+  .notes-shell .lv-purchase-step-body{padding:13px 15px!important}
+  .notes-shell .lv-purchase-match-grid{grid-template-columns:1fr!important}
+  .notes-shell :is(.lv-card-heading,.lv-purchase-step-heading){font-size:16px!important}
+}
+@media print{
+  .notes-shell .lv-purchase-steps::before{display:none}
+  .notes-shell .lv-purchase-step-detail{break-inside:avoid;box-shadow:none}
+}
