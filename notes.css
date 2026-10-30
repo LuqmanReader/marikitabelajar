@@ -241,3 +241,27 @@ footer{margin-top:60px;border-top:2px solid var(--ink);padding-top:20px;font-siz
 @media(max-width:920px){.lv-all-worked-grid{grid-template-columns:1fr}.lv-all-worked-card{border-right:0;border-bottom:2px solid #151515}.lv-all-worked-card:last-child{border-bottom:0}}
 @media(max-width:600px){.lv-all-figure{padding:3px}.lv-all-figure svg{min-width:640px}.lv-all-figure{overflow-x:auto}.lv-short-revision{padding:13px}.lp-textbook-section{padding:15px 16px;margin:14px 0}}
 @media print{.lv-all-figure,.lv-all-worked{box-shadow:none;break-inside:avoid}.lv-all-figure svg{min-width:0}}
+
+
+/* Actual numerical bookkeeping and costing tables, designed for clear teaching. */
+.lv-math-case{margin:33px 0;padding:0;border:4px solid #151515;background:#fffaf1;box-shadow:6px 6px 0 #151515;max-width:100%;min-width:0;overflow:hidden}
+.lv-math-case-title{display:block;background:#ffe062;padding:18px 21px;border-bottom:4px solid #151515}
+.lv-math-eyebrow{display:block;font:900 11px/1.4 Arial,sans-serif;letter-spacing:.09em;color:#202020;margin:0 0 9px}
+.lv-math-case-title strong{display:block;font:900 clamp(19px,3vw,28px)/1.3 "Arial Black",Arial,sans-serif;letter-spacing:-.02em}
+.lv-math-intro{margin:0!important;padding:18px 21px;font:650 15px/1.7 Arial,sans-serif!important}
+.lv-math-scroll{overflow:auto;width:100%;max-width:100%;scrollbar-width:thin;border-top:2px solid #151515;border-bottom:2px solid #151515}
+.lv-math-table{border-collapse:collapse;width:100%;min-width:640px;background:#fff;font:600 14px/1.55 Arial,sans-serif;font-variant-numeric:tabular-nums}
+.lv-math-table thead{background:#151515;color:#fff}
+.lv-math-table th,.lv-math-table td{padding:12px 15px;vertical-align:top;text-align:left;border-right:1px solid #cbc8c0;border-bottom:1px solid #ccc8bf;overflow-wrap:break-word}
+.lv-math-table thead th{font-weight:900;font-size:12px;white-space:nowrap}
+.lv-math-table th[scope=row]{font-weight:800}
+.lv-math-table tbody tr:nth-child(even){background:#f9f2de}
+.lv-math-table tbody tr.lv-math-total{background:#f5df7c!important;border-top:3px solid #151515;font-weight:900}
+.lv-math-checks{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.lv-math-checks p{padding:17px 19px;margin:0!important;font-size:13px!important;line-height:1.6}
+.lv-math-reconcile{background:#dff3df}
+.lv-math-caution{background:#ffded1;border-left:2px solid #151515}
+.lv-math-checks strong{display:block;font:900 11px/1.4 "Arial Black",Arial,sans-serif;margin:0 0 7px}
+.lv-math-checks span{display:block}
+@media(max-width:760px){.lv-math-checks{grid-template-columns:1fr}.lv-math-caution{border-left:0;border-top:2px solid #151515}.lv-math-case{box-shadow:3px 3px 0 #151515}.lv-math-table{min-width:560px}}
+@media print{.lv-math-case{box-shadow:none;break-inside:avoid}.lv-math-scroll{overflow:visible}.lv-math-table{min-width:0}}
