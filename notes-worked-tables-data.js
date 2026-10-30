@@ -2,11 +2,11 @@
 (function(root){'use strict';root.LedgerNumericalTables={
   "FA2:D3": {
     "heading": "FIFO: show every stock movement",
-    "intro": "Opening 100 units at RM4, buy 200 at RM5, sell 180, buy 100 at RM6, then sell 70. FIFO assumes the earliest purchase costs are issued first.",
+    "intro": "Opening 100 units at $4, buy 200 at $5, sell 180, buy 100 at $6, then sell 70. FIFO assumes the earliest purchase costs are issued first.",
     "headers": [
       "Event",
       "Units issued / remaining",
-      "Cost charged RM",
+      "Cost charged $",
       "Remaining layers"
     ],
     "rows": [
@@ -14,49 +14,49 @@
         "Opening",
         "100 units",
         "—",
-        "100 @ RM4"
+        "100 @ $4"
       ],
       [
-        "Purchase 200 @ RM5",
+        "Purchase 200 @ $5",
         "+200 units",
         "—",
-        "100 @ RM4 + 200 @ RM5"
+        "100 @ $4 + 200 @ $5"
       ],
       [
         "Issue 180",
-        "100 @ RM4 + 80 @ RM5",
+        "100 @ $4 + 80 @ $5",
         "800",
-        "120 @ RM5"
+        "120 @ $5"
       ],
       [
-        "Purchase 100 @ RM6",
+        "Purchase 100 @ $6",
         "+100 units",
         "—",
-        "120 @ RM5 + 100 @ RM6"
+        "120 @ $5 + 100 @ $6"
       ],
       [
         "Issue 70",
-        "70 @ RM5",
+        "70 @ $5",
         "350",
-        "50 @ RM5 + 100 @ RM6"
+        "50 @ $5 + 100 @ $6"
       ],
       [
         "CLOSING",
         "150 units",
         "1,150 total issued",
-        "Inventory RM850"
+        "Inventory $850"
       ]
     ],
-    "check": "Total goods available at cost RM2,000 = issues RM1,150 + closing RM850.",
+    "check": "Total goods available at cost $2,000 = issues $1,150 + closing $850.",
     "trap": "The physically newest goods can still be sold; FIFO here describes the COST FLOW, not necessarily physical stock movement."
   },
   "FA2:D4": {
     "heading": "Depreciation and disposal account",
-    "intro": "Machine cost RM60,000, residual value RM6,000, useful life five years. Sold halfway through Year 3 for RM32,000, applying a monthly straight-line depreciation policy.",
+    "intro": "Machine cost $60,000, residual value $6,000, useful life five years. Sold halfway through Year 3 for $32,000, applying a monthly straight-line depreciation policy.",
     "headers": [
       "Ledger working",
       "Calculation",
-      "RM"
+      "$"
     ],
     "rows": [
       [
@@ -95,8 +95,8 @@
         "(1,000)"
       ]
     ],
-    "check": "Transfer gross asset cost and accumulated depreciation to disposal, record proceeds and charge the RM1,000 loss to profit or loss.",
-    "trap": "The RM32,000 cash received is not the profit on disposal; compare it with the RM33,000 carrying amount."
+    "check": "Transfer gross asset cost and accumulated depreciation to disposal, record proceeds and charge the $1,000 loss to profit or loss.",
+    "trap": "The $32,000 cash received is not the profit on disposal; compare it with the $33,000 carrying amount."
   },
   "FA2:D5": {
     "heading": "Distinguish accrued expenses from prepayments",
@@ -111,26 +111,26 @@
       [
         "Electricity accrued",
         "Cash 11,200 + close accrual 1,300 − open accrual 900",
-        "Expense RM11,600",
-        "Close accrual RM1,300 liability"
+        "Expense $11,600",
+        "Close accrual $1,300 liability"
       ],
       [
         "Prepaid rent",
         "Cash 14,000 + open prepay 2,400 − close prepay 3,000",
-        "Expense RM13,400",
-        "Prepay RM3,000 asset"
+        "Expense $13,400",
+        "Prepay $3,000 asset"
       ],
       [
         "Accrued fee income",
-        "Earned not yet billed RM4,500",
-        "Income RM4,500",
-        "Accrued income RM4,500 asset"
+        "Earned not yet billed $4,500",
+        "Income $4,500",
+        "Accrued income $4,500 asset"
       ],
       [
         "Deferred income",
-        "Cash received RM6,000 for three months; one month performed",
-        "Revenue RM2,000",
-        "Deferred income RM4,000 liability"
+        "Cash received $6,000 for three months; one month performed",
+        "Revenue $2,000",
+        "Deferred income $4,000 liability"
       ]
     ],
     "check": "Each adjustment must balance Dr and Cr: accrual Dr expense / Cr liability; prepayment Dr asset / Cr expense; accrued income Dr asset / Cr income.",
@@ -138,11 +138,11 @@
   },
   "FA2:D6": {
     "heading": "Trade receivables, irrecoverable debts and allowance",
-    "intro": "Gross receivables RM56,000 before a confirmed RM3,000 write-off; opening allowance RM1,500, new required allowance 4% of remaining debt.",
+    "intro": "Gross receivables $56,000 before a confirmed $3,000 write-off; opening allowance $1,500, new required allowance 4% of remaining debt.",
     "headers": [
       "Step",
       "Working",
-      "RM"
+      "$"
     ],
     "rows": [
       [
@@ -176,11 +176,11 @@
   },
   "FA2:E1": {
     "heading": "Bank reconciliation from cash book to statement",
-    "intro": "Cash book Dr RM18,500; omitted charges RM250, insurance direct debit RM600 and direct receipt RM1,400. Cheques RM2,100 unpresented, deposits RM3,000 outstanding.",
+    "intro": "Cash book Dr $18,500; omitted charges $250, insurance direct debit $600 and direct receipt $1,400. Cheques $2,100 unpresented, deposits $3,000 outstanding.",
     "headers": [
       "Reconciliation",
       "Adjust (+)/(−)",
-      "Balance RM"
+      "Balance $"
     ],
     "rows": [
       [
@@ -223,7 +223,7 @@
     "headers": [
       "Statement of profit or loss",
       "Calculation",
-      "RM"
+      "$"
     ],
     "rows": [
       [
@@ -272,7 +272,7 @@
   },
   "FA2:F2": {
     "heading": "Correct a capital-versus-revenue error",
-    "intro": "Machinery costing RM5,000 was incorrectly debited to repairs. Credit Bank was already correctly entered. Annual depreciation should be RM500.",
+    "intro": "Machinery costing $5,000 was incorrectly debited to repairs. Credit Bank was already correctly entered. Annual depreciation should be $500.",
     "headers": [
       "Entry",
       "Debit",
@@ -296,20 +296,20 @@
         "Net profit correction",
         "+5,000 reversal",
         "−500 depreciation",
-        "+RM4,500 to profit"
+        "+$4,500 to profit"
       ]
     ],
-    "check": "Bank is not credited a second time: it was correctly reduced on purchase. Net machinery increases by RM4,500.",
+    "check": "Bank is not credited a second time: it was correctly reduced on purchase. Net machinery increases by $4,500.",
     "trap": "A balanced trial balance does not reveal this mistake; both sides were posted originally."
   },
   "FA2:H2": {
     "heading": "Partnership appropriation statement",
-    "intro": "Profit RM90,000, partner A capital RM100,000, B capital RM80,000. Interest on capital 5%, salary allowance A RM12,000 and B RM9,000, residual ratio A:B 3:2.",
+    "intro": "Profit $90,000, partner A capital $100,000, B capital $80,000. Interest on capital 5%, salary allowance A $12,000 and B $9,000, residual ratio A:B 3:2.",
     "headers": [
       "Appropriation",
-      "Partner A RM",
-      "Partner B RM",
-      "Total RM"
+      "Partner A $",
+      "Partner B $",
+      "Total $"
     ],
     "rows": [
       [
@@ -337,12 +337,12 @@
         "90,000"
       ]
     ],
-    "check": "Residual RM90,000 − RM9,000 interest − RM21,000 salary = RM60,000, distributed RM36,000 and RM24,000.",
+    "check": "Residual $90,000 − $9,000 interest − $21,000 salary = $60,000, distributed $36,000 and $24,000.",
     "trap": "Partners' salary allowances are profit appropriation, not an extra employee wage expense under this scenario."
   },
   "MA1:C1": {
     "heading": "High–low semi-variable cost separation",
-    "intro": "At 600 units cost is RM6,600; at 1,000 units cost is RM9,000. Calculate variable and fixed components.",
+    "intro": "At 600 units cost is $6,600; at 1,000 units cost is $9,000. Calculate variable and fixed components.",
     "headers": [
       "Quantity / calculation",
       "Working",
@@ -357,35 +357,35 @@
       [
         "Cost change",
         "9,000 − 6,600",
-        "RM2,400"
+        "$2,400"
       ],
       [
         "Variable cost per unit",
         "2,400 / 400",
-        "RM6"
+        "$6"
       ],
       [
         "Fixed cost",
         "9,000 − 1,000 × 6",
-        "RM3,000"
+        "$3,000"
       ],
       [
         "Forecast at 800 units",
         "3,000 + 800 × 6",
-        "RM7,800"
+        "$7,800"
       ]
     ],
-    "check": "Check using low point: 3,000 + 600 × 6 = RM6,600. Both observations agree with the same estimate.",
+    "check": "Check using low point: 3,000 + 600 × 6 = $6,600. Both observations agree with the same estimate.",
     "trap": "Use the highest and lowest ACTIVITY levels, not necessarily the most expensive and cheapest periods."
   },
   "MA2:C1": {
     "heading": "Overhead apportionment, service transfer and absorption",
-    "intro": "Factory rent RM24,000 allocated by floor area Cutting 500m², Assembly 300m², Maintenance 200m². Maintenance direct cost RM8,000 and transfers 70% to Cutting, 30% to Assembly.",
+    "intro": "Factory rent $24,000 allocated by floor area Cutting 500m², Assembly 300m², Maintenance 200m². Maintenance direct cost $8,000 and transfers 70% to Cutting, 30% to Assembly.",
     "headers": [
       "Cost step",
-      "Cutting RM",
-      "Assembly RM",
-      "Maintenance RM"
+      "Cutting $",
+      "Assembly $",
+      "Maintenance $"
     ],
     "rows": [
       [
@@ -419,20 +419,20 @@
         "0"
       ]
     ],
-    "check": "40,960 + 21,040 = RM62,000, which equals rent 24,000 + direct overheads 20,000 + 10,000 + 8,000. OAR Cutting = 40,960/4,000 MH = RM10.24/MH.",
+    "check": "40,960 + 21,040 = $62,000, which equals rent 24,000 + direct overheads 20,000 + 10,000 + 8,000. OAR Cutting = 40,960/4,000 MH = $10.24/MH.",
     "trap": "Don't absorb Maintenance overhead twice: transfer its entire service balance to production departments before calculating final OARs."
   },
   "MA2:C2": {
     "heading": "Reconcile absorption and marginal profits",
-    "intro": "Production 1,000 units, sales 800 @RM30; variable production cost RM12/unit, variable selling RM2/unit sold, fixed production RM6,000, fixed admin RM3,000, no opening stock.",
+    "intro": "Production 1,000 units, sales 800 @$30; variable production cost $12/unit, variable selling $2/unit sold, fixed production $6,000, fixed admin $3,000, no opening stock.",
     "headers": [
       "Profit bridge",
-      "Marginal RM",
-      "Absorption RM"
+      "Marginal $",
+      "Absorption $"
     ],
     "rows": [
       [
-        "Revenue 800 × RM30",
+        "Revenue 800 × $30",
         "24,000",
         "24,000"
       ],
@@ -442,7 +442,7 @@
         "—"
       ],
       [
-        "Absorption cost of sales 800 × RM18",
+        "Absorption cost of sales 800 × $18",
         "—",
         "(14,400)"
       ],
@@ -467,16 +467,16 @@
         "5,000"
       ]
     ],
-    "check": "Absorption exceeds marginal by RM1,200 = increase in finished goods inventory 200 units × RM6 fixed production OAR/unit.",
+    "check": "Absorption exceeds marginal by $1,200 = increase in finished goods inventory 200 units × $6 fixed production OAR/unit.",
     "trap": "Don't add fixed overhead again to absorption profit after it has already been included in product cost."
   },
   "MA2:C4": {
     "heading": "Process costing — normal and abnormal loss",
-    "intro": "Input 1,000 units costing RM18,100. Normal loss 10%, scrap value RM1 each, actual good output 860 units and actual lost units 140.",
+    "intro": "Input 1,000 units costing $18,100. Normal loss 10%, scrap value $1 each, actual good output 860 units and actual lost units 140.",
     "headers": [
       "Cost reconciliation",
       "Units",
-      "Cost RM"
+      "Cost $"
     ],
     "rows": [
       [
@@ -487,7 +487,7 @@
       [
         "Expected good output",
         "900",
-        "(18,100 − 100) / 900 = RM20/unit"
+        "(18,100 − 100) / 900 = $20/unit"
       ],
       [
         "Actual good output",
@@ -515,12 +515,12 @@
         "760"
       ]
     ],
-    "check": "Process control: RM17,200 good output + RM800 abnormal loss + RM100 normal scrap = RM18,100.",
+    "check": "Process control: $17,200 good output + $800 abnormal loss + $100 normal scrap = $18,100.",
     "trap": "Abnormal loss is valued at process cost first; scrap recovery is recognised against it separately."
   },
   "MA2:D1": {
     "heading": "Break-even, target profit and margin of safety",
-    "intro": "Selling price RM40, variable cost RM24/unit, fixed cost RM96,000. Planned sales 8,000 units, target profit RM32,000.",
+    "intro": "Selling price $40, variable cost $24/unit, fixed cost $96,000. Planned sales 8,000 units, target profit $32,000.",
     "headers": [
       "CVP metric",
       "Working",
@@ -530,7 +530,7 @@
       [
         "Contribution per unit",
         "40 − 24",
-        "RM16"
+        "$16"
       ],
       [
         "Contribution / sales ratio",
@@ -545,7 +545,7 @@
       [
         "Break-even revenue",
         "96,000 / 40%",
-        "RM240,000"
+        "$240,000"
       ],
       [
         "Margin of safety (units)",
@@ -563,17 +563,17 @@
         "8,000 units"
       ]
     ],
-    "check": "At 8,000 units profit = 8,000 × 16 − 96,000 = RM32,000.",
+    "check": "At 8,000 units profit = 8,000 × 16 − 96,000 = $32,000.",
     "trap": "CVP assumes a stable sales mix and constant price/variable cost within the relevant range."
   },
   "MA2:D3": {
     "heading": "Discounted cash flow and NPV",
-    "intro": "Project outlay RM40,000 immediately, three annual cash inflows RM17,000, discount rate 10%. All receipts arise at each year end.",
+    "intro": "Project outlay $40,000 immediately, three annual cash inflows $17,000, discount rate 10%. All receipts arise at each year end.",
     "headers": [
       "Year",
-      "Cash flow RM",
+      "Cash flow $",
       "Discount factor @10%",
-      "PV RM"
+      "PV $"
     ],
     "rows": [
       [
@@ -607,17 +607,17 @@
         "+2,276.48"
       ]
     ],
-    "check": "NPV = −40,000 + 17,000/1.1 + 17,000/1.1² + 17,000/1.1³ ≈ +RM2,276.48 (small rounding differences).",
+    "check": "NPV = −40,000 + 17,000/1.1 + 17,000/1.1² + 17,000/1.1³ ≈ +$2,276.48 (small rounding differences).",
     "trap": "Do not discount Year 0 outlay and don't substitute accounting depreciation for cash flow in NPV."
   },
   "MA2:E3": {
     "heading": "Three-month cash budget",
-    "intro": "Opening January cash RM5,000. Customers settle 40% in sales month, 60% next month. December/Jan/Feb/Mar credit sales RM10k/RM20k/RM30k/RM24k. Payments Jan/Feb/Mar RM17k/RM31k/RM22k.",
+    "intro": "Opening January cash $5,000. Customers settle 40% in sales month, 60% next month. December/Jan/Feb/Mar credit sales $10k/$20k/$30k/$24k. Payments Jan/Feb/Mar $17k/$31k/$22k.",
     "headers": [
       "Cash budget",
-      "January RM",
-      "February RM",
-      "March RM"
+      "January $",
+      "February $",
+      "March $"
     ],
     "rows": [
       [
@@ -657,16 +657,16 @@
         "600"
       ]
     ],
-    "check": "Cash rises/falls by receipts minus payments each month; February's RM5,000 overdraft is the peak immediate funding requirement.",
+    "check": "Cash rises/falls by receipts minus payments each month; February's $5,000 overdraft is the peak immediate funding requirement.",
     "trap": "A positive March closing cash balance does not eliminate the cash shortage experienced in February."
   },
   "FA1:I2": {
     "heading": "Bank reconciliation using signed balances",
-    "intro": "Adjusted cash book debit RM10,500, outstanding lodgement RM2,500, unpresented cheque RM900.",
+    "intro": "Adjusted cash book debit $10,500, outstanding lodgement $2,500, unpresented cheque $900.",
     "headers": [
       "From cash book to statement",
-      "Change RM",
-      "Balance RM"
+      "Change $",
+      "Balance $"
     ],
     "rows": [
       [
