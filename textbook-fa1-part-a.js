@@ -23,12 +23,12 @@
     "workings": [
       [
         "Classify three events",
-        "(i) Owner invests RM10,000, (ii) entity purchases RM3,000 inventory on credit, (iii) entity pays RM2,000 loan principal.",
-        "(i) Asset/equity both rise RM10,000. (ii) Inventory and payable rise RM3,000. (iii) Bank and loan liability both fall RM2,000; loan principal repayment is not an expense."
+        "(i) Owner invests $10,000, (ii) entity purchases $3,000 inventory on credit, (iii) entity pays $2,000 loan principal.",
+        "(i) Asset/equity both rise $10,000. (ii) Inventory and payable rise $3,000. (iii) Bank and loan liability both fall $2,000; loan principal repayment is not an expense."
       ],
       [
         "Equipment versus supplies",
-        "The entity buys a RM8,000 delivery van and RM600 fuel.",
+        "The entity buys a $8,000 delivery van and $600 fuel.",
         "Van is a non-current asset acquired for operations (subject to recognition requirements). Fuel is an expense or consumable according to use and record dates. Do not treat the van as purchases for resale."
       ]
     ]
@@ -56,13 +56,13 @@
     "workings": [
       [
         "Three-way match",
-        "PO orders 20 items @RM45; goods received note shows 18; invoice charges 20.",
-        "Unmatched two units require query. Matched delivered amount =18×45=RM810 excluding stated tax; do not approve all RM900 without evidence or permitted backorder treatment."
+        "PO orders 20 items @$45; goods received note shows 18; invoice charges 20.",
+        "Unmatched two units require query. Matched delivered amount =18×45=$810 excluding stated tax; do not approve all $900 without evidence or permitted backorder treatment."
       ],
       [
         "Credit note",
-        "Supplier invoice RM1,200, later credit note for damaged goods RM300.",
-        "Balance owed decreases to RM900. Record Dr supplier payable RM300 and Cr purchase returns/inventory RM300 under the relevant recording method."
+        "Supplier invoice $1,200, later credit note for damaged goods $300.",
+        "Balance owed decreases to $900. Record Dr supplier payable $300 and Cr purchase returns/inventory $300 under the relevant recording method."
       ]
     ]
   },
@@ -89,13 +89,13 @@
     "workings": [
       [
         "Credit sales day-book total",
-        "Invoices excluding tax: RM1,200, RM2,400 and RM900, all on credit and no tax.",
-        "Sales day-book total RM4,500. Dr trade receivables control RM4,500 / Cr sales RM4,500; post each invoice into the corresponding customer's personal ledger."
+        "Invoices excluding tax: $1,200, $2,400 and $900, all on credit and no tax.",
+        "Sales day-book total $4,500. Dr trade receivables control $4,500 / Cr sales $4,500; post each invoice into the corresponding customer's personal ledger."
       ],
       [
         "Double-count check",
-        "Invoice RM2,000 entered in the sales day book twice, creating an extra debit receivables and credit sales.",
-        "Cancel/reverse one duplicate: Dr sales RM2,000 / Cr receivables RM2,000. The trial balance would have agreed before correction despite overstated sales."
+        "Invoice $2,000 entered in the sales day book twice, creating an extra debit receivables and credit sales.",
+        "Cancel/reverse one duplicate: Dr sales $2,000 / Cr receivables $2,000. The trial balance would have agreed before correction despite overstated sales."
       ]
     ]
   },
@@ -122,13 +122,13 @@
     "workings": [
       [
         "Compound transaction",
-        "Customer pays RM1,700 comprising RM1,500 invoice settlement and RM200 cash sale.",
-        "Dr bank RM1,700; Cr trade receivables RM1,500; Cr sales RM200. Debits and credits both RM1,700."
+        "Customer pays $1,700 comprising $1,500 invoice settlement and $200 cash sale.",
+        "Dr bank $1,700; Cr trade receivables $1,500; Cr sales $200. Debits and credits both $1,700."
       ],
       [
         "Pay supplier",
-        "Entity owes supplier RM6,000 and settles RM4,000.",
-        "Dr payables RM4,000 / Cr bank RM4,000; supplier still owed RM2,000."
+        "Entity owes supplier $6,000 and settles $4,000.",
+        "Dr payables $4,000 / Cr bank $4,000; supplier still owed $2,000."
       ]
     ]
   },
@@ -155,13 +155,13 @@
     "workings": [
       [
         "Initial balances",
-        "Business begins with cash RM12,000 and equipment RM8,000 funded by loan RM5,000 and owner capital RM15,000.",
-        "Dr bank RM12,000; Dr equipment RM8,000; Cr loan RM5,000; Cr capital RM15,000. Total each side RM20,000."
+        "Business begins with cash $12,000 and equipment $8,000 funded by loan $5,000 and owner capital $15,000.",
+        "Dr bank $12,000; Dr equipment $8,000; Cr loan $5,000; Cr capital $15,000. Total each side $20,000."
       ],
       [
         "Expense paid in advance",
-        "Annual insurance RM2,400 paid and initially Dr insurance expense. At year end six months remain unused.",
-        "Dr prepayment RM1,200 / Cr insurance expense RM1,200. The future portion becomes asset; current-period insurance expense is RM1,200."
+        "Annual insurance $2,400 paid and initially Dr insurance expense. At year end six months remain unused.",
+        "Dr prepayment $1,200 / Cr insurance expense $1,200. The future portion becomes asset; current-period insurance expense is $1,200."
       ]
     ]
   },
@@ -188,13 +188,13 @@
     "workings": [
       [
         "Determine equity",
-        "Assets: equipment RM30,000, bank RM5,000, stock RM8,000. Liabilities: loan RM12,000, payables RM6,000.",
-        "Total assets RM43,000, liabilities RM18,000, residual equity RM25,000."
+        "Assets: equipment $30,000, bank $5,000, stock $8,000. Liabilities: loan $12,000, payables $6,000.",
+        "Total assets $43,000, liabilities $18,000, residual equity $25,000."
       ],
       [
         "Profit versus cash",
-        "A business performs RM3,500 services on credit, and pays RM900 rent.",
-        "Revenue RM3,500, rent expense RM900, profit RM2,600 before other costs, but bank has fallen by RM900 until customer pays."
+        "A business performs $3,500 services on credit, and pays $900 rent.",
+        "Revenue $3,500, rent expense $900, profit $2,600 before other costs, but bank has fallen by $900 until customer pays."
       ]
     ]
   },
@@ -221,13 +221,13 @@
     "workings": [
       [
         "Banked sales",
-        "Cash takings RM1,600, of which RM100 is kept in cash till and RM1,500 deposited.",
-        "Dr bank RM1,500 / Cr cash on hand RM1,500 when moving funds, assuming cash sale itself was separately recorded. Do not record the same RM1,500 as sales again."
+        "Cash takings $1,600, of which $100 is kept in cash till and $1,500 deposited.",
+        "Dr bank $1,500 / Cr cash on hand $1,500 when moving funds, assuming cash sale itself was separately recorded. Do not record the same $1,500 as sales again."
       ],
       [
         "Unpresented cheque",
-        "Book bank balance RM5,000 debit, outstanding cheque RM800, outstanding lodgement RM1,200, with no other items.",
-        "Expected statement balance=5,000+800−1,200=RM4,600."
+        "Book bank balance $5,000 debit, outstanding cheque $800, outstanding lodgement $1,200, with no other items.",
+        "Expected statement balance=5,000+800−1,200=$4,600."
       ]
     ]
   },
@@ -254,13 +254,13 @@
     "workings": [
       [
         "Payment with fees",
-        "Card customer pays RM1,000 sale; processor retains RM20 and remits RM980. Assume sale is recorded when made.",
-        "Dr bank RM980; Dr card processing expense RM20; Cr card clearing receivable RM1,000 if previously established. Revenue is RM1,000, not RM980."
+        "Card customer pays $1,000 sale; processor retains $20 and remits $980. Assume sale is recorded when made.",
+        "Dr bank $980; Dr card processing expense $20; Cr card clearing receivable $1,000 if previously established. Revenue is $1,000, not $980."
       ],
       [
         "Dishonoured cheque",
-        "Customer cheque RM600 was previously credited against debt but is returned unpaid.",
-        "Dr receivables RM600 / Cr bank RM600; any bank fee is a separate expense."
+        "Customer cheque $600 was previously credited against debt but is returned unpaid.",
+        "Dr receivables $600 / Cr bank $600; any bank fee is a separate expense."
       ]
     ]
   },
@@ -287,13 +287,13 @@
     "workings": [
       [
         "Wages and deductions",
-        "Base pay RM3,000, overtime RM450, employee deductions RM520, employer charge RM350.",
-        "Gross wages RM3,450; net employee pay RM2,930. Dr wages expense RM3,450 and Dr employer charge expense RM350; Cr bank/net pay RM2,930, Cr employee deduction payable RM520, Cr employer charge payable RM350."
+        "Base pay $3,000, overtime $450, employee deductions $520, employer charge $350.",
+        "Gross wages $3,450; net employee pay $2,930. Dr wages expense $3,450 and Dr employer charge expense $350; Cr bank/net pay $2,930, Cr employee deduction payable $520, Cr employer charge payable $350."
       ],
       [
         "Payroll split",
-        "Gross factory payroll RM15,000: direct production RM11,000, supervisor RM4,000.",
-        "Assign RM11,000 direct labour to WIP and RM4,000 indirect labour to manufacturing overhead through cost allocation, without duplicating the original payroll cost."
+        "Gross factory payroll $15,000: direct production $11,000, supervisor $4,000.",
+        "Assign $11,000 direct labour to WIP and $4,000 indirect labour to manufacturing overhead through cost allocation, without duplicating the original payroll cost."
       ]
     ]
   },
@@ -320,13 +320,13 @@
     "workings": [
       [
         "Receivables T account",
-        "Opening receivables Dr RM8,000, credit sales Dr RM14,000, receipts Cr RM11,000, sales returns Cr RM1,000.",
-        "Closing receivables debit=8,000+14,000−11,000−1,000=RM10,000."
+        "Opening receivables Dr $8,000, credit sales Dr $14,000, receipts Cr $11,000, sales returns Cr $1,000.",
+        "Closing receivables debit=8,000+14,000−11,000−1,000=$10,000."
       ],
       [
         "Loan account",
-        "Opening loan Cr RM20,000, new borrowing Cr RM5,000, capital repayment Dr RM4,000.",
-        "Closing loan Cr RM21,000. Loan interest, if charged, is recorded separately."
+        "Opening loan Cr $20,000, new borrowing Cr $5,000, capital repayment Dr $4,000.",
+        "Closing loan Cr $21,000. Loan interest, if charged, is recorded separately."
       ]
     ]
   },
@@ -353,13 +353,13 @@
     "workings": [
       [
         "Till reconciliation",
-        "Opening till RM200, cash takings RM1,450, expenses paid from till RM120, cash banked RM1,300.",
-        "Expected closing till=200+1,450−120−1,300=RM230. Physical count should agree or a difference must be investigated."
+        "Opening till $200, cash takings $1,450, expenses paid from till $120, cash banked $1,300.",
+        "Expected closing till=200+1,450−120−1,300=$230. Physical count should agree or a difference must be investigated."
       ],
       [
         "Cash receipt discount",
-        "Customer owes RM2,000 and pays RM1,960 to settle in full under permitted settlement discount RM40.",
-        "Dr bank RM1,960; Dr settlement discount allowed RM40; Cr receivables RM2,000, subject to correct revenue/discount policy."
+        "Customer owes $2,000 and pays $1,960 to settle in full under permitted settlement discount $40.",
+        "Dr bank $1,960; Dr settlement discount allowed $40; Cr receivables $2,000, subject to correct revenue/discount policy."
       ]
     ]
   },
@@ -386,13 +386,13 @@
     "workings": [
       [
         "Imprest reimbursement",
-        "Float RM500; stationery RM70, postage RM45, travel RM65, sundries RM20. No shortage.",
-        "Vouchers total RM200; cash left RM300. Replenish RM200 to restore RM500. Expense coding: Dr stationery 70, postage 45, travel 65, sundries 20; Cr bank/cash reimbursement 200."
+        "Float $500; stationery $70, postage $45, travel $65, sundries $20. No shortage.",
+        "Vouchers total $200; cash left $300. Replenish $200 to restore $500. Expense coding: Dr stationery 70, postage 45, travel 65, sundries 20; Cr bank/cash reimbursement 200."
       ],
       [
         "Shortage",
-        "Float RM250; approved vouchers RM120; cash counted RM125.",
-        "Expected cash RM130, actual RM125, shortage RM5. Investigate; do not reimburse RM125 as if vouchers were all authorised."
+        "Float $250; approved vouchers $120; cash counted $125.",
+        "Expected cash $130, actual $125, shortage $5. Investigate; do not reimburse $125 as if vouchers were all authorised."
       ]
     ]
   }

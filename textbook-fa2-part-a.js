@@ -27,13 +27,13 @@
     "workings": [
       [
         "Accrual versus cash",
-        "An entity receives RM6,000 on 1 December for a 3-month service from December through February and has a 31 December year-end.",
-        "If service is performed evenly, December revenue =RM2,000; year-end contract/deferred income liability RM4,000. On initial receipt Dr bank RM6,000 / Cr deferred income RM6,000; at December end Dr deferred income RM2,000 / Cr revenue RM2,000."
+        "An entity receives $6,000 on 1 December for a 3-month service from December through February and has a 31 December year-end.",
+        "If service is performed evenly, December revenue =$2,000; year-end contract/deferred income liability $4,000. On initial receipt Dr bank $6,000 / Cr deferred income $6,000; at December end Dr deferred income $2,000 / Cr revenue $2,000."
       ],
       [
         "Equation effects",
-        "Owner contributes RM25,000 cash, buys equipment RM10,000 cash, then takes RM2,000 drawings.",
-        "After contribution: assets +25,000 and equity +25,000. Equipment purchase exchanges RM10,000 cash for RM10,000 equipment, so total assets unchanged. Drawings reduce bank and equity by RM2,000; closing total assets/equity RM23,000 absent other items."
+        "Owner contributes $25,000 cash, buys equipment $10,000 cash, then takes $2,000 drawings.",
+        "After contribution: assets +25,000 and equity +25,000. Equipment purchase exchanges $10,000 cash for $10,000 equipment, so total assets unchanged. Drawings reduce bank and equity by $2,000; closing total assets/equity $23,000 absent other items."
       ]
     ]
   },
@@ -60,13 +60,13 @@
     "workings": [
       [
         "Credit sale through books",
-        "An entity sells goods on credit for RM2,500 excluding tax and with no sales tax applicable.",
-        "Sales invoice documents transaction. Dr trade receivables RM2,500; Cr sales RM2,500. The individual customer account increases by RM2,500 and the receivables control balance increases accordingly. On settlement Dr bank / Cr receivables."
+        "An entity sells goods on credit for $2,500 excluding tax and with no sales tax applicable.",
+        "Sales invoice documents transaction. Dr trade receivables $2,500; Cr sales $2,500. The individual customer account increases by $2,500 and the receivables control balance increases accordingly. On settlement Dr bank / Cr receivables."
       ],
       [
         "Audit trail error",
-        "A purchase invoice RM1,800 was incorrectly posted as RM18,000.",
-        "If the original entry was Dr purchases / Cr payables RM18,000, reduce each account by RM16,200: Dr payables RM16,200, Cr purchases RM16,200; retain the correcting journal and invoice reference."
+        "A purchase invoice $1,800 was incorrectly posted as $18,000.",
+        "If the original entry was Dr purchases / Cr payables $18,000, reduce each account by $16,200: Dr payables $16,200, Cr purchases $16,200; retain the correcting journal and invoice reference."
       ]
     ]
   },
@@ -97,13 +97,13 @@
     "workings": [
       [
         "Presentation versus recognition",
-        "Equipment cost RM40,000 with accumulated depreciation RM8,000 at year end.",
-        "IAS 16 governs relevant recognition and depreciation principles; equipment carrying amount RM32,000 in the statement of financial position. Its depreciation expense is presented in profit or loss in the relevant classification under the applicable presentation standard. The statement layout does not change how the RM8,000 accumulated depreciation is calculated."
+        "Equipment cost $40,000 with accumulated depreciation $8,000 at year end.",
+        "IAS 16 governs relevant recognition and depreciation principles; equipment carrying amount $32,000 in the statement of financial position. Its depreciation expense is presented in profit or loss in the relevant classification under the applicable presentation standard. The statement layout does not change how the $8,000 accumulated depreciation is calculated."
       ],
       [
         "Framework application",
-        "Customer pays RM10,000 in advance for next year's services.",
-        "Receipt Dr bank RM10,000 and Cr contract/deferred income liability RM10,000 if performance obligation remains. Do not call it revenue solely because cash is received; recognise revenue as performance occurs under the relevant IFRS 15 principles."
+        "Customer pays $10,000 in advance for next year's services.",
+        "Receipt Dr bank $10,000 and Cr contract/deferred income liability $10,000 if performance obligation remains. Do not call it revenue solely because cash is received; recognise revenue as performance occurs under the relevant IFRS 15 principles."
       ]
     ]
   },
@@ -130,13 +130,13 @@
     "workings": [
       [
         "Net assets",
-        "An entity reports bank RM22,000, inventory RM13,000, equipment cost RM60,000, accumulated depreciation RM15,000, trade payables RM19,000 and loan RM20,000.",
-        "Assets =22,000+13,000+(60,000−15,000)=RM80,000. Liabilities RM39,000. Equity =80,000−39,000=RM41,000."
+        "An entity reports bank $22,000, inventory $13,000, equipment cost $60,000, accumulated depreciation $15,000, trade payables $19,000 and loan $20,000.",
+        "Assets =22,000+13,000+(60,000−15,000)=$80,000. Liabilities $39,000. Equity =80,000−39,000=$41,000."
       ],
       [
         "Income versus capital",
-        "Owner deposits RM8,000 and the entity receives RM3,000 for services already performed.",
-        "Owner contribution Dr bank / Cr capital RM8,000. Service fees Dr bank / Cr revenue RM3,000. Treating RM8,000 as revenue would overstate profit RM8,000."
+        "Owner deposits $8,000 and the entity receives $3,000 for services already performed.",
+        "Owner contribution Dr bank / Cr capital $8,000. Service fees Dr bank / Cr revenue $3,000. Treating $8,000 as revenue would overstate profit $8,000."
       ]
     ]
   },
@@ -167,8 +167,8 @@
     "workings": [
       [
         "Credit purchase to payables",
-        "Purchase office equipment for RM4,000 on credit, settle RM1,500 later.",
-        "Initial Dr equipment RM4,000 / Cr supplier payable RM4,000; settlement Dr supplier payable RM1,500 / Cr bank RM1,500. Remaining amount due RM2,500. This is not purchases of inventory."
+        "Purchase office equipment for $4,000 on credit, settle $1,500 later.",
+        "Initial Dr equipment $4,000 / Cr supplier payable $4,000; settlement Dr supplier payable $1,500 / Cr bank $1,500. Remaining amount due $2,500. This is not purchases of inventory."
       ],
       [
         "Cut-off test",
@@ -200,13 +200,13 @@
     "workings": [
       [
         "Compound sales journal",
-        "Goods sold on credit: net price RM2,000, sales tax specified 6%.",
-        "Dr trade receivables RM2,120; Cr sales RM2,000; Cr output sales tax liability RM120. All debits equal credits."
+        "Goods sold on credit: net price $2,000, sales tax specified 6%.",
+        "Dr trade receivables $2,120; Cr sales $2,000; Cr output sales tax liability $120. All debits equal credits."
       ],
       [
         "Correct incorrect expense classification",
-        "RM1,200 computer equipment was debited to repairs but should have been capitalised under given facts.",
-        "Correct by Dr equipment RM1,200 / Cr repairs expense RM1,200; then calculate any appropriate depreciation for period and record separately."
+        "$1,200 computer equipment was debited to repairs but should have been capitalised under given facts.",
+        "Correct by Dr equipment $1,200 / Cr repairs expense $1,200; then calculate any appropriate depreciation for period and record separately."
       ]
     ]
   },
@@ -233,13 +233,13 @@
     "workings": [
       [
         "Balance a bank T-account",
-        "Opening bank debit RM10,000; receipts debit RM4,000 and RM3,000; payments credit RM5,000 and RM2,500.",
-        "Total debit RM17,000; total credit RM7,500; closing bank debit RM9,500. In the T-account record RM9,500 balance c/d on credit side to balance; next period bring down RM9,500 on debit side."
+        "Opening bank debit $10,000; receipts debit $4,000 and $3,000; payments credit $5,000 and $2,500.",
+        "Total debit $17,000; total credit $7,500; closing bank debit $9,500. In the T-account record $9,500 balance c/d on credit side to balance; next period bring down $9,500 on debit side."
       ],
       [
         "Balance payables ledger",
-        "Opening payable credit RM6,000; goods purchased on credit RM4,000; supplier paid RM7,500.",
-        "Credits RM10,000; debit RM7,500; closing credit RM2,500. The payable balance c/d is placed on debit side and b/d carried on credit next period."
+        "Opening payable credit $6,000; goods purchased on credit $4,000; supplier paid $7,500.",
+        "Credits $10,000; debit $7,500; closing credit $2,500. The payable balance c/d is placed on debit side and b/d carried on credit next period."
       ]
     ]
   },
@@ -270,18 +270,18 @@
     "workings": [
       [
         "Discounts and output tax",
-        "List price RM5,000; trade discount 20%, sales tax 6% on net invoice amount; ignore settlement discount.",
-        "Invoice net =5,000×80%=RM4,000. Output tax=4,000×6%=RM240. Total receivable RM4,240. Journal Dr receivables 4,240 / Cr sales 4,000 / Cr tax payable 240."
+        "List price $5,000; trade discount 20%, sales tax 6% on net invoice amount; ignore settlement discount.",
+        "Invoice net =5,000×80%=$4,000. Output tax=4,000×6%=$240. Total receivable $4,240. Journal Dr receivables 4,240 / Cr sales 4,000 / Cr tax payable 240."
       ],
       [
         "Customer return including tax",
-        "Original invoice for goods RM1,000 net plus 8% sales tax. Customer returns half of goods and credit note is issued.",
-        "Dr sales returns RM500; Dr output tax payable RM40; Cr receivables RM540. The remaining customer balance is RM540, assuming no other transactions."
+        "Original invoice for goods $1,000 net plus 8% sales tax. Customer returns half of goods and credit note is issued.",
+        "Dr sales returns $500; Dr output tax payable $40; Cr receivables $540. The remaining customer balance is $540, assuming no other transactions."
       ],
       [
         "Gross profit",
-        "Opening stock RM5,000, purchases RM32,000, purchase returns RM2,000, carriage inwards RM1,000 and closing stock RM6,000. Sales RM60,000, sales returns RM4,000.",
-        "Net sales=RM56,000; net purchases=RM30,000; cost of sales=5,000+30,000+1,000−6,000=RM30,000. Gross profit=56,000−30,000=RM26,000."
+        "Opening stock $5,000, purchases $32,000, purchase returns $2,000, carriage inwards $1,000 and closing stock $6,000. Sales $60,000, sales returns $4,000.",
+        "Net sales=$56,000; net purchases=$30,000; cost of sales=5,000+30,000+1,000−6,000=$30,000. Gross profit=56,000−30,000=$26,000."
       ]
     ]
   }

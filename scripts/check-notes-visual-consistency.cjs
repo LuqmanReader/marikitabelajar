@@ -93,22 +93,26 @@ for(const [paper,syll] of Object.entries(syllabus)){
     else untruncatedSections++;
    }
    const images=collect(host,n=>n.tag==='svg');
+   if(images.length)errors.push(key+' must not use a fixed-width concept diagram SVG');
    if(key==='FA1:A2'){
-    if(images.length!==1)errors.push('FA1:A2 document workflow SVG missing');
-    else preservedWorkflows++;
-    const text=collect(host,n=>n.tag==='p'||n.tag==='th'||n.tag==='td').map(n=>n.textContent).join(' ');
-    if(!text.includes('RM90')||!text.includes('purchase order')||!text.includes('goods received note'))
-     errors.push('FA1:A2 document example damaged');
-   }else if(images.length){
-    errors.push(key+' should use interactive concept cards, not a static SVG');
+    const workflow=collect(host,n=>n.className==='lv-purchase-workflow');
+    const steps=collect(host,n=>n.tag==='details'&&n.className==='lv-purchase-step-detail');
+    const matches=collect(host,n=>n.className==='lv-purchase-match-card');
+    if(workflow.length!==1||steps.length!==5||steps.some(n=>!n.open)||matches.length!==3){
+      errors.push('FA1:A2 responsive document workflow is incomplete');
+    }else preservedWorkflows++;
+    const text=collect(host,n=>n.tag==='p'||n.tag==='th'||n.tag==='td')
+     .map(n=>n.textContent).join(' ');
+    if(!text.includes('$90')||!text.toLowerCase().includes('purchase order')||!text.toLowerCase().includes('goods received note'))
+     errors.push('FA1:A2 source match must show $90 and proper purchase-document evidence');
    }
   }catch(e){errors.push(key+': '+e.message)}
  }
 }
 const html=read('notes.html'),css=read('notes.css');
-if(!html.includes('notes-visual-all.js?v=20261030interactive4'))errors.push('interactive JS cache not refreshed');
-if(!html.includes('notes.css?v=20261030interactive4'))errors.push('interactive stylesheet cache not refreshed');
-if(!css.includes('.lv-interactive-card')||!css.includes('.lv-card-content'))errors.push('interactive card CSS missing');
+if(!html.includes('notes-visual-all.js?v=20261030usd5'))errors.push('interactive JS cache not refreshed');
+if(!html.includes('notes.css?v=20261030usd5'))errors.push('interactive stylesheet cache not refreshed');
+if(!css.includes('.lv-interactive-card')||!css.includes('.lv-card-content')||!css.includes('.lv-purchase-match-grid'))errors.push('interactive/workflow CSS missing');
 console.log(JSON.stringify({papers:Object.keys(syllabus).length,topics:count,interactive,buttonsTested,untruncatedSections,preservedWorkflows,errors:errors.length},null,2));
 if(errors.length){errors.slice(0,35).forEach(e=>console.error('FAIL',e));process.exitCode=1}
 else console.log('PASS: all topics expose full, interactive, keyboard-accessible chapter cards');

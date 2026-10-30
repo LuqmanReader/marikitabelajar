@@ -5,7 +5,7 @@
 <rect width="1220" height="510" fill="#fffaf1"/>
 <g font-family="Arial,sans-serif" fill="#151515">
 <text x="36" y="49" font-size="31" font-weight="900">FOLLOW ONE TRANSACTION THROUGH THE BOOKS</text>
-<text x="36" y="81" font-size="18">Example: a customer buys inventory for RM 1,200 on credit (ignore sales tax).</text>
+<text x="36" y="81" font-size="18">Example: a customer buys inventory for $1,200 on credit (ignore sales tax).</text>
 <g stroke="#171717" stroke-width="4">
 <rect x="34" y="113" width="222" height="113" rx="4" fill="#ffce25"/>
 <rect x="280" y="113" width="222" height="113" rx="4" fill="#fff"/>
@@ -18,13 +18,13 @@
 <text x="546" y="145">3. GENERAL LEDGER</text><text x="546" y="171">Dr receivables</text><text x="546" y="198">Cr revenue</text>
 <text x="875" y="145">4. TRIAL BALANCE</text><text x="875" y="171">Debits = credits</text><text x="875" y="198">Test arithmetic</text>
 </g>
-<g font-size="17"><text x="54" y="202">RM 1,200</text><text x="300" y="202">Credit sales RM 1,200</text></g>
+<g font-size="17"><text x="54" y="202">$1,200</text><text x="300" y="202">Credit sales $1,200</text></g>
 <g stroke="#161616" stroke-width="4" fill="none" marker-end="url(#a)"><path d="M256 170h20"/><path d="M502 170h20"/><path d="M832 170h20"/></g>
 <g stroke="#161616" stroke-width="4" fill="none"><path d="M650 227v75h-366" stroke-dasharray="12 8"/><path d="M1080 227v92h-435"/></g>
 <rect x="34" y="315" width="445" height="150" rx="4" fill="#f2e4fa" stroke="#151515" stroke-width="4"/>
 <rect x="526" y="315" width="306" height="150" rx="4" fill="#f4eadf" stroke="#151515" stroke-width="4"/>
 <rect x="855" y="315" width="330" height="150" rx="4" fill="#ffce25" stroke="#151515" stroke-width="4"/>
-<g font-size="20" font-weight="900"><text x="54" y="350">CUSTOMER SUBLEDGER</text><text x="54" y="381">Customer A Dr RM 1,200</text><text x="546" y="350">5. ADJUSTMENTS</text><text x="546" y="381">Accruals, inventory, etc.</text><text x="875" y="350">6. FINANCIAL STATEMENTS</text><text x="875" y="381">Profit or loss</text><text x="875" y="410">Financial position</text></g>
+<g font-size="20" font-weight="900"><text x="54" y="350">CUSTOMER SUBLEDGER</text><text x="54" y="381">Customer A Dr $1,200</text><text x="546" y="350">5. ADJUSTMENTS</text><text x="546" y="381">Accruals, inventory, etc.</text><text x="875" y="350">6. FINANCIAL STATEMENTS</text><text x="875" y="381">Profit or loss</text><text x="875" y="410">Financial position</text></g>
 <g font-size="16"><text x="54" y="413">Reconcile total individual customer balances</text><text x="54" y="441">to the receivables CONTROL account.</text><text x="546" y="416">Prepare adjusted trial balance</text><text x="546" y="441">before issuing statements.</text></g>
 <g stroke="#161616" stroke-width="4" fill="none" marker-end="url(#a)"><path d="M832 390h20"/><path d="M490 390h33"/></g>
 <text x="36" y="496" font-size="13">LedgerPeer original teaching diagram • Dr / Cr demonstrate one entity's records • Cost of sales is a separate entry when relevant.</text>

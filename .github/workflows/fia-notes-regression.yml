@@ -8,6 +8,15 @@ on:
       - 'notes-expanded-data.js'
       - 'notes-uk-syllabi.js'
       - 'notes-page.js'
+      - 'notes-visual-all.js'
+      - 'notes-visual-workbook*.js'
+      - 'notes-worked-tables*.js'
+      - 'notes-outcome-lessons.js'
+      - 'textbook-*.js'
+      - 'assets/ledgerpeer-*.svg'
+      - 'scripts/check-notes-visual-consistency.cjs'
+      - 'scripts/check-all-chapter-visuals.cjs'
+      - 'scripts/check-notes-currency-layout.cjs'
       - 'acca-published-data.js'
       - 'index.html'
       - 'hub.html'
@@ -21,6 +30,7 @@ on:
       - 'tests/notes-coverage-regression.js'
       - 'tests/notes-reader-regression.js'
       - '.github/workflows/fia-notes-regression.yml'
+  pull_request:
   workflow_dispatch:
 permissions:
   contents: read
@@ -38,9 +48,18 @@ jobs:
           node --check notes-page.js
           node --check notes-expanded-data.js
           node --check notes-uk-syllabi.js
+          node --check notes-visual-all.js
+          node --check notes-visual-workbook.js
+          node --check notes-worked-tables-data.js
       - name: Test syllabus coverage and retired navigation
         run: |
           node tests/fia-notes-regression.js
           node tests/notes-coverage-regression.js
           node tests/notes-reader-regression.js
 
+
+      - name: Verify all 700 concept maps, currency and responsive workflow
+        run: |
+          node scripts/check-notes-visual-consistency.cjs
+          node scripts/check-all-chapter-visuals.cjs
+          node scripts/check-notes-currency-layout.cjs

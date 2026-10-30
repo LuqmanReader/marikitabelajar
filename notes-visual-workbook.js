@@ -38,7 +38,7 @@ function addTable(parent,heading,headers,rows,options){
 }
 function image(parent,src,alt,captionText){
  const figure=E('figure','vw-figure');
- const img=E('img');img.src=src;img.alt=alt;img.loading='lazy';img.decoding='async';img.width=1200;img.height=510;
+ const img=E('img');img.src=src+'?v=20261030usd5';img.alt=alt;img.loading='lazy';img.decoding='async';img.width=1200;img.height=510;
  figure.append(img,E('figcaption','',captionText));parent.append(figure);
 }
 function accounts(parent,arr){
@@ -85,14 +85,14 @@ function appendCase(parent,work){
  const detail=E('details','vw-case-details');
  detail.open=true;
  detail.append(E('summary','','VIEW THE COMPLETE GENERAL JOURNAL'));
- addTable(detail,'GENERAL JOURNAL: ALL NINE EVENTS',['Event','Account','Debit RM','Credit RM'],work.journals,{money:true});
+ addTable(detail,'GENERAL JOURNAL: ALL NINE EVENTS',['Event','Account','Debit ($)','Credit ($)'],work.journals,{money:true});
  detail.append(E('p','vw-note',data.shared.journalExplainer));caseSec.append(detail);
  accounts(caseSec,work.accounts);
  caseSec.append(E('p','vw-note',data.shared.ledgerExplainer));
- addTable(caseSec,'ADJUSTED TRIAL BALANCE',['Account','Debit RM','Credit RM'],work.trial,{money:true});
+ addTable(caseSec,'ADJUSTED TRIAL BALANCE',['Account','Debit ($)','Credit ($)'],work.trial,{money:true});
  const pair=E('div','vw-statement-grid');
- addTable(pair,'STATEMENT OF PROFIT OR LOSS',['Line','RM'],work.pAndL);
- addTable(pair,'STATEMENT OF FINANCIAL POSITION',['Line','RM'],work.sofp);
+ addTable(pair,'STATEMENT OF PROFIT OR LOSS',['Line','Amount ($)'],work.pAndL);
+ addTable(pair,'STATEMENT OF FINANCIAL POSITION',['Line','Amount ($)'],work.sofp);
  caseSec.append(pair,E('p','vw-note',data.shared.statementExplainer));
  parent.append(caseSec);
 }

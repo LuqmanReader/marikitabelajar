@@ -24,7 +24,9 @@ for(const [p,data]of Object.entries(papers)){
 for(const key of Object.keys(notes))assert(valid.has(key),'Orphan or misclassified lesson '+key);
 assert.equal(total,700);assert.equal(Object.keys(notes).length,700);
 const html=fs.readFileSync('notes.html','utf8'),js=fs.readFileSync('notes-page.js','utf8');
-assert(html.includes('id="coverageRows"'));assert(html.includes('100% here does'));assert(html.includes('pending editorial review'));
+assert(html.includes('id="coverageRows"'));
+assert(html.includes('The heading index is not the same as textbook completeness.'),'Must distinguish topic headings from full syllabus coverage');
+assert(html.includes('individual 2026–27 outcome-level verification is not finished'),'Must disclose that syllabus outcome certification remains unfinished');
 assert(html.indexOf('notes-uk-syllabi.js')<html.indexOf('notes-page.js'));assert(html.indexOf('notes-expanded-data.js')<html.indexOf('notes-page.js'));
 assert(js.includes('PersonalHubAuth.ready()'));assert(js.includes('function loadContent()'));assert(js.includes('if(el.open)loadContent()'));
 console.table(report);console.log('PASS: 700/700 headings have core lessons. Detailed learning-outcome and exam-practice completeness is not asserted.');

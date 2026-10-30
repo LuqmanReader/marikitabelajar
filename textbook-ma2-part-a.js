@@ -56,13 +56,13 @@
     "workings": [
       [
         "Manufacturing flow reconciliation",
-        "Opening WIP RM4,000, direct material RM12,000, direct labour RM8,000, absorbed production overhead RM6,000 and closing WIP RM5,000.",
-        "Production cost transferred to finished goods = 4,000 + 12,000 + 8,000 + 6,000 − 5,000 = RM25,000. The RM5,000 closing WIP stays in current assets."
+        "Opening WIP $4,000, direct material $12,000, direct labour $8,000, absorbed production overhead $6,000 and closing WIP $5,000.",
+        "Production cost transferred to finished goods = 4,000 + 12,000 + 8,000 + 6,000 − 5,000 = $25,000. The $5,000 closing WIP stays in current assets."
       ],
       [
         "Cost reconciliation",
-        "The financial ledger records factory overhead RM10,200 while production jobs have absorbed RM9,800.",
-        "Under-absorption is RM400. Investigate the difference and account for it under the system's specified policy rather than silently making overhead equal the absorbed figure."
+        "The financial ledger records factory overhead $10,200 while production jobs have absorbed $9,800.",
+        "Under-absorption is $400. Investigate the difference and account for it under the system's specified policy rather than silently making overhead equal the absorbed figure."
       ]
     ]
   },
@@ -75,7 +75,7 @@
       ],
       [
         "Behaviour and relevant range",
-        "A variable cost changes in total with activity while remaining approximately constant per unit within the relevant range; for example RM4 of raw material per unit. Fixed cost remains constant in total over a defined activity range, so its cost per unit falls as output increases. Stepped fixed costs rise when capacity thresholds are crossed. Semi-variable costs have fixed and variable components. Real costs are often non-linear outside the relevant range."
+        "A variable cost changes in total with activity while remaining approximately constant per unit within the relevant range; for example $4 of raw material per unit. Fixed cost remains constant in total over a defined activity range, so its cost per unit falls as output increases. Stepped fixed costs rise when capacity thresholds are crossed. Semi-variable costs have fixed and variable components. Real costs are often non-linear outside the relevant range."
       ],
       [
         "High-low estimation",
@@ -93,18 +93,18 @@
     "workings": [
       [
         "High-low worked example",
-        "At 2,000 units total cost is RM15,000; at 5,000 units total cost is RM24,000.",
-        "Variable cost = (24,000−15,000)/(5,000−2,000) = RM3/unit. Fixed cost = 24,000−5,000×3 = RM9,000. Expected cost at 4,000 units = 9,000+4,000×3 = RM21,000."
+        "At 2,000 units total cost is $15,000; at 5,000 units total cost is $24,000.",
+        "Variable cost = (24,000−15,000)/(5,000−2,000) = $3/unit. Fixed cost = 24,000−5,000×3 = $9,000. Expected cost at 4,000 units = 9,000+4,000×3 = $21,000."
       ],
       [
         "Relevant versus sunk",
-        "A machine was bought for RM30,000 last year. A special order requires materials RM4,000 and pays RM7,000, but accepting it would forgo rental income RM1,500.",
-        "Historical machine cost RM30,000 is sunk. Relevant benefit = 7,000−4,000−1,500 = RM1,500 (before any other avoidable cost); accept if no qualitative restriction or better alternative."
+        "A machine was bought for $30,000 last year. A special order requires materials $4,000 and pays $7,000, but accepting it would forgo rental income $1,500.",
+        "Historical machine cost $30,000 is sunk. Relevant benefit = 7,000−4,000−1,500 = $1,500 (before any other avoidable cost); accept if no qualitative restriction or better alternative."
       ],
       [
         "Stepped fixed cost",
-        "A machine supervisor costs RM2,800 per month and can cover 3 machines. Production increases from 3 to 4 machines.",
-        "One extra supervisor is required if each covers at most three machines. The change is a step cost of RM2,800, not a smooth variable rate per unit."
+        "A machine supervisor costs $2,800 per month and can cover 3 machines. Production increases from 3 to 4 machines.",
+        "One extra supervisor is required if each covers at most three machines. The change is a step cost of $2,800, not a smooth variable rate per unit."
       ]
     ]
   },
@@ -135,13 +135,13 @@
     "workings": [
       [
         "Complete flexed budget",
-        "Plan 1,000 units at price RM20, variable production RM7/unit, variable selling RM2/unit and fixed costs RM5,000. Actual volume 1,200 units; revenue RM23,000; variable production RM8,700; selling RM2,600; fixed RM5,100.",
-        "Original contribution = 1,000×(20−7−2)=RM11,000; original profit RM6,000. Flexed revenue 1,200×20=RM24,000; flexed variable production RM8,400; selling RM2,400; fixed RM5,000; flexed profit RM8,200. Actual profit 23,000−8,700−2,600−5,100=RM6,600. Performance variance against flexed profit RM1,600 adverse."
+        "Plan 1,000 units at price $20, variable production $7/unit, variable selling $2/unit and fixed costs $5,000. Actual volume 1,200 units; revenue $23,000; variable production $8,700; selling $2,600; fixed $5,100.",
+        "Original contribution = 1,000×(20−7−2)=$11,000; original profit $6,000. Flexed revenue 1,200×20=$24,000; flexed variable production $8,400; selling $2,400; fixed $5,000; flexed profit $8,200. Actual profit 23,000−8,700−2,600−5,100=$6,600. Performance variance against flexed profit $1,600 adverse."
       ],
       [
         "Break down profit variance",
         "Use the previous scenario and compute component variances.",
-        "Revenue RM1,000 A (23,000 versus 24,000); production RM300 A; variable selling RM200 A; fixed RM100 A. Total RM1,600 A. The volume effect is separate: flexed profit RM8,200 minus original RM6,000 = RM2,200 favourable."
+        "Revenue $1,000 A (23,000 versus 24,000); production $300 A; variable selling $200 A; fixed $100 A. Total $1,600 A. The volume effect is separate: flexed profit $8,200 minus original $6,000 = $2,200 favourable."
       ]
     ]
   },
@@ -168,13 +168,13 @@
     "workings": [
       [
         "Comparability check",
-        "Revenue rises from RM50,000 to RM58,000 but selling prices increased 10% while volume is unchanged.",
-        "Nominal growth = 16%. Revenue at the new prices but old volume would be RM55,000 if all prices rose evenly by 10%; the remaining RM3,000 requires investigation into mix, product composition or changed assumption rather than attribution to higher volume."
+        "Revenue rises from $50,000 to $58,000 but selling prices increased 10% while volume is unchanged.",
+        "Nominal growth = 16%. Revenue at the new prices but old volume would be $55,000 if all prices rose evenly by 10%; the remaining $3,000 requires investigation into mix, product composition or changed assumption rather than attribution to higher volume."
       ],
       [
         "Variance communication",
         "A report says 'transport costs are 20% over budget' with no amounts or context.",
-        "Improve it to 'Transport RM12,000 actual versus RM10,000 budget (RM2,000/20% adverse), with 18% extra deliveries; compare flexed cost per delivery and late-delivery rates before action.'"
+        "Improve it to 'Transport $12,000 actual versus $10,000 budget ($2,000/20% adverse), with 18% extra deliveries; compare flexed cost per delivery and late-delivery rates before action.'"
       ]
     ]
   },
@@ -205,12 +205,12 @@
     "workings": [
       [
         "Perpetual FIFO and AVCO",
-        "Opening 100 units @RM5; buy 100 @RM7; issue 120; then buy 80 @RM8.",
-        "FIFO issue 100×5 + 20×7 = RM640. FIFO balance after issue 80×7=RM560; after purchase 80×8, closing balance RM1,200 for 160 units. Perpetual weighted average before issue = (500+700)/200=RM6; issue RM720; remaining RM480; buy RM640 gives closing RM1,120/160=RM7 per unit."
+        "Opening 100 units @$5; buy 100 @$7; issue 120; then buy 80 @$8.",
+        "FIFO issue 100×5 + 20×7 = $640. FIFO balance after issue 80×7=$560; after purchase 80×8, closing balance $1,200 for 160 units. Perpetual weighted average before issue = (500+700)/200=$6; issue $720; remaining $480; buy $640 gives closing $1,120/160=$7 per unit."
       ],
       [
         "EOQ example",
-        "Annual demand 16,000 units, ordering cost RM50/order, annual holding cost RM2/unit.",
+        "Annual demand 16,000 units, ordering cost $50/order, annual holding cost $2/unit.",
         "EOQ = √(2×16,000×50/2) = √800,000 ≈ 894.43, approximately 894 or 895 units. Check purchase constraints before rounding orders."
       ],
       [
@@ -247,8 +247,8 @@
     "workings": [
       [
         "Gross/net pay and overtime",
-        "Basic rate RM14/hour; 40 standard hours and 7 overtime hours paid at time-and-a-half; deductions RM105.",
-        "Basic = 40×14=RM560; overtime = 7×21=RM147; gross RM707; net RM602. Employee deductions RM105 are payable to third parties and not another expense added to gross wages."
+        "Basic rate $14/hour; 40 standard hours and 7 overtime hours paid at time-and-a-half; deductions $105.",
+        "Basic = 40×14=$560; overtime = 7×21=$147; gross $707; net $602. Employee deductions $105 are payable to third parties and not another expense added to gross wages."
       ],
       [
         "Labour ratio reconciliation",
@@ -280,13 +280,13 @@
     "workings": [
       [
         "Accrued factory cost",
-        "Factory electricity is RM3,600 for the final quarter but RM600 remains unpaid at year end.",
-        "Record RM3,600 factory overhead for the quarter. If cash paid RM3,000 has been recorded, debit overhead RM600 and credit accrual RM600. This changes overhead incurred, not necessarily the overhead absorbed to jobs."
+        "Factory electricity is $3,600 for the final quarter but $600 remains unpaid at year end.",
+        "Record $3,600 factory overhead for the quarter. If cash paid $3,000 has been recorded, debit overhead $600 and credit accrual $600. This changes overhead incurred, not necessarily the overhead absorbed to jobs."
       ],
       [
         "Rent apportionment",
-        "Total factory rent RM18,000; departments occupy 500, 300 and 200 m².",
-        "Total 1,000 m²; apportion RM9,000, RM5,400 and RM3,600 respectively. The cost-centre balances together must equal RM18,000."
+        "Total factory rent $18,000; departments occupy 500, 300 and 200 m².",
+        "Total 1,000 m²; apportion $9,000, $5,400 and $3,600 respectively. The cost-centre balances together must equal $18,000."
       ]
     ]
   }

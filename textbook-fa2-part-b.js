@@ -27,13 +27,13 @@
     "workings": [
       [
         "Three-column cash book",
-        "Opening bank debit RM6,000. Receipts: customer RM2,000, owner capital RM3,000. Payments: supplier RM4,500 and bank charges RM120.",
-        "Bank ending balance =6,000+2,000+3,000−4,500−120=RM6,380 debit. Journal charges Dr bank charges expense RM120 / Cr bank RM120. Customer receipt reduces receivable."
+        "Opening bank debit $6,000. Receipts: customer $2,000, owner capital $3,000. Payments: supplier $4,500 and bank charges $120.",
+        "Bank ending balance =6,000+2,000+3,000−4,500−120=$6,380 debit. Journal charges Dr bank charges expense $120 / Cr bank $120. Customer receipt reduces receivable."
       ],
       [
         "Imprest analysis",
-        "Petty cash float RM300. Vouchers: stationery RM74, local travel RM52, cleaning RM39. Cash counted RM135.",
-        "Vouchers total RM165; 300−165=RM135, which agrees with count. Reimburse RM165 to restore float RM300. If counted cash were RM132, RM3 shortage would require investigation."
+        "Petty cash float $300. Vouchers: stationery $74, local travel $52, cleaning $39. Cash counted $135.",
+        "Vouchers total $165; 300−165=$135, which agrees with count. Reimburse $165 to restore float $300. If counted cash were $132, $3 shortage would require investigation."
       ]
     ]
   },
@@ -64,18 +64,18 @@
     "workings": [
       [
         "FIFO trading issues",
-        "Opening 100 units @RM4; purchase 200 @RM5; sell 180 units; purchase 100 @RM6; sell 70 more units.",
-        "First sale FIFO cost=100×4+80×5=RM800. Stock then 120 @5. Second sale cost=70×5=RM350. Closing stock 50 @5 and 100 @6 =RM850. Available cost 400+1,000+600=RM2,000; cost of sales 800+350=RM1,150; reconcile 1,150+850=2,000."
+        "Opening 100 units @$4; purchase 200 @$5; sell 180 units; purchase 100 @$6; sell 70 more units.",
+        "First sale FIFO cost=100×4+80×5=$800. Stock then 120 @5. Second sale cost=70×5=$350. Closing stock 50 @5 and 100 @6 =$850. Available cost 400+1,000+600=$2,000; cost of sales 800+350=$1,150; reconcile 1,150+850=2,000."
       ],
       [
         "Periodic AVCO same purchases",
-        "Opening 100 @RM4, purchase 200 @RM5, purchase 100 @RM6; total issues 250 units in the period.",
-        "Total available 400 units with cost RM2,000. Average RM5/unit. Periodic cost of issues=250×5=RM1,250; closing inventory 150×5=RM750. This differs from FIFO because cost assumptions differ."
+        "Opening 100 @$4, purchase 200 @$5, purchase 100 @$6; total issues 250 units in the period.",
+        "Total available 400 units with cost $2,000. Average $5/unit. Periodic cost of issues=250×5=$1,250; closing inventory 150×5=$750. This differs from FIFO because cost assumptions differ."
       ],
       [
         "Lower of cost/NRV",
-        "Inventory item A cost RM3,600, expected selling price RM3,900 and cost to sell RM500. Item B cost RM1,800, NRV RM2,100.",
-        "A NRV=3,900−500=RM3,400, therefore write down RM200. B remains RM1,800. Closing total RM5,200 (3,400+1,800), not RM5,700."
+        "Inventory item A cost $3,600, expected selling price $3,900 and cost to sell $500. Item B cost $1,800, NRV $2,100.",
+        "A NRV=3,900−500=$3,400, therefore write down $200. B remains $1,800. Closing total $5,200 (3,400+1,800), not $5,700."
       ]
     ]
   },
@@ -106,18 +106,18 @@
     "workings": [
       [
         "Depreciation with part-year timing",
-        "Machine cost RM45,000, residual RM5,000, life 5 years; bought 1 April, year end 31 December and monthly depreciation policy.",
-        "Full-year straight line=(45,000−5,000)/5=RM8,000. Nine-month charge=8,000×9/12=RM6,000. Carrying amount RM39,000 at 31 December."
+        "Machine cost $45,000, residual $5,000, life 5 years; bought 1 April, year end 31 December and monthly depreciation policy.",
+        "Full-year straight line=(45,000−5,000)/5=$8,000. Nine-month charge=8,000×9/12=$6,000. Carrying amount $39,000 at 31 December."
       ],
       [
         "Disposal ledger and proceeds",
-        "Equipment cost RM80,000, accumulated depreciation RM55,000 at disposal, proceeds RM29,000.",
-        "Dr accumulated depreciation RM55,000 / Cr asset RM55,000 plus transfer the remaining gross cost to disposal account (or Dr disposal RM80,000 / Cr asset RM80,000 and Dr accum dep RM55,000 / Cr disposal RM55,000). Dr bank RM29,000 / Cr disposal RM29,000. Disposal credits RM84,000 vs debit RM80,000, giving RM4,000 profit, transferred Dr disposal / Cr profit-on-disposal income."
+        "Equipment cost $80,000, accumulated depreciation $55,000 at disposal, proceeds $29,000.",
+        "Dr accumulated depreciation $55,000 / Cr asset $55,000 plus transfer the remaining gross cost to disposal account (or Dr disposal $80,000 / Cr asset $80,000 and Dr accum dep $55,000 / Cr disposal $55,000). Dr bank $29,000 / Cr disposal $29,000. Disposal credits $84,000 vs debit $80,000, giving $4,000 profit, transferred Dr disposal / Cr profit-on-disposal income."
       ],
       [
         "Part exchange",
-        "Old asset cost RM30,000 accumulated dep RM22,000. Supplier offers trade-in RM10,000 towards new machine RM42,000.",
-        "Old carrying value RM8,000; disposal gain RM2,000. New asset is RM42,000; remaining cash/payable RM32,000. Do not record new asset only at RM32,000."
+        "Old asset cost $30,000 accumulated dep $22,000. Supplier offers trade-in $10,000 towards new machine $42,000.",
+        "Old carrying value $8,000; disposal gain $2,000. New asset is $42,000; remaining cash/payable $32,000. Do not record new asset only at $32,000."
       ]
     ]
   },
@@ -148,18 +148,18 @@
     "workings": [
       [
         "Opening/closing accruals",
-        "Opening electricity accrual RM900; cash paid during year RM11,200; required closing accrual RM1,300.",
-        "Electricity expense= cash paid + closing accrual − opening accrual =11,200+1,300−900=RM11,600. The opening accrual related to last year, while the closing accrual belongs to this year."
+        "Opening electricity accrual $900; cash paid during year $11,200; required closing accrual $1,300.",
+        "Electricity expense= cash paid + closing accrual − opening accrual =11,200+1,300−900=$11,600. The opening accrual related to last year, while the closing accrual belongs to this year."
       ],
       [
         "Opening/closing prepayments",
-        "Opening prepaid rent RM2,400; cash paid this year RM14,000; closing prepaid rent RM3,000.",
-        "Current-year rent expense = cash paid + opening prepaid − closing prepaid =14,000+2,400−3,000=RM13,400. Closing prepayment remains an asset."
+        "Opening prepaid rent $2,400; cash paid this year $14,000; closing prepaid rent $3,000.",
+        "Current-year rent expense = cash paid + opening prepaid − closing prepaid =14,000+2,400−3,000=$13,400. Closing prepayment remains an asset."
       ],
       [
         "Accrued income",
-        "Consultancy fee earned RM4,500 before year end but invoiced in January next year.",
-        "Dr accrued income receivable RM4,500; Cr fee income RM4,500 at year end. Cash collection later Dr bank / Cr receivable."
+        "Consultancy fee earned $4,500 before year end but invoiced in January next year.",
+        "Dr accrued income receivable $4,500; Cr fee income $4,500 at year end. Cash collection later Dr bank / Cr receivable."
       ]
     ]
   },
@@ -190,18 +190,18 @@
     "workings": [
       [
         "Combined debt expense",
-        "Trade receivables before adjustment RM56,000, irrecoverable debt RM3,000, opening allowance RM1,500; new allowance requirement 4% of remaining receivables.",
-        "Write-off RM3,000; surviving gross RM53,000. Closing allowance RM2,120. Increase RM620 (2,120−1,500). Profit-or-loss debt charge RM3,620 if written-off debt not already charged. Net closing receivables RM50,880."
+        "Trade receivables before adjustment $56,000, irrecoverable debt $3,000, opening allowance $1,500; new allowance requirement 4% of remaining receivables.",
+        "Write-off $3,000; surviving gross $53,000. Closing allowance $2,120. Increase $620 (2,120−1,500). Profit-or-loss debt charge $3,620 if written-off debt not already charged. Net closing receivables $50,880."
       ],
       [
         "Recovering an old write-off",
-        "Customer previously written off RM700 unexpectedly pays RM300.",
-        "Dr bank RM300; Cr irrecoverable-debt-recovered income (or reduce debt expense) RM300. Do not credit trade receivables unless the customer's gross balance had first been properly reinstated."
+        "Customer previously written off $700 unexpectedly pays $300.",
+        "Dr bank $300; Cr irrecoverable-debt-recovered income (or reduce debt expense) $300. Do not credit trade receivables unless the customer's gross balance had first been properly reinstated."
       ],
       [
         "Provision example",
-        "Business sold 400 items with an existing warranty obligation; expected repair RM20 for 10% of units, and RM100 for 2% of units, under given mutually exclusive expected outcomes.",
-        "Expected warranty provision=400×(0.10×20 +0.02×100)=400×RM4=RM1,600, assuming other 88% have zero cost. Dr warranty expense RM1,600 / Cr provision RM1,600."
+        "Business sold 400 items with an existing warranty obligation; expected repair $20 for 10% of units, and $100 for 2% of units, under given mutually exclusive expected outcomes.",
+        "Expected warranty provision=400×(0.10×20 +0.02×100)=400×$4=$1,600, assuming other 88% have zero cost. Dr warranty expense $1,600 / Cr provision $1,600."
       ]
     ]
   },
@@ -228,13 +228,13 @@
     "workings": [
       [
         "Accrued loan interest",
-        "A loan of RM100,000 at 9% simple annual interest was outstanding from 1 July to 31 December, with interest unpaid at year end.",
-        "Six-month interest=100,000×0.09×6/12=RM4,500. Dr interest expense RM4,500 / Cr interest payable RM4,500. The loan principal remains RM100,000."
+        "A loan of $100,000 at 9% simple annual interest was outstanding from 1 July to 31 December, with interest unpaid at year end.",
+        "Six-month interest=100,000×0.09×6/12=$4,500. Dr interest expense $4,500 / Cr interest payable $4,500. The loan principal remains $100,000."
       ],
       [
         "Split current/non-current loan",
-        "Loan balance 31 December RM70,000, with principal repayments RM15,000 due next year and remaining RM55,000 due later.",
-        "Current portion RM15,000; non-current RM55,000, subject to reporting rights and actual terms. Any accrued interest is recorded separately from the principal."
+        "Loan balance 31 December $70,000, with principal repayments $15,000 due next year and remaining $55,000 due later.",
+        "Current portion $15,000; non-current $55,000, subject to reporting rights and actual terms. Any accrued interest is recorded separately from the principal."
       ]
     ]
   },
@@ -255,19 +255,19 @@
       ],
       [
         "Common errors and controls",
-        "A cheque for RM540 entered as RM450 requires RM90 additional bank credit and the appropriate counterpart. A duplicate receipt must be reversed. Missing or altered bank statements require independent verification. Outstanding items that remain for months can indicate posting errors or misuse; investigate rather than recycle them indefinitely."
+        "A cheque for $540 entered as $450 requires $90 additional bank credit and the appropriate counterpart. A duplicate receipt must be reversed. Missing or altered bank statements require independent verification. Outstanding items that remain for months can indicate posting errors or misuse; investigate rather than recycle them indefinitely."
       ]
     ],
     "workings": [
       [
         "Full reconciliation",
-        "Cash book debit RM18,500; unrecorded bank charge RM250; direct debit insurance RM600; customer paid bank directly RM1,400. Unpresented cheques RM2,100; outstanding lodgements RM3,000.",
-        "Adjusted cash book =18,500−250−600+1,400=RM19,050 debit. Statement balance =adjusted book + unpresented 2,100−outstanding deposits 3,000 =RM18,150 debit. Cross-check from statement:18,150+3,000−2,100=19,050."
+        "Cash book debit $18,500; unrecorded bank charge $250; direct debit insurance $600; customer paid bank directly $1,400. Unpresented cheques $2,100; outstanding lodgements $3,000.",
+        "Adjusted cash book =18,500−250−600+1,400=$19,050 debit. Statement balance =adjusted book + unpresented 2,100−outstanding deposits 3,000 =$18,150 debit. Cross-check from statement:18,150+3,000−2,100=19,050."
       ],
       [
         "Dishonoured cheque",
-        "Customer cheque RM800 previously entered as receipt is dishonoured by bank.",
-        "Dr trade receivables RM800; Cr bank RM800 to undo receipt. If a fee is charged, post it separately. The customer still owes RM800."
+        "Customer cheque $800 previously entered as receipt is dishonoured by bank.",
+        "Dr trade receivables $800; Cr bank $800 to undo receipt. If a fee is charged, post it separately. The customer still owes $800."
       ]
     ]
   },
@@ -294,13 +294,13 @@
     "workings": [
       [
         "Supplier statement reconciliation",
-        "Company ledger shows payable RM7,200. Supplier statement shows RM9,000. Company paid RM1,500 before month end but supplier recorded it next month; company also omitted invoice RM300.",
-        "Correct ledger payable =7,200+300=RM7,500. Supplier statement adjusted for payment in transit=9,000−1,500=RM7,500. Difference explained; post omitted invoice RM300, not payment a second time."
+        "Company ledger shows payable $7,200. Supplier statement shows $9,000. Company paid $1,500 before month end but supplier recorded it next month; company also omitted invoice $300.",
+        "Correct ledger payable =7,200+300=$7,500. Supplier statement adjusted for payment in transit=9,000−1,500=$7,500. Difference explained; post omitted invoice $300, not payment a second time."
       ],
       [
         "Credit note missing",
-        "Supplier's statement includes a RM450 return credit note but company payable account omitted it.",
-        "Record Dr payables RM450 / Cr purchase returns or inventory RM450; the payable falls. Check any associated input-tax adjustment where applicable."
+        "Supplier's statement includes a $450 return credit note but company payable account omitted it.",
+        "Record Dr payables $450 / Cr purchase returns or inventory $450; the payable falls. Check any associated input-tax adjustment where applicable."
       ]
     ]
   }

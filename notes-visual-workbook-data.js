@@ -6,55 +6,55 @@
     "transactions": [
       [
         "01",
-        "Owner invests RM30,000 cash",
+        "Owner invests $30,000 cash",
         "Bank receipt / owner introduction form",
         "Dr Bank 30,000 · Cr Capital 30,000"
       ],
       [
         "02",
-        "Equipment bought for RM8,000, bank transfer",
+        "Equipment bought for $8,000, bank transfer",
         "Supplier invoice and bank transfer",
         "Dr Equipment 8,000 · Cr Bank 8,000"
       ],
       [
         "03",
-        "Inventory bought on credit RM6,000",
+        "Inventory bought on credit $6,000",
         "Supplier invoice and goods received note",
         "Dr Inventory 6,000 · Cr Payables 6,000"
       ],
       [
         "04",
-        "Inventory sold on credit for RM12,000; cost RM4,500",
+        "Inventory sold on credit for $12,000; cost $4,500",
         "Customer invoice, goods dispatch and stock issue",
         "Dr Receivables 12,000 · Cr Sales 12,000; Dr Cost of sales 4,500 · Cr Inventory 4,500"
       ],
       [
         "05",
-        "Customer pays RM5,000 of invoice",
+        "Customer pays $5,000 of invoice",
         "Remittance advice / bank statement",
         "Dr Bank 5,000 · Cr Receivables 5,000"
       ],
       [
         "06",
-        "Supplier paid RM3,000",
+        "Supplier paid $3,000",
         "Supplier remittance and bank statement",
         "Dr Payables 3,000 · Cr Bank 3,000"
       ],
       [
         "07",
-        "Rent of RM1,200 paid",
+        "Rent of $1,200 paid",
         "Rent receipt / bank debit",
         "Dr Rent 1,200 · Cr Bank 1,200"
       ],
       [
         "08",
-        "Electricity bill accrued RM400, unpaid",
+        "Electricity bill accrued $400, unpaid",
         "Utility bill or reliable estimate",
         "Dr Electricity 400 · Cr Accruals 400"
       ],
       [
         "09",
-        "Period depreciation RM300",
+        "Period depreciation $300",
         "Non-current asset register / calculation",
         "Dr Depreciation 300 · Cr Accumulated depreciation 300"
       ]
@@ -433,7 +433,7 @@
     ],
     "journalExplainer": "A journal identifies the exact account to debit and credit. A line with an empty debit (or credit) field is the second side of the same event; the total for each event must balance. The overall journal also balances, but it is the accounts—not a single undifferentiated cash list—that are posted.",
     "ledgerExplainer": "In the T-accounts, debit is left and credit is right. Where the account is an asset, its closing debit balance c/d is entered on the CREDIT side to make the two T-account totals equal; it is carried into the next period as a debit b/d. The opposite applies to payables and other credit balances. The c/d entry is not a new business transaction.",
-    "statementExplainer": "The trial balance displays unclosed nominal account balances and is the starting point, not the final statement. Profit or loss collects income and expenses. The statement of financial position then shows assets, liabilities and equity. In this case profit is RM5,600 and adds to owner equity; assets RM39,000 equal liabilities RM3,400 plus equity RM35,600."
+    "statementExplainer": "The trial balance displays unclosed nominal account balances and is the starting point, not the final statement. Profit or loss collects income and expenses. The statement of financial position then shows assets, liabilities and equity. In this case profit is $5,600 and adds to owner equity; assets $39,000 equal liabilities $3,400 plus equity $35,600."
   },
   "topics": {
     "FA2:B2": {
@@ -447,7 +447,7 @@
         {
           "heading": "Why accountants do not start with financial statements",
           "paras": [
-            "Imagine a shop sells RM12,000 of goods on credit. At that moment the shop has not necessarily received any money. It now has evidence that a customer owes it RM12,000, and it has earned revenue under the sale's terms. An accounting system must preserve the invoice, record which customer owes the money and update the general ledger totals. Only after thousands of such events have been processed can the final financial statements report a reliable position.",
+            "Imagine a shop sells $12,000 of goods on credit. At that moment the shop has not necessarily received any money. It now has evidence that a customer owes it $12,000, and it has earned revenue under the sale's terms. An accounting system must preserve the invoice, record which customer owes the money and update the general ledger totals. Only after thousands of such events have been processed can the final financial statements report a reliable position.",
             "This means the flow of information matters as much as debit and credit arithmetic. A source document proves a particular event; a book of original entry orders many similar events; ledger accounts classify the effects; the trial balance checks ledger arithmetical agreement; adjustments put the results in the correct accounting period; and statements communicate the result. Skipping a stage makes it harder to explain or verify a reported figure.",
             "The stages are not always separate screens in modern accounting software. A correctly configured program may update a sales journal, customer record, general ledger control and management report together. The underlying record trail still exists and needs controls against duplicate invoices, incorrect account codes and unauthorised adjustments."
           ]
@@ -509,8 +509,8 @@
         {
           "heading": "Posting: one invoice creates both totals and customer detail",
           "paras": [
-            "Suppose invoice SI-104 is for RM1,200 of credit sales to customer Maya, with sales tax ignored. The sales day book contains date, invoice SI-104, Maya and RM1,200. The customer personal ledger receives a debit of RM1,200. The receivables CONTROL account also receives a debit of RM1,200, while sales revenue receives a credit of RM1,200. It is not correct to add the customer personal ledger AGAIN to the control total—the personal account supports the control, it is not another asset.",
-            "At the period end, the list of customer balances should agree with the trade receivables control after timing differences or errors are corrected. If the control shows RM25,000 but all customer accounts sum to RM24,600, the RM400 discrepancy is investigated using invoice and receipt references. A suspense or arbitrary 'miscellaneous customer' balance is not a proper explanation."
+            "Suppose invoice SI-104 is for $1,200 of credit sales to customer Maya, with sales tax ignored. The sales day book contains date, invoice SI-104, Maya and $1,200. The customer personal ledger receives a debit of $1,200. The receivables CONTROL account also receives a debit of $1,200, while sales revenue receives a credit of $1,200. It is not correct to add the customer personal ledger AGAIN to the control total—the personal account supports the control, it is not another asset.",
+            "At the period end, the list of customer balances should agree with the trade receivables control after timing differences or errors are corrected. If the control shows $25,000 but all customer accounts sum to $24,600, the $400 discrepancy is investigated using invoice and receipt references. A suspense or arbitrary 'miscellaneous customer' balance is not a proper explanation."
           ],
           "table": {
             "headers": [
@@ -522,20 +522,20 @@
             "rows": [
               [
                 "Sales journal → GL control",
-                "Trade receivables RM1,200",
-                "Sales RM1,200",
+                "Trade receivables $1,200",
+                "Sales $1,200",
                 "Record the credit sale"
               ],
               [
                 "Customer personal account (Maya)",
-                "Maya RM1,200",
+                "Maya $1,200",
                 "—",
-                "Track WHICH customer owes RM1,200"
+                "Track WHICH customer owes $1,200"
               ],
               [
                 "Maya later settles",
-                "Bank RM1,200",
-                "Receivables RM1,200",
+                "Bank $1,200",
+                "Receivables $1,200",
                 "Settlement of receivable, NOT another sale"
               ]
             ]
@@ -544,7 +544,7 @@
         {
           "heading": "Close off the nominal ledger: distinguish totals from balances",
           "paras": [
-            "At period end, accountants add both sides of each T-account. If the debit side totals RM35,000 and the credit side contains transactions of RM12,200, the closing debit balance is RM22,800. Balance c/d appears on the credit side for RM22,800 solely to make both account columns total RM35,000. The next period begins with balance b/d RM22,800 on the debit side. The words 'credit side' here do not mean the bank was actually paid RM22,800.",
+            "At period end, accountants add both sides of each T-account. If the debit side totals $35,000 and the credit side contains transactions of $12,200, the closing debit balance is $22,800. Balance c/d appears on the credit side for $22,800 solely to make both account columns total $35,000. The next period begins with balance b/d $22,800 on the debit side. The words 'credit side' here do not mean the bank was actually paid $22,800.",
             "Not every ledger balance must be closed to zero. Assets, liabilities and owner's capital carry forward. Income and expense balances are transferred to profit or loss as part of period closing under the entity's accounting system. A trial balance lists the debit or credit balance of each account before final transfers and provides an arithmetic check."
           ]
         },
@@ -558,12 +558,12 @@
       ],
       "drills": [
         {
-          "question": "A shop receives RM800 from a customer paying an invoice issued last week. Where is the initial receipt recorded?",
-          "answer": "In the cash book or bank receipt module. Dr Bank RM800 / Cr Trade receivables RM800. It is NOT another credit sale in the sales day book."
+          "question": "A shop receives $800 from a customer paying an invoice issued last week. Where is the initial receipt recorded?",
+          "answer": "In the cash book or bank receipt module. Dr Bank $800 / Cr Trade receivables $800. It is NOT another credit sale in the sales day book."
         },
         {
-          "question": "The general ledger receivables control is RM18,000 but the total of customer accounts is RM17,700. What does this mean?",
-          "answer": "The subsidiary ledger does not agree with the control. Investigate RM300 using invoice, credit note, receipt and posting references. Do not invent a balancing entry."
+          "question": "The general ledger receivables control is $18,000 but the total of customer accounts is $17,700. What does this mean?",
+          "answer": "The subsidiary ledger does not agree with the control. Investigate $300 using invoice, credit note, receipt and posting references. Do not invent a balancing entry."
         },
         {
           "question": "Does a balanced trial balance prove there are no errors?",
@@ -586,7 +586,7 @@
         {
           "heading": "A transaction always has two sides inside ONE business",
           "paras": [
-            "If the owner puts RM30,000 into their own shop's bank account, the shop has more money AND the owner's equity has increased. The correct entry is Dr Bank RM30,000 and Cr Capital RM30,000. It does not mean the owner records one side and the business records the other: both sides belong in the shop's accounting records.",
+            "If the owner puts $30,000 into their own shop's bank account, the shop has more money AND the owner's equity has increased. The correct entry is Dr Bank $30,000 and Cr Capital $30,000. It does not mean the owner records one side and the business records the other: both sides belong in the shop's accounting records.",
             "The equation is Assets = Liabilities + Equity. A credit purchase of inventory increases both an asset and a liability. A bank payment to a supplier reduces both bank and payable. A cash sale increases bank and increases revenue, with profit eventually increasing equity; a perpetual inventory system also records the cost of goods sold separately.",
             "Debit and credit refer to the left and right sides of a ledger account. They are NOT synonyms for good/bad or cash in/cash out. A debit normally increases an asset or expense but reduces a liability, capital or revenue. A credit normally increases a liability, capital or revenue but reduces an asset or expense. Use the type of account before deciding the direction."
           ]
@@ -661,20 +661,20 @@
       ],
       "drills": [
         {
-          "question": "A bank transfers RM4,000 to repay principal on an existing loan. Give the entry.",
-          "answer": "Dr Loan RM4,000 and Cr Bank RM4,000; liabilities and assets both decrease. No interest expense is created from principal repayment."
+          "question": "A bank transfers $4,000 to repay principal on an existing loan. Give the entry.",
+          "answer": "Dr Loan $4,000 and Cr Bank $4,000; liabilities and assets both decrease. No interest expense is created from principal repayment."
         },
         {
-          "question": "A business buys goods on credit for RM2,700. No tax. Give the entry.",
-          "answer": "Dr Inventory/Purchases RM2,700, Cr Trade payables RM2,700. Inventory (or purchase cost) increases; an obligation to supplier is created."
+          "question": "A business buys goods on credit for $2,700. No tax. Give the entry.",
+          "answer": "Dr Inventory/Purchases $2,700, Cr Trade payables $2,700. Inventory (or purchase cost) increases; an obligation to supplier is created."
         },
         {
-          "question": "A customer settles RM1,500 from a previous invoice. Is sales credited again?",
-          "answer": "No. Dr Bank RM1,500, Cr Receivables RM1,500. Sales was credited when the credit sale occurred."
+          "question": "A customer settles $1,500 from a previous invoice. Is sales credited again?",
+          "answer": "No. Dr Bank $1,500, Cr Receivables $1,500. Sales was credited when the credit sale occurred."
         },
         {
-          "question": "Rent RM900 is accrued but unpaid at year end. Which accounts?",
-          "answer": "Dr Rent expense RM900, Cr Accrued expenses liability RM900. No bank entry until payment occurs."
+          "question": "Rent $900 is accrued but unpaid at year end. Which accounts?",
+          "answer": "Dr Rent expense $900, Cr Accrued expenses liability $900. No bank entry until payment occurs."
         }
       ]
     },
@@ -689,15 +689,15 @@
         {
           "heading": "What a proper journal actually looks like",
           "paras": [
-            "An accounting journal should identify the business event, entry date, debit account(s), credit account(s), debit and credit amounts, and a short narration. A journal does not simply say 'sales RM1,000'. It states what asset or liability changed and what the counterparty to that change is. Each separate journal must balance even if the month-end total also balances.",
+            "An accounting journal should identify the business event, entry date, debit account(s), credit account(s), debit and credit amounts, and a short narration. A journal does not simply say 'sales $1,000'. It states what asset or liability changed and what the counterparty to that change is. Each separate journal must balance even if the month-end total also balances.",
             "The table below contains each financial transaction from the same nine-event business case. The entry tagged 04a records revenue and receivables; 04b separately records the cost of inventory sold under a perpetual system. These are not alternatives; both are needed when the value of goods sold is known."
           ]
         },
         {
           "heading": "Compound journals, discounts and tax",
           "paras": [
-            "When sales tax is explicitly applicable, debit the customer for the gross invoice, credit revenue for the net amount and credit output tax payable for the tax. Example: goods RM2,000 plus 6% sales tax: Dr Receivables RM2,120, Cr Sales RM2,000 and Cr Tax payable RM120. A journal can therefore have one debit and two credits.",
-            "If the customer returns half, a credit note reverses net revenue RM1,000 and tax RM60 while reducing receivables RM1,060. The entries depend on the actual tax framework, and LedgerPeer should not imply that one hypothetical rate represents every jurisdiction or examination variant.",
+            "When sales tax is explicitly applicable, debit the customer for the gross invoice, credit revenue for the net amount and credit output tax payable for the tax. Example: goods $2,000 plus 6% sales tax: Dr Receivables $2,120, Cr Sales $2,000 and Cr Tax payable $120. A journal can therefore have one debit and two credits.",
+            "If the customer returns half, a credit note reverses net revenue $1,000 and tax $60 while reducing receivables $1,060. The entries depend on the actual tax framework, and LedgerPeer should not imply that one hypothetical rate represents every jurisdiction or examination variant.",
             "Trade discounts are deducted from list prices before recording sales. A settlement discount may need separate treatment when its conditions are met. Never credit gross list price when the actual invoice is properly issued net of trade discount."
           ]
         },
@@ -705,7 +705,7 @@
           "heading": "Year-end adjustments are real journals too",
           "paras": [
             "Electricity consumed but not invoiced: Dr Electricity expense, Cr Accrual. Insurance paid for a future period: Dr Prepayment asset, Cr Insurance expense if previously wholly expensed. Asset depreciation: Dr Depreciation expense, Cr Accumulated depreciation. These entries change expenses and statement of financial position balances without moving cash at year-end.",
-            "For a correcting journal, compare the actual entry with what should have been recorded. If RM1,200 of equipment was wrongly debited to Repairs, the correction is Dr Equipment RM1,200 and Cr Repairs RM1,200, plus any relevant depreciation adjustment. Do not debit equipment and credit bank again because bank was already correctly reduced when the purchase happened."
+            "For a correcting journal, compare the actual entry with what should have been recorded. If $1,200 of equipment was wrongly debited to Repairs, the correction is Dr Equipment $1,200 and Cr Repairs $1,200, plus any relevant depreciation adjustment. Do not debit equipment and credit bank again because bank was already correctly reduced when the purchase happened."
           ]
         },
         {
@@ -718,16 +718,16 @@
       ],
       "drills": [
         {
-          "question": "A machine bought for RM5,000 cash was wrongly Dr Repairs / Cr Bank. Correct it.",
-          "answer": "Dr Machinery RM5,000 / Cr Repairs RM5,000. Do NOT credit Bank again; that credit was already correct. Separately account for appropriate depreciation."
+          "question": "A machine bought for $5,000 cash was wrongly Dr Repairs / Cr Bank. Correct it.",
+          "answer": "Dr Machinery $5,000 / Cr Repairs $5,000. Do NOT credit Bank again; that credit was already correct. Separately account for appropriate depreciation."
         },
         {
-          "question": "Sold services RM3,000 on credit with 8% assumed tax. Show journal.",
-          "answer": "Dr Receivables RM3,240; Cr Service revenue RM3,000; Cr Output tax payable RM240."
+          "question": "Sold services $3,000 on credit with 8% assumed tax. Show journal.",
+          "answer": "Dr Receivables $3,240; Cr Service revenue $3,000; Cr Output tax payable $240."
         },
         {
-          "question": "Used RM400 electricity by year end but supplier has not billed it.",
-          "answer": "Dr Electricity expense RM400 / Cr Accruals RM400; bank unchanged."
+          "question": "Used $400 electricity by year end but supplier has not billed it.",
+          "answer": "Dr Electricity expense $400 / Cr Accruals $400; bank unchanged."
         },
         {
           "question": "Why does a sale of inventory sometimes need TWO journals?",
@@ -747,7 +747,7 @@
           "heading": "Understand the T-account physically",
           "paras": [
             "Every T-account has the account name at its top, with a DEBIT column on the left and a CREDIT column on the right. The journal entry Dr Bank/Cr Capital produces a debit line in the Bank T-account and a credit line in the Capital T-account. The entry is not left as one combined 'Bank and Capital' account; each account gathers its own entries over time.",
-            "The four drawn ledger accounts below come from the same nine transaction case. Follow the narration from the journal to each T-account, then recompute the closing balance. For receivables, sales were debited RM12,000 and a customer receipt was credited RM5,000, leaving a debit RM7,000.",
+            "The four drawn ledger accounts below come from the same nine transaction case. Follow the narration from the journal to each T-account, then recompute the closing balance. For receivables, sales were debited $12,000 and a customer receipt was credited $5,000, leaving a debit $7,000.",
             "The T-accounts shown are balances for the period. A line labelled balance c/d is a balancing entry, not an additional invoice or bank transfer. The next period brings the amount back as balance b/d on its normal side."
           ]
         },
@@ -755,14 +755,14 @@
           "heading": "Why an asset can have a credit entry",
           "paras": [
             "Bank is an asset and normally has a debit balance. But payments to suppliers, rent and asset purchases CREDIT the Bank account because they REDUCE an asset. A credit line in a bank account does not make Bank an expense or liability. The account classification is unchanged until its overall balance becomes credit, perhaps reflecting an overdraft.",
-            "A credit-balance payable works in reverse. Purchases on credit increase payable by credit. Supplier settlement reduces payable by debit. In the illustrated payable account, RM6,000 was credited on purchase; RM3,000 debited for the payment, leaving RM3,000 credit outstanding."
+            "A credit-balance payable works in reverse. Purchases on credit increase payable by credit. Supplier settlement reduces payable by debit. In the illustrated payable account, $6,000 was credited on purchase; $3,000 debited for the payment, leaving $3,000 credit outstanding."
           ]
         },
         {
           "heading": "Balance and bring forward",
           "paras": [
             "For an asset account, total debit transactions and credit transactions separately. Insert the balancing figure c/d in the smaller credit column so both sides add to equal totals, then write the same figure b/d on the debit side of the account for the next period. For a liability credit balance, the c/d balancing figure goes on the debit side and the b/d returns to the credit side.",
-            "In the Bank T-account here debit entries total RM35,000 (capital 30,000 and customer 5,000). Credit payments total RM12,200. Therefore c/d RM22,800 sits on the credit side to make RM35,000; next opening b/d is a RM22,800 debit. No additional bank payment occurred."
+            "In the Bank T-account here debit entries total $35,000 (capital 30,000 and customer 5,000). Credit payments total $12,200. Therefore c/d $22,800 sits on the credit side to make $35,000; next opening b/d is a $22,800 debit. No additional bank payment occurred."
           ]
         },
         {
@@ -775,15 +775,15 @@
       ],
       "drills": [
         {
-          "question": "Bank debit entries RM20,000; credit transaction entries RM13,500. Calculate balance and location of c/d.",
-          "answer": "Closing Bank debit balance RM6,500. Put balance c/d RM6,500 on the credit side to make equal account totals. Next opening b/d is a debit RM6,500."
+          "question": "Bank debit entries $20,000; credit transaction entries $13,500. Calculate balance and location of c/d.",
+          "answer": "Closing Bank debit balance $6,500. Put balance c/d $6,500 on the credit side to make equal account totals. Next opening b/d is a debit $6,500."
         },
         {
-          "question": "Payables credit RM9,000, payment debit RM4,000. What remains?",
-          "answer": "Credit balance RM5,000. The payable account has balance c/d on debit side, b/d on credit side next period."
+          "question": "Payables credit $9,000, payment debit $4,000. What remains?",
+          "answer": "Credit balance $5,000. The payable account has balance c/d on debit side, b/d on credit side next period."
         },
         {
-          "question": "Why does a credit of RM5,000 to bank not mean a new liability?",
+          "question": "Why does a credit of $5,000 to bank not mean a new liability?",
           "answer": "It is a decrease in the asset Bank. If the whole bank balance becomes overdrawn, there may be an overdraft liability, but individual payment credits are not themselves new liabilities."
         }
       ]
@@ -806,22 +806,22 @@
         {
           "heading": "Work through a complete agreeing trial balance",
           "paras": [
-            "Use the table below. It includes bank, equipment at cost, inventory, trade receivables, expenses, accumulated depreciation, payables, accrued electricity, capital and revenue. When total debit RM45,700 equals total credit RM45,700, the postings agree arithmetically.",
-            "The total of RM45,700 is not revenue, total assets or profit. It is the sum of account balances on each side. The same expense cannot appear both as an unadjusted expense and as a separate year-end expense twice: any adjusting entry has already affected the ledger totals shown here."
+            "Use the table below. It includes bank, equipment at cost, inventory, trade receivables, expenses, accumulated depreciation, payables, accrued electricity, capital and revenue. When total debit $45,700 equals total credit $45,700, the postings agree arithmetically.",
+            "The total of $45,700 is not revenue, total assets or profit. It is the sum of account balances on each side. The same expense cannot appear both as an unadjusted expense and as a separate year-end expense twice: any adjusting entry has already affected the ledger totals shown here."
           ]
         },
         {
           "heading": "What a trial balance will miss",
           "paras": [
-            "If the business completely omitted a RM2,000 credit sale, neither sales nor receivables is recorded. Both TB columns remain equal, yet profit and assets are understated. If an RM800 machine purchase is recorded Dr Repairs/Cr Bank instead of Dr Equipment/Cr Bank, the TB still balances while profit and net assets are wrong. If Dr and Cr are both reversed, the TB can still balance. Therefore agreement is a necessary arithmetic control, not an accounting opinion.",
+            "If the business completely omitted a $2,000 credit sale, neither sales nor receivables is recorded. Both TB columns remain equal, yet profit and assets are understated. If an $800 machine purchase is recorded Dr Repairs/Cr Bank instead of Dr Equipment/Cr Bank, the TB still balances while profit and net assets are wrong. If Dr and Cr are both reversed, the TB can still balance. Therefore agreement is a necessary arithmetic control, not an accounting opinion.",
             "Unexplained TB differences may indicate one-sided postings, transpositions or incorrect arithmetic. A suspense account can temporarily represent the difference but must be investigated and cleared; it cannot be used to make financial statements 'look right'."
           ]
         },
         {
           "heading": "The adjustments and final figures",
           "paras": [
-            "Before reporting, check inventory values, accruals, prepayments, depreciation, bad debts, receivables allowances, sales-tax control and bank reconciliation. Then prepare an adjusted trial balance and the statement of profit or loss. In our business the final revenue is RM12,000, cost of sales RM4,500, rent RM1,200, electricity RM400 and depreciation RM300, giving profit RM5,600.",
-            "The statement of financial position reports bank RM22,800, inventory RM1,500, receivables RM7,000 and net equipment RM7,700: total assets RM39,000. Liabilities are payables RM3,000 and electricity accrual RM400; capital and retained profit total RM35,600. Therefore assets RM39,000 equal liabilities plus equity RM39,000. The equation is a final cross-check, not a replacement for source-ledger verification."
+            "Before reporting, check inventory values, accruals, prepayments, depreciation, bad debts, receivables allowances, sales-tax control and bank reconciliation. Then prepare an adjusted trial balance and the statement of profit or loss. In our business the final revenue is $12,000, cost of sales $4,500, rent $1,200, electricity $400 and depreciation $300, giving profit $5,600.",
+            "The statement of financial position reports bank $22,800, inventory $1,500, receivables $7,000 and net equipment $7,700: total assets $39,000. Liabilities are payables $3,000 and electricity accrual $400; capital and retained profit total $35,600. Therefore assets $39,000 equal liabilities plus equity $39,000. The equation is a final cross-check, not a replacement for source-ledger verification."
           ]
         }
       ],
@@ -831,7 +831,7 @@
           "answer": "No. The trial balance only reflects ledger values. A physical count/valuation check and related adjustments are needed."
         },
         {
-          "question": "Equipment worth RM3,000 was expensed as repairs, credit bank correctly entered. Does the TB still balance?",
+          "question": "Equipment worth $3,000 was expensed as repairs, credit bank correctly entered. Does the TB still balance?",
           "answer": "Yes. Both sides were posted equally, but profit is understated and equipment assets are understated before considering any depreciation."
         },
         {
@@ -840,7 +840,7 @@
         },
         {
           "question": "Using revenue 12,000, COGS 4,500, rent 1,200, electricity 400, depreciation 300, calculate profit.",
-          "answer": "12,000−4,500−1,200−400−300 = RM5,600."
+          "answer": "12,000−4,500−1,200−400−300 = $5,600."
         }
       ]
     },
@@ -855,15 +855,15 @@
         {
           "heading": "What a proper journal actually looks like",
           "paras": [
-            "An accounting journal should identify the business event, entry date, debit account(s), credit account(s), debit and credit amounts, and a short narration. A journal does not simply say 'sales RM1,000'. It states what asset or liability changed and what the counterparty to that change is. Each separate journal must balance even if the month-end total also balances.",
+            "An accounting journal should identify the business event, entry date, debit account(s), credit account(s), debit and credit amounts, and a short narration. A journal does not simply say 'sales $1,000'. It states what asset or liability changed and what the counterparty to that change is. Each separate journal must balance even if the month-end total also balances.",
             "The table below contains each financial transaction from the same nine-event business case. The entry tagged 04a records revenue and receivables; 04b separately records the cost of inventory sold under a perpetual system. These are not alternatives; both are needed when the value of goods sold is known."
           ]
         },
         {
           "heading": "Compound journals, discounts and tax",
           "paras": [
-            "When sales tax is explicitly applicable, debit the customer for the gross invoice, credit revenue for the net amount and credit output tax payable for the tax. Example: goods RM2,000 plus 6% sales tax: Dr Receivables RM2,120, Cr Sales RM2,000 and Cr Tax payable RM120. A journal can therefore have one debit and two credits.",
-            "If the customer returns half, a credit note reverses net revenue RM1,000 and tax RM60 while reducing receivables RM1,060. The entries depend on the actual tax framework, and LedgerPeer should not imply that one hypothetical rate represents every jurisdiction or examination variant.",
+            "When sales tax is explicitly applicable, debit the customer for the gross invoice, credit revenue for the net amount and credit output tax payable for the tax. Example: goods $2,000 plus 6% sales tax: Dr Receivables $2,120, Cr Sales $2,000 and Cr Tax payable $120. A journal can therefore have one debit and two credits.",
+            "If the customer returns half, a credit note reverses net revenue $1,000 and tax $60 while reducing receivables $1,060. The entries depend on the actual tax framework, and LedgerPeer should not imply that one hypothetical rate represents every jurisdiction or examination variant.",
             "Trade discounts are deducted from list prices before recording sales. A settlement discount may need separate treatment when its conditions are met. Never credit gross list price when the actual invoice is properly issued net of trade discount."
           ]
         },
@@ -871,7 +871,7 @@
           "heading": "Year-end adjustments are real journals too",
           "paras": [
             "Electricity consumed but not invoiced: Dr Electricity expense, Cr Accrual. Insurance paid for a future period: Dr Prepayment asset, Cr Insurance expense if previously wholly expensed. Asset depreciation: Dr Depreciation expense, Cr Accumulated depreciation. These entries change expenses and statement of financial position balances without moving cash at year-end.",
-            "For a correcting journal, compare the actual entry with what should have been recorded. If RM1,200 of equipment was wrongly debited to Repairs, the correction is Dr Equipment RM1,200 and Cr Repairs RM1,200, plus any relevant depreciation adjustment. Do not debit equipment and credit bank again because bank was already correctly reduced when the purchase happened."
+            "For a correcting journal, compare the actual entry with what should have been recorded. If $1,200 of equipment was wrongly debited to Repairs, the correction is Dr Equipment $1,200 and Cr Repairs $1,200, plus any relevant depreciation adjustment. Do not debit equipment and credit bank again because bank was already correctly reduced when the purchase happened."
           ]
         },
         {
@@ -884,16 +884,16 @@
       ],
       "drills": [
         {
-          "question": "A machine bought for RM5,000 cash was wrongly Dr Repairs / Cr Bank. Correct it.",
-          "answer": "Dr Machinery RM5,000 / Cr Repairs RM5,000. Do NOT credit Bank again; that credit was already correct. Separately account for appropriate depreciation."
+          "question": "A machine bought for $5,000 cash was wrongly Dr Repairs / Cr Bank. Correct it.",
+          "answer": "Dr Machinery $5,000 / Cr Repairs $5,000. Do NOT credit Bank again; that credit was already correct. Separately account for appropriate depreciation."
         },
         {
-          "question": "Sold services RM3,000 on credit with 8% assumed tax. Show journal.",
-          "answer": "Dr Receivables RM3,240; Cr Service revenue RM3,000; Cr Output tax payable RM240."
+          "question": "Sold services $3,000 on credit with 8% assumed tax. Show journal.",
+          "answer": "Dr Receivables $3,240; Cr Service revenue $3,000; Cr Output tax payable $240."
         },
         {
-          "question": "Used RM400 electricity by year end but supplier has not billed it.",
-          "answer": "Dr Electricity expense RM400 / Cr Accruals RM400; bank unchanged."
+          "question": "Used $400 electricity by year end but supplier has not billed it.",
+          "answer": "Dr Electricity expense $400 / Cr Accruals $400; bank unchanged."
         },
         {
           "question": "Why does a sale of inventory sometimes need TWO journals?",
@@ -913,7 +913,7 @@
           "heading": "Understand the T-account physically",
           "paras": [
             "Every T-account has the account name at its top, with a DEBIT column on the left and a CREDIT column on the right. The journal entry Dr Bank/Cr Capital produces a debit line in the Bank T-account and a credit line in the Capital T-account. The entry is not left as one combined 'Bank and Capital' account; each account gathers its own entries over time.",
-            "The four drawn ledger accounts below come from the same nine transaction case. Follow the narration from the journal to each T-account, then recompute the closing balance. For receivables, sales were debited RM12,000 and a customer receipt was credited RM5,000, leaving a debit RM7,000.",
+            "The four drawn ledger accounts below come from the same nine transaction case. Follow the narration from the journal to each T-account, then recompute the closing balance. For receivables, sales were debited $12,000 and a customer receipt was credited $5,000, leaving a debit $7,000.",
             "The T-accounts shown are balances for the period. A line labelled balance c/d is a balancing entry, not an additional invoice or bank transfer. The next period brings the amount back as balance b/d on its normal side."
           ]
         },
@@ -921,14 +921,14 @@
           "heading": "Why an asset can have a credit entry",
           "paras": [
             "Bank is an asset and normally has a debit balance. But payments to suppliers, rent and asset purchases CREDIT the Bank account because they REDUCE an asset. A credit line in a bank account does not make Bank an expense or liability. The account classification is unchanged until its overall balance becomes credit, perhaps reflecting an overdraft.",
-            "A credit-balance payable works in reverse. Purchases on credit increase payable by credit. Supplier settlement reduces payable by debit. In the illustrated payable account, RM6,000 was credited on purchase; RM3,000 debited for the payment, leaving RM3,000 credit outstanding."
+            "A credit-balance payable works in reverse. Purchases on credit increase payable by credit. Supplier settlement reduces payable by debit. In the illustrated payable account, $6,000 was credited on purchase; $3,000 debited for the payment, leaving $3,000 credit outstanding."
           ]
         },
         {
           "heading": "Balance and bring forward",
           "paras": [
             "For an asset account, total debit transactions and credit transactions separately. Insert the balancing figure c/d in the smaller credit column so both sides add to equal totals, then write the same figure b/d on the debit side of the account for the next period. For a liability credit balance, the c/d balancing figure goes on the debit side and the b/d returns to the credit side.",
-            "In the Bank T-account here debit entries total RM35,000 (capital 30,000 and customer 5,000). Credit payments total RM12,200. Therefore c/d RM22,800 sits on the credit side to make RM35,000; next opening b/d is a RM22,800 debit. No additional bank payment occurred."
+            "In the Bank T-account here debit entries total $35,000 (capital 30,000 and customer 5,000). Credit payments total $12,200. Therefore c/d $22,800 sits on the credit side to make $35,000; next opening b/d is a $22,800 debit. No additional bank payment occurred."
           ]
         },
         {
@@ -941,15 +941,15 @@
       ],
       "drills": [
         {
-          "question": "Bank debit entries RM20,000; credit transaction entries RM13,500. Calculate balance and location of c/d.",
-          "answer": "Closing Bank debit balance RM6,500. Put balance c/d RM6,500 on the credit side to make equal account totals. Next opening b/d is a debit RM6,500."
+          "question": "Bank debit entries $20,000; credit transaction entries $13,500. Calculate balance and location of c/d.",
+          "answer": "Closing Bank debit balance $6,500. Put balance c/d $6,500 on the credit side to make equal account totals. Next opening b/d is a debit $6,500."
         },
         {
-          "question": "Payables credit RM9,000, payment debit RM4,000. What remains?",
-          "answer": "Credit balance RM5,000. The payable account has balance c/d on debit side, b/d on credit side next period."
+          "question": "Payables credit $9,000, payment debit $4,000. What remains?",
+          "answer": "Credit balance $5,000. The payable account has balance c/d on debit side, b/d on credit side next period."
         },
         {
-          "question": "Why does a credit of RM5,000 to bank not mean a new liability?",
+          "question": "Why does a credit of $5,000 to bank not mean a new liability?",
           "answer": "It is a decrease in the asset Bank. If the whole bank balance becomes overdrawn, there may be an overdraft liability, but individual payment credits are not themselves new liabilities."
         }
       ]

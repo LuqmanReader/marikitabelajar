@@ -23,13 +23,13 @@
     "workings": [
       [
         "Receivables control",
-        "Opening customers RM20,000, credit sales RM34,000, bank receipts RM30,000, returns RM2,000, specific bad debt RM1,000.",
-        "Closing control debit=20,000+34,000−30,000−2,000−1,000=RM21,000."
+        "Opening customers $20,000, credit sales $34,000, bank receipts $30,000, returns $2,000, specific bad debt $1,000.",
+        "Closing control debit=20,000+34,000−30,000−2,000−1,000=$21,000."
       ],
       [
         "Sales-tax invoice",
-        "Credit sale net RM2,500, tax rate supplied 8%.",
-        "Gross invoice RM2,700. Dr trade receivables RM2,700, Cr revenue RM2,500, Cr output-tax payable RM200. Amount owed by customer is gross."
+        "Credit sale net $2,500, tax rate supplied 8%.",
+        "Gross invoice $2,700. Dr trade receivables $2,700, Cr revenue $2,500, Cr output-tax payable $200. Amount owed by customer is gross."
       ]
     ]
   },
@@ -56,13 +56,13 @@
     "workings": [
       [
         "Supplier control",
-        "Opening payables RM15,000, credit purchases RM36,000, payments RM31,000, purchase returns RM3,000.",
-        "Closing payable=15,000+36,000−31,000−3,000=RM17,000 credit."
+        "Opening payables $15,000, credit purchases $36,000, payments $31,000, purchase returns $3,000.",
+        "Closing payable=15,000+36,000−31,000−3,000=$17,000 credit."
       ],
       [
         "Equipment bought from supplier",
-        "Supplier supplies inventory RM4,000 and a computer for office use RM3,000, both on credit.",
-        "Dr inventory/purchases RM4,000; Dr equipment RM3,000; Cr payables RM7,000. Equipment is not automatically included in cost of sales."
+        "Supplier supplies inventory $4,000 and a computer for office use $3,000, both on credit.",
+        "Dr inventory/purchases $4,000; Dr equipment $3,000; Cr payables $7,000. Equipment is not automatically included in cost of sales."
       ]
     ]
   },
@@ -89,13 +89,13 @@
     "workings": [
       [
         "Classify reconciling items",
-        "Bank statement omits cheque RM500 issued last week; book omits bank charge RM60.",
-        "Cheque RM500 is timing (unpresented) and not re-entered. Charge RM60 requires Dr bank charges / Cr bank and reduces adjusted cash-book balance."
+        "Bank statement omits cheque $500 issued last week; book omits bank charge $60.",
+        "Cheque $500 is timing (unpresented) and not re-entered. Charge $60 requires Dr bank charges / Cr bank and reduces adjusted cash-book balance."
       ],
       [
         "Subledger discrepancy",
-        "Payables control RM14,000; supplier accounts total RM13,400; one invoice RM600 posted to control but omitted from individual supplier.",
-        "Post missing RM600 to supplier personal account (the nominal ledger control already records it), restoring equality. Confirm invoice evidence and avoid duplicating general-ledger liability."
+        "Payables control $14,000; supplier accounts total $13,400; one invoice $600 posted to control but omitted from individual supplier.",
+        "Post missing $600 to supplier personal account (the nominal ledger control already records it), restoring equality. Confirm invoice evidence and avoid duplicating general-ledger liability."
       ]
     ]
   },
@@ -116,19 +116,19 @@
       ],
       [
         "Correction of errors",
-        "An entity posting a RM980 supplier payment as RM890 has overstated its bank ledger RM90 and must credit bank another RM90. If bank itself made an error, show a reconciliation item and request correction; do not invent a second payment journal."
+        "An entity posting a $980 supplier payment as $890 has overstated its bank ledger $90 and must credit bank another $90. If bank itself made an error, show a reconciliation item and request correction; do not invent a second payment journal."
       ]
     ],
     "workings": [
       [
         "Full reconciliation",
-        "Cash book balance debit RM10,600, bank fees RM100 unrecorded, deposit RM2,500 outstanding, cheque RM900 unpresented.",
-        "Adjusted book=10,600−100=RM10,500. Bank statement expected=10,500+900−2,500=RM8,900."
+        "Cash book balance debit $10,600, bank fees $100 unrecorded, deposit $2,500 outstanding, cheque $900 unpresented.",
+        "Adjusted book=10,600−100=$10,500. Bank statement expected=10,500+900−2,500=$8,900."
       ],
       [
         "Receipt from customer",
-        "Bank statement shows direct customer transfer RM1,200 absent in book.",
-        "Dr bank RM1,200 / Cr customer receivable RM1,200; adjusted bank increases RM1,200. Do not report new sales."
+        "Bank statement shows direct customer transfer $1,200 absent in book.",
+        "Dr bank $1,200 / Cr customer receivable $1,200; adjusted bank increases $1,200. Do not report new sales."
       ]
     ]
   },
@@ -155,13 +155,13 @@
     "workings": [
       [
         "Supplier statement reconciliation",
-        "Supplier statement RM5,000; entity account RM4,250. Valid invoice RM400 omitted internally; payment RM350 sent but not yet shown on statement.",
-        "Correct entity account=4,250+400=RM4,650. Supplier statement less payment in transit=5,000−350=RM4,650. Post invoice RM400, not a duplicate payment."
+        "Supplier statement $5,000; entity account $4,250. Valid invoice $400 omitted internally; payment $350 sent but not yet shown on statement.",
+        "Correct entity account=4,250+400=$4,650. Supplier statement less payment in transit=5,000−350=$4,650. Post invoice $400, not a duplicate payment."
       ],
       [
         "Missing credit note",
-        "A supplier RM200 credit note appears on statement but not entity records.",
-        "Dr supplier payable RM200; Cr purchase returns/inventory RM200; then reconcile."
+        "A supplier $200 credit note appears on statement but not entity records.",
+        "Dr supplier payable $200; Cr purchase returns/inventory $200; then reconcile."
       ]
     ]
   },
@@ -188,13 +188,13 @@
     "workings": [
       [
         "Simple trial balance",
-        "Bank Dr RM7,000, receivables Dr RM9,000, rent Dr RM4,000, equipment Dr RM20,000; payables Cr RM5,000, loan Cr RM10,000, capital Cr RM17,000, sales Cr RM8,000.",
-        "Debits=7,000+9,000+4,000+20,000=RM40,000. Credits=5,000+10,000+17,000+8,000=RM40,000."
+        "Bank Dr $7,000, receivables Dr $9,000, rent Dr $4,000, equipment Dr $20,000; payables Cr $5,000, loan Cr $10,000, capital Cr $17,000, sales Cr $8,000.",
+        "Debits=7,000+9,000+4,000+20,000=$40,000. Credits=5,000+10,000+17,000+8,000=$40,000."
       ],
       [
         "Trial balance error",
-        "An RM850 payment was posted as Cr bank RM850 with no debit to creditor account.",
-        "Credits exceed debits RM850. Correct Dr payables RM850 if that creditor was paid; compare supporting documents before assuming."
+        "An $850 payment was posted as Cr bank $850 with no debit to creditor account.",
+        "Credits exceed debits $850. Correct Dr payables $850 if that creditor was paid; compare supporting documents before assuming."
       ]
     ]
   },
@@ -221,13 +221,13 @@
     "workings": [
       [
         "Wrong purchase amount",
-        "Purchases of RM2,400 recorded as RM2,040 on both sides.",
-        "Dr purchases RM360; Cr supplier payable RM360. Trial balance would have agreed before the correction."
+        "Purchases of $2,400 recorded as $2,040 on both sides.",
+        "Dr purchases $360; Cr supplier payable $360. Trial balance would have agreed before the correction."
       ],
       [
         "Wrong classification",
-        "Repairs expense debited RM1,500 for machinery acquisition.",
-        "Dr equipment RM1,500; Cr repairs RM1,500. Ignore depreciation only if not required; otherwise make it as a second adjusting journal."
+        "Repairs expense debited $1,500 for machinery acquisition.",
+        "Dr equipment $1,500; Cr repairs $1,500. Ignore depreciation only if not required; otherwise make it as a second adjusting journal."
       ]
     ]
   }
