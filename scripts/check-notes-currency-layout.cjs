@@ -58,7 +58,7 @@ const sourceAssets=[
  'notes-visual-workbook.js'
 ];
 const assetVersions={
- 'notes-visual-all.js':'20261031chapters5',
+ 'notes-visual-all.js':'20261031chapters6',
  'textbook-crossqual-a1.js':'20261031v2',
  'textbook-crossqual-a2-foundation.js':'20261031v1',
  'textbook-crossqual-a2-professional.js':'20261031v1',
@@ -68,7 +68,7 @@ const assetVersions={
  'textbook-crossqual-batch4b.js':'20261031batch4',
  'textbook-crossqual-batch4c.js':'20261031batch4',
  'textbook-crossqual-batch4d.js':'20261031batch4',
- 'textbook-structured-all-remaining.js':'20261031study700b'
+ 'textbook-structured-all-remaining.js':'20261031study700c'
 };
 for(const filename of sourceAssets){
  const expected=assetVersions[filename]||'20261030usd5';
