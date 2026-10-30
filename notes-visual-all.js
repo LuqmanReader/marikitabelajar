@@ -100,7 +100,7 @@ function header(svg,opts,mode,subtitle){
  rect(svg,44,39,7,80,yellow,0,yellow,0);
  write(svg,72,58,mode.name+'   /   '+opts.paper+' '+opts.code,17,800,yellow);
  blockText(svg,72,100,opts.title,{width:1060,size:30,weight:850,max:2,leading:31,color:'#ffffff'});
- if(subtitle)write(svg,36,708,subtitle,14,650,ink);
+ if(subtitle)write(svg,36,722,subtitle,14,650,ink);
 }
 function panel(svg,x,y,item,index,colour){
  const w=553,h=249;
@@ -137,7 +137,7 @@ function workflow(opts){
   role:'img','aria-label':'FA1 A2 purchase-document flow from authorised requisition to payment and three-way match',
   xmlns:SVG_NS});
  svg.append(svgNode('rect',{width:1200,height:734,fill:paper}));
- header(svg,opts,topicMode('FA1'),'SOURCE DOCUMENTS · WORKFLOW ARROWS SHOW THE REAL PURCHASE-TO-PAY SEQUENCE');
+ header(svg,opts,topicMode('FA1'),'SOURCE DOCUMENTS · ILLUSTRATIVE PURCHASE-TO-PAY WORKFLOW');
  const cards=[
   ['REQUISITION','Staff requests goods; manager approves the need.'],
   ['PURCHASE ORDER','Buyer orders 20 items at RM45 each.'],
@@ -169,8 +169,8 @@ function workflow(opts){
   write(svg,x+16,547,units,26,900);
   write(svg,x+16,583,amount,16,700);
  });
- rect(svg,24,644,1152,57,'#ffe4d4',6);
- write(svg,40,670,'EXCEPTION: 2 UNITS × RM45 = RM90 UNMATCHED. INVESTIGATE BEFORE AUTHORISING PAYMENT.',16,850,ink);
+ rect(svg,24,637,1152,49,'#ffe4d4',6);
+ write(svg,40,668,'EXCEPTION · 2 UNITS × RM45 = RM90 UNMATCHED. INVESTIGATE BEFORE PAYMENT.',16,850,ink);
  return svg;
 }
 function table(parent,heading,columns,rows){
