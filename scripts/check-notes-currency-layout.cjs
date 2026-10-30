@@ -11,7 +11,9 @@ const files=[
  'textbook-fa1-part-a.js','textbook-fa1-part-b.js','textbook-ma1.js',
  'textbook-fa2-part-a.js','textbook-fa2-part-b.js','textbook-fa2-part-c.js',
  'textbook-ma2-part-a.js','textbook-ma2-part-b.js','textbook-integrated-cases.js',
- 'notes-visual-workbook-data.js','notes-worked-tables-data.js',
+ 'notes-visual-workbook-data.js','notes-visual-workbook.js',
+ 'notes-worked-tables-data.js','notes-worked-tables.js',
+ 'notes-page.js','fia-study-data-v2.js','fia-study-content-v2.js',
  'notes-visual-all.js','assets/ledgerpeer-accounting-flow.svg',
  'assets/ledgerpeer-double-entry-rules.svg'
 ];
