@@ -8,6 +8,9 @@ on:
       - 'notes-expanded-data.js'
       - 'notes-uk-syllabi.js'
       - 'notes-page.js'
+      - 'notes-build.js'
+      - 'notes-release.json'
+      - 'tests/notes-release-regression.cjs'
       - 'notes-visual-all.js'
       - 'notes-visual-workbook*.js'
       - 'notes-worked-tables*.js'
@@ -46,6 +49,7 @@ jobs:
         run: |
           node --check notes-data.js
           node --check notes-page.js
+          node --check notes-build.js
           node --check notes-expanded-data.js
           node --check notes-uk-syllabi.js
           node --check notes-visual-all.js
@@ -56,6 +60,7 @@ jobs:
           node tests/fia-notes-regression.js
           node tests/notes-coverage-regression.js
           node tests/notes-reader-regression.js
+          node tests/notes-release-regression.cjs
 
 
       - name: Verify all 700 concept maps, currency and responsive workflow

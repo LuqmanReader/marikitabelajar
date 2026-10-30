@@ -50,10 +50,10 @@ const sourceAssets=[
  'notes-visual-workbook.js'
 ];
 for(const filename of sourceAssets){
- if(!html.includes('src="'+filename+'?v=20261030usd5'))
+ if(!html.includes('src="'+filename+'?v='+(filename==='notes-visual-all.js'?'20261030v7':'20261030usd5')))
  errors.push('Outdated/missing cache-bust query: '+filename);
 }
-if(!html.includes('href="notes.css?v=20261030usd5"'))errors.push('Stylesheet cache query outdated');
+if(!html.includes('href="notes.css?v=20261030v7"'))errors.push('Stylesheet cache query outdated');
 if(!read('notes-visual-workbook.js').includes("src+'?v=20261030usd5'"))
  errors.push('Static illustrations will remain cached in previous currency');
 console.log(JSON.stringify({inspected:files.length,exampleDollarOccurrences:dollars,failures:errors.length},null,2));
