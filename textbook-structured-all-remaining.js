@@ -44,7 +44,7 @@ const discipline={
  financial:{
   principle:'Financial reporting seeks to depict the economic substance of rights, obligations, income and expenses under the applicable framework. Before entering numbers, determine what element exists, the recognition trigger, measurement basis and reporting period.',
   method:'List the transaction facts, applicable recognition and measurement requirement, initial entry, later adjustment and statement impact. Keep cash movement distinct from accrual recognition. Reconcile opening balances, period movements and closing balances.',
-  evidence:'Check contracts, invoice and delivery dates, asset condition, useful life, recoverability and supporting estimates. Consider related disclosures and whether a particular standard overrides a broad conceptual interpretation.',
+  evidence:'Check the source of the recognition or measurement assumption, reconcile the relevant opening and closing amounts, and test the sensitivity of any material estimate. For complex standards, distinguish what the entity is obliged to provide from what it has actually recognised and disclosed.',
   exam:'A trial balance can agree despite an incorrect classification or omitted transaction. Watch for profit versus cash, asset versus expense, and allowance versus write-off. Explain the journal and effect on financial statements rather than writing a bare figure.'
  },
  management:{
@@ -111,13 +111,13 @@ for(const [paper,entry] of Object.entries(syllabus)){
   const sections=[
    ['What '+title+' means and why it matters',join(n.summary,profile.principle,topicLens)],
    ['Step-by-step method and governing conditions',join(method,n.formula?'Key relationship / legal test: '+n.formula:'',profile.method)],
-   ['Worked application: interpreting the facts',join('Original case illustration: '+(n.example||n.summary),'Apply the method to the actual facts: '+(steps[0]||n.summary),profile.evidence,topicLens)],
+   ['Worked application: interpreting the facts',join('Original case illustration: '+(n.example||n.summary),'Apply the method to the actual facts: '+(steps[0]||n.summary),n.formula?'Apply this particular relationship or legal test, and retain its stated assumptions: '+n.formula:'',profile.evidence)],
    ['Exam judgement, exceptions and common errors',join('Critical error to avoid: '+(n.trap||'Do not assume the conclusion without checking the evidence.'),profile.exam,role(paper),'Self-check conclusion: '+(n.answer||n.summary))]
   ];
   const question=clean(n.check||'Using the worked illustration, identify the governing principle, its supporting evidence and its practical implication for the decision.');
   const solution=join(n.answer||n.summary,'Reasoning and verification: '+method,n.trap?'Before finalising, avoid this error: '+n.trap:'',role(paper));
-  const secondQuestion='A student applies '+title+' using this information: '+clean(n.example||n.summary)+' Explain which assumption is critical, how the outcome should be checked and one reasonable correction if the assumption proves false.';
-  const secondAnswer=join('The starting point is '+clean(n.summary), 'Evaluate each decision in sequence: '+method,'Check the specific risk: '+clean(n.trap||'Do not rely on an unverified assumption.'),profile.evidence);
+  const secondQuestion='A student is given this illustration of '+title+': '+clean(n.example||n.summary)+' A different student ignores this caution: '+clean(n.trap||'Check the underlying conditions.')+' Identify the reasoning error, then explain the correct sequence and final check.';
+  const secondAnswer=join('The starting point is '+clean(n.summary), 'Use the relevant worked illustration as a check: '+clean(n.example||n.summary),'Correct the reasoning in sequence: '+method,n.formula?'Use the stated rule where its assumptions are met: '+clean(n.formula):'','The misleading approach is: '+clean(n.trap||'Using an unsupported assumption to force the result.'),profile.evidence);
   if(sections.some(s=>s[1].length<320)||solution.length<150||secondAnswer.length<150)audit.weak.push(key);
   chapters[key]={title,sourceKind:'structured-expansion',reviewStatus:'REQUIRES ORIGINAL DETAILED-OUTCOME REVIEW',sections,workings:[
    ['Topic-specific knowledge and calculation check',question,solution],
