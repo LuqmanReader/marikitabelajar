@@ -581,3 +581,16 @@ footer{margin-top:60px;border-top:2px solid var(--ink);padding-top:20px;font-siz
   letter-spacing:0!important;
   line-height:var(--lp-type-leading)!important;
 }
+
+/* All-paper chapter coverage indicator. Never imply syllabus coverage is complete. */
+.notes-shell .notes-chapter-coverage{
+ margin:14px 0 0;
+ padding:12px 0 0;
+ border-top:2px solid #171717;
+ font-family:var(--lp-type-body)!important;
+ font-size:0.88rem;
+ font-weight:700;
+ line-height:1.6;
+ letter-spacing:0;
+ overflow-wrap:anywhere;
+}
