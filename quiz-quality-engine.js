@@ -9,7 +9,7 @@ const engine=root.LedgerQuizEngine;
 const bank=root.LedgerExamScenarios;
 if(!engine||!bank)return;
 const allowedPapers=new Set(['FA1','MA1','FA2','MA2']);
-const MAX_VARIANTS_PER_SKILL=3;
+const MAX_VARIANTS_PER_SKILL=1; // One reasoning family per sitting, even with changed numbers.
 const number=x=>Number(x).toLocaleString('en-GB',{maximumFractionDigits:2});
 const shuffle=(input,rng)=>{
  const a=input.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;
@@ -57,7 +57,7 @@ function valid(q){
    new Set(q.choices.map(o=>String(o.label).trim())).size===4&&
    q.choices.filter(o=>o.value===q.correctValue).length===1);
 }
-function generate({paper,topics,count=20,mode='topic',recentIds=[],lessons={},syllabus={},rng=Math.random}){
+function generate({paper,topics,count=20,mode='topic',recentIds=[],recentGroups=[],lessons={},syllabus={},rng=Math.random}){
  const mock=mode==='mock',qty=mock?50:Math.max(1,Math.min(20,Math.floor(Number(count)||20)));
  const mixed=paper==='FA2'||paper==='MA2';
  const required={mcq:qty-(mixed?(mock?15:Math.floor(qty/2)):0),numeric:mixed?(mock?15:Math.floor(qty/2)):0};
@@ -72,7 +72,9 @@ function generate({paper,topics,count=20,mode='topic',recentIds=[],lessons={},sy
  const available=new Set(headings.map(x=>engine.topicCode(x)?.code).filter(Boolean));
  const wanted=mock||!topics?.length?[...available]:topics.filter(x=>available.has(x));
  const keys=shuffle([...new Set(wanted)].map(code=>paper+':'+code),rng);
- const recent=new Set(recentIds||[]),pool=[];
+ const recent=new Set(recentIds||[]),exposure=new Map();
+ for(const g of recentGroups||[]){if(typeof g==='string')exposure.set(g,(exposure.get(g)||0)+1);}
+ const pool=[];
  for(const key of keys){
   if(!lessons[key])continue;
   const seen=new Set();
@@ -97,6 +99,8 @@ function generate({paper,topics,count=20,mode='topic',recentIds=[],lessons={},sy
   }
  }
  const used=new Map(),prompts=new Set(),picked=[],rngScores=new Map();
+ const familyKey=q=>q.key+'|'+q.group;
+ const familyExposure=q=>exposure.get(familyKey(q))||0;
  function count(key,group){return used.get(key+'|'+group)||0}
  function take(type,n){
   for(let j=0;j<n;j++){
@@ -106,7 +110,7 @@ function generate({paper,topics,count=20,mode='topic',recentIds=[],lessons={},sy
     let priorTopic=0;
     for(const p of picked)if(p.key===q.key)priorTopic++;
     const score=priorTopic*9+count(q.key,q.group)*110+
-      (recent.has(q.id)?30:0)+(rngScores.get(q.id)??rng());
+      familyExposure(q)*70+(recent.has(q.id)?120:0)+(rngScores.get(q.id)??rng());
     rngScores.set(q.id,score%1);
     if(score<bestScore){bestScore=score;best=q;}
    }
@@ -121,6 +125,8 @@ function generate({paper,topics,count=20,mode='topic',recentIds=[],lessons={},sy
  result.questions=questions;result.available=questions.length;
  result.actualMix={mcq:questions.filter(q=>q.type==='mcq').length,numeric:questions.filter(q=>q.type==='numeric').length};
  result.topicsCovered=new Set(questions.map(q=>q.key)).size;
+ result.familiesCovered=new Set(questions.map(familyKey)).size;
+ result.repeatFamilyExposure=questions.filter(q=>familyExposure(q)>0).length;
  result.complete=questions.length===qty&&result.actualMix.mcq===required.mcq&&result.actualMix.numeric===required.numeric;
  if(result.complete)result.reason='';
  return result;
