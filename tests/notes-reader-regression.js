@@ -24,17 +24,17 @@ async function create(search='',signedIn=true){
   'textbook-integrated-cases.js',
   'textbook-crossqual-a1.js','textbook-crossqual-a2-foundation.js','textbook-crossqual-a2-professional.js',
   'textbook-crossqual-a3-foundation.js','textbook-crossqual-a3-professional.js',
-  'textbook-crossqual-batch4a.js','textbook-crossqual-batch4b.js','textbook-crossqual-batch4c.js','textbook-crossqual-batch4d.js',
+  'textbook-crossqual-batch4a.js','textbook-crossqual-batch4b.js','textbook-crossqual-batch4c.js','textbook-crossqual-batch4d.js','textbook-structured-all-remaining.js',
   'notes-visual-workbook-data.js','notes-visual-workbook.js',
   'notes-worked-tables-data.js','notes-worked-tables.js','notes-visual-all.js','notes-page.js'
  ])vm.runInContext(fs.readFileSync(f,'utf8'),c);
  await new Promise(r=>setImmediate(r));return{ids,buttons,redirect};
 }
 (async()=>{
- let r=await create();let list=r.ids.get('topicList');assert.equal(list.children.length,700);assert.equal(r.ids.get('coverageRows').children.length,25);assert.equal(r.ids.get('notesLoading').hidden,true);
+ let r=await create();let list=r.ids.get('topicList');assert.equal(list.children.length,700);assert(r.ids.get('paperIntro').textContent.includes('209 independently authored extended chapters'),'Coverage counter must not pretend drafts are completed originals');assert.equal(r.ids.get('coverageRows').children.length,25);assert.equal(r.ids.get('notesLoading').hidden,true);
  let first=list.children[0],detail=first.children[1];assert.equal(detail.children.length,0,'Lesson content should load lazily');first.open=true;assert.equal(detail.children.length,1);first.open=false;first.open=true;assert.equal(detail.children.length,1,'Do not duplicate opened content');assert(detail.textContent.includes('LEDGERPEER TEXTBOOK'),'FIA topics must render the original dedicated chapter');
  const select=r.ids.get('paperSelect');select.value='TX';select.fire('change');assert.equal(list.children.length,36);assert(r.ids.get('paperIntro').textContent.includes('VARIANT UK'));
- const filter=r.ids.get('notesFilter');filter.value='lesson';filter.fire('change');assert.equal(list.children.length,6,'TX includes six individually authored extended chapters');assert.equal(r.ids.get('notesEmpty').hidden,true,'Nonempty detailed-chapter filter must not show empty state');filter.value='outline';filter.fire('change');assert.equal(list.children.length,30,'TX has 30 introductory-only topics after the chapter expansion');filter.value='all';filter.fire('change');
+ const filter=r.ids.get('notesFilter');filter.value='lesson';filter.fire('change');assert.equal(list.children.length,6,'TX includes six individually authored extended chapters');assert.equal(r.ids.get('notesEmpty').hidden,true,'Nonempty detailed-chapter filter must not show empty state');filter.value='outline';filter.fire('change');assert.equal(list.children.length,30,'TX shows 30 provisional structured teaching drafts still requiring full authoring');filter.value='all';filter.fire('change');
  const search=r.ids.get('notesSearch');search.value='zzzz-no-match';search.fire('input');assert.equal(list.children.length,0);search.value='';search.fire('input');
  r.buttons[0].fire('click');assert.equal(select.value,'FA2');assert.equal(list.children.length,22);r.buttons[1].fire('click');assert.equal(select.value,'BT');assert.equal(list.children.length,36);r.buttons[2].fire('click');assert.equal(list.children.length,700);
  r=await create('?paper=TX&topic=B5');assert.equal(r.ids.get('topic-TX-B5').open,true);assert.equal(r.ids.get('topic-TX-B5').children[1].children.length,1);
