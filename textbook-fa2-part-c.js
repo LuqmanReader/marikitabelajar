@@ -9,7 +9,7 @@
       ],
       [
         "Balancing T-accounts",
-        "Total each side, carry down the difference on the shorter side and bring it forward on the other side in the new period. A bank account with RM40,000 debits and RM29,000 credits carries an RM11,000 debit balance. For liabilities it is common to have a credit brought forward, but recheck if a supplier is overpaid."
+        "Total each side, carry down the difference on the shorter side and bring it forward on the other side in the new period. A bank account with $40,000 debits and $29,000 credits carries an $11,000 debit balance. For liabilities it is common to have a credit brought forward, but recheck if a supplier is overpaid."
       ],
       [
         "What agreement does and doesn't prove",
@@ -23,13 +23,13 @@
     "workings": [
       [
         "Mini trial balance",
-        "Ledger balances: bank Dr RM12,000; receivables Dr RM8,000; inventory Dr RM6,000; equipment Dr RM30,000; expenses Dr RM15,000; payables Cr RM9,000; loan Cr RM20,000; capital Cr RM30,000; revenue Cr RM12,000.",
-        "Debit total=12,000+8,000+6,000+30,000+15,000=RM71,000. Credit total=9,000+20,000+30,000+12,000=RM71,000. Equal totals mean arithmetic agreement, not comprehensive accuracy."
+        "Ledger balances: bank Dr $12,000; receivables Dr $8,000; inventory Dr $6,000; equipment Dr $30,000; expenses Dr $15,000; payables Cr $9,000; loan Cr $20,000; capital Cr $30,000; revenue Cr $12,000.",
+        "Debit total=12,000+8,000+6,000+30,000+15,000=$71,000. Credit total=9,000+20,000+30,000+12,000=$71,000. Equal totals mean arithmetic agreement, not comprehensive accuracy."
       ],
       [
         "Missing accrual in TB",
-        "The balanced trial balance excludes RM900 unpaid electricity for the period.",
-        "Dr electricity expense RM900 / Cr accrual liability RM900. Both trial balance columns rise RM900, remain equal, while profit falls RM900 and liabilities rise RM900."
+        "The balanced trial balance excludes $900 unpaid electricity for the period.",
+        "Dr electricity expense $900 / Cr accrual liability $900. Both trial balance columns rise $900, remain equal, while profit falls $900 and liabilities rise $900."
       ]
     ]
   },
@@ -60,18 +60,18 @@
     "workings": [
       [
         "One-sided posting and suspense",
-        "Cash received RM1,200 from customer was correctly Dr bank RM1,200 but Cr receivables only RM120. Trial balance credit short RM1,080.",
-        "Correct Dr suspense RM1,080 / Cr receivables RM1,080 if suspense has a credit-side balancing entry from the original TB difference; this clears the suspense amount and fixes receivables. Check original suspense balance before posting."
+        "Cash received $1,200 from customer was correctly Dr bank $1,200 but Cr receivables only $120. Trial balance credit short $1,080.",
+        "Correct Dr suspense $1,080 / Cr receivables $1,080 if suspense has a credit-side balancing entry from the original TB difference; this clears the suspense amount and fixes receivables. Check original suspense balance before posting."
       ],
       [
         "Asset wrongly expensed",
-        "Machinery RM5,000 was debited to repairs, correctly credited to bank. The asset should depreciate RM500 this year.",
-        "Dr machinery RM5,000 / Cr repairs RM5,000; Dr depreciation expense RM500 / Cr accumulated depreciation RM500. Profit increases RM4,500 overall; non-current net assets rise RM4,500."
+        "Machinery $5,000 was debited to repairs, correctly credited to bank. The asset should depreciate $500 this year.",
+        "Dr machinery $5,000 / Cr repairs $5,000; Dr depreciation expense $500 / Cr accumulated depreciation $500. Profit increases $4,500 overall; non-current net assets rise $4,500."
       ],
       [
         "Full reversal",
-        "Credit sale RM2,000 incorrectly Dr revenue / Cr receivables RM2,000 instead of Dr receivables / Cr revenue.",
-        "Correct by Dr receivables RM4,000 / Cr revenue RM4,000, reversing the wrong entry and recording the right one. Double-entry still agreed before correction."
+        "Credit sale $2,000 incorrectly Dr revenue / Cr receivables $2,000 instead of Dr receivables / Cr revenue.",
+        "Correct by Dr receivables $4,000 / Cr revenue $4,000, reversing the wrong entry and recording the right one. Double-entry still agreed before correction."
       ]
     ]
   },
@@ -106,23 +106,23 @@
     "workings": [
       [
         "Prepare statement of profit or loss",
-        "Sales RM120,000; sales returns RM4,000; opening inventory RM15,000; purchases RM66,000; purchase returns RM3,000; closing inventory RM18,000; administrative expenses RM17,000; depreciation RM4,000; interest RM2,000.",
-        "Net sales 120,000−4,000=RM116,000. Net purchases 66,000−3,000=RM63,000. Cost of sales 15,000+63,000−18,000=RM60,000. Gross profit RM56,000. Expenses 17,000+4,000+2,000=RM23,000. Profit for year RM33,000."
+        "Sales $120,000; sales returns $4,000; opening inventory $15,000; purchases $66,000; purchase returns $3,000; closing inventory $18,000; administrative expenses $17,000; depreciation $4,000; interest $2,000.",
+        "Net sales 120,000−4,000=$116,000. Net purchases 66,000−3,000=$63,000. Cost of sales 15,000+63,000−18,000=$60,000. Gross profit $56,000. Expenses 17,000+4,000+2,000=$23,000. Profit for year $33,000."
       ],
       [
         "Reconstruct credit sales",
-        "Opening receivables RM18,000; closing RM25,000; collections RM90,000; returns inwards RM2,000; debts written off RM1,000; no other control items.",
-        "Credit sales = closing receivables−opening receivables+collections+returns+write-offs =25,000−18,000+90,000+2,000+1,000=RM100,000."
+        "Opening receivables $18,000; closing $25,000; collections $90,000; returns inwards $2,000; debts written off $1,000; no other control items.",
+        "Credit sales = closing receivables−opening receivables+collections+returns+write-offs =25,000−18,000+90,000+2,000+1,000=$100,000."
       ],
       [
         "Reconstruct credit purchases",
-        "Opening trade payables RM14,000; closing RM19,000; payments to suppliers RM80,000; purchase returns RM3,000; no other items.",
-        "Credit purchases = closing payables−opening payables+payments+returns =19,000−14,000+80,000+3,000=RM88,000."
+        "Opening trade payables $14,000; closing $19,000; payments to suppliers $80,000; purchase returns $3,000; no other items.",
+        "Credit purchases = closing payables−opening payables+payments+returns =19,000−14,000+80,000+3,000=$88,000."
       ],
       [
         "Net assets profit",
-        "Opening net assets RM55,000; closing net assets RM71,000; drawings RM12,000; further owner capital introduced RM6,000.",
-        "Profit = 71,000−55,000+12,000−6,000=RM22,000. Do not treat drawings as expense or contributions as sales."
+        "Opening net assets $55,000; closing net assets $71,000; drawings $12,000; further owner capital introduced $6,000.",
+        "Profit = 71,000−55,000+12,000−6,000=$22,000. Do not treat drawings as expense or contributions as sales."
       ]
     ]
   },
@@ -149,13 +149,13 @@
     "workings": [
       [
         "Simple appropriation",
-        "Partnership profit RM60,000. A receives salary allowance RM12,000; B receives RM6,000; residual profit ratio A:B 3:2.",
-        "Residual =60,000−12,000−6,000=RM42,000. Residual allocation A RM25,200; B RM16,800. Total A share RM37,200, B RM22,800; together RM60,000."
+        "Partnership profit $60,000. A receives salary allowance $12,000; B receives $6,000; residual profit ratio A:B 3:2.",
+        "Residual =60,000−12,000−6,000=$42,000. Residual allocation A $25,200; B $16,800. Total A share $37,200, B $22,800; together $60,000."
       ],
       [
         "Interest on drawings",
-        "Partner A withdrew RM10,000 at beginning of year; agreement charges interest on drawings 5% annually.",
-        "Interest charged to A RM500. In appropriation accounts, this increases pool available for distribution and reduces A's current account; do not recognise it as outside revenue from a customer."
+        "Partner A withdrew $10,000 at beginning of year; agreement charges interest on drawings 5% annually.",
+        "Interest charged to A $500. In appropriation accounts, this increases pool available for distribution and reduces A's current account; do not recognise it as outside revenue from a customer."
       ]
     ]
   },
@@ -182,13 +182,13 @@
     "workings": [
       [
         "Full appropriation with interest",
-        "Profit RM90,000. A and B have capital RM100,000/RM80,000. Capital interest 5%, salaries A RM12,000 and B RM9,000, and residual ratio 3:2. Ignore drawing interest.",
-        "Interest on capital A RM5,000, B RM4,000; salaries total RM21,000. Residual=90,000−9,000−21,000=RM60,000. Residual A RM36,000, B RM24,000. Total share A 5,000+12,000+36,000=RM53,000; B 4,000+9,000+24,000=RM37,000."
+        "Profit $90,000. A and B have capital $100,000/$80,000. Capital interest 5%, salaries A $12,000 and B $9,000, and residual ratio 3:2. Ignore drawing interest.",
+        "Interest on capital A $5,000, B $4,000; salaries total $21,000. Residual=90,000−9,000−21,000=$60,000. Residual A $36,000, B $24,000. Total share A 5,000+12,000+36,000=$53,000; B 4,000+9,000+24,000=$37,000."
       ],
       [
         "Current-account balances",
-        "Opening A current credit RM6,000; current-year share RM53,000; drawings RM25,000.",
-        "A closing current credit=6,000+53,000−25,000=RM34,000. Show as part of partnership equity, subject to required format."
+        "Opening A current credit $6,000; current-year share $53,000; drawings $25,000.",
+        "A closing current credit=6,000+53,000−25,000=$34,000. Show as part of partnership equity, subject to required format."
       ]
     ]
   },
@@ -219,13 +219,13 @@
     "workings": [
       [
         "Change of ratio with goodwill adjustment",
-        "A:B previously share 3:2, now 1:1. Goodwill valued at RM20,000 for the ratio-change adjustment and written off immediately. Ignore other terms.",
-        "Credit A old share RM12,000 and B old share RM8,000; write off in new ratio: debit A RM10,000 and B RM10,000. Net adjustment A +RM2,000, B −RM2,000. This reflects transfer of pre-existing goodwill benefits between partners."
+        "A:B previously share 3:2, now 1:1. Goodwill valued at $20,000 for the ratio-change adjustment and written off immediately. Ignore other terms.",
+        "Credit A old share $12,000 and B old share $8,000; write off in new ratio: debit A $10,000 and B $10,000. Net adjustment A +$2,000, B −$2,000. This reflects transfer of pre-existing goodwill benefits between partners."
       ],
       [
         "Retirement settlement",
-        "Partner C capital RM50,000, current credit RM8,000; entitlement to goodwill RM12,000; drawings to date RM5,000; retirement settled RM40,000 in cash, remainder as loan.",
-        "Total entitlement 50,000+8,000+12,000−5,000=RM65,000. Cash settlement RM40,000, partner loan payable RM25,000. Ensure goodwill adjustment agrees with chosen partnership method."
+        "Partner C capital $50,000, current credit $8,000; entitlement to goodwill $12,000; drawings to date $5,000; retirement settled $40,000 in cash, remainder as loan.",
+        "Total entitlement 50,000+8,000+12,000−5,000=$65,000. Cash settlement $40,000, partner loan payable $25,000. Ensure goodwill adjustment agrees with chosen partnership method."
       ]
     ]
   }
