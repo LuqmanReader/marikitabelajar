@@ -277,3 +277,56 @@ footer{margin-top:60px;border-top:2px solid var(--ink);padding-top:20px;font-siz
 .notes-lesson-layout--visual .lp-textbook-section p+p{margin-top:15px}
 .notes-lesson-layout--visual .notes-review-status{max-width:96ch}
 @media(prefers-reduced-motion:reduce){.lv-all-figure,.lv-all-worked,.lv-math-case{scroll-behavior:auto}}
+
+
+/* Visual lesson design system v3: fixed type scale, consistent rhythm and honest diagrams.
+   The concept maps use no arrows; only the documented purchase workflow does. */
+.notes-lesson-layout--visual .notes-lesson-main,
+.notes-lesson-layout--visual .notes-sidebox,
+.notes-lesson-layout--visual .lv-all-worked-card,
+.notes-lesson-layout--visual .lp-textbook,
+.notes-lesson-layout--visual .vw-reader{font-family:Arial,Helvetica,sans-serif}
+.notes-lesson-layout--visual .notes-lesson-main{font-size:16px;line-height:1.72;min-width:0}
+.notes-lesson-layout--visual .notes-lesson-main p{line-height:1.75;max-width:95ch}
+.notes-lesson-layout--visual .notes-lesson-main .lp-textbook-section h4,
+.notes-lesson-layout--visual .lv-document-lesson h3,
+.notes-lesson-layout--visual .lv-short-revision h3,
+.notes-lesson-layout--visual .lv-doc-table h3{text-transform:none;letter-spacing:-.015em}
+.lv-all-figure{margin:20px 0 26px;padding:12px;overflow:hidden;border:3px solid #171717;box-shadow:4px 4px 0 #171717;background:#fffaf0}
+.lv-all-figure svg{display:block;width:100%;height:auto;max-width:100%;min-width:0;background:#fffaf0}
+.lv-all-figure figcaption{padding:13px 7px 3px;margin:0;color:#383838;font:650 13px/1.55 Arial,Helvetica,sans-serif;letter-spacing:0}
+.lv-all-worked{margin:26px 0 34px;box-shadow:0 0 0 0 #171717}
+.lv-all-worked-card{padding:22px 23px;line-height:1.7}
+.lv-all-worked-card>strong{font:900 13px/1.5 Arial,Helvetica,sans-serif;letter-spacing:.02em;margin:0 0 12px}
+.lv-all-worked-card p{font:500 15px/1.72 Arial,Helvetica,sans-serif!important;letter-spacing:0;overflow-wrap:anywhere}
+.lv-all-worked-warning{font:600 12px/1.55 Arial,Helvetica,sans-serif;padding:13px 20px}
+.lv-linked-self-check{border-top:2px solid #171717;background:#fff9e7;padding:13px 20px}
+.lv-linked-self-check summary{cursor:pointer;font:800 14px/1.5 Arial,Helvetica,sans-serif}
+.lv-linked-self-check p{margin:12px 0 0;font:500 15px/1.7 Arial,Helvetica,sans-serif}
+.lv-document-lesson{margin:27px 0 32px;padding:24px 26px;border:3px solid #171717;background:#fff;box-shadow:4px 4px 0 #171717}
+.lv-document-lesson>h3{font:900 clamp(20px,2.8vw,27px)/1.25 Arial,Helvetica,sans-serif;margin:0 0 17px}
+.lv-document-lesson>h4{font:900 17px/1.4 Arial,Helvetica,sans-serif;text-transform:none!important;letter-spacing:0;margin:23px 0 11px}
+.lv-document-lesson>p{font:500 16px/1.76 Arial,Helvetica,sans-serif;margin:0 0 14px;max-width:88ch}
+.lv-document-lesson .lv-doc-note{padding:16px 18px;margin:20px 0 0;background:#fff1c7;border-left:5px solid #171717;font-weight:650}
+.lv-doc-table{margin:24px 0;max-width:100%}
+.lv-doc-table>h3{font:900 18px/1.4 Arial,Helvetica,sans-serif;margin:0 0 12px}
+.lv-doc-scroll{max-width:100%;overflow:auto;border:2px solid #171717;scrollbar-width:thin}
+.lv-doc-table-inner{border-collapse:collapse;width:100%;min-width:740px;background:#fff;font:500 14px/1.55 Arial,Helvetica,sans-serif}
+.lv-doc-table-inner th,.lv-doc-table-inner td{border:1px solid #d1cec4;padding:13px 15px;text-align:left;vertical-align:top}
+.lv-doc-table-inner thead th{background:#171717;color:#fff;font:800 13px/1.55 Arial,Helvetica,sans-serif}
+.lv-doc-table-inner tbody th{font-weight:800;min-width:170px}
+.lv-doc-table-inner tbody tr:nth-child(even){background:#fff5dd}
+.notes-lesson-layout--visual .notes-sidebox h4{font-family:Arial,Helvetica,sans-serif;letter-spacing:.035em}
+@media(max-width:720px){
+ .lv-all-figure{padding:5px;box-shadow:2px 2px 0 #171717}
+ .lv-all-figure svg{min-width:660px}
+ .lv-all-figure{overflow-x:auto}
+ .lv-document-lesson{padding:15px 12px}
+ .lv-all-worked-card{padding:15px}
+ .lv-all-worked-card p{font-size:14px!important}
+}
+@media print{
+ .lv-all-figure{box-shadow:none}
+ .lv-all-figure svg{min-width:0}
+ .lv-document-lesson{box-shadow:none;break-inside:avoid}
+}
