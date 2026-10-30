@@ -2,7 +2,7 @@
 (function(root){'use strict';root.LedgerMasterCases={
   "FA1:B1": {
     "title": "From transaction evidence to a balanced trial balance",
-    "context": "A new sole-trader business begins with no balances. During its first week it receives owner capital RM30,000 into bank, buys equipment RM8,000 cash, buys inventory RM6,000 on credit, sells goods on credit for RM9,000 (ignore sales tax), pays supplier RM2,000, and pays rent RM1,000. The inventory remains unsold in this simplified separate example of credit sales because the cost of the goods sold is not specified; we are demonstrating journal entries and unadjusted TB only.",
+    "context": "A new sole-trader business begins with no balances. During its first week it receives owner capital RM30,000 into bank, buys equipment RM8,000 cash, buys inventory RM6,000 on credit, sells goods on credit for RM9,000 (ignore sales tax), pays supplier RM2,000, and pays rent RM1,000. The cost of goods sold is not provided, so inventory has not yet been adjusted for the sale; this is a journal-entry and unadjusted trial-balance demonstration rather than a full trading account.",
     "steps": [
       "1. Capital: Dr bank 30,000 / Cr owner capital 30,000. Assets/equity rise together; capital is not revenue.",
       "2. Equipment purchase: Dr equipment 8,000 / Cr bank 8,000. This exchanges assets, not an expense under the given facts.",
