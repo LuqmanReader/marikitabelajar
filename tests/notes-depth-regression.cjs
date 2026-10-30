@@ -16,7 +16,7 @@ const files=[
 'textbook-crossqual-a1.js','textbook-crossqual-a2-foundation.js',
  'textbook-crossqual-a2-professional.js','textbook-crossqual-a3-foundation.js',
  'textbook-crossqual-a3-professional.js',
- 'textbook-crossqual-batch4a.js','textbook-crossqual-batch4b.js','textbook-crossqual-batch4c.js','textbook-crossqual-batch4d.js''notes-visual-all.js'
+ 'textbook-crossqual-batch4a.js','textbook-crossqual-batch4b.js','textbook-crossqual-batch4c.js','textbook-crossqual-batch4d.js','notes-visual-all.js'
 ];
 const ctx={LedgerFiaNotes:{},LedgerPublishedSyllabi:{papers:{}},console};
 ctx.window=ctx;ctx.globalThis=ctx;
