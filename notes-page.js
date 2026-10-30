@@ -9,7 +9,7 @@ function qualificationOf(code){return FIA_PAPERS.some(p=>p.code===code)?'fia':AC
 const syllabus=root.LedgerNotesSyllabi?.papers||{};
 const lessons=root.LedgerFiaNotes||{};
 const outcomeLessons=root.LedgerOutcomeLessons||{};
-const textbookLessons=Object.assign({},root.LedgerTextbookFA1A||{},root.LedgerTextbookFA1B||{},root.LedgerTextbookMA1||{},root.LedgerTextbookMA2A||{},root.LedgerTextbookMA2B||{},root.LedgerTextbookFA2A||{},root.LedgerTextbookFA2B||{},root.LedgerTextbookFA2C||{},root.LedgerSupplementalTextbooks||{},root.LedgerSupplementalTextbooksA2||{},root.LedgerSupplementalTextbooksProfessional||{});
+const textbookLessons=Object.assign({},root.LedgerTextbookFA1A||{},root.LedgerTextbookFA1B||{},root.LedgerTextbookMA1||{},root.LedgerTextbookMA2A||{},root.LedgerTextbookMA2B||{},root.LedgerTextbookFA2A||{},root.LedgerTextbookFA2B||{},root.LedgerTextbookFA2C||{},root.LedgerSupplementalTextbooks||{},root.LedgerSupplementalTextbooksA2||{},root.LedgerSupplementalTextbooksProfessional||{},root.LedgerSupplementalTextbooksA3Foundation||{},root.LedgerSupplementalTextbooksA3Professional||{});
 const integratedCases=root.LedgerMasterCases||{};
 const renderChapterVisual=root.renderLedgerChapterVisual||null;
 const renderNumericalTable=root.renderLedgerNumericalTable||null;
