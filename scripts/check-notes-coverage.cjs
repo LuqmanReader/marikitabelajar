@@ -107,7 +107,7 @@ function inspect() {
   if (expandedTopics !== headings) {
     caution.push(String(headings - expandedTopics) + ' headings have no individual outcome expansion');
   }
-  if (!read('notes.html').includes('not yet been certified')) {
+  if (!read('notes.html').includes('has yet been certified')) {
     failures.push('website must retain the disclaimer about uncertified 2026–27 content');
   }
   const shared = Object.keys(guides.topicChapters || {}).length;
