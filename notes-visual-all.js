@@ -196,10 +196,10 @@ function workflow(opts){
   const detail=node('details','lv-purchase-step-detail');
   detail.open=true;
   const summary=node('summary','lv-purchase-step-summary');
+  const chevron=node('span','lv-purchase-step-chevron','');
+  chevron.setAttribute('aria-hidden','true');
   summary.append(node('span','lv-purchase-step-num',String(i+1)),
-    node('span','lv-purchase-step-heading',heading),
-    node('span','lv-purchase-step-chevron',''));
-  summary.lastChild.setAttribute('aria-hidden','true');
+    node('span','lv-purchase-step-heading',heading),chevron);
   const body=node('div','lv-purchase-step-body');
   body.append(node('p','',description),node('p','lv-purchase-evidence',evidence));
   detail.append(summary,body);li.append(detail);list.append(li);
