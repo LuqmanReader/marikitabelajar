@@ -156,7 +156,7 @@ function render(){
   for(const item of all){
    const t=syllabusCode(item),lesson=lessons[code+':'+t.code];
    if(lesson)detailCount++;
-   if(filter==='lesson'&&!lesson||filter==='outline'&&lesson)continue;
+   if(filter==='lesson'&&!outcomeLessons[code+':'+t.code]||filter==='outline'&&Boolean(outcomeLessons[code+':'+t.code]))continue;
    if(q){
      const extra=outcomeLessons[code+':'+t.code];
       const hay=[code,item,info(code).name,lesson?.summary,lesson?.formula,lesson?.trap,lesson?.example,...(lesson?.steps||[]),...Object.values(extra?.outcomes||{}).flatMap(o=>[o.title,o.explanation])].filter(Boolean).join(' ').toLowerCase();
