@@ -5,9 +5,9 @@
 const draw=(r,a,b)=>a+Math.floor(r()*(b-a+1));
 const n=x=>Number(x).toLocaleString('en-MY',{maximumFractionDigits:2});
 const round=x=>Math.round((x+Number.EPSILON)*100)/100;
-const money=x=>'RM'+n(x);
+const money=x=>'$'+n(x);
 function problem(key,rng,index){
- const P=(family,prompt,answer,explanation,unit='RM')=>({family,prompt,answer:round(answer),explanation,unit});
+ const P=(family,prompt,answer,explanation,unit='$')=>({family,prompt,answer:round(answer),explanation,unit});
  const R=(a,b)=>draw(rng,a,b),Z=v=>money(v);
  switch(key){
  case 'FA1:A1':case 'FA1:B3':case 'FA2:B1':{
@@ -17,9 +17,9 @@ function problem(key,rng,index){
  case 'FA1:D1':case 'MA1:D2':case 'MA2:B2':{
   const hours=R(32,48),rate=R(8,25),extra=R(2,8),deductions=R(45,120),gross=hours*rate+extra*rate*1.5;
   const family=index%3;
-  return family===0?P('gross-wage','An employee works '+hours+' basic hours at RM'+rate+'/hour and '+extra+' overtime hours at 1.5 times basic rate. What is gross pay?',gross,'Gross pay = basic hours × rate + overtime hours × 1.5 × rate = '+Z(gross)+'.'):
+  return family===0?P('gross-wage','An employee works '+hours+' basic hours at $'+rate+'/hour and '+extra+' overtime hours at 1.5 times basic rate. What is gross pay?',gross,'Gross pay = basic hours × rate + overtime hours × 1.5 × rate = '+Z(gross)+'.'):
   family===1?P('net-wage','An employee earns gross pay of '+Z(gross)+' and has employee deductions of '+Z(deductions)+'. Calculate net pay.',gross-deductions,'Net pay = gross pay − employee deductions = '+Z(gross-deductions)+'.'):
-  P('basic-wage','An employee is paid RM'+rate+' per hour and works '+hours+' ordinary hours. What is basic pay before bonuses and deductions?',rate*hours,'Basic pay = hours × hourly rate = '+Z(rate*hours)+'.');
+  P('basic-wage','An employee is paid $'+rate+' per hour and works '+hours+' ordinary hours. What is basic pay before bonuses and deductions?',rate*hours,'Basic pay = hours × hourly rate = '+Z(rate*hours)+'.');
  }
  case 'FA1:E1':case 'FA1:G1':case 'FA2:C2':case 'FA2:D6':{
   const open=R(5,20)*1000,sales=R(4,15)*1000,received=R(1,8)*1000;
@@ -50,23 +50,23 @@ function problem(key,rng,index){
  }
  case 'MA1:C1':case 'MA2:A3':{
   const l=R(100,200),h=l+R(50,140),vc=R(6,20),fixed=R(1000,5000),lo=vc*l+fixed,hi=vc*h+fixed;
-  if(index%2)return P('high-low-fixed','Total cost is '+Z(lo)+' at '+l+' units and '+Z(hi)+' at '+h+' units. Using high-low, calculate fixed cost.',fixed,'Variable rate = ('+Z(hi)+' − '+Z(lo)+') ÷ ('+h+' − '+l+') = RM'+vc+'. Fixed cost = '+Z(fixed)+'.');
-  return P('high-low-rate','Total cost is '+Z(lo)+' for '+l+' units and '+Z(hi)+' for '+h+' units. Using high-low, calculate variable cost per unit.',vc,'Rate = cost change ÷ activity change = RM'+vc+' per unit.','RM/unit');
+  if(index%2)return P('high-low-fixed','Total cost is '+Z(lo)+' at '+l+' units and '+Z(hi)+' at '+h+' units. Using high-low, calculate fixed cost.',fixed,'Variable rate = ('+Z(hi)+' − '+Z(lo)+') ÷ ('+h+' − '+l+') = $'+vc+'. Fixed cost = '+Z(fixed)+'.');
+  return P('high-low-rate','Total cost is '+Z(lo)+' for '+l+' units and '+Z(hi)+' for '+h+' units. Using high-low, calculate variable cost per unit.',vc,'Rate = cost change ÷ activity change = $'+vc+' per unit.','$/unit');
  }
  case 'MA1:C2':case 'MA2:C5':{
   const tonnes=R(5,30),km=R(20,80),cost=R(2,14)*tonnes*km;
-  return P(index%2?'composite-output':'service-unit','A carrier transports '+tonnes+' tonnes over '+km+' kilometres at a total trip cost of '+Z(cost)+'. What is cost per tonne-kilometre?',cost/(tonnes*km),'Tonne-kilometres = '+tonnes+' × '+km+'. Cost per tonne-km = '+Z(cost)+' ÷ '+(tonnes*km)+' = '+Z(cost/(tonnes*km))+'.','RM/tonne-km');
+  return P(index%2?'composite-output':'service-unit','A carrier transports '+tonnes+' tonnes over '+km+' kilometres at a total trip cost of '+Z(cost)+'. What is cost per tonne-kilometre?',cost/(tonnes*km),'Tonne-kilometres = '+tonnes+' × '+km+'. Cost per tonne-km = '+Z(cost)+' ÷ '+(tonnes*km)+' = '+Z(cost/(tonnes*km))+'.','$/tonne-km');
  }
  case 'MA1:D1':case 'MA2:B1':case 'FA2:D3':{
   const a=R(40,100),b=R(30,90),unit1=R(6,15),unit2=R(16,27),total=a*unit1+b*unit2;
-  if(index%3===0)return P('materials-average','Opening inventory is '+a+' units at RM'+unit1+' each. A further '+b+' units are purchased at RM'+unit2+' each. Under periodic weighted average, what is the average unit cost?',total/(a+b),'Weighted average = total cost ÷ total units = '+Z(total)+' ÷ '+(a+b)+' = '+Z(round(total/(a+b)))+'.','RM/unit');
-  if(index%3===1)return P('materials-fifo','Opening inventory is '+a+' units costing RM'+unit1+' each. A purchase of '+b+' units at RM'+unit2+' each follows. Under FIFO, what is the cost of issuing '+Math.min(a,30)+' units?',Math.min(a,30)*unit1,'FIFO issues oldest units first: '+Math.min(a,30)+' × RM'+unit1+' = '+Z(Math.min(a,30)*unit1)+'.');
-  return P('materials-total','A store holds '+a+' units at RM'+unit1+' and receives '+b+' more units at RM'+unit2+'. What is the total material cost available?',total,'Total = ('+a+' × RM'+unit1+') + ('+b+' × RM'+unit2+') = '+Z(total)+'.');
+  if(index%3===0)return P('materials-average','Opening inventory is '+a+' units at $'+unit1+' each. A further '+b+' units are purchased at $'+unit2+' each. Under periodic weighted average, what is the average unit cost?',total/(a+b),'Weighted average = total cost ÷ total units = '+Z(total)+' ÷ '+(a+b)+' = '+Z(round(total/(a+b)))+'.','$/unit');
+  if(index%3===1)return P('materials-fifo','Opening inventory is '+a+' units costing $'+unit1+' each. A purchase of '+b+' units at $'+unit2+' each follows. Under FIFO, what is the cost of issuing '+Math.min(a,30)+' units?',Math.min(a,30)*unit1,'FIFO issues oldest units first: '+Math.min(a,30)+' × $'+unit1+' = '+Z(Math.min(a,30)*unit1)+'.');
+  return P('materials-total','A store holds '+a+' units at $'+unit1+' and receives '+b+' more units at $'+unit2+'. What is the total material cost available?',total,'Total = ('+a+' × $'+unit1+') + ('+b+' × $'+unit2+') = '+Z(total)+'.');
  }
  case 'MA1:D3':case 'MA2:B3':case 'MA2:C1':{
   const hours=R(2,10)*1000,rate=R(4,20),oh=hours*rate,jobHours=R(5,20);
-  if(index%2)return P('overhead-absorbed','Budgeted production overhead is '+Z(oh)+' for '+hours+' labour-hours. A particular job uses '+jobHours+' hours. How much overhead is absorbed by that job?',rate*jobHours,'Absorption rate = RM'+rate+' per hour; job charge = '+jobHours+' × RM'+rate+' = '+Z(rate*jobHours)+'.');
-  return P('overhead-rate','Budgeted production overhead is '+Z(oh)+' for '+hours+' labour-hours. Find the overhead absorption rate.',rate,'Absorption rate = budgeted overhead ÷ budgeted activity = RM'+rate+' per hour.','RM/hour');
+  if(index%2)return P('overhead-absorbed','Budgeted production overhead is '+Z(oh)+' for '+hours+' labour-hours. A particular job uses '+jobHours+' hours. How much overhead is absorbed by that job?',rate*jobHours,'Absorption rate = $'+rate+' per hour; job charge = '+jobHours+' × $'+rate+' = '+Z(rate*jobHours)+'.');
+  return P('overhead-rate','Budgeted production overhead is '+Z(oh)+' for '+hours+' labour-hours. Find the overhead absorption rate.',rate,'Absorption rate = budgeted overhead ÷ budgeted activity = $'+rate+' per hour.','$/hour');
  }
  case 'MA1:D4':case 'MA2:C3':{
   const directMat=R(4,20)*100,directLab=R(4,16)*100,directExp=R(1,8)*100,overhead=R(4,15)*100;
@@ -103,8 +103,8 @@ function problem(key,rng,index){
  }
  case 'MA2:C2':{
   const units=R(4,20)*100,variable=R(5,25),margin=R(6,24),selling=variable+margin;
-  if(index%2)return P('contribution-unit','Selling price per unit is RM'+selling+' and variable cost is RM'+variable+'. What is contribution per unit?',margin,'Contribution per unit = selling price − variable cost = RM'+margin+'.','RM/unit');
-  return P('contribution-total','Selling price is RM'+selling+' and variable cost RM'+variable+' per unit. If '+units+' units are sold, calculate total contribution.',units*margin,'Total contribution = (selling price − variable cost) × units = '+Z(units*margin)+'.');
+  if(index%2)return P('contribution-unit','Selling price per unit is $'+selling+' and variable cost is $'+variable+'. What is contribution per unit?',margin,'Contribution per unit = selling price − variable cost = $'+margin+'.','$/unit');
+  return P('contribution-total','Selling price is $'+selling+' and variable cost $'+variable+' per unit. If '+units+' units are sold, calculate total contribution.',units*margin,'Total contribution = (selling price − variable cost) × units = '+Z(units*margin)+'.');
  }
  case 'MA2:C4':{
   const input=R(8,20)*100,loss=R(4,10),actual=input-Math.round(input*loss/100),rate=R(3,12);
@@ -113,10 +113,10 @@ function problem(key,rng,index){
  case 'MA2:D1':{
   const vc=R(4,20),margin=R(6,18),price=vc+margin,fixed=R(10,50)*margin*100,breakeven=fixed/margin,budget=breakeven+R(10,60)*100;
   const fam=index%4;
-  return fam===0?P('break-even','Fixed costs are '+Z(fixed)+'. A product sells for RM'+price+' and variable cost is RM'+vc+' per unit. Calculate break-even volume.',breakeven,'Contribution = RM'+margin+'; break-even units = fixed costs ÷ contribution = '+breakeven+' units.','units'):
+  return fam===0?P('break-even','Fixed costs are '+Z(fixed)+'. A product sells for $'+price+' and variable cost is $'+vc+' per unit. Calculate break-even volume.',breakeven,'Contribution = $'+margin+'; break-even units = fixed costs ÷ contribution = '+breakeven+' units.','units'):
   fam===1?P('margin-safety','Budget sales are '+budget+' units and break-even sales are '+breakeven+' units. What is the margin of safety?',budget-breakeven,'Margin of safety = budgeted units − break-even units = '+(budget-breakeven)+'.','units'):
-  fam===2?P('cs-ratio','Selling price is RM'+price+' and variable cost is RM'+vc+' per unit. Calculate the C/S ratio as a percentage to TWO DECIMAL PLACES.',round(100*margin/price),'C/S ratio = contribution per unit ÷ selling price × 100 = '+round(100*margin/price)+'%.','%'):
-  P('target-profit','Fixed costs are '+Z(fixed)+', contribution is RM'+margin+' per unit and the desired profit is '+Z(margin*1000)+'. How many units must be sold to earn that profit?',breakeven+1000,'Required volume = (fixed costs + target profit) ÷ contribution per unit = '+(breakeven+1000)+' units.','units');
+  fam===2?P('cs-ratio','Selling price is $'+price+' and variable cost is $'+vc+' per unit. Calculate the C/S ratio as a percentage to TWO DECIMAL PLACES.',round(100*margin/price),'C/S ratio = contribution per unit ÷ selling price × 100 = '+round(100*margin/price)+'%.','%'):
+  P('target-profit','Fixed costs are '+Z(fixed)+', contribution is $'+margin+' per unit and the desired profit is '+Z(margin*1000)+'. How many units must be sold to earn that profit?',breakeven+1000,'Required volume = (fixed costs + target profit) ÷ contribution per unit = '+(breakeven+1000)+' units.','units');
  }
  case 'MA2:D2':{
   const incremental=R(10,45)*100,extra=R(4,20)*100,unavoidable=R(4,18)*100;
@@ -162,7 +162,7 @@ function problem(key,rng,index){
   const dm=R(4,18)*100,dl=R(3,15)*100,oh=R(1,9)*100,units=R(4,20)*10;
   if(index%3===0)return P('cost-system-production','A batch costs '+Z(dm)+' in direct materials, '+Z(dl)+' in direct labour and '+Z(oh)+' in production overhead. What is total production cost?',dm+dl+oh,'Total production cost = materials + labour + production overhead = '+Z(dm+dl+oh)+'.');
   if(index%3===1)return P('cost-system-direct','A job cost card lists direct materials '+Z(dm)+' and direct labour '+Z(dl)+'. What is prime cost, assuming no other direct expenses?',dm+dl,'Prime cost = direct materials + direct labour = '+Z(dm+dl)+'.');
-  return P('cost-system-unit','A batch of '+units+' identical items has total production cost '+Z((dm+dl+oh)) +'. What is cost per item? Give TWO decimal places.',round((dm+dl+oh)/units),'Cost per item = total batch cost ÷ '+units+' = '+Z(round((dm+dl+oh)/units))+'.','RM/unit');
+  return P('cost-system-unit','A batch of '+units+' identical items has total production cost '+Z((dm+dl+oh)) +'. What is cost per item? Give TWO decimal places.',round((dm+dl+oh)/units),'Cost per item = total batch cost ÷ '+units+' = '+Z(round((dm+dl+oh)/units))+'.','$/unit');
  }
  case 'MA2:A4':{
   const budget=R(30,120)*100,actual=budget+R(1,18)*100,target=R(50,90),achieved=R(35,95);
@@ -172,7 +172,7 @@ function problem(key,rng,index){
  }
  case 'MA2:A5':{
   const budget=R(20,90)*100,actual=budget-R(1,14)*100,entries=R(50,130),errors=R(1,18);
-  if(index%3===0)return P('reporting-favourable','A management report compares budgeted cost of '+Z(budget)+' against actual cost of '+Z(actual)+'. Calculate the favourable cost variance in RM.',budget-actual,'Favourable cost difference = budget − actual = '+Z(budget-actual)+'.');
+  if(index%3===0)return P('reporting-favourable','A management report compares budgeted cost of '+Z(budget)+' against actual cost of '+Z(actual)+'. Calculate the favourable cost variance in $.',budget-actual,'Favourable cost difference = budget − actual = '+Z(budget-actual)+'.');
   if(index%3===1)return P('reporting-percentage','A report shows budgeted cost '+Z(budget)+' and actual cost '+Z(actual)+'. By what percentage is actual cost BELOW budget? Give TWO decimal places.',round((budget-actual)/budget*100),'Savings % = (budget − actual) ÷ budget × 100 = '+round((budget-actual)/budget*100)+'%.','%');
   return P('reporting-error-rate','Of '+entries+' transactions in an exception report, '+errors+' contain confirmed coding errors. What percentage contain errors? Give TWO decimal places.',round(100*errors/entries),'Exception error rate = error count ÷ total transactions × 100 = '+round(100*errors/entries)+'%.','%');
  }
@@ -183,7 +183,7 @@ function problem(key,rng,index){
 /* Individually authored, answer-keyed objective examples by syllabus subtopic.
    [stem, correct choice, distractor 1, distractor 2, distractor 3, explanation] */
 const CONCEPTS={
-'FA1:A1':[["An owner pays RM4,000 of personal savings into a business bank account. Which effect should be recorded?","Assets and capital both increase","Sales revenue increases","A bank loan is recognised","An expense is recorded","Owner capital introduced increases both the bank asset and equity."]],
+'FA1:A1':[["An owner pays $4,000 of personal savings into a business bank account. Which effect should be recorded?","Assets and capital both increase","Sales revenue increases","A bank loan is recognised","An expense is recorded","Owner capital introduced increases both the bank asset and equity."]],
 'FA1:A2':[["A customer returns faulty goods previously sold on credit. Which document should the seller normally issue?","Credit note","Purchase order","Goods received note","Statement of account","A credit note reduces the value owed on the earlier sales invoice."]],
 'FA1:A3':[["Which sequence most accurately describes a normal bookkeeping audit trail?","Source document, journal/book of prime entry, ledger, trial balance","Trial balance, invoice, ledger, journal","Ledger, invoice, trial balance, authorisation","Financial statements, receipt, journal, invoice","Transaction evidence is recorded then posted and summarised before reporting."]],
 'FA1:B1':[["An office buys furniture for cash. Which double entry records the purchase?","Dr furniture, Cr bank","Dr bank, Cr furniture","Dr expense, Cr sales","Dr receivables, Cr furniture","Buying an asset increases furniture and reduces the bank asset."]],
@@ -251,7 +251,7 @@ const CONCEPTS={
 'MA2:B3':[["When is production overhead over-absorbed?","Absorbed overhead exceeds actual overhead","Actual overhead exceeds absorbed overhead","No overhead rate exists","Selling expenses are included","Over-absorption means more overhead was charged to production than actually incurred."]],
 'MA2:C1':[["How is fixed production overhead treated under absorption costing?","Included in inventory cost per unit","Always charged fully as a period cost","Omitted from both inventory and profit","Treated as a sales commission","Absorption costing includes fixed manufacturing overhead in the production cost."]],
 'MA2:C2':[["How is contribution per unit calculated?","Selling price minus variable cost per unit","Selling price minus fixed cost in total","Sales revenue minus drawings","Profit plus loan repayments","Contribution is the excess of sales over variable costs."]],
-'MA2:C3':[["A job costs RM800 and earns a 25% mark-up on cost. Which selling price is correct?","RM1,000","RM640","RM1,067","RM825","Mark-up is applied to cost: RM800 × 1.25 = RM1,000."]],
+'MA2:C3':[["A job costs $800 and earns a 25% mark-up on cost. Which selling price is correct?","$1,000","$640","$1,067","$825","Mark-up is applied to cost: $800 × 1.25 = $1,000."]],
 'MA2:C4':[["Which loss is expected as an inherent part of a well-controlled production process?","Normal loss","Abnormal loss","Abnormal gain","Financial investment loss","Normal loss is anticipated in setting process costs."]],
 'MA2:C5':[["Which composite cost unit is most appropriate for road freight carrying varying loads and distances?","Tonne-kilometres","Units of finished goods","Cost per invoice","Number of bank receipts","Tonne-kilometres combine weight moved and distance travelled."]],
 'MA2:D1':[["A budget forecasts 4,000 sales units and break-even output is 2,700 units. What is margin of safety in units?","1,300","6,700","2,700","4,000","Margin of safety = budgeted sales − break-even sales = 1,300 units."]],
