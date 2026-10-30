@@ -170,54 +170,58 @@ function interactiveMap(opts){
   'THESE ARE RELATED TOPIC CONCEPTS, NOT A REQUIRED ORDER OF TRANSACTIONS. The individual sections below contain further examples and study notes.'));
  return map;
 }
-function connector(svg,x1,x2,y){
- const start=x1+3,tip=x2-10;
- svg.append(svgNode('line',{x1:start,y1:y,x2:tip,y2:y,stroke:ink,'stroke-width':3}));
- svg.append(svgNode('path',{d:'M'+(tip-8)+' '+(y-6)+' L'+tip+' '+y+' L'+(tip-8)+' '+(y+6),
-  stroke:ink,fill:'none','stroke-width':3,'stroke-linecap':'round','stroke-linejoin':'round'}));
-}
 function workflow(opts){
- // These arrows are meaningful only because these source documents have an
- // explicit authorisation → order → receipt → invoice-check → payment flow.
- const svg=svgNode('svg',{viewBox:'0 0 1200 734',
-  role:'img','aria-label':'FA1 A2 purchase-document flow from authorised requisition to payment and three-way match',
-  xmlns:SVG_NS});
- svg.append(svgNode('rect',{width:1200,height:734,fill:paper}));
- header(svg,opts,topicMode('FA1'),'SOURCE DOCUMENTS · ILLUSTRATIVE PURCHASE-TO-PAY WORKFLOW');
- const cards=[
-  ['REQUISITION','Staff requests goods; manager approves the need.'],
-  ['PURCHASE ORDER','Buyer orders 20 items at RM45 each.'],
-  ['GOODS RECEIVED','Stores confirms only 18 items were delivered.'],
-  ['SUPPLIER INVOICE','Supplier bills 20 items; check the amount.'],
-  ['CHECK & PAY','Resolve the 2-item difference before payment.']
+ // Responsive, semantic HTML: no fixed-width SVG boxes or overlaying arrows.
+ // Each disclosure starts open, so no instructional content is hidden.
+ const section=node('section','lv-purchase-workflow');
+ section.setAttribute('aria-label','Purchase-to-pay source document workflow');
+ const banner=node('header','lv-purchase-banner');
+ banner.append(node('p','lv-purchase-overline','BOOKKEEPING & SOURCE RECORDS  /  FA1 A2'));
+ banner.append(node('h3','', 'Purchase-to-pay: follow the documents'));
+ banner.append(node('p','',
+  'These arrows show the order of this example only. The supplier invoice must be checked against the purchase order and what was actually received.'));
+ section.append(banner);
+ const steps=[
+  ['REQUISITION','Staff requests the goods. An authorised manager confirms that the purchase is necessary.','Evidence: approved purchase requisition. No supplier debt arises merely from this internal request.'],
+  ['PURCHASE ORDER','The buyer orders 20 items at $45 each ($900 total).','Evidence: purchase order stating supplier, quantity, price, terms and authorisation.'],
+  ['GOODS RECEIVED','The stores team records only 18 items delivered ($810 at the ordered unit price).','Evidence: goods received note and physical count; record discrepancies and any damaged items.'],
+  ['SUPPLIER INVOICE','The supplier invoices all 20 items ($900), although only 18 were received.','Evidence: supplier invoice. Compare invoice details against the order and goods received note.'],
+  ['MATCH & RESOLVE','The two undelivered items, worth $90, must be investigated before approving the invoice for payment.','Action: clarify a later delivery or request a corrected invoice/credit note; pay only the amount properly authorised under the agreed terms.']
  ];
- const width=206,gap=31,start=24,y=190;
- cards.forEach((c,i)=>{
-  const x=start+i*(width+gap);
-  rect(svg,x,y,width,207,i%2?'#fff':'#ffe9ae',9);
-  rect(svg,x+14,y+15,36,36,ink,18,ink,0);
-  write(svg,x+32,y+41,String(i+1),18,900,yellow,{'text-anchor':'middle'});
-  blockText(svg,x+16,y+94,c[0],{width:180,size:19,weight:900,max:2,leading:23});
-  blockText(svg,x+16,y+146,c[1],{width:180,size:15,weight:500,max:3,leading:20});
-  if(i<4)connector(svg,x+width,start+(i+1)*(width+gap),y+100);
- });
- write(svg,31,449,'THREE-WAY MATCH · DO THE DOCUMENTS AGREE?',19,900,ink);
- const cells=[
-  ['PURCHASE ORDER','20 units','20 × RM45 = RM900'],
-  ['GOODS RECEIVED NOTE','18 units','18 × RM45 = RM810'],
-  ['SUPPLIER INVOICE','20 units','20 × RM45 = RM900']
- ];
- const xs=[24,420,816];
- cells.forEach(([heading,units,amount],i)=>{
-  const x=xs[i];
-  rect(svg,x,472,362,151,i===1?'#e1f4e5':'#ffffff',9);
-  write(svg,x+16,506,heading,16,850);
-  write(svg,x+16,547,units,26,900);
-  write(svg,x+16,583,amount,16,700);
- });
- rect(svg,24,637,1152,49,'#ffe4d4',6);
- write(svg,40,668,'EXCEPTION · 2 UNITS × RM45 = RM90 UNMATCHED. INVESTIGATE BEFORE PAYMENT.',16,850,ink);
- return svg;
+ const list=node('ol','lv-purchase-steps');
+ for(let i=0;i<steps.length;i++){
+  const [heading,description,evidence]=steps[i];
+  const li=node('li','lv-purchase-step');
+  if(i<steps.length-1)li.classList.add('lv-purchase-step-connected');
+  const detail=node('details','lv-purchase-step-detail');
+  detail.open=true;
+  const summary=node('summary','lv-purchase-step-summary');
+  summary.append(node('span','lv-purchase-step-num',String(i+1)),
+    node('span','lv-purchase-step-heading',heading),
+    node('span','lv-purchase-step-chevron',''));
+  summary.lastChild.setAttribute('aria-hidden','true');
+  const body=node('div','lv-purchase-step-body');
+  body.append(node('p','',description),node('p','lv-purchase-evidence',evidence));
+  detail.append(summary,body);li.append(detail);list.append(li);
+ }
+ section.append(list);
+ const match=node('section','lv-purchase-match');
+ match.append(node('h4','','Three-way match: do the documents agree?'));
+ const cards=node('div','lv-purchase-match-grid');
+ for(const [name,units,cost] of [
+  ['Purchase order','20 units','20 × $45 = $900'],
+  ['Goods received note','18 units','18 × $45 = $810'],
+  ['Supplier invoice','20 units','20 × $45 = $900']
+ ]){
+  const card=node('div','lv-purchase-match-card');
+  card.append(node('h5','',name),node('strong','',units),node('p','',cost));
+  cards.append(card);
+ }
+ match.append(cards);
+ const alert=node('p','lv-purchase-exception');
+ alert.append(node('strong','','EXCEPTION: '),node('span','','2 units × $45 = $90 unmatched. Investigate before authorising payment.'));
+ match.append(alert);section.append(match);
+ return section;
 }
 function table(parent,heading,columns,rows){
  const area=node('section','lv-doc-table');
@@ -248,7 +252,7 @@ function businessDocuments(parent){
   ['Bank confirmation','Evidence that funds were transferred','Bank date, recipient and cleared amount']
  ]);
  area.append(node('h4','','THREE-WAY MATCH · WORKED EXAMPLE'));
- area.append(node('p','','The purchase order specifies 20 units at RM45 each (RM900). The goods received note confirms 18 units (RM810). The supplier invoice requests payment for 20 units (RM900). Two units—or RM90—remain unmatched. The correct action is to investigate the short delivery or agreed invoicing terms, not simply authorise the entire invoice. Under an appropriate accounting policy, record the items controlled and any valid liability using the applicable evidence; do not invent goods received.'));
+ area.append(node('p','','The purchase order specifies 20 units at $45 each ($900). The goods received note confirms 18 units ($810). The supplier invoice requests payment for 20 units ($900). Two units—or $90—remain unmatched. The correct action is to investigate the short delivery or agreed invoicing terms, not simply authorise the entire invoice. Under an appropriate accounting policy, record the items controlled and any valid liability using the applicable evidence; do not invent goods received.'));
  area.append(node('p','lv-doc-note','Note: an approved purchase order does not itself create an expense. A payment instruction is not proof of an executed payment. A quotation is an offer of terms, not proof of a completed sale.'));
  parent.append(area);
 }
@@ -284,13 +288,9 @@ function workedPanel(opts){
 }
 root.renderLedgerChapterVisual=function(parent,opts){
  if(!opts?.paper||!opts.code)return false;
- const figure=node('figure','lv-all-figure');
  const special=opts.paper==='FA1'&&opts.code==='A2';
- if(special)figure.append(workflow(opts));
- figure.append(node('figcaption','',
-  'Original purchase-to-pay evidence diagram. Arrows denote transaction order; the mismatched invoice must be investigated.'));
  if(special){
-   parent.append(figure);
+   parent.append(workflow(opts));
    businessDocuments(parent);
  }
  parent.append(interactiveMap(opts));
