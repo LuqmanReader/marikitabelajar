@@ -14,6 +14,7 @@ const files=[
  'textbook-crossqual-a1.js','textbook-crossqual-a2-foundation.js',
  'textbook-crossqual-a2-professional.js','textbook-crossqual-a3-foundation.js',
  'textbook-crossqual-a3-professional.js',
+ 'textbook-crossqual-batch4a.js','textbook-crossqual-batch4b.js','textbook-crossqual-batch4c.js','textbook-crossqual-batch4d.js',
  'notes-visual-workbook-data.js','notes-visual-workbook.js',
  'notes-worked-tables-data.js','notes-worked-tables.js',
  'notes-page.js','fia-study-data-v2.js','fia-study-content-v2.js',
@@ -52,6 +53,7 @@ const sourceAssets=[
  'textbook-crossqual-a1.js','textbook-crossqual-a2-foundation.js',
  'textbook-crossqual-a2-professional.js','textbook-crossqual-a3-foundation.js',
  'textbook-crossqual-a3-professional.js',
+ 'textbook-crossqual-batch4a.js','textbook-crossqual-batch4b.js','textbook-crossqual-batch4c.js','textbook-crossqual-batch4d.js',
  'notes-visual-workbook-data.js','notes-worked-tables-data.js','notes-visual-all.js',
  'notes-visual-workbook.js'
 ];
@@ -61,7 +63,11 @@ const assetVersions={
  'textbook-crossqual-a2-foundation.js':'20261031v1',
  'textbook-crossqual-a2-professional.js':'20261031v1',
  'textbook-crossqual-a3-foundation.js':'20261031v1',
- 'textbook-crossqual-a3-professional.js':'20261031v1'
+ 'textbook-crossqual-a3-professional.js':'20261031v1',
+ 'textbook-crossqual-batch4a.js':'20261031batch4',
+ 'textbook-crossqual-batch4b.js':'20261031batch4',
+ 'textbook-crossqual-batch4c.js':'20261031batch4',
+ 'textbook-crossqual-batch4d.js':'20261031batch4'
 };
 for(const filename of sourceAssets){
  const expected=assetVersions[filename]||'20261030usd5';
