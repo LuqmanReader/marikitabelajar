@@ -144,10 +144,10 @@ function makeLesson(n,src,paperCode){
    if(illustratedLessons[key]&&root.renderLedgerVisualWorkbook){
      root.renderLedgerVisualWorkbook(main,key);
      if(renderNumericalTable)renderNumericalTable(main,paperCode,n.code);
-     const previous=node('details','vw-previous-chapter');
-     previous.append(node('summary','','Additional chapter notes (earlier text version)'));
-     appendTextbook(previous,paperCode,n.code);
-     main.append(previous);
+     // The complete textbook is primary teaching, not optional buried material.
+     // Keep visual drills above it, but never make students discover the full chapter.
+     main.append(node('p','notes-lesson-scope','FULL TEXTBOOK CHAPTER · STEP-BY-STEP TEACHING AND EXAM APPLICATIONS'));
+     appendTextbook(main,paperCode,n.code);
    }else{
      main.append(node('p','notes-lesson-scope','LONG-FORM TEXTBOOK CHAPTER · ORIGINAL TEACHING'));
      appendTextbook(main,paperCode,n.code);
