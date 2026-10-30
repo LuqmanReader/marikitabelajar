@@ -80,7 +80,29 @@ if(illustrated!==keys.length)problems.push('Not all topics illustrated');
 if(solved!==Object.keys(numeric).length)problems.push('Not all numerical tables rendered');
 for(const p of problems)console.error('FAIL',p);
 if(process.argv.includes('--require-full-textbook')){
- console.error('STRICT CONTENT GATE NOT SATISFIED: the 2026–27 outcomes and full textbook chapters across all 25 papers have not been individually verified.');
- process.exitCode=2;
+ const modules=[
+  ['textbook-fa1-part-a.js','root.LedgerTextbookFA1A='],
+  ['textbook-fa1-part-b.js','root.LedgerTextbookFA1B='],
+  ['textbook-ma1.js','root.LedgerTextbookMA1='],
+  ['textbook-fa2-part-a.js','root.LedgerTextbookFA2A='],
+  ['textbook-fa2-part-b.js','root.LedgerTextbookFA2B='],
+  ['textbook-fa2-part-c.js','root.LedgerTextbookFA2C='],
+  ['textbook-ma2-part-a.js','root.LedgerTextbookMA2A='],
+  ['textbook-ma2-part-b.js','root.LedgerTextbookMA2B=']
+ ];
+ const written=Object.assign({},...modules.map(([p,m])=>parse(read(p),m)));
+ const mapped=parse(read('notes-outcome-lessons.js'),'root.LedgerOutcomeLessons=');
+ const incomplete=keys.filter(k=>{
+  const c=written[k],outcome=mapped[k];
+  const wordCount=c?(JSON.stringify(c).match(/\b[\w-]+\b/g)||[]).length:0;
+  return !c||wordCount<1800||c.sections.length<8||c.workings.length<4||
+   !outcome||!String(outcome.edition||'').includes('2026');
+ });
+ if(incomplete.length){
+  console.error('STRICT CONTENT GATE FAILED: '+incomplete.length+'/'+keys.length+' topics have insufficient independently authored or current-outcome-verified teaching.');
+  console.error('Example open topics:',incomplete.slice(0,20).join(', '));
+  console.error('Structural thresholds are editorial screening tools only, not a proof of learning-outcome completeness.');
+  process.exitCode=2;
+ }else if(problems.length)process.exitCode=1;
 }else if(problems.length)process.exitCode=1;
 else console.log('ALL VISUAL COVERAGE AND DATA-STRUCTURE CHECKS PASSED');
