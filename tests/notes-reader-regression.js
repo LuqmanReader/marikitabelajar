@@ -24,6 +24,7 @@ async function create(search='',signedIn=true){
   'textbook-integrated-cases.js',
   'textbook-crossqual-a1.js','textbook-crossqual-a2-foundation.js','textbook-crossqual-a2-professional.js',
   'textbook-crossqual-a3-foundation.js','textbook-crossqual-a3-professional.js',
+  'textbook-crossqual-batch4a.js','textbook-crossqual-batch4b.js','textbook-crossqual-batch4c.js','textbook-crossqual-batch4d.js'
   'notes-visual-workbook-data.js','notes-visual-workbook.js',
   'notes-worked-tables-data.js','notes-worked-tables.js','notes-visual-all.js','notes-page.js'
  ])vm.runInContext(fs.readFileSync(f,'utf8'),c);
