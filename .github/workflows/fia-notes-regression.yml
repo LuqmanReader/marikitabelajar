@@ -11,6 +11,7 @@ on:
       - 'notes-build.js'
       - 'notes-release.json'
       - 'tests/notes-release-regression.cjs'
+      - 'tests/notes-typography-browser.cjs'
       - 'notes-visual-all.js'
       - 'notes-visual-workbook*.js'
       - 'notes-worked-tables*.js'
@@ -62,6 +63,11 @@ jobs:
           node tests/notes-reader-regression.js
           node tests/notes-release-regression.cjs
 
+
+      - name: Verify real browser typography and layout at five widths
+        run: |
+          npm install --no-save --package-lock=false --ignore-scripts puppeteer-core@24
+          node tests/notes-typography-browser.cjs
 
       - name: Verify all 700 concept maps, currency and responsive workflow
         run: |
