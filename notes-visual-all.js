@@ -47,13 +47,22 @@ function wrapping(str,maxWidth,size=18,heavy=false){
  if(line)rows.push(line);
  return rows;
 }
+function measuredWidth(str,size,heavy){
+ return [...str].reduce((w,c)=>w+charWidth(c,size,heavy),0);
+}
 function blockText(s,x,y,content,opts={}){
  const {width=420,size=17,weight=550,max=5,leading=25,color=ink}=opts;
- const rows=wrapping(content,width,size,weight>=700);
+ const heavy=weight>=700;
+ const rows=wrapping(content,width,size,heavy);
  const displayed=rows.slice(0,max);
  displayed.forEach((line,i)=>{
   let value=line;
-  if(i===max-1&&rows.length>max)value=line.replace(/[.,;: ]+$/,'')+'…';
+  const truncated=(i===max-1&&rows.length>max);
+  if(truncated)value=value.replace(/[.,;: ]+$/,'');
+  while(value.length&&measuredWidth(value+(truncated?'…':''),size,heavy)>width){
+   value=value.slice(0,-1);
+  }
+  value=value.trimEnd()+(truncated?'…':'');
   write(s,x,y+i*leading,value,size,weight,color);
  });
  return displayed.length;
