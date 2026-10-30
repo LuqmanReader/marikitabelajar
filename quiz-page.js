@@ -30,7 +30,7 @@ function fillTopics(){
  select.value=topics.some(t=>t.code===prior)?prior:'all';
  if(!params.has('topic'))select.value='all';
  params.delete('topic');
- setMessage(covered+' syllabus headings mapped to '+paper+'. Only authored questions and calculation scenarios are used. Some topics have fewer than 20 genuinely distinct questions; unavailable questions are never filled using Notes paragraph matching.');
+ setMessage(covered+' syllabus headings mapped to '+paper+'. Questions are original, authored and calculation-based. Some topics have fewer than 20 distinct questions; there is no paragraph-matching filler.');
  updateReadLink();
 }
 function updateReadLink(){
@@ -50,8 +50,8 @@ function setMode(next){
  $('countField').hidden=isMock;
  $('readTopic').hidden=isMock;
  $('modeDescription').textContent=isMock
-  ?(['FA2','MA2'].includes($('paper').value)?'50-question foundation-style practice: 35 MCQ and 15 numerical entry. This is not a full official ACCA CBE replica.':'50-question foundation-style practice: MCQ only. This is not an official ACCA exam.')
-  :(['FA2','MA2'].includes($('paper').value)?'Up to 20 original topic questions. A full set aims for 10 MCQ and 10 numerical entry, subject to genuinely distinct authored examples.':'Topic practice uses original multiple-choice questions; the actual number depends on available distinct skills.');
+  ?(['FA2','MA2'].includes($('paper').value)?'50-question foundation-style practice: 35 MCQ and 15 numerical entries; this does not replicate all official CBE question types.':'50-question foundation-style practice with MCQs; not an official ACCA examination.')
+  :(['FA2','MA2'].includes($('paper').value)?'Up to 20 original questions; target 10 MCQ and 10 numeric where the bank has distinct skills.':'Original multiple-choice practice. Question count depends on available independent skills.');
  $('generate').textContent=isMock?'GENERATE 50-QUESTION MOCK →':'GENERATE '+$('count').value+' QUESTIONS →';
 }
 
@@ -66,14 +66,14 @@ function makeQuiz(){
  answers={};phase='answering';saved=false;
  if(!active.questions.length){
    $('quizSection').hidden=true;
-   setMessage(active.reason||'No authored exam-style questions are available for this topic. Choose another topic.');
+   setMessage(active.reason||'No original questions for this topic; try another topic.');
    return;
  }
  $('quizSection').hidden=false;$('results').hidden=true;$('saveStatus').textContent='';$('save').disabled=false;
  const narrow=mode==='mock'?' / PAPER-WIDE MOCK PRACTICE':topics?' / '+topics.join(', '):' / MIXED TOPICS';
  $('quizTitle').textContent=mode==='mock'?'50-QUESTION MOCK PRACTICE':'TOPIC PRACTICE SET';
- $('quizSummary').textContent=paper+narrow+' · '+active.available+' authentic-style questions · '+active.actualMix.mcq+' MCQ / '+active.actualMix.numeric+' numerical entry · '+active.topicsCovered+' topics covered'+(!active.complete?' · LIMITED BANK: '+active.available+' of '+active.requested+' requested; we will not repeat the same skill to pad the set.':'')+' · Original LedgerPeer questions, not Kaplan or ACCA content.';
- if(!active.complete)setMessage('QUESTION BANK SHORTAGE · '+active.reason+' Try mixed-topic practice for more variety.');
+ $('quizSummary').textContent=paper+narrow+' · '+active.available+' original questions · '+active.actualMix.mcq+' MCQ / '+active.actualMix.numeric+' numerical · '+active.topicsCovered+' topics'+(!active.complete?' · LIMITED: '+active.available+' of '+active.requested+' requested; no repeated-skill filler.':'')+' · Not official ACCA/Kaplan.';
+ if(!active.complete)setMessage('QUESTION BANK SHORTAGE · '+active.reason+' Try mixed-topic practice for more distinct questions.');
  $('review').hidden=false;
  renderQuestions();$('quizSection').scrollIntoView({block:'start',behavior:'smooth'});
 }
@@ -98,99 +98,7 @@ function renderQuestions(){
     });
     card.append(choices);
   }else if(q.type==='numeric'){
-    const field=element('label','numeric-label','YOUR ANSWER ('+(q.unit||');
-    const input=element('input','numeric-answer');
-    input.type='text';input.inputMode='decimal';input.autocomplete='off';
-    input.placeholder='Enter a number, e.g. 2500 or 2,500';
-    input.setAttribute('aria-label','Numerical answer for question '+(i+1));
-    input.addEventListener('input',()=>{answers[q.id]=input.value;});
-    field.append(input);card.append(field);
-  }
-  const box=element('div','feedback');box.hidden=true;card.append(box);list.append(card);
- });
-}
-function reviewQuiz(){
- if(phase!=='answering')return;
- const unanswered=active.questions.find(q=>q.type==='numeric'?
-    engine.parseNumber(answers[q.id])===null:
-    answers[q.id]===undefined||answers[q.id]==='');
- if(unanswered){
-  setMessage('Complete every multiple-choice or numerical answer before submitting. Numerical answers may contain commas and $.');
-  const index=active.questions.indexOf(unanswered);
-  $('practice-'+index).scrollIntoView({block:'center',behavior:'smooth'});
-  return;
- }
- phase='review';$('review').hidden=true;
- active.questions.forEach((q,i)=>{
-  const card=$('practice-'+i),box=card.querySelector('.feedback'),answer=answers[q.id];
-  card.querySelectorAll('input').forEach(el=>el.disabled=true);
-  box.replaceChildren();box.hidden=false;
-  const correct=q.type==='numeric'?engine.isNumericCorrect(answer,q.correctValue):answer===q.correctValue;
-  box.classList.toggle('good',correct);box.classList.toggle('bad',!correct);
-  box.append(element('h4',null,correct?'CORRECT ANSWER':'ANSWER REVIEW'));
-  const expected=q.type==='numeric'?answerLabel(q,q.correctValue):answerLabel(q,q.correctValue);
-  box.append(element('p',null,'Your answer: '+answerLabel(q,answer)+'\nExpected answer: '+expected+'\n\n'+q.explanation));
- });
- $('results').hidden=false;updateResult();$('results').scrollIntoView({block:'start',behavior:'smooth'});
-}
-function updateResult(){
- const s=engine.score(active.questions,answers),remaining=s.total-s.marked;
- $('score').replaceChildren();
- $('score').append(element('strong',null,s.correct+' / '+s.total));
- $('score').append(element('p',null,s.percent+'% of '+s.marked+' marked answers correct · '+s.automatic+' automatically marked'+(remaining?' · '+remaining+' unanswered':'')));
- $('save').disabled=remaining>0||saved;
-}
-function saveQuiz(){
- if(!active||phase!=='review'||saved)return;
- const outcome=engine.score(active.questions,answers);
- if(outcome.marked!==outcome.total)return;
- const record={id:new Date().toISOString()+'-'+Math.floor(Math.random()*100000),at:new Date().toISOString(),
-   paper:active.paper,topic:active.selectedTopic,mode:active.mode,correct:outcome.correct,total:outcome.total,percent:outcome.percent,
-   automatic:outcome.automatic,selfMarked:outcome.selfMarked,items:outcome.items,
-   edition:syllabi[active.paper]?.edition||null};
- try{
-   engine.saveHistory(root.localStorage,record);
-   saved=true;updateResult();renderHistory();
-   $('saveStatus').textContent='Saved on this device. LedgerPeer will back it up to your signed-in account when cloud sync succeeds.';
-   if(root.PersonalHubAuth?.sync)root.PersonalHubAuth.sync().then(ok=>{
-      $('saveStatus').textContent=ok?'Saved on device and verified in your cloud account ✓':'Saved on device; cloud backup is still pending. Check the sync indicator.';
-   }).catch(()=>$('saveStatus').textContent='Saved on device. Cloud backup is pending.');
- }catch(e){$('saveStatus').textContent='Could not save quiz history: '+e.message;}
-}
-function renderHistory(){
- const entries=engine.readHistory(root.localStorage),list=$('history');list.replaceChildren();
- if(!entries.length){list.textContent='No topic quizzes saved yet. Complete a set to build your learning record.';return;}
- const summary=element('p',null,entries.length+' saved practice sessions on this account. Most recent first.');list.append(summary);
- const wrap=element('div','history-list');
- for(const r of entries.slice(0,8)){
-   const row=element('div','history-row'),left=element('div');
-   left.append(element('b',null,r.paper+' / '+(r.mode==='mock'?'50-QUESTION MOCK':r.topic==='all'?'MIXED TOPICS':r.topic||'MIXED')));
-   left.append(element('small',null,new Date(r.at).toLocaleString('en-MY')+' · '+r.automatic+' automatically graded'));
-   row.append(left,element('b',null,r.correct+' / '+r.total));wrap.append(row);
- }
- list.append(wrap);
-}
-async function init(){
- try{
-  if(!engine||papers.length!==25||!root.PersonalHubAuth||!Object.keys(syllabi).length)throw Error('The syllabus or quiz engine could not load.');
-  if(!await root.PersonalHubAuth.ready()){if(!root.PersonalHubAuth.isRedirectingToProfile?.())root.location.replace('index.html');return;}
-  fillPapers();fillTopics();renderHistory();
-  setMode(params.get('mode')==='mock'?'mock':'topic');
-  $('topicMode').addEventListener('click',()=>setMode('topic'));
-  $('mockMode').addEventListener('click',()=>setMode('mock'));
-  $('count').addEventListener('change',()=>setMode(mode));
-  $('paper').addEventListener('change',()=>{fillTopics();setMode(mode);});
-  $('topic').addEventListener('change',updateReadLink);
-  $('generate').addEventListener('click',makeQuiz);
-  $('regenerate').addEventListener('click',makeQuiz);
-  $('review').addEventListener('click',reviewQuiz);
-  $('save').addEventListener('click',saveQuiz);
-  root.PersonalHubAuth.addLockButton?.();
-  $('access').hidden=true;$('app').hidden=false;$('loading').hidden=true;
- }catch(e){$('loading').textContent='QUIZ GENERATOR COULD NOT START: '+e.message+' · RETURN TO LEDGERPEER.';}
-}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
-})(window);)+')');
+    const field=element('label','numeric-label','YOUR ANSWER ('+(q.unit||'$')+')');
     const input=element('input','numeric-answer');
     input.type='text';input.inputMode='decimal';input.autocomplete='off';
     input.placeholder='Enter a number, e.g. 2500 or 2,500';
