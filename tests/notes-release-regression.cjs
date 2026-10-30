@@ -6,16 +6,16 @@
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
-const build='2026.10.31.1';
+const build='2026.10.31.2';
 const html=fs.readFileSync('notes.html','utf8');
 const manifest=JSON.parse(fs.readFileSync('notes-release.json','utf8'));
 const page=fs.readFileSync('notes-page.js','utf8');
 const renderer=fs.readFileSync('notes-visual-all.js','utf8');
 assert.equal(manifest.build,build);
 assert(html.includes('window.LedgerNotesDocumentBuild="'+build+'"'));
-assert(html.includes('notes-visual-all.js?v=20261031chapters2'));
-assert(html.includes('notes-page.js?v=20261031chapters6'));
-assert(html.includes('notes-build.js?v=20261031chapters1'));
+assert(html.includes('notes-visual-all.js?v=20261031chapters3'));
+assert(html.includes('notes-page.js?v=20261031chapters8'));
+assert(html.includes('notes-build.js?v=20261031chapters2'));
 assert(html.includes('notes.css?v=20261031chapters1'));
 assert(renderer.includes("root.LedgerNotesVisualBuild='"+build+"'"));
 assert(page.includes("root.LedgerNotesVisualBuild!=='"+build+"'"));
@@ -62,9 +62,9 @@ const doc={
 vm.runInNewContext(fs.readFileSync('notes-build.js','utf8'),{window:win,document:doc,URL,Date,console},{filename:'notes-build.js'});
 (async()=>{
  await new Promise(resolve=>setImmediate(resolve));
- assert.match(stamp.textContent,/2026\.10\.31\.1/);
+ assert.match(stamp.textContent,/2026\.10\.31\.3/);
  assert.equal(ids.notesReleaseStatus.hidden,true,'No false update banner when current');
- latest='2026.10.31.2';
+ latest='2026.10.31.3';
  await win.LedgerNotesCheckForUpdates();
  assert.equal(ids.notesReleaseStatus.hidden,false,'A newer manifest must show update banner');
  assert.match(ids.notesReleaseMessage.textContent,/2026\.10\.31\.2/);
