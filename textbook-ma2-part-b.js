@@ -21,24 +21,24 @@
       ],
       [
         "Product-cost and profitability interpretation",
-        "Production cost includes direct material, direct labour, direct expenses and absorbed production overhead. For a job that takes 6 machine hours in Dept A at RM9/hour and 3 labour hours in Dept B at RM4/hour, overhead = 6×9+3×4. Selling price and total-period profitability require further decisions and non-production costs. Consider capacity, rework and the quality of absorption bases."
+        "Production cost includes direct material, direct labour, direct expenses and absorbed production overhead. For a job that takes 6 machine hours in Dept A at $9/hour and 3 labour hours in Dept B at $4/hour, overhead = 6×9+3×4. Selling price and total-period profitability require further decisions and non-production costs. Consider capacity, rework and the quality of absorption bases."
       ]
     ],
     "workings": [
       [
         "Departmental overhead statement",
-        "Rent RM40,000 shared between production A (400m²), production B (300m²), service S (300m²). Maintenance S also incurs direct overhead RM12,000; re-apportion all S overhead 60% A / 40% B.",
-        "Rent allocation by area: A RM16,000, B RM12,000, S RM12,000. S pool = 12,000+12,000=RM24,000. Transfer A 24,000×60%=RM14,400; B RM9,600. Final production pools: A RM30,400 and B RM21,600."
+        "Rent $40,000 shared between production A (400m²), production B (300m²), service S (300m²). Maintenance S also incurs direct overhead $12,000; re-apportion all S overhead 60% A / 40% B.",
+        "Rent allocation by area: A $16,000, B $12,000, S $12,000. S pool = 12,000+12,000=$24,000. Transfer A 24,000×60%=$14,400; B $9,600. Final production pools: A $30,400 and B $21,600."
       ],
       [
         "OAR and reconciliation",
-        "Dept A budget overhead RM96,000 for 24,000 machine hours. Actual activity 22,000 hours; actual overhead RM91,000.",
-        "Rate = 96,000/24,000=RM4 per machine hour. Absorbed = 22,000×4=RM88,000. Underabsorbed = RM91,000−RM88,000=RM3,000."
+        "Dept A budget overhead $96,000 for 24,000 machine hours. Actual activity 22,000 hours; actual overhead $91,000.",
+        "Rate = 96,000/24,000=$4 per machine hour. Absorbed = 22,000×4=$88,000. Underabsorbed = $91,000−$88,000=$3,000."
       ],
       [
         "Step-down services",
-        "Maintenance RM10,000 goes 50% A, 30% B and 20% Stores. Stores originally RM6,000, thereafter shared 60% A and 40% B.",
-        "Maintenance sends RM5,000 A; RM3,000 B; RM2,000 Stores. Stores now RM8,000, sends RM4,800 A and RM3,200 B. Total A RM9,800 and B RM6,200, totalling RM16,000."
+        "Maintenance $10,000 goes 50% A, 30% B and 20% Stores. Stores originally $6,000, thereafter shared 60% A and 40% B.",
+        "Maintenance sends $5,000 A; $3,000 B; $2,000 Stores. Stores now $8,000, sends $4,800 A and $3,200 B. Total A $9,800 and B $6,200, totalling $16,000."
       ]
     ]
   },
@@ -69,13 +69,13 @@
     "workings": [
       [
         "Profit statements",
-        "Production 1,000 units, sales 800 at RM30, variable production cost RM12/unit, variable selling RM2/unit sold, fixed production overhead RM6,000, fixed selling/admin RM3,000; no opening inventory.",
-        "Marginal sales RM24,000. Variable production cost of sales 800×12=RM9,600; variable selling 800×2=RM1,600. Contribution RM12,800, fixed costs RM9,000, marginal profit RM3,800. Absorption unit production cost =12+6,000/1,000=RM18; cost of sales 800×18=RM14,400. Gross profit 24,000−14,400=RM9,600; less variable selling 1,600 and fixed admin 3,000 = RM5,000 absorption profit. Difference RM1,200 (=200 closing units×RM6)."
+        "Production 1,000 units, sales 800 at $30, variable production cost $12/unit, variable selling $2/unit sold, fixed production overhead $6,000, fixed selling/admin $3,000; no opening inventory.",
+        "Marginal sales $24,000. Variable production cost of sales 800×12=$9,600; variable selling 800×2=$1,600. Contribution $12,800, fixed costs $9,000, marginal profit $3,800. Absorption unit production cost =12+6,000/1,000=$18; cost of sales 800×18=$14,400. Gross profit 24,000−14,400=$9,600; less variable selling 1,600 and fixed admin 3,000 = $5,000 absorption profit. Difference $1,200 (=200 closing units×$6)."
       ],
       [
         "Inventory falls",
-        "Opening inventory 500 units; closing 300 units. Fixed production overhead per unit absorbed RM5.",
-        "Inventory decrease 200 units releases 200×5=RM1,000 prior fixed overhead into absorption cost of sales; absorption profit is RM1,000 below marginal profit, absent other differences."
+        "Opening inventory 500 units; closing 300 units. Fixed production overhead per unit absorbed $5.",
+        "Inventory decrease 200 units releases 200×5=$1,000 prior fixed overhead into absorption cost of sales; absorption profit is $1,000 below marginal profit, absent other differences."
       ]
     ]
   },
@@ -96,7 +96,7 @@
       ],
       [
         "Markup versus margin",
-        "Markup is profit divided by cost; margin is profit divided by selling price. For 25% markup on RM800 cost, selling price = RM1,000. For 25% margin, selling price = 800/(1−0.25)=RM1,066.67. Always identify which denominator the examiner uses."
+        "Markup is profit divided by cost; margin is profit divided by selling price. For 25% markup on $800 cost, selling price = $1,000. For 25% margin, selling price = 800/(1−0.25)=$1,066.67. Always identify which denominator the examiner uses."
       ],
       [
         "Cost-plus decisions",
@@ -106,18 +106,18 @@
     "workings": [
       [
         "Full job card",
-        "Job J17 uses material RM3,200; direct labour 50 hours at RM18; 20 machine hours at OAR RM12; 50 assembly hours at OAR RM6; external subcontractor RM500.",
-        "Material RM3,200 + labour RM900 + machine overhead RM240 + assembly overhead RM300 + subcontractor RM500 = RM5,140 job cost. A 20% markup quotation = 5,140×1.20 = RM6,168."
+        "Job J17 uses material $3,200; direct labour 50 hours at $18; 20 machine hours at OAR $12; 50 assembly hours at OAR $6; external subcontractor $500.",
+        "Material $3,200 + labour $900 + machine overhead $240 + assembly overhead $300 + subcontractor $500 = $5,140 job cost. A 20% markup quotation = 5,140×1.20 = $6,168."
       ],
       [
         "Batch cost per good unit",
-        "A batch of 500 units costs materials RM4,000, labour RM2,500 and overhead RM1,500. Of the 500 units, 20 are defective with no recovery value. All loss cost is charged to good units under this scenario.",
-        "Total RM8,000; 480 good units; cost per good unit = 8,000/480 = RM16.67 (rounded). If the question instead separates abnormal loss, alter the treatment."
+        "A batch of 500 units costs materials $4,000, labour $2,500 and overhead $1,500. Of the 500 units, 20 are defective with no recovery value. All loss cost is charged to good units under this scenario.",
+        "Total $8,000; 480 good units; cost per good unit = 8,000/480 = $16.67 (rounded). If the question instead separates abnormal loss, alter the treatment."
       ],
       [
         "Margin and mark-up",
-        "Job cost RM2,400 and required selling margin 30%.",
-        "Selling price = 2,400 / 0.70 = RM3,428.57; profit RM1,028.57. A 30% markup would yield only RM3,120 and is incorrect for this requirement."
+        "Job cost $2,400 and required selling margin 30%.",
+        "Selling price = 2,400 / 0.70 = $3,428.57; profit $1,028.57. A 30% markup would yield only $3,120 and is incorrect for this requirement."
       ]
     ]
   },
@@ -148,18 +148,18 @@
     "workings": [
       [
         "Normal loss with scrap",
-        "Input 1,000 units costing RM9,000. Normal loss 10% of input; scrap can be sold for RM2 per unit. Actual completed output 900 units.",
-        "Expected normal loss 100 units. Scrap proceeds 100×RM2=RM200. Net cost of good output = 9,000−200=RM8,800. Cost per good unit = 8,800/900 ≈ RM9.78. If actual output differs, calculate abnormal loss/gain separately."
+        "Input 1,000 units costing $9,000. Normal loss 10% of input; scrap can be sold for $2 per unit. Actual completed output 900 units.",
+        "Expected normal loss 100 units. Scrap proceeds 100×$2=$200. Net cost of good output = 9,000−200=$8,800. Cost per good unit = 8,800/900 ≈ $9.78. If actual output differs, calculate abnormal loss/gain separately."
       ],
       [
         "Two equivalent unit bases",
-        "Input 1,000 units. Completed 800. Closing WIP 200, materials 100% complete and conversion 40% complete. Materials cost RM5,000; conversion cost RM4,400. No opening WIP or losses.",
-        "Material EU = 800+200×100%=1,000; rate RM5. Conversion EU=800+200×40%=880; rate RM5. Completed cost=800×(5+5)=RM8,000. Closing WIP=200×5 + 80×5=RM1,400. Reconcile 8,000+1,400=RM9,400."
+        "Input 1,000 units. Completed 800. Closing WIP 200, materials 100% complete and conversion 40% complete. Materials cost $5,000; conversion cost $4,400. No opening WIP or losses.",
+        "Material EU = 800+200×100%=1,000; rate $5. Conversion EU=800+200×40%=880; rate $5. Completed cost=800×(5+5)=$8,000. Closing WIP=200×5 + 80×5=$1,400. Reconcile 8,000+1,400=$9,400."
       ],
       [
         "Joint cost allocation",
-        "Joint process costs RM72,000. Product A yields 2,000 units selling at RM30; B yields 1,000 units at RM20 at split-off.",
-        "Sales values A RM60,000, B RM20,000, ratio 3:1. Allocate A RM54,000 and B RM18,000. For further processing, ignore sunk joint allocation and compare additional net realisable value with further processing cost."
+        "Joint process costs $72,000. Product A yields 2,000 units selling at $30; B yields 1,000 units at $20 at split-off.",
+        "Sales values A $60,000, B $20,000, ratio 3:1. Allocate A $54,000 and B $18,000. For further processing, ignore sunk joint allocation and compare additional net realisable value with further processing cost."
       ]
     ]
   },
@@ -186,13 +186,13 @@
     "workings": [
       [
         "Passenger-kilometres",
-        "Bus A travels 400 km with average 25 passengers; Bus B travels 250 km with average 40 passengers. Total operating cost RM20,000.",
-        "Passenger-km = 400×25+250×40 = 20,000. Cost per passenger-km RM20,000/20,000 = RM1.00."
+        "Bus A travels 400 km with average 25 passengers; Bus B travels 250 km with average 40 passengers. Total operating cost $20,000.",
+        "Passenger-km = 400×25+250×40 = 20,000. Cost per passenger-km $20,000/20,000 = $1.00."
       ],
       [
         "Hotel cost per occupied night",
-        "A hotel has 30 rooms, 30 nights in month, occupancy 70%, and operating costs RM126,000.",
-        "Available room nights = 30×30=900; occupied room nights 900×70%=630. Cost per occupied room-night = 126,000/630 = RM200. Cost per available room-night = RM140; the two answer different questions."
+        "A hotel has 30 rooms, 30 nights in month, occupancy 70%, and operating costs $126,000.",
+        "Available room nights = 30×30=900; occupied room nights 900×70%=630. Cost per occupied room-night = 126,000/630 = $200. Cost per available room-night = $140; the two answer different questions."
       ]
     ]
   },
@@ -223,13 +223,13 @@
     "workings": [
       [
         "Complete CVP scenario",
-        "Selling price RM40, variable cost RM24, fixed cost RM96,000, expected units 8,000, target profit RM32,000.",
-        "Contribution RM16/unit, C/S ratio 16/40=40%. BEP = 96,000/16=6,000 units or RM240,000 revenue. Margin of safety=8,000−6,000=2,000 units, 25%. Expected profit=8,000×16−96,000=RM32,000. Target profit volume=(96,000+32,000)/16=8,000 units."
+        "Selling price $40, variable cost $24, fixed cost $96,000, expected units 8,000, target profit $32,000.",
+        "Contribution $16/unit, C/S ratio 16/40=40%. BEP = 96,000/16=6,000 units or $240,000 revenue. Margin of safety=8,000−6,000=2,000 units, 25%. Expected profit=8,000×16−96,000=$32,000. Target profit volume=(96,000+32,000)/16=8,000 units."
       ],
       [
         "Evaluate discount effect",
-        "Price decreases to RM36 while variable cost stays RM24 and fixed cost RM96,000.",
-        "New contribution RM12; break-even rises to 8,000 units. To preserve RM32,000 profit, volume must rise to (96,000+32,000)/12 = 10,666.67, hence 10,667 whole units."
+        "Price decreases to $36 while variable cost stays $24 and fixed cost $96,000.",
+        "New contribution $12; break-even rises to 8,000 units. To preserve $32,000 profit, volume must rise to (96,000+32,000)/12 = 10,666.67, hence 10,667 whole units."
       ]
     ]
   },
@@ -260,18 +260,18 @@
     "workings": [
       [
         "Make versus buy",
-        "A component uses RM12 materials, RM8 direct labour and RM3 variable overhead per unit. Fixed allocated overhead RM7/unit continues if outsourced. Outside supplier quotes RM26 per unit.",
-        "Relevant internal cost = 12+8+3=RM23. Buying RM26 costs RM3 more per unit, so make if capacity is available and there are no other avoidable costs. RM7 unavoidable allocation is ignored."
+        "A component uses $12 materials, $8 direct labour and $3 variable overhead per unit. Fixed allocated overhead $7/unit continues if outsourced. Outside supplier quotes $26 per unit.",
+        "Relevant internal cost = 12+8+3=$23. Buying $26 costs $3 more per unit, so make if capacity is available and there are no other avoidable costs. $7 unavoidable allocation is ignored."
       ],
       [
         "Limiting factor ranking",
-        "Product A contributes RM24/unit and takes 3 machine hours; B contributes RM18/unit and takes 1.5 hours.",
-        "Contribution per machine hour: A RM8; B RM12. If machine hours are the sole constraint, make B before A, subject to demand limits and contractual commitments."
+        "Product A contributes $24/unit and takes 3 machine hours; B contributes $18/unit and takes 1.5 hours.",
+        "Contribution per machine hour: A $8; B $12. If machine hours are the sole constraint, make B before A, subject to demand limits and contractual commitments."
       ],
       [
         "Special order with opportunity cost",
-        "Spare capacity permits order of 100 units at RM35 each; variable cost RM26/unit and one-off tooling RM500.",
-        "Incremental sales 100×35=RM3,500; variable cost RM2,600; tooling RM500; relevant profit RM400. Accept assuming no lost normal sales, tax or other omitted costs."
+        "Spare capacity permits order of 100 units at $35 each; variable cost $26/unit and one-off tooling $500.",
+        "Incremental sales 100×35=$3,500; variable cost $2,600; tooling $500; relevant profit $400. Accept assuming no lost normal sales, tax or other omitted costs."
       ]
     ]
   },
@@ -280,7 +280,7 @@
     "sections": [
       [
         "Cash flows and time value of money",
-        "Investment appraisal compares expected future net cash flows with the initial outlay. Use incremental cash flows, not accounting profit; depreciation is normally excluded unless tax effects require its consideration. Include disposal proceeds, working capital changes and relevant terminal costs. Discounting reflects that a future RM1 is worth less than an immediate RM1 at a positive cost of capital."
+        "Investment appraisal compares expected future net cash flows with the initial outlay. Use incremental cash flows, not accounting profit; depreciation is normally excluded unless tax effects require its consideration. Include disposal proceeds, working capital changes and relevant terminal costs. Discounting reflects that a future $1 is worth less than an immediate $1 at a positive cost of capital."
       ],
       [
         "Simple and discounted payback",
@@ -302,17 +302,17 @@
     "workings": [
       [
         "Uneven payback",
-        "Initial project cost RM50,000; expected cash receipts year 1 RM10,000, year 2 RM20,000, year 3 RM25,000.",
-        "Cumulative by end of year 2 RM30,000. Unrecovered RM20,000 at start of year 3. Assuming year-3 inflows arrive evenly, payback =2 + 20,000/25,000=2.8 years."
+        "Initial project cost $50,000; expected cash receipts year 1 $10,000, year 2 $20,000, year 3 $25,000.",
+        "Cumulative by end of year 2 $30,000. Unrecovered $20,000 at start of year 3. Assuming year-3 inflows arrive evenly, payback =2 + 20,000/25,000=2.8 years."
       ],
       [
         "NPV calculation",
-        "Outlay RM40,000 today; three end-year inflows of RM17,000; discount rate 10%.",
-        "NPV =−40,000 + 17,000/1.10 + 17,000/1.10² + 17,000/1.10³ ≈ −40,000+15,454.55+14,049.59+12,772.35 = +RM2,276.49. Accept on the stated NPV criterion."
+        "Outlay $40,000 today; three end-year inflows of $17,000; discount rate 10%.",
+        "NPV =−40,000 + 17,000/1.10 + 17,000/1.10² + 17,000/1.10³ ≈ −40,000+15,454.55+14,049.59+12,772.35 = +$2,276.49. Accept on the stated NPV criterion."
       ],
       [
         "IRR interpolation",
-        "Suppose a project's NPV is +RM4,000 at 10% and −RM2,000 at 20%.",
+        "Suppose a project's NPV is +$4,000 at 10% and −$2,000 at 20%.",
         "Approximate IRR = 10% + [4,000/(4,000+2,000)] × (20%−10%) =16.67%. The interpolation is approximate; verify with a calculator where available."
       ]
     ]
@@ -340,13 +340,13 @@
     "workings": [
       [
         "Profit differs from cash",
-        "A retailer reports profit RM20,000, trade receivables rise RM12,000, inventory rises RM6,000 and payables rise RM4,000; ignore other changes.",
-        "Approximate operating cash flow =20,000−12,000−6,000+4,000=RM6,000 (assuming noncash items and tax are irrelevant). Profit exceeds cash generated by RM14,000."
+        "A retailer reports profit $20,000, trade receivables rise $12,000, inventory rises $6,000 and payables rise $4,000; ignore other changes.",
+        "Approximate operating cash flow =20,000−12,000−6,000+4,000=$6,000 (assuming noncash items and tax are irrelevant). Profit exceeds cash generated by $14,000."
       ],
       [
         "Credit receipt timing",
-        "Credit sales: January RM15,000; February RM20,000. Customers pay one month after sale.",
-        "Cash receipts in February are January's RM15,000. February credit sales normally become March collections. Do not put February revenue into February cash inflows."
+        "Credit sales: January $15,000; February $20,000. Customers pay one month after sale.",
+        "Cash receipts in February are January's $15,000. February credit sales normally become March collections. Do not put February revenue into February cash inflows."
       ]
     ]
   },
@@ -373,8 +373,8 @@
     "workings": [
       [
         "Bank reconciliation",
-        "Ledger bank balance RM8,000 debit. Bank statement shows RM6,700. Outstanding lodgement RM2,000 and unpresented cheque RM700.",
-        "Statement balance 6,700 + deposit not yet credited 2,000 − cheque not yet presented 700 = RM8,000. If there are bank charges or direct debits not yet recorded, update the ledger first."
+        "Ledger bank balance $8,000 debit. Bank statement shows $6,700. Outstanding lodgement $2,000 and unpresented cheque $700.",
+        "Statement balance 6,700 + deposit not yet credited 2,000 − cheque not yet presented 700 = $8,000. If there are bank charges or direct debits not yet recorded, update the ledger first."
       ],
       [
         "Working capital cycle",
@@ -406,13 +406,13 @@
     "workings": [
       [
         "Three-month collections",
-        "Credit sales: January RM20,000, February RM30,000, March RM24,000. Customers pay 40% in month of sale and 60% next month. December credit sales RM10,000.",
-        "January receipts 40%×20,000 +60%×10,000=RM14,000. February =40%×30,000 +60%×20,000=RM24,000. March =40%×24,000 +60%×30,000=RM27,600."
+        "Credit sales: January $20,000, February $30,000, March $24,000. Customers pay 40% in month of sale and 60% next month. December credit sales $10,000.",
+        "January receipts 40%×20,000 +60%×10,000=$14,000. February =40%×30,000 +60%×20,000=$24,000. March =40%×24,000 +60%×30,000=$27,600."
       ],
       [
         "Monthly closing cash balances",
-        "Opening January RM5,000. Receipts Jan RM14,000, Feb RM24,000, Mar RM27,600. Total cash payments Jan RM17,000, Feb RM31,000, Mar RM22,000.",
-        "Jan close 5,000+14,000−17,000=RM2,000. Feb close 2,000+24,000−31,000=−RM5,000 overdraft. Mar close −5,000+27,600−22,000=RM600. Maximum expected funding need is RM5,000, not just the positive March closing figure."
+        "Opening January $5,000. Receipts Jan $14,000, Feb $24,000, Mar $27,600. Total cash payments Jan $17,000, Feb $31,000, Mar $22,000.",
+        "Jan close 5,000+14,000−17,000=$2,000. Feb close 2,000+24,000−31,000=−$5,000 overdraft. Mar close −5,000+27,600−22,000=$600. Maximum expected funding need is $5,000, not just the positive March closing figure."
       ]
     ]
   },
@@ -439,13 +439,13 @@
     "workings": [
       [
         "Compare overdraft versus term borrowing",
-        "A business needs RM100,000 for 3 months. Overdraft rate 9% p.a. on actual balances throughout; short-term loan 7% p.a. plus RM1,000 arrangement fee. Assume full balance used for 3 months.",
-        "Overdraft cost =100,000×9%×3/12=RM2,250. Loan interest =100,000×7%×3/12=RM1,750 plus fee RM1,000 = RM2,750. Overdraft is RM500 cheaper under assumptions; repayment flexibility may affect decision."
+        "A business needs $100,000 for 3 months. Overdraft rate 9% p.a. on actual balances throughout; short-term loan 7% p.a. plus $1,000 arrangement fee. Assume full balance used for 3 months.",
+        "Overdraft cost =100,000×9%×3/12=$2,250. Loan interest =100,000×7%×3/12=$1,750 plus fee $1,000 = $2,750. Overdraft is $500 cheaper under assumptions; repayment flexibility may affect decision."
       ],
       [
         "Deposit interest",
-        "RM80,000 held in a 6-month deposit at simple 4% annual interest.",
-        "Interest =80,000×0.04×6/12=RM1,600 before tax and fees. Compare the maturity with expected payroll and supplier obligations."
+        "$80,000 held in a 6-month deposit at simple 4% annual interest.",
+        "Interest =80,000×0.04×6/12=$1,600 before tax and fees. Compare the maturity with expected payroll and supplier obligations."
       ]
     ]
   }
