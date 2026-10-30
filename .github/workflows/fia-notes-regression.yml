@@ -33,6 +33,7 @@ on:
       - 'tests/fia-notes-regression.js'
       - 'tests/notes-coverage-regression.js'
       - 'tests/notes-reader-regression.js'
+      - 'tests/notes-depth-regression.cjs'
       - '.github/workflows/fia-notes-regression.yml'
   pull_request:
   workflow_dispatch:
@@ -56,12 +57,18 @@ jobs:
           node --check notes-visual-all.js
           node --check notes-visual-workbook.js
           node --check notes-worked-tables-data.js
+          node --check textbook-crossqual-a1.js
+          node --check textbook-crossqual-a2-foundation.js
+          node --check textbook-crossqual-a2-professional.js
+          node --check textbook-crossqual-a3-foundation.js
+          node --check textbook-crossqual-a3-professional.js
       - name: Test syllabus coverage and retired navigation
         run: |
           node tests/fia-notes-regression.js
           node tests/notes-coverage-regression.js
           node tests/notes-reader-regression.js
           node tests/notes-release-regression.cjs
+          node tests/notes-depth-regression.cjs
 
 
       - name: Verify real browser typography and layout at five widths
