@@ -80,7 +80,20 @@ function topicMode(paper){
 function sections(opts){
  const book=opts.book;
  if(Array.isArray(book?.sections)&&book.sections.length){
-  return book.sections.map(([heading,prose])=>({heading:clean(heading),detail:String(prose||'').trim()})).slice(0,4);
+  const result=book.sections.map(([heading,prose])=>({heading:clean(heading),detail:String(prose||'').trim()})).slice(0,4);
+  // Three-section extended chapters still display the standard four-card grid.
+  // The fourth card is a real topic-specific decision check, not a filler card.
+  if(result.length===3&&opts.note){
+   const n=opts.note;
+   const detail=[
+    'Exam judgement: '+(n.trap||'Check the accounting treatment against the stated facts.'),
+    n.check?'Test your reasoning: '+n.check:'',
+    n.answer?'Reasoned conclusion: '+n.answer:'',
+    n.formula?'Relevant rule: '+n.formula:''
+   ].filter(Boolean).join('\n\n');
+   if(detail.length>=85)result.push({heading:'Exam judgement and errors',detail});
+  }
+  return result;
  }
  const n=opts.note||{};
  const steps=Array.isArray(n.steps)?n.steps.filter(Boolean):[];
