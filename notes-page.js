@@ -9,6 +9,8 @@ function qualificationOf(code){return FIA_PAPERS.some(p=>p.code===code)?'fia':AC
 const syllabus=root.LedgerNotesSyllabi?.papers||{};
 const lessons=root.LedgerFiaNotes||{};
 const outcomeLessons=root.LedgerOutcomeLessons||{};
+const officialSyllabusPages={FA2:'https://www.accaglobal.com/my/en/student/exam-support-resources/foundation-level-study-resources/fa2/fa2-syllabus-study-guide.html',MA2:'https://www.accaglobal.com/my/en/student/exam-support-resources/foundation-level-study-resources/ma2/ma2-syllabus-study-guide.html'};
+const financialExaminableDocs={FA2:'https://www.accaglobal.com/content/dam/acca/global/PDF-students/fia/fa2_ffa_s26_j27_examinable_docs.pdf',FA:'https://www.accaglobal.com/content/dam/acca/global/PDF-students/fia/fa2_ffa_s26_j27_examinable_docs.pdf',FFA:'https://www.accaglobal.com/content/dam/acca/global/PDF-students/fia/fa2_ffa_s26_j27_examinable_docs.pdf'};
 const verifiedFiaSources={FA2:'https://www.accaglobal.com/content/dam/acca/global/PDF-students/fia/studyguides/FA2%20S25-A26%20syllabus%20and%20study%20guide%20-%20final.pdf',MA2:'https://www.accaglobal.com/content/dam/acca/global/PDF-students/fia/studyguides/MA2%20S25-A26%20syllabus%20and%20study%20guide%20-%20final.pdf'};
 let paper='ALL',qualification='all',filter='all',query='';
 const searchParams=new URLSearchParams(location.search);
@@ -22,7 +24,7 @@ function link(label,url,cls){
  return a;
 }
 function syllabusCode(t){const m=/^([A-Z]\d+)\s*·\s*(.*)$/.exec(t);return m?{code:m[1],title:m[2]}:{code:'—',title:t}}
-function info(code){const p=PAPERS.find(x=>x.code===code);return {name:p?.name||code,description:p?.stage||'',topics:syllabus[code]?.topics||[],source:verifiedFiaSources[code]||syllabus[code]?.source||null,edition:verifiedFiaSources[code]?'VERIFIED 2025–26 GUIDE · 2026–27 VERIFICATION PENDING':syllabus[code]?.edition||null,variant:syllabus[code]?.variant||'GLO'}}
+function info(code){const p=PAPERS.find(x=>x.code===code);return {name:p?.name||code,description:p?.stage||'',topics:syllabus[code]?.topics||[],source:officialSyllabusPages[code]||syllabus[code]?.source||null,edition:officialSyllabusPages[code]?'ACCA 2026–27 GUIDE PUBLISHED · INDEPENDENT DETAILED OUTCOME REVIEW PENDING':syllabus[code]?.edition||null,variant:syllabus[code]?.variant||'GLO'}}
 function stageLabel(){return qualification==='fia'?'FIA / FOUNDATION':qualification==='acca'?'ACCA / FULL QUALIFICATION':'FIA + ACCA / ALL 25 PAPERS'}
 function updateQualificationButtons(){
  document.querySelectorAll('[data-notes-qualification]').forEach(btn=>{
@@ -82,6 +84,7 @@ function makeLesson(n,src,paperCode){
   if(!detailed)main.append(node('p','notes-review-status','This topic needs an individual learning-outcome audit before it can be marked syllabus-complete.'));
  if(n.reviewStatus)main.append(node('p','notes-review-status',n.reviewStatus+' · '+(n.updatedAt||'2026-10-23')));
  main.append(node('p','',n.summary));
+  if(paperCode==='FA2'&&n.code==='A3')main.append(node('p','notes-review-status','2026–27 ACCA examinable documents include IAS 2, IAS 16, IAS 37, IFRS 15, IFRS 18 and the Conceptual Framework. IFRS 18 addresses presentation/disclosure, not recognition rules. This brief note does NOT teach every examinable requirement; consult the official document list and the study guide.'));
   if(detailed)appendOutcomeTeaching(main,paperCode,n.code);
  const chapterKey=root.LedgerFiaGuides?.topicChapters?.[paperCode+':'+n.code];
  if(chapterKey&&root.appendFiaTeaching)root.appendFiaTeaching(main,paperCode,chapterKey);
@@ -98,7 +101,8 @@ function makeLesson(n,src,paperCode){
  const answer=node('div','notes-check-answer',n.answer);
  check.append(node('h4','', 'SELF CHECK'),summary,answer);side.append(check);
  side.append(link('PRACTICE '+paperCode+' / '+n.code+' →','quiz.html?paper='+paperCode+'&topic='+n.code,'notes-guide-link'));
- side.append(link(verifiedFiaSources[paperCode]?'LAST VERIFIED OFFICIAL GUIDE (2025–26) ↗':'OFFICIAL SYLLABUS ↗',src || resourceLink(paperCode)));
+ side.append(link('OFFICIAL 2026–27 SYLLABUS ↗',src || resourceLink(paperCode)));
+  if(financialExaminableDocs[paperCode])side.append(link('2026–27 EXAMINABLE IFRS DOCUMENTS ↗',financialExaminableDocs[paperCode]));
  layout.append(main,side);return layout;
 }
 function buildTopic(paperCode,item,index){
@@ -137,7 +141,8 @@ function renderIntro(codes){
  const right=node('div');
  if(paper!=='ALL'){
    const source=info(paper).source;
-   right.append(link(verifiedFiaSources[paper]?'LAST VERIFIED OFFICIAL GUIDE (2025–26) ↗':'OFFICIAL PAPER SYLLABUS ↗',source||resourceLink(paper)));
+   right.append(link('OFFICIAL 2026–27 SYLLABUS ↗',source||resourceLink(paper)));
+   if(financialExaminableDocs[paper])right.append(link('EXAMINABLE IFRS DOCUMENTS · 2026–27 ↗',financialExaminableDocs[paper]));
    right.append(document.createTextNode(' '));
    right.append(link('EXAM SUPPORT ↗',resourceLink(paper)));
  }else{right.append(link('ACCA EXAM RESOURCE FINDER ↗','https://www.accaglobal.com/my/en/student/exam-support-resources.html'))}
