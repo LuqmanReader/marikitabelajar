@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-/* LedgerPeer — regression test for ALL 700 topic overview illustrations.
- * The test verifies label routing, text/spacing conventions and that unrelated
- * syllabus concepts are NOT shown as transaction-flow arrows.
+/* LedgerPeer — regression test for all chapter interactive explanation cards.
+ * Verifies complete content is never clipped, keyboard accessible native details
+ * are used, and expand/collapse controls work for every indexed topic.
  * Usage: node scripts/check-notes-visual-consistency.cjs
  * Does not certify the academic correctness or completeness of lesson content.
  */
@@ -39,16 +39,20 @@ const sources=[
 ];
 const books=Object.assign({},...sources.map(([file,mark])=>parse(read(file),mark)));
 class FakeNode{
- constructor(tag){this.tag=tag;this.children=[];this.attrs={};this.textContent='';this.className=''}
+ constructor(tag){
+  this.tag=tag;this.children=[];this.attrs={};this.handlers={};
+  this.textContent='';this.className='';this.open=false;
+ }
  setAttribute(k,v){this.attrs[k]=String(v)}
  append(...items){this.children.push(...items)}
+ addEventListener(name,handler){this.handlers[name]=handler}
 }
 const document={createElement:tag=>new FakeNode(tag),createElementNS:(_,tag)=>new FakeNode(tag)};
 const window={};
 new vm.Script(read('notes-visual-all.js'),{filename:'notes-visual-all.js'});
 vm.runInNewContext(read('notes-visual-all.js'),{window,document},{filename:'notes-visual-all.js',timeout:3000});
 const errors=[];
-let count=0,diagrams=0,workflow=0,badArrows=0,badFonts=0;
+let count=0,interactive=0,buttonsTested=0,untruncatedSections=0,preservedWorkflows=0;
 function collect(n,pred){
  const arr=[];const go=x=>{if(pred(x))arr.push(x);for(const y of x.children)go(y)};
  go(n);return arr;
@@ -59,56 +63,53 @@ for(const [paper,syll] of Object.entries(syllabus)){
   const code=topic.split(' · ')[0],key=paper+':'+code;
   const title=topic.split(' · ').slice(1).join(' · ');
   const host=new FakeNode('div');
-  const opts={paper,code,title,note:lessons[key],book:books[key]};
+  const book=books[key];
   try{
-   if(!window.renderLedgerChapterVisual(host,opts)){errors.push(key+' not rendered');continue}
-   const images=collect(host,n=>n.tag==='svg');
-   if(images.length!==1){errors.push(key+' not exactly one illustration');continue}
-   diagrams++;
-   const svg=images[0],isWorkflow=key==='FA1:A2';
-   if(svg.attrs.viewBox!=='0 0 1200 734')errors.push(key+' inconsistent viewBox');
-   const labels=collect(svg,n=>n.tag==='text').map(n=>n.textContent).join(' ');
-   const textNodes=collect(svg,n=>n.tag==='text');
-   for(const t of textNodes){
-    if(t.attrs['font-family']!=='Arial, Helvetica, sans-serif')badFonts++;
-    const x=Number(t.attrs.x),y=Number(t.attrs.y);
-    if(!Number.isFinite(x)||!Number.isFinite(y)||x<0||y<0||x>1200||y>734)
-      errors.push(key+' text outside viewBox');
-    const size=Number(t.attrs['font-size']),weight=Number(t.attrs['font-weight']);
-    const approximateWidth=[...t.textContent].reduce((sum,ch)=>{
-      const heavy=weight>=700;
-      const cw="ilI1|.,:;!' ".includes(ch)?size*.28:
-        'MW@%'.includes(ch)?size*.85:
-        /[A-Z]/.test(ch)?size*(heavy?.66:.61):size*(heavy?.58:.52);
-      return sum+cw;
-    },0);
-    let right=1190;
-    if(x===72)right=1150;
-    if(x===114||x===703)right=x+447;
-    if(x===53||x===642)right=x+502;
-    if(x+approximateWidth>right+1)errors.push(key+' text overflow at ('+x+','+y+')');
+   if(!window.renderLedgerChapterVisual(host,{paper,code,title,note:lessons[key],book})){
+    errors.push(key+' not rendered');continue;
    }
-   const paths=collect(svg,n=>n.tag==='line'||n.tag==='path');
-   if(!isWorkflow&&paths.length){badArrows++;errors.push(key+' shows a false concept sequence')}
-   if(isWorkflow){
-    workflow++;
-    if(!labels.includes('BOOKKEEPING & SOURCE RECORDS')||labels.includes('BUSINESS DECISIONS'))
-     errors.push('FA1:A2 wrongly labelled');
-    if(paths.length!==8)errors.push('FA1:A2 must have exactly four clear workflow arrows');
+   const maps=collect(host,n=>n.className==='lv-interactive-map');
+   const cards=collect(host,n=>n.tag==='details'&&n.className==='lv-interactive-card');
+   const controls=collect(host,n=>n.className==='lv-all-toggle');
+   if(maps.length!==1||cards.length!==4)errors.push(key+' missing four interactive cards');
+   else interactive++;
+   if(cards.some(card=>!card.open))errors.push(key+' cards must initially be expanded');
+   if(cards.some(card=>collect(card,n=>n.tag==='summary').length!==1))
+    errors.push(key+' cards must have keyboard-operable native summary');
+   if(controls.length!==2||controls.some(button=>!button.handlers.click)){
+    errors.push(key+' missing functional bulk controls');
+   }else{
+    controls[0].handlers.click();
+    if(cards.some(card=>card.open))errors.push(key+' collapse all failed');
+    controls[1].handlers.click();
+    if(cards.some(card=>!card.open))errors.push(key+' expand all failed');
+    buttonsTested++;
+   }
+   for(let i=0;i<Math.min(4,book?.sections.length||0);i++){
+    const paragraphText=collect(cards[i],n=>n.className==='lv-card-paragraph')
+     .map(n=>n.textContent).join('\n\n');
+    if(paragraphText!==book.sections[i][1].trim())
+     errors.push(key+' section '+(i+1)+' does not preserve source text');
+    else untruncatedSections++;
+   }
+   const images=collect(host,n=>n.tag==='svg');
+   if(key==='FA1:A2'){
+    if(images.length!==1)errors.push('FA1:A2 document workflow SVG missing');
+    else preservedWorkflows++;
     const text=collect(host,n=>n.tag==='p'||n.tag==='th'||n.tag==='td').map(n=>n.textContent).join(' ');
     if(!text.includes('RM90')||!text.includes('purchase order')||!text.includes('goods received note'))
-     errors.push('FA1:A2 missing document mismatch illustration');
-   }else if(!labels.includes('CONCEPT OVERVIEW')){
-    errors.push(key+' missing nonsequential concept disclosure');
+     errors.push('FA1:A2 document example damaged');
+   }else if(images.length){
+    errors.push(key+' should use interactive concept cards, not a static SVG');
    }
   }catch(e){errors.push(key+': '+e.message)}
  }
 }
 const html=read('notes.html'),css=read('notes.css');
-if(!html.includes('notes-visual-all.js?v=20261030consistency3'))errors.push('diagram cache not refreshed');
-if(!html.includes('notes.css?v=20261030consistency3'))errors.push('stylesheet cache not refreshed');
-if(!css.includes('.lv-document-lesson')||!css.includes('.lv-doc-table-inner'))errors.push('source-document table styles missing');
-console.log(JSON.stringify({papers:Object.keys(syllabus).length,topics:count,illustrated:diagrams,validDocumentWorkflow:workflow,badArrows,badFonts,failures:errors.length},null,2));
-if(errors.length){errors.slice(0,30).forEach(e=>console.error('FAIL',e));process.exitCode=1}
-else console.log('PASS: consistent visual structure for all indexed chapters; no false flow arrows');
-console.log('This is a presentation/regression audit, not full 2026–27 learning-outcome certification.');
+if(!html.includes('notes-visual-all.js?v=20261030interactive4'))errors.push('interactive JS cache not refreshed');
+if(!html.includes('notes.css?v=20261030interactive4'))errors.push('interactive stylesheet cache not refreshed');
+if(!css.includes('.lv-interactive-card')||!css.includes('.lv-card-content'))errors.push('interactive card CSS missing');
+console.log(JSON.stringify({papers:Object.keys(syllabus).length,topics:count,interactive,buttonsTested,untruncatedSections,preservedWorkflows,errors:errors.length},null,2));
+if(errors.length){errors.slice(0,35).forEach(e=>console.error('FAIL',e));process.exitCode=1}
+else console.log('PASS: all topics expose full, interactive, keyboard-accessible chapter cards');
+console.log('This regression test does not certify 2026–27 detailed syllabus content.');
