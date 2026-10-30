@@ -94,5 +94,47 @@ add(['FTX:A1'],'Tax law sources and the disciplined use of current rules',[
 ['Distinguishing accounting from taxable figures','Accounting profit often begins a trading-profit computation but is not automatically taxable profit. Adjust for specified disallowed expenditure, tax reliefs, capital allowances and timing differences under the relevant rules. Do not introduce a tax rate or allowance from memory when the question supplies the applicable amount.'],
 ['Explaining an answer responsibly','Show the starting figure, each labelled adjustment, the resulting taxable base and any assumptions. Keep computation of tax distinct from collection and reporting. A tax planning recommendation must be lawful, supported by conditions and sensitive to changing legislation.']
 ],['Profit bridge','Accounts show profit of £46,000. The question states £2,000 of expenses are disallowed and £3,500 of separate tax deductions are allowed. What is the adjusted profit?','Start with £46,000, add back £2,000 and deduct £3,500: £44,500 adjusted profit. This is an illustrative computation based entirely on the stated assumptions; further statutory adjustments or current year rates might be relevant in a real examination.']);
+// Additional examination reasoning for chapters whose initial section was too brief.
+const more={
+'MA:A1':[
+'For a discontinuation decision, compare future cash flows that disappear or arise because of the change. A department may seem unprofitable after allocations even though closing it would not save the shared head-office rent.',
+'The comparison is diagnostic, not automatic blame: high wastage could reflect poor-quality incoming materials, a machine fault or an unrealistic standard. Record the cause and the person able to change it.',
+'When presenting unit cost, distinguish output units from labour-hours and show the denominator. A lower total cost with sharply lower output may still represent worsening efficiency.'
+],
+'SBL:A1':[
+'Senior leaders often manage several conflicting objectives. A credible recommendation must address the affected employees, customers and controls rather than describe a preferred personality trait.',
+'Delegation can fail if the recipient lacks authority to approve spending or sufficient time to act. Specify what is delegated, who approves exceptions and when progress should be reviewed.',
+'Strong examination answers assess implementation: the same rapid directive style that is appropriate for an immediate safety issue may damage trust during a long-term transformation.'
+],
+'APM:A1':[
+'A measure should help monitor a particular strategic assumption, such as faster product development supporting market share. If the assumption fails, modify the performance model rather than simply tightening the target.',
+'Separate controllable outcomes from external factors such as market price changes. Where a manager cannot control a factor, report its effect transparently before assigning performance responsibility.',
+'Evaluate whether a measure can be gamed: a lower complaint count may reflect worse reporting access, and faster production may create more defective output. Cross-check results with independent evidence.'
+],
+'ATX:A1':[
+'A cross-border fact pattern should be mapped by person, country, tax year and income type. Each category may have different source, relief, treaty and reporting issues; one global percentage is insufficient.',
+'Relief interactions matter: the maximum value of an exemption can change when another election or loss is used first. Show the ordering required by the question and record any uncertain condition.',
+'A technical answer needs a practical recommendation identifying action dates, documentation and the risk of challenge. Do not promise that a planning arrangement will be accepted solely because it appears financially advantageous.'
+],
+'FAU:A1':[
+'Independence and professional scepticism must be evaluated throughout the engagement. A client paying the fee is not a justification to accept unsupported statements without sufficient evidence.',
+'To test completeness, a procedure often starts with external or source evidence and traces into the accounting records. To test existence, it may start with recorded balances and seek evidence that the items actually exist.',
+'The auditor evaluates whether remaining misstatements are material and whether sufficient evidence was obtained. Distinguish a material misstatement from the inability to obtain evidence before concluding on the report.'
+],
+'FFM:A1':[
+'A longer operating cycle normally means more cash tied up in inventory and customer credit. Compare trend movements rather than treating a single year-end snapshot as representative of seasonal operations.',
+'Always identify the matching denominator: inventory days typically relate to cost of sales, and receivable days to credit sales where available. Incorrect numerator and denominator definitions make the result misleading.',
+'Extending supplier payment days may lower the calculated cycle but jeopardise early-payment discounts or supplier confidence. The recommendation should include these costs and operational consequences.'
+],
+'FTX:A1':[
+'A tax authority guide can explain routine practice but does not negate the legal requirements of a statute. The correct answer identifies the governing source and uses the exam-session legislation.',
+'Construct a labelled profit reconciliation: start from accounting profit, add back costs disallowed for tax and deduct relevant statutory allowances. Do not treat accounting depreciation as equivalent to capital allowances.',
+'State the taxable period, source of each adjustment and whether it affects the computation or merely the timing of tax payments. A clear schedule makes errors easier to locate and verify.'
+]
+};
+for(const [key,extras] of Object.entries(more)){
+ const chapter=book[key];if(!chapter)throw Error('Missing A1 chapter '+key);
+ extras.forEach((paragraph,i)=>{chapter.sections[i][1]+='\n\n'+paragraph});
+}
 root.LedgerSupplementalTextbooks=book;
 })(typeof window!=='undefined'?window:globalThis);
