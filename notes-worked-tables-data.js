@@ -603,8 +603,8 @@
       [
         "NPV",
         "—",
-        "Sum of PVs",
-        "+2,276.49"
+        "Sum using unrounded PVs",
+        "+2,276.48"
       ]
     ],
     "check": "NPV = −40,000 + 17,000/1.1 + 17,000/1.1² + 17,000/1.1³ ≈ +RM2,276.48 (small rounding differences).",
