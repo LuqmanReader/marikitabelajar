@@ -1,198 +1,252 @@
-/* LedgerPeer chapter-specific diagram system.
-   All diagrams are original SVGs built using the actual topic teaching content.
-   They never pretend to be ACCA's official figures or to certify syllabus coverage. */
+/* LedgerPeer visual lesson renderer · all FIA–ACCA paper indexes.
+   Each illustration depicts concepts drawn from that chapter, not imaginary
+   causal relationships. Only verified document workflows use arrows.
+   Original educational diagrams; not official ACCA or Kaplan material. */
 (function(root){
 'use strict';
-const ns='http://www.w3.org/2000/svg';
-const make=(tag,attrs={},text)=>{
- const el=document.createElementNS(ns,tag);
- for(const [k,v]of Object.entries(attrs))el.setAttribute(k,String(v));
- if(text!==undefined)el.textContent=String(text);
- return el;
-};
-const el=(tag,cl,text)=>{const n=document.createElement(tag);if(cl)n.className=cl;if(text!==undefined)n.textContent=String(text);return n};
-const clip=(s,n=100)=>{const t=String(s||'').replace(/\s+/g,' ').trim();return t.length>n?t.slice(0,n-1).replace(/\s+\S*$/,'')+'…':t};
-const lines=(s,max=27)=>{
- const words=String(s||'').replace(/\s+/g,' ').split(' '),out=[];let line='';
- for(const w of words){if((line+' '+w).trim().length>max&&line){out.push(line);line=w}else line=(line?line+' ':'')+w}if(line)out.push(line);
- return out;
-};
-const modes=[
- {label:'ACCOUNTING RECORDS',accent:'#ffe062',icon:'ledger'},
- {label:'COST AND PERFORMANCE',accent:'#d7edff',icon:'bars'},
- {label:'TAX COMPUTATION',accent:'#fbe0c9',icon:'coins'},
- {label:'AUDIT AND ASSURANCE',accent:'#d6f4e4',icon:'shield'},
- {label:'LAW AND GOVERNANCE',accent:'#eddcfa',icon:'scales'},
- {label:'FINANCE AND INVESTMENT',accent:'#dbe9ff',icon:'timeline'},
- {label:'BUSINESS DECISIONS',accent:'#faeac3',icon:'matrix'},
- {label:'FINANCIAL REPORTING',accent:'#dfebff',icon:'statement'}
-];
-function getMode(paper,title){
- const text=(paper+' '+title).toLowerCase();
- if(/tax|capital gains|vat|taxation/.test(text)||['TX','FTX','ATX'].includes(paper))return modes[2];
- if(/law|legal|contract|legislation/.test(text)||paper==='LW')return modes[4];
- if(/audit|assurance|internal control|ethical/.test(text)||['AA','AAA','FAU'].includes(paper))return modes[3];
- if(/financ|cash|treasury|capital investment|npv|investment appraisal|working capital/.test(text)&&['FM','AFM','FFM','MA2','MA1'].includes(paper))return modes[5];
- if(/cost|budget|variance|labour|material|performance|process/.test(text)||['MA','FMA','PM','APM','MA1','MA2'].includes(paper))return modes[1];
- if(/statement|IFRS|IAS|group account|consolidat|reporting/.test(text)||['FR','SBR','FFA','FA'].includes(paper))return modes[7];
- if(/strategy|business|stakeholder|organisation|governance|professional/.test(text)||['BT','FBT','SBL'].includes(paper))return modes[6];
- return modes[0];
+const SVG_NS='http://www.w3.org/2000/svg';
+const ink='#171717',paper='#fffaf0',yellow='#ffd447';
+function svgNode(tag,attrs={},label){
+ const n=document.createElementNS(SVG_NS,tag);
+ for(const [key,value] of Object.entries(attrs))n.setAttribute(key,String(value));
+ if(label!==undefined)n.textContent=String(label);
+ return n;
 }
-function rounded(svg,x,y,w,h,fill,stroke='#181818',rx=14){svg.append(make('rect',{x,y,width:w,height:h,rx,fill,stroke,'stroke-width':3}))}
-function text(svg,x,y,value,size=20,weight=600,color='#151515',other={}){
- svg.append(make('text',{x,y,fill:color,'font-size':size,'font-weight':weight,'font-family':'Arial, sans-serif',...other},value));
+function node(tag,cls,txt){
+ const n=document.createElement(tag);
+ if(cls)n.className=cls;
+ if(txt!==undefined)n.textContent=String(txt);
+ return n;
 }
-function wrapped(svg,x,y,s,width=29,size=20,color='#171717',max=3){
- const all=lines(s,width),take=all.slice(0,max);
- take.forEach((part,i)=>text(svg,x,y+i*(size+7),i===max-1&&all.length>max?clip(part,Math.max(10,width-3))+'…':part,size,650,color));
+function rect(s,x,y,w,h,fill,rx=10,stroke=ink,width=3){
+ s.append(svgNode('rect',{x,y,width:w,height:h,rx,fill,stroke,'stroke-width':width}));
 }
-function icon(svg,name,x,y){
- const stroke='#161616';
- const g=make('g',{transform:'translate('+x+' '+y+')',stroke,fill:'none','stroke-width':4,'stroke-linecap':'round','stroke-linejoin':'round'});
- const line=(x1,y1,x2,y2)=>g.append(make('line',{x1,y1,x2,y2}));
- if(name==='ledger'||name==='statement'){
-  g.append(make('rect',{x:3,y:3,width:52,height:60,rx:5}));
-  line(16,19,44,19);line(16,32,44,32);line(16,45,44,45);line(10,4,10,62);
- }else if(name==='bars'){
-  g.append(make('rect',{x:2,y:31,width:12,height:32,fill:'#fff'}));
-  g.append(make('rect',{x:23,y:18,width:12,height:45,fill:'#fff'}));
-  g.append(make('rect',{x:44,y:5,width:12,height:58,fill:'#fff'}));
- }else if(name==='coins'){
-  for(let j=0;j<3;j++){g.append(make('ellipse',{cx:29,cy:19+j*15,rx:26,ry:12}));if(j<2){line(3,19+j*15,3,34+j*15);line(55,19+j*15,55,34+j*15)}}
- }else if(name==='shield'){
-  g.append(make('path',{d:'M29 3L54 12V33Q50 51 29 64Q8 51 4 33V12Z'}));
-  g.append(make('path',{d:'M16 33L25 42L43 21'}));
- }else if(name==='scales'){
-  line(30,6,30,61);line(7,24,53,24);line(10,61,50,61);
-  line(9,24,9,40);line(51,24,51,40);
-  g.append(make('path',{d:'M0 40Q9 57 18 40ZM42 40Q51 57 60 40Z'}));
- }else if(name==='timeline'){
-  line(5,45,58,45);for(let j=0;j<3;j++){g.append(make('circle',{cx:10+j*22,cy:45,r:6,fill:'#ffe062'}));line(10+j*22,10+j*8,10+j*22,39)}
- }else{
-  for(let j=0;j<4;j++){g.append(make('rect',{x:2+(j%2)*32,y:4+Math.floor(j/2)*32,width:23,height:23,rx:3}))}
+function write(s,x,y,content,size=18,weight=600,color=ink,attributes={}){
+ s.append(svgNode('text',{
+  x,y,fill:color,'font-family':'Arial, Helvetica, sans-serif',
+  'font-size':size,'font-weight':weight,'letter-spacing':'0',
+  ...attributes
+ },content));
+}
+function clean(str){return String(str||'').replace(/\s+/g,' ').trim()}
+function charWidth(c,size,heavy){
+ if('ilI1|.,:;!\' '.includes(c))return size*.28;
+ if('MW@%'.includes(c))return size*.85;
+ if(/[A-Z]/.test(c))return size*(heavy?.66:.61);
+ return size*(heavy?.58:.52);
+}
+function wrapping(str,maxWidth,size=18,heavy=false){
+ const words=clean(str).split(' ').filter(Boolean),rows=[];let line='',pixels=0;
+ for(const word of words){
+  const ww=[...word].reduce((v,c)=>v+charWidth(c,size,heavy),0);
+  const sw=line?size*.28:0;
+  if(line&&pixels+sw+ww>maxWidth){
+   rows.push(line);line=word;pixels=ww;
+  }else{line+=(line?' ':'')+word;pixels+=sw+ww}
  }
- svg.append(g);
+ if(line)rows.push(line);
+ return rows;
 }
-function arrow(svg,x1,y1,x2,y2){
- svg.append(make('path',{d:'M'+x1+' '+y1+' L'+x2+' '+y2,fill:'none',stroke:'#161616','stroke-width':4,'stroke-linecap':'round'}));
- svg.append(make('path',{d:'M'+(x2-10)+' '+(y2-7)+' L'+x2+' '+y2+' L'+(x2-10)+' '+(y2+7),fill:'none',stroke:'#161616','stroke-width':4,'stroke-linejoin':'round'}));
+function measuredWidth(str,size,heavy){
+ return [...str].reduce((w,c)=>w+charWidth(c,size,heavy),0);
 }
-function diagram(opts){
- const mode=getMode(opts.paper,opts.title);
- const svg=make('svg',{viewBox:'0 0 1200 510',role:'img','aria-label':opts.paper+' '+opts.code+': visual learning map for '+opts.title,'xmlns':ns});
- svg.append(make('rect',{width:1200,height:510,rx:14,fill:'#fffbf3'}));
- rounded(svg,16,16,1168,89,'#151515','#151515');
- icon(svg,mode.icon,40,28);
- text(svg,123,51,mode.label+' / '+opts.paper+' '+opts.code,17,900,'#ffe06b');
- wrapped(svg,123,82,opts.title,54,23,'#fff',1);
- const data=opts.steps.slice(0,4);
- while(data.length<4)data.push('Use the result to check the reported or planned answer.');
- const drawPanel=(x,y,w,h,index,fill)=>{
-   rounded(svg,x,y,w,h,fill);
-   svg.append(make('circle',{cx:x+31,cy:y+32,r:19,fill:'#171717'}));
-   text(svg,x+31,y+39,String(index+1),20,900,'#ffe06b',{'text-anchor':'middle'});
-   const charWidth=Math.max(13,Math.floor((w-32)/10.5));
-   const fontSize=w<270?16:19;
-   wrapped(svg,x+18,y+85,data[index],charWidth,fontSize,'#151515',Math.max(2,Math.floor((h-102)/29)+1));
- };
- const kind=mode.icon;
- if(kind==='bars'){
-   // Four stage-specific cost/control strips, not false quantitative bars.
-   const y=[130,221,312,403];
-   data.forEach((_,i)=>{
-     rounded(svg,90,y[i],1010,75,i%2?'#e0f0fc':'#fff');
-     svg.append(make('rect',{x:33,y:y[i]+7,width:42,height:61,rx:7,fill:i%2?'#2c5f87':'#ffcf30',stroke:'#151515','stroke-width':3}));
-     text(svg,54,y[i]+46,String(i+1),25,900,'#151515',{'text-anchor':'middle'});
-     wrapped(svg,112,y[i]+30,data[i],83,18,'#151515',2);
-   });
-   text(svg,110,502,'ORDER OF ANALYSIS — NOT A GRAPH OF QUANTITIES',12,750);
- }else if(kind==='shield'){
-   // Audit assurance: four separately evidenced checks around the engagement.
-   svg.append(make('circle',{cx:598,cy:304,r:109,fill:'#d5f4e6',stroke:'#151515','stroke-width':4}));
-   icon(svg,'shield',569,256);
-   text(svg,598,357,'EVIDENCE',18,900,'#111',{'text-anchor':'middle'});
-   drawPanel(24,131,385,154,0,'#fff');
-   drawPanel(790,131,385,154,1,'#e7f7eb');
-   drawPanel(24,327,385,155,2,'#e7f7eb');
-   drawPanel(790,327,385,155,3,'#fff');
-   for(const [x1,y1,x2,y2]of [[413,225,491,271],[789,225,704,271],[413,411,491,353],[789,411,704,353]])arrow(svg,x1,y1,x2,y2);
- }else if(kind==='scales'){
-   // Two facing legal/ethics sides: authority, application and conclusion.
-   rounded(svg,37,133,538,330,'#f3e9fc');
-   rounded(svg,624,133,538,330,'#fff');
-   drawPanel(54,153,502,135,0,'#fff');
-   drawPanel(54,310,502,135,1,'#e5d6fa');
-   drawPanel(640,153,502,135,2,'#fff2cc');
-   drawPanel(640,310,502,135,3,'#fff');
-   text(svg,290,484,'RULES AND OBLIGATIONS',15,900,'#171717',{'text-anchor':'middle'});
-   text(svg,884,484,'APPLICATION AND RESULT',15,900,'#171717',{'text-anchor':'middle'});
- }else if(kind==='coins'){
-   // Tax is a sequence of assessment stages, not a generic clipart coin.
-   const xs=[31,334,637,940],ys=[133,205,277,349];
-   for(let i=0;i<4;i++){
-     drawPanel(xs[i],ys[i],240,148,i,i%2?'#fff':'#ffe8ce');
-     if(i<3)arrow(svg,xs[i]+245,ys[i]+71,xs[i+1]-8,ys[i+1]+68);
-   }
-   text(svg,90,501,'TAX RULES DEPEND ON THE EXAM VARIANT AND RELEVANT FINANCE ACT',13,750,'#171717');
- }else if(kind==='matrix'||kind==='statement'){
-   // Decision/financial statement structure: linked quadrants.
-   const coords=[[40,143],[612,143],[40,322],[612,322]];
-   coords.forEach(([x,y],i)=>drawPanel(x,y,540,158,i,i%2?'#f3ecdd':'#fff'));
-   arrow(svg,580,225,609,225);
-   arrow(svg,880,304,880,319);
-   arrow(svg,610,404,582,404);
- }else if(kind==='timeline'){
-   // Financial time progression: spaced milestones with a visual timeline.
-   arrow(svg,62,362,1140,362);
-   const xs=[40,340,640,940];
-   for(let i=0;i<4;i++){
-     drawPanel(xs[i],141,258,168,i,i%2?'#dbe9ff':'#fff');
-     svg.append(make('line',{x1:xs[i]+128,y1:312,x2:xs[i]+128,y2:349,stroke:'#151515','stroke-width':4}));
-     svg.append(make('circle',{cx:xs[i]+128,cy:362,r:14,fill:i%2?'#284f8e':'#ffd04b',stroke:'#151515','stroke-width':3}));
-   }
-   text(svg,600,460,'PERIOD / DECISION SEQUENCE',15,900,'#151515',{'text-anchor':'middle'});
- }else{
-   // General accounting: two source stages feed two reporting stages.
-   drawPanel(36,134,536,148,0,'#fff');
-   drawPanel(628,134,536,148,1,'#ffeb97');
-   drawPanel(36,326,536,148,2,'#e6f1ff');
-   drawPanel(628,326,536,148,3,'#e3f4e8');
-   arrow(svg,576,207,625,207);
-   arrow(svg,895,284,895,323);
-   arrow(svg,627,397,575,397);
+function blockText(s,x,y,content,opts={}){
+ const {width=420,size=17,weight=550,max=5,leading=25,color=ink}=opts;
+ const heavy=weight>=700;
+ const rows=wrapping(content,width,size,heavy);
+ const displayed=rows.slice(0,max);
+ displayed.forEach((line,i)=>{
+  let value=line;
+  const truncated=(i===max-1&&rows.length>max);
+  if(truncated)value=value.replace(/[.,;: ]+$/,'');
+  while(value.length&&measuredWidth(value+(truncated?'…':''),size,heavy)>width){
+   value=value.slice(0,-1);
+  }
+  value=value.trimEnd()+(truncated?'…':'');
+  write(s,x,y+i*leading,value,size,weight,color);
+ });
+ return displayed.length;
+}
+function topicMode(paper){
+ if(['FA1','FA2'].includes(paper))return {name:'BOOKKEEPING & SOURCE RECORDS',colour:'#ffe4a2',type:'bookkeeping'};
+ if(['MA1','MA2','MA','FMA','PM','APM'].includes(paper))return {name:'COST & MANAGEMENT ACCOUNTING',colour:'#d7edff',type:'management'};
+ if(['TX','FTX','ATX'].includes(paper))return {name:'TAXATION · CHECK YOUR VARIANT',colour:'#ffe4c9',type:'tax'};
+ if(['LW'].includes(paper))return {name:'CORPORATE & BUSINESS LAW',colour:'#eee0fa',type:'law'};
+ if(['AA','AAA','FAU'].includes(paper))return {name:'AUDIT & ASSURANCE',colour:'#e0f6e6',type:'audit'};
+ if(['FA','FFA','FR','SBR'].includes(paper))return {name:'FINANCIAL ACCOUNTING & REPORTING',colour:'#e1e8ff',type:'reporting'};
+ if(['FM','AFM','FFM'].includes(paper))return {name:'FINANCIAL MANAGEMENT',colour:'#d8ecff',type:'finance'};
+ return {name:'BUSINESS & PROFESSIONAL SKILLS',colour:'#f7e9c6',type:'business'};
+}
+function sections(opts){
+ const book=opts.book;
+ if(Array.isArray(book?.sections)&&book.sections.length){
+  return book.sections.map(([heading,prose])=>({heading:clean(heading),detail:clean(prose)})).slice(0,4);
  }
+ const n=opts.note||{};
+ const steps=Array.isArray(n.steps)?n.steps.filter(Boolean):[];
+ const labels=['Key principle','Accounting treatment','Practical application'];
+ const result=steps.slice(0,3).map((detail,i)=>({heading:labels[i],detail:clean(detail)}));
+ if(result.length===0&&n.summary)result.push({heading:'Core concept',detail:clean(n.summary)});
+ if(n.formula)result.push({heading:'Formula / rule',detail:clean(n.formula)});
+ if(n.trap)result.push({heading:'Common mistake',detail:clean(n.trap)});
+ if(n.example)result.push({heading:'Illustrative example',detail:clean(n.example)});
+ while(result.length<4){
+  result.push({heading:'Further teaching required',detail:'A complete worked explanation has not yet been authored for this part of the topic.'});
+ }
+ return result.slice(0,4);
+}
+function header(svg,opts,mode,subtitle){
+ rect(svg,24,20,1152,118,ink,10,ink,1);
+ rect(svg,44,39,7,80,yellow,0,yellow,0);
+ write(svg,72,58,mode.name+'   /   '+opts.paper+' '+opts.code,17,800,yellow);
+ blockText(svg,72,100,opts.title,{width:1060,size:30,weight:850,max:2,leading:31,color:'#ffffff'});
+ if(subtitle)write(svg,36,722,subtitle,14,650,ink);
+}
+function panel(svg,x,y,item,index,colour){
+ const w=553,h=249;
+ rect(svg,x,y,w,h,colour);
+ // Fixed alignment for every card: number 48px from left, heading 84px from left.
+ rect(svg,x+21,y+21,44,44,ink,22,ink,0);
+ write(svg,x+43,y+52,String(index+1),21,900,yellow,{'text-anchor':'middle'});
+ blockText(svg,x+85,y+48,item.heading,{width:447,size:21,weight:800,max:2,leading:27});
+ // Explanation is below the heading, not floating in an empty panel.
+ blockText(svg,x+24,y+123,item.detail,{width:502,size:18,weight:500,max:5,leading:27});
+}
+function conceptMap(opts){
+ const mode=topicMode(opts.paper);
+ const svg=svgNode('svg',{viewBox:'0 0 1200 734',
+  role:'img','aria-label':opts.paper+' '+opts.code+' concept overview: '+opts.title,
+  xmlns:SVG_NS});
+ svg.append(svgNode('rect',{width:1200,height:734,fill:paper}));
+ header(svg,opts,mode,'CONCEPT OVERVIEW · FOUR RELATED PARTS OF THIS CHAPTER · NOT A STEP-BY-STEP WORKFLOW');
+ const entries=sections(opts);
+ const positions=[[29,163],[618,163],[29,438],[618,438]];
+ entries.forEach((item,i)=>panel(svg,positions[i][0],positions[i][1],item,i,i%2?mode.colour:'#ffffff'));
  return svg;
 }
-
-function buildWorking(opts){
- const fig=el('figure','lv-all-worked');
- const head=el('figcaption','', 'WORKED METHOD · '+opts.paper+' / '+opts.code);fig.append(head);
- const grid=el('div','lv-all-worked-grid');
- const parts=[
-  ['QUESTION',opts.example||'Identify the examinable transaction or requirement.'],
-  ['METHOD',opts.steps?.slice(0,2).join(' ')||opts.summary||'Apply the specified procedure.'],
-  ['SOLUTION / CHECK',opts.answer||opts.formula||'Check the result against the requirements and underlying record.']
+function connector(svg,x1,x2,y){
+ const start=x1+3,tip=x2-10;
+ svg.append(svgNode('line',{x1:start,y1:y,x2:tip,y2:y,stroke:ink,'stroke-width':3}));
+ svg.append(svgNode('path',{d:'M'+(tip-8)+' '+(y-6)+' L'+tip+' '+y+' L'+(tip-8)+' '+(y+6),
+  stroke:ink,fill:'none','stroke-width':3,'stroke-linecap':'round','stroke-linejoin':'round'}));
+}
+function workflow(opts){
+ // These arrows are meaningful only because these source documents have an
+ // explicit authorisation → order → receipt → invoice-check → payment flow.
+ const svg=svgNode('svg',{viewBox:'0 0 1200 734',
+  role:'img','aria-label':'FA1 A2 purchase-document flow from authorised requisition to payment and three-way match',
+  xmlns:SVG_NS});
+ svg.append(svgNode('rect',{width:1200,height:734,fill:paper}));
+ header(svg,opts,topicMode('FA1'),'SOURCE DOCUMENTS · ILLUSTRATIVE PURCHASE-TO-PAY WORKFLOW');
+ const cards=[
+  ['REQUISITION','Staff requests goods; manager approves the need.'],
+  ['PURCHASE ORDER','Buyer orders 20 items at RM45 each.'],
+  ['GOODS RECEIVED','Stores confirms only 18 items were delivered.'],
+  ['SUPPLIER INVOICE','Supplier bills 20 items; check the amount.'],
+  ['CHECK & PAY','Resolve the 2-item difference before payment.']
  ];
- for(const [name,content]of parts){const card=el('div','lv-all-worked-card');card.append(el('strong','',name),el('p','',content));grid.append(card)}
+ const width=206,gap=31,start=24,y=190;
+ cards.forEach((c,i)=>{
+  const x=start+i*(width+gap);
+  rect(svg,x,y,width,207,i%2?'#fff':'#ffe9ae',9);
+  rect(svg,x+14,y+15,36,36,ink,18,ink,0);
+  write(svg,x+32,y+41,String(i+1),18,900,yellow,{'text-anchor':'middle'});
+  blockText(svg,x+16,y+94,c[0],{width:180,size:19,weight:900,max:2,leading:23});
+  blockText(svg,x+16,y+146,c[1],{width:180,size:15,weight:500,max:3,leading:20});
+  if(i<4)connector(svg,x+width,start+(i+1)*(width+gap),y+100);
+ });
+ write(svg,31,449,'THREE-WAY MATCH · DO THE DOCUMENTS AGREE?',19,900,ink);
+ const cells=[
+  ['PURCHASE ORDER','20 units','20 × RM45 = RM900'],
+  ['GOODS RECEIVED NOTE','18 units','18 × RM45 = RM810'],
+  ['SUPPLIER INVOICE','20 units','20 × RM45 = RM900']
+ ];
+ const xs=[24,420,816];
+ cells.forEach(([heading,units,amount],i)=>{
+  const x=xs[i];
+  rect(svg,x,472,362,151,i===1?'#e1f4e5':'#ffffff',9);
+  write(svg,x+16,506,heading,16,850);
+  write(svg,x+16,547,units,26,900);
+  write(svg,x+16,583,amount,16,700);
+ });
+ rect(svg,24,637,1152,49,'#ffe4d4',6);
+ write(svg,40,668,'EXCEPTION · 2 UNITS × RM45 = RM90 UNMATCHED. INVESTIGATE BEFORE PAYMENT.',16,850,ink);
+ return svg;
+}
+function table(parent,heading,columns,rows){
+ const area=node('section','lv-doc-table');
+ area.append(node('h3','',heading));
+ const scroll=node('div','lv-doc-scroll');scroll.tabIndex=0;scroll.setAttribute('role','region');scroll.setAttribute('aria-label',heading);
+ const t=node('table','lv-doc-table-inner'),th=node('thead'),headRow=node('tr');
+ columns.forEach(label=>{const cell=node('th','',label);cell.scope='col';headRow.append(cell)});
+ th.append(headRow);t.append(th);
+ const body=node('tbody');
+ for(const row of rows){const tr=node('tr');row.forEach((value,i)=>{
+  const cell=node(i?'td':'th','',value);if(!i)cell.scope='row';tr.append(cell);
+ });body.append(tr)}
+ t.append(body);scroll.append(t);area.append(scroll);
+ parent.append(area);
+}
+function businessDocuments(parent){
+ const area=node('section','lv-document-lesson');
+ area.append(node('h3','','WHAT EACH SOURCE DOCUMENT ACTUALLY PROVES'));
+ area.append(node('p','','A document is evidence of a specific stage—not automatic proof that a sale, expense or payment has occurred. Match dates, counterparties, references, quantities and terms before posting. Purchase-order approval, goods receipt and the supplier invoice are separate controls.'));
+ table(area,'Purchase-to-pay evidence and control',
+ ['Record','Purpose','Evidence to compare'],[
+  ['Purchase requisition','Internal request for goods','Authorisation and quantity required'],
+  ['Purchase order (PO)','Formal order sent to supplier','Agreed items, quantities and prices'],
+  ['Goods received note (GRN)','What was physically received','Actual units and condition'],
+  ['Supplier invoice','What the supplier claims is due','Invoice quantity, price, tax and PO/GRN references'],
+  ['Credit note','Reduction of an earlier invoice','Returned items, price errors or agreed allowance'],
+  ['Remittance advice','Which invoice(s) the payment relates to','Payment amount and invoice references'],
+  ['Bank confirmation','Evidence that funds were transferred','Bank date, recipient and cleared amount']
+ ]);
+ area.append(node('h4','','THREE-WAY MATCH · WORKED EXAMPLE'));
+ area.append(node('p','','The purchase order specifies 20 units at RM45 each (RM900). The goods received note confirms 18 units (RM810). The supplier invoice requests payment for 20 units (RM900). Two units—or RM90—remain unmatched. The correct action is to investigate the short delivery or agreed invoicing terms, not simply authorise the entire invoice. Under an appropriate accounting policy, record the items controlled and any valid liability using the applicable evidence; do not invent goods received.'));
+ area.append(node('p','lv-doc-note','Note: an approved purchase order does not itself create an expense. A payment instruction is not proof of an executed payment. A quotation is an offer of terms, not proof of a completed sale.'));
+ parent.append(area);
+}
+function workedPanel(opts){
+ const fig=node('figure','lv-all-worked');
+ const caption=node('figcaption','', 'EXAM APPLICATION   /   '+opts.paper+' '+opts.code);fig.append(caption);
+ const grid=node('div','lv-all-worked-grid');
+ const working=opts.book?.workings?.[0];
+ let cells;
+ if(Array.isArray(working)&&working.length===3){
+  cells=[['QUESTION · '+working[0],working[1]],
+   ['ACCOUNTING METHOD',opts.book?.sections?.[0]?.[1]||opts.note?.summary||'Consult the relevant concept and method in the chapter.'],
+   ['WORKED ANSWER',working[2]]];
+ }else{
+  cells=[['ILLUSTRATIVE EXAMPLE',opts.note?.example||'This topic has not yet received a complete worked example.'],
+   ['KEY CONCEPT',opts.note?.summary||'Review the underlying study material.'],
+   ['SELF-CHECK QUESTION',opts.note?.check||'An outcome-specific question has not yet been authored.']];
+ }
+ for(const [label,content]of cells){
+  const card=node('div','lv-all-worked-card');
+  card.append(node('strong','',label),node('p','',content));grid.append(card);
+ }
  fig.append(grid);
- const end=el('p','lv-all-worked-warning','This visual works from the existing chapter example; it is not an independently verified new examination question.');
- fig.append(end);return fig;
+ if(!working&&opts.note?.answer){
+  const answer=node('details','lv-linked-self-check');
+  answer.append(node('summary','','Reveal the answer to the self-check question'));
+  answer.append(node('p','',opts.note.answer));fig.append(answer);
+ }
+ fig.append(node('p','lv-all-worked-warning',
+  working?'Worked example adapted from this LedgerPeer chapter; calculations still require individual syllabus review.':
+  'The illustration and self-check are separate. They are not presented as a fully verified worked examination solution.'));
+ return fig;
 }
 root.renderLedgerChapterVisual=function(parent,opts){
- if(!opts||!opts.paper||!opts.code)return false;
- const steps=(opts.book?.sections||[]).map(x=>x[0]);
- const method=steps.length?steps:opts.note?.steps||[];
- const diagramOpts={
-   paper:opts.paper,code:opts.code,title:opts.title,
-   steps:method,summary:opts.note?.summary,formula:opts.note?.formula,trap:opts.note?.trap,
-   example:opts.book?.workings?.[0]?.[1]||opts.note?.example,
-   answer:opts.book?.workings?.[0]?.[2]||opts.note?.answer
- };
- const figure=el('figure','lv-all-figure');
- figure.append(diagram(diagramOpts));
- figure.append(el('figcaption','','ORIGINAL TOPIC DIAGRAM · Follow the learning sequence from left to right. All labels come from this specific chapter. Graphics describe the study method; they are not a replacement for learning-outcome explanations.'));
+ if(!opts?.paper||!opts.code)return false;
+ const figure=node('figure','lv-all-figure');
+ const special=opts.paper==='FA1'&&opts.code==='A2';
+ figure.append(special?workflow(opts):conceptMap(opts));
+ figure.append(node('figcaption','',
+  special?'Original purchase-to-pay evidence diagram. Arrows denote transaction order; the mismatched invoice must be investigated.':
+  'Chapter concept map. Numbered panels organise the teaching; they do not imply that these concepts occur in a fixed order. Continue below for the complete explanations.'));
  parent.append(figure);
- parent.append(buildWorking(diagramOpts));
+ if(special)businessDocuments(parent);
+ parent.append(workedPanel(opts));
  return true;
 };
 })(window);
