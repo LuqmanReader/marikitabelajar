@@ -132,6 +132,7 @@ function makeLesson(n,src,paperCode){
  const layout=node('div','notes-lesson-layout');
  const main=node('div','notes-lesson-main');
  const isTextbook=Boolean(textbookLessons[paperCode+':'+n.code]);
+ if(illustratedLessons[paperCode+':'+n.code])layout.classList.add('notes-lesson-layout--visual');
  const detailed=Boolean(outcomeLessons[paperCode+':'+n.code]);
  if(isTextbook){
    const key=paperCode+':'+n.code;
