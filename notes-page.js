@@ -229,7 +229,7 @@ function render(){
   for(const item of all){
    const t=syllabusCode(item),lesson=lessons[code+':'+t.code];
    if(lesson)detailCount++;
-   if(filter==='lesson'&&!textbookLessons[code+':'+t.code]||filter==='outline'&&Boolean(textbookLessons[code+':'+t.code]))continue;
+   if(filter==='visual'&&!illustratedLessons[code+':'+t.code]||filter==='lesson'&&!textbookLessons[code+':'+t.code]||filter==='outline'&&Boolean(textbookLessons[code+':'+t.code]))continue;
    if(q){
      const extra=outcomeLessons[code+':'+t.code],book=textbookLessons[code+':'+t.code],illustrated=illustratedLessons[code+':'+t.code];
       const hay=[code,item,info(code).name,lesson?.summary,lesson?.formula,lesson?.trap,lesson?.example,...(lesson?.steps||[]),...Object.values(extra?.outcomes||{}).flatMap(o=>[o.title,o.explanation]),...(book?.sections||[]).flat(),...(book?.workings||[]).flat(),...(illustrated?.sections||[]).flatMap(v=>[v.heading,...v.paras]),...(illustrated?.drills||[]).flatMap(v=>[v.question,v.answer])].filter(Boolean).join(' ').toLowerCase();
