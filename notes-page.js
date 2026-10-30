@@ -9,7 +9,7 @@ function qualificationOf(code){return FIA_PAPERS.some(p=>p.code===code)?'fia':AC
 const syllabus=root.LedgerNotesSyllabi?.papers||{};
 const lessons=root.LedgerFiaNotes||{};
 const outcomeLessons=root.LedgerOutcomeLessons||{};
-const textbookLessons=Object.assign({},root.LedgerTextbookFA1A||{},root.LedgerTextbookFA1B||{},root.LedgerTextbookMA1||{},root.LedgerTextbookMA2A||{},root.LedgerTextbookMA2B||{},root.LedgerTextbookFA2A||{},root.LedgerTextbookFA2B||{},root.LedgerTextbookFA2C||{});
+const textbookLessons=Object.assign({},root.LedgerTextbookFA1A||{},root.LedgerTextbookFA1B||{},root.LedgerTextbookMA1||{},root.LedgerTextbookMA2A||{},root.LedgerTextbookMA2B||{},root.LedgerTextbookFA2A||{},root.LedgerTextbookFA2B||{},root.LedgerTextbookFA2C||{},root.LedgerSupplementalTextbooks||{});
 const integratedCases=root.LedgerMasterCases||{};
 const renderChapterVisual=root.renderLedgerChapterVisual||null;
 const renderNumericalTable=root.renderLedgerNumericalTable||null;
@@ -212,7 +212,7 @@ function buildTopic(paperCode,item,index){
  const summary=node('summary');
  const c=node('span','notes-topic-code',tag.code);
  const title=node('div','notes-topic-title');
- title.append(node('strong','',tag.title),node('small','',paperCode+' · '+(illustratedLessons[paperCode+':'+tag.code]?'ILLUSTRATED ACCOUNTING WORKBOOK':textbookLessons[paperCode+':'+tag.code]?'ORIGINAL TEXTBOOK TEACHING CHAPTER':outcomeLessons[paperCode+':'+tag.code]?'EXPANDED OUTCOMES · EDITION RECHECK PENDING':n?'INTRODUCTORY TOPIC LESSON':'SYLLABUS OUTLINE / OFFICIAL RESOURCE')));
+ title.append(node('strong','',tag.title),node('small','',paperCode+' · '+(illustratedLessons[paperCode+':'+tag.code]?'ILLUSTRATED ACCOUNTING WORKBOOK':textbookLessons[paperCode+':'+tag.code]?'EXTENDED TOPIC TEACHING':outcomeLessons[paperCode+':'+tag.code]?'EXPANDED OUTCOMES · EDITION RECHECK PENDING':n?'INTRODUCTORY TOPIC LESSON':'SYLLABUS OUTLINE / OFFICIAL RESOURCE')));
  summary.append(c,title,node('span','notes-expand','+'));el.append(summary);
  const content=node('div','notes-topic-detail');
  let loaded=false;
