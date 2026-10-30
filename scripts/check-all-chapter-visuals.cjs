@@ -52,9 +52,10 @@ const fake={
  createElementNS:(_,tag)=>new Element(tag),createElement:tag=>new Element(tag)
 };
 class Element{
- constructor(name){this.name=name;this.children=[];this.attrs={};this.className='';this.textContent=''}
+ constructor(name){this.name=name;this.children=[];this.attrs={};this.handlers={};this.className='';this.textContent='';this.open=false}
  setAttribute(k,v){this.attrs[k]=String(v)}
  append(...nodes){this.children.push(...nodes)}
+ addEventListener(name,fn){this.handlers[name]=fn}
 }
 const window={};
 vm.runInNewContext(read('notes-visual-all.js'),{window,document:fake},{filename:'notes-visual-all.js',timeout:1000});
@@ -67,16 +68,23 @@ for(const [paper,data]of Object.entries(topics)){
   try{
    const shown=window.renderLedgerChapterVisual(rootEl,{paper,code,title:title.split(' · ').slice(1).join(' · '),note:lesson[paper+':'+code]});
    if(shown)illustrated++;
-   if(!rootEl.children.some(node=>node.name==='figure'))problems.push('No diagram figure '+paper+':'+code);
+   const map=rootEl.children.find(node=>node.className==='lv-interactive-map');
+   if(!map)problems.push('No interactive concept map '+paper+':'+code);
+   else{
+    const grid=map.children.find(node=>node.className==='lv-interactive-grid');
+    const cards=grid?.children||[];
+    if(cards.length!==4||cards.some(card=>card.name!=='details'||!card.open))
+     problems.push('Incomplete interactive card set '+paper+':'+code);
+   }
    if(window.renderLedgerNumericalTable(rootEl,paper,code))solved++;
   }catch(e){problems.push('Rendering '+paper+':'+code+' '+e.message)}
  }
 }
 console.log('LedgerPeer total 2026–27 indexed topics:',keys.length);
-console.log('Generated chapter-specific schematic diagrams:',illustrated);
+console.log('Interactive chapter concept maps:',illustrated);
 console.log('Independent numerical demonstration tables:',solved);
 console.log('Important: a diagram and table are not evidence of full syllabus mastery.');
-if(illustrated!==keys.length)problems.push('Not all topics illustrated');
+if(illustrated!==keys.length)problems.push('Not all topics have interactive concept maps');
 if(solved!==Object.keys(numeric).length)problems.push('Not all numerical tables rendered');
 for(const p of problems)console.error('FAIL',p);
 if(process.argv.includes('--require-full-textbook')){
@@ -105,4 +113,4 @@ if(process.argv.includes('--require-full-textbook')){
   process.exitCode=2;
  }else if(problems.length)process.exitCode=1;
 }else if(problems.length)process.exitCode=1;
-else console.log('ALL VISUAL COVERAGE AND DATA-STRUCTURE CHECKS PASSED');
+else console.log('ALL INTERACTIVE COVERAGE AND DATA-STRUCTURE CHECKS PASSED');
