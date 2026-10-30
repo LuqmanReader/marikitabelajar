@@ -6,17 +6,17 @@
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
-const build='2026.10.30.7';
+const build='2026.10.30.8';
 const html=fs.readFileSync('notes.html','utf8');
 const manifest=JSON.parse(fs.readFileSync('notes-release.json','utf8'));
 const page=fs.readFileSync('notes-page.js','utf8');
 const renderer=fs.readFileSync('notes-visual-all.js','utf8');
 assert.equal(manifest.build,build);
 assert(html.includes('window.LedgerNotesDocumentBuild="'+build+'"'));
-assert(html.includes('notes-visual-all.js?v=20261030v7'));
-assert(html.includes('notes-page.js?v=20261030v7'));
-assert(html.includes('notes-build.js?v=20261030v7'));
-assert(html.includes('notes.css?v=20261030v7'));
+assert(html.includes('notes-visual-all.js?v=20261030v8'));
+assert(html.includes('notes-page.js?v=20261030v8'));
+assert(html.includes('notes-build.js?v=20261030v8'));
+assert(html.includes('notes.css?v=20261030v8'));
 assert(renderer.includes("root.LedgerNotesVisualBuild='"+build+"'"));
 assert(page.includes("root.LedgerNotesVisualBuild!=='"+build+"'"));
 assert(!renderer.includes("function connector(svg,"));
@@ -62,12 +62,12 @@ const doc={
 vm.runInNewContext(fs.readFileSync('notes-build.js','utf8'),{window:win,document:doc,URL,Date,console},{filename:'notes-build.js'});
 (async()=>{
  await new Promise(resolve=>setImmediate(resolve));
- assert.match(stamp.textContent,/2026\.10\.30\.7/);
+ assert.match(stamp.textContent,/2026\.10\.30\.8/);
  assert.equal(ids.notesReleaseStatus.hidden,true,'No false update banner when current');
- latest='2026.10.30.8';
+ latest='2026.10.30.9';
  await win.LedgerNotesCheckForUpdates();
  assert.equal(ids.notesReleaseStatus.hidden,false,'A newer manifest must show update banner');
- assert.match(ids.notesReleaseMessage.textContent,/2026\.10\.30\.8/);
+ assert.match(ids.notesReleaseMessage.textContent,/2026\.10\.30\.9/);
  assert(ids.notesReleaseReload.events.click,'Reload button must work');
  ids.notesReleaseReload.events.click();
  const u=new URL(assigned);

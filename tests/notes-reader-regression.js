@@ -14,7 +14,7 @@ async function create(search='',signedIn=true){
  }
  for(const m of html.matchAll(/id="([^"]+)"/g)){const n=new Element('div');n.id=m[1]}
  const buttons=['fia','acca','all'].map(q=>{const e=new Element('button');e.dataset.notesQualification=q;return e});
- let redirect='';const c={window:null,LedgerNotesDocumentBuild:'2026.10.30.7',URLSearchParams,console,location:{search,replace:v=>redirect=v},PersonalHubAuth:{ready:async()=>signedIn,addLockButton(){}},document:{readyState:'complete',createElement:t=>new Element(t),createTextNode:t=>{const e=new Element('text');e.textContent=t;return e},getElementById:id=>ids.get(id),querySelectorAll:()=>buttons}};c.window=c;vm.createContext(c);
+ let redirect='';const c={window:null,LedgerNotesDocumentBuild:'2026.10.30.8',URLSearchParams,console,location:{search,replace:v=>redirect=v},PersonalHubAuth:{ready:async()=>signedIn,addLockButton(){}},document:{readyState:'complete',createElement:t=>new Element(t),createTextNode:t=>{const e=new Element('text');e.textContent=t;return e},getElementById:id=>ids.get(id),querySelectorAll:()=>buttons}};c.window=c;vm.createContext(c);
  for(const f of [
   'subject-catalog.js','acca-published-data.js','notes-data.js','notes-uk-syllabi.js',
   'notes-expanded-data.js','notes-outcome-lessons.js','fia-study-data-v2.js','fia-study-content-v2.js',
