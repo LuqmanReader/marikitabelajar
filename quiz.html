@@ -4,7 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,follow"><meta name="theme-color" content="#f4eedd">
 <title>Quiz Centre · LedgerPeer</title><link rel="icon" href="favicon-32.png">
-<link rel="stylesheet" href="quiz.css?v=3"><link rel="stylesheet" href="site-nav.css?v=20261028-unifiedback">
+<link rel="stylesheet" href="quiz.css?v=quality5"><link rel="stylesheet" href="site-nav.css?v=20261028-unifiedback">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script><script src="auth.js?v=20261029-single-tab-shell1"></script>
 <script defer src="subject-catalog.js?v=20261022acca25v2"></script>
@@ -12,9 +12,10 @@
 <script defer src="notes-data.js?v=20261022acca25v2"></script>
 <script defer src="notes-uk-syllabi.js?v=20261023fia2"></script>
 <script defer src="notes-expanded-data.js?v=20261023fia2"></script>
-<script defer src="quiz-exam-bank.js?v=4"></script>
-<script defer src="quiz-engine.js?v=4"></script>
-<script defer src="quiz-page.js?v=4"></script>
+<script defer src="quiz-exam-bank.js?v=quality5"></script>
+<script defer src="quiz-engine.js?v=quality5"></script>
+<script defer src="quiz-quality-engine.js?v=quality5"></script>
+<script defer src="quiz-page.js?v=quality5"></script>
 </head>
 <body>
 <header class="lp-header"><a class="brand" href="index.html">LEDGER<span>PEER</span></a><nav aria-label="Workspace"><a href="index.html">HOME</a><a href="notes.html">NOTES</a><a href="quiz.html" aria-current="page">QUIZ CENTRE</a><a href="hub.html">REVISION</a><a href="classroom.html">CLASSROOM</a><a href="study-planner.html">PLANNER</a></nav></header>
@@ -23,14 +24,14 @@
   <section class="intro">
     <p class="eyebrow">LEDGERPEER / QUIZ CENTRE / 2026–27</p>
     <h1>QUIZ<br><em>CENTRE.</em></h1>
-    <p>FA2 and MA2 topic practice: 50% MCQs + 50% numerical entry. FA2 and MA2 mock exams: 70% MCQs + 30% numerical entry. FA1 and MA1 remain MCQ-only. All questions are automatically marked.</p>
+    <p>Original exam-style practice for FA1, MA1, FA2 and MA2: authored knowledge checks and calculated accounting scenarios, with worked answer explanations. No paragraph-matching or missing-word filler.</p>
     <div class="stripes"><span>LEARN.</span><span>TEST.</span><span>REVIEW.</span><span>REPEAT.</span></div>
   </section>
   <div id="access" class="notice" role="status">Checking student access…</div>
   <div id="app" hidden>
     <section class="panel controls" aria-labelledby="setupTitle">
       <div class="heading"><span class="eyebrow">01 / SELECT YOUR PRACTICE</span><h2 id="setupTitle">BUILD YOUR SESSION</h2></div>
-      <div class="mode-tabs" role="group" aria-label="Quiz mode"><button type="button" id="topicMode" class="mode-tab active" aria-pressed="true"><strong>TOPIC PRACTICE</strong><span>UP TO 20 QUESTIONS</span></button><button type="button" id="mockMode" class="mode-tab" aria-pressed="false"><strong>MOCK EXAM</strong><span>50 QUESTIONS · WHOLE PAPER</span></button></div>
+      <div class="mode-tabs" role="group" aria-label="Quiz mode"><button type="button" id="topicMode" class="mode-tab active" aria-pressed="true"><strong>TOPIC PRACTICE</strong><span>UP TO 20 QUESTIONS</span></button><button type="button" id="mockMode" class="mode-tab" aria-pressed="false"><strong>MOCK EXAM</strong><span>50 QUESTIONS · FOUNDATION PRACTICE</span></button></div>
       <div class="fields">
         <label>PAPER<select id="paper"></select></label>
         <label id="topicField">SYLLABUS TOPIC<select id="topic"></select></label>
@@ -53,7 +54,7 @@
       <div class="heading"><span class="eyebrow">03 / YOUR LEARNING RECORD</span><h2 id="historyTitle">RECENT PRACTICE</h2></div>
       <div id="history" class="hint">No topic quizzes yet.</div>
     </section>
-    <p class="disclaimer">Original LedgerPeer learning practice—not an official ACCA question bank or verified exam-standard mock. All MCQs and numerical answer-entry questions are automatically marked. Content is generated from existing lesson material and authored numerical scenarios; some topics revisit related underlying concepts. Notes remain pending editorial review and do not cover every detailed syllabus outcome.</p>
+    <p class="disclaimer">Original LedgerPeer accounting questions. Kaplan questions and ACCA examination materials are not copied or reproduced. Only FA1, MA1, FA2 and MA2 have an authored practice bank; other papers require subject-specific development. Question sets may be shorter where the bank lacks enough distinct skills. These practice mocks are not verified reproductions of the complete ACCA examination format, particularly FA2/MA2 multiple-response and matching questions. Full syllabus coverage is not certified.</p>
   </div>
 </main>
 <div id="loading" class="loading" role="status">AUTHENTICATING STUDENT ACCESS…</div>
