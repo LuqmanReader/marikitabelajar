@@ -111,8 +111,8 @@ function appendTextbook(parent,paperCode,topicCode){
    const article=node('article','lp-textbook-problem');
    article.append(node('h5','',String(i+1)+'. '+worked[0]));
    article.append(node('p','lp-textbook-question',worked[1]));
-   const answer=node('div','lp-textbook-answer');
-   answer.append(node('strong','','COMPLETE WORKING / EXPLANATION'),node('p','',worked[2]));
+   const answer=node('details','lp-textbook-answer');
+   answer.append(node('summary','','REVEAL COMPLETE WORKING / EXPLANATION'),node('p','',worked[2]));
    article.append(answer);practice.append(article);
  });
  chapter.append(practice);
