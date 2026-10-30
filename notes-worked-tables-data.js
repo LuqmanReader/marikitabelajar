@@ -180,7 +180,7 @@
     "headers": [
       "Reconciliation",
       "Adjust (+)/(−)",
-      "Balance $"
+      "Balance ($)"
     ],
     "rows": [
       [
@@ -307,9 +307,9 @@
     "intro": "Profit $90,000, partner A capital $100,000, B capital $80,000. Interest on capital 5%, salary allowance A $12,000 and B $9,000, residual ratio A:B 3:2.",
     "headers": [
       "Appropriation",
-      "Partner A $",
-      "Partner B $",
-      "Total $"
+      "Partner A ($)",
+      "Partner B ($)",
+      "Total ($)"
     ],
     "rows": [
       [
@@ -476,7 +476,7 @@
     "headers": [
       "Cost reconciliation",
       "Units",
-      "Cost $"
+      "Cost ($)"
     ],
     "rows": [
       [
@@ -573,7 +573,7 @@
       "Year",
       "Cash flow $",
       "Discount factor @10%",
-      "PV $"
+      "PV ($)"
     ],
     "rows": [
       [
@@ -615,9 +615,9 @@
     "intro": "Opening January cash $5,000. Customers settle 40% in sales month, 60% next month. December/Jan/Feb/Mar credit sales $10k/$20k/$30k/$24k. Payments Jan/Feb/Mar $17k/$31k/$22k.",
     "headers": [
       "Cash budget",
-      "January $",
-      "February $",
-      "March $"
+      "January ($)",
+      "February ($)",
+      "March ($)"
     ],
     "rows": [
       [
@@ -666,7 +666,7 @@
     "headers": [
       "From cash book to statement",
       "Change $",
-      "Balance $"
+      "Balance ($)"
     ],
     "rows": [
       [
