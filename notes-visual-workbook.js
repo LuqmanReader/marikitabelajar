@@ -38,7 +38,7 @@ function addTable(parent,heading,headers,rows,options){
 }
 function image(parent,src,alt,captionText){
  const figure=E('figure','vw-figure');
- const img=E('img');img.src=src+'?v=20261030usd5';img.alt=alt;img.loading='lazy';img.decoding='async';img.width=1200;img.height=510;
+ const img=E('img');img.src=src+'?v=20261030v8';img.alt=alt;img.loading='lazy';img.decoding='async';img.width=1200;img.height=510;
  figure.append(img,E('figcaption','',captionText));parent.append(figure);
 }
 function accounts(parent,arr){
