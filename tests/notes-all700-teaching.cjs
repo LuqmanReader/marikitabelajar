@@ -31,6 +31,7 @@ const all=Object.assign({},
 );
 let total=0,authored=0,draft=0;
 const concepts=new Set();
+const draftTopics={};
 for(const p of c.SubjectCatalog.papers){
  const syll=c.LedgerNotesSyllabi.papers[p.code];
  assert(syll,'Missing paper '+p.code);
@@ -44,6 +45,7 @@ for(const p of c.SubjectCatalog.papers){
   assert(ch.workings?.length>0,'Missing worked application '+key);
   if(ch.sourceKind==='structured-expansion'){
    draft++;
+   (draftTopics[p.code]??=[]).push(key+' · '+m[2]);
    assert(ch.sections.length===4,key+' needs four teaching panels');
    assert(ch.workings.length===2,key+' needs two interactive problems');
    assert(ch.sections.every(x=>x[1].length>=320),key+' contains an insufficient panel');
@@ -66,4 +68,5 @@ assert(html.indexOf('textbook-structured-all-remaining.js')<html.indexOf('notes-
 assert(page.includes('root.LedgerStructuredLessonChapters||{}'),'Reader does not merge teaching drafts');
 assert(page.includes("sourceKind==='structured-expansion'"),'Reader does not distinguish drafts');
 console.log('PASS: 700/700 topic-specific study pages; 454 extended chapters, 246 structured unverified teaching drafts.');
+console.log('DRAFT_TOPICS_BY_PAPER '+JSON.stringify(draftTopics));
 console.log('IMPORTANT: Structural checks do not certify correct, complete 2026-27 individual ACCA learning outcomes.');
