@@ -607,9 +607,58 @@ footer{margin-top:60px;border-top:2px solid var(--ink);padding-top:20px;font-siz
 }
 .notes-shell .lp-textbook-answer[open]>summary{margin-bottom:12px}
 
-/* Public community-beta teaching-status notice; no green certification badge. */
-.notes-beta-notice{margin:16px clamp(14px,4vw,55px) 0;padding:16px 18px;border:3px solid #111;background:#fff4bd;box-shadow:4px 4px 0 #111;color:#111}
-.notes-beta-notice strong{font:900 15px/1.4 Arial,sans-serif;letter-spacing:.035em}
-.notes-beta-notice p{margin:8px 0 0;font-size:13px;line-height:1.7}
-.notes-beta-notice a{color:#1c43ba;text-decoration:underline;font-weight:900}
-@media(max-width:650px){.notes-beta-notice{margin:12px 14px 0;padding:13px;box-shadow:3px 3px 0 #111}}
+/* The beta notice, back links and following hero share the SAME content edge.
+   Fix the inherited .notes-back margin that staggered the two nav buttons. */
+.notes-shell .notes-beta-notice{
+  margin:8px 8px 30px 0;
+  padding:20px 24px;
+  border:3px solid #111;
+  background:#fff4bd;
+  box-shadow:5px 5px 0 #111;
+  color:#111;
+}
+.notes-shell .notes-beta-notice>strong{
+  display:block;
+  margin:0 0 10px;
+  font-size:15px;
+  line-height:1.4;
+  font-weight:900;
+  letter-spacing:.035em;
+}
+.notes-shell .notes-beta-notice>p{
+  margin:0;
+  max-width:100ch;
+  font-size:13px;
+  line-height:1.75;
+  overflow-wrap:break-word;
+}
+.notes-shell .notes-beta-notice a{
+  color:#1c43ba;
+  text-decoration:underline;
+  font-weight:900;
+}
+.notes-shell .back-navigation-row{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:14px;
+  margin:0 8px 30px 0;
+}
+.notes-shell .back-navigation-row .site-back,
+.notes-shell .back-navigation-row .notes-back{
+  display:inline-flex;
+  margin:0;
+  vertical-align:top;
+}
+@media(max-width:650px){
+  .notes-shell .notes-beta-notice{
+    margin:4px 6px 26px 0;
+    padding:17px 17px;
+    box-shadow:4px 4px 0 #111;
+  }
+  .notes-shell .notes-beta-notice>strong{margin-bottom:9px}
+  .notes-shell .back-navigation-row{
+    gap:12px;
+    margin:0 6px 28px 0;
+  }
+}
