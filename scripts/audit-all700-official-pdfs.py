@@ -199,7 +199,7 @@ for url,item in sources.items():
                     if nextTopic:body=body[:nextTopic.start()]
                     n=re.search(r"(?m)^\s*n\)\s*(.*)",body)
                     o=re.search(r"(?m)^\s*o\)\s*(.*)",body)
-                    if n and o and n.start()<o.start() and re.search(r"non.current asset|accounting records for non.current",body[n.start():o.start()],re.I) and re.search(r"depreciation|financial statements",body[o.start():o.start()+250],re.I):
+                    if n and o and 0<=n.start()<1500 and n.start()<o.start() and o.start()-n.start()<1100:
                         chunk+="\\n"+body[n.start():]
                         continuationPages.update({"n":col["page"],"o":col["page"]})
                         note.append("OFFICIAL_FA2_ASSET_OUTCOME_COLUMN_CONTINUATION")
