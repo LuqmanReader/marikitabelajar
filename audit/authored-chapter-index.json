@@ -1,7 +1,7 @@
 {
   "batch": 14,
   "totalExpectedFiles": 76,
-  "completed": 80,
+  "completed": 97,
   "files": {
     "textbook-fa1-part-a.js": [
       "FA1:A1",
@@ -789,423 +789,126 @@
       "AAA:I2",
       "AAA:I3",
       "AAA:I4"
+    ],
+    "textbook-editorial-ftx-2026-a.js": [
+      "FTX:B6",
+      "FTX:C1",
+      "FTX:C2",
+      "FTX:C3",
+      "FTX:C4",
+      "FTX:C5",
+      "FTX:C6"
+    ],
+    "textbook-editorial-ftx-2026-b.js": [
+      "FTX:D1",
+      "FTX:D2",
+      "FTX:D3",
+      "FTX:D4",
+      "FTX:D5",
+      "FTX:D6"
+    ],
+    "textbook-editorial-ftx-2026-c1.js": [
+      "FTX:E1",
+      "FTX:E2",
+      "FTX:E3",
+      "FTX:E4"
+    ],
+    "textbook-editorial-ftx-2026-c2.js": [
+      "FTX:E5",
+      "FTX:E6",
+      "FTX:E7",
+      "FTX:E8"
+    ],
+    "textbook-editorial-ftx-2026-d1.js": [
+      "FTX:F1",
+      "FTX:F2",
+      "FTX:F3",
+      "FTX:F4"
+    ],
+    "textbook-editorial-ftx-2026-d2.js": [
+      "FTX:F5",
+      "FTX:F6",
+      "FTX:F7",
+      "FTX:F8"
+    ],
+    "textbook-editorial-ftx-2026-e.js": [
+      "FTX:G1",
+      "FTX:G2",
+      "FTX:G3",
+      "FTX:G4"
+    ],
+    "textbook-editorial-tx-2026-a.js": [
+      "TX:B1",
+      "TX:B2",
+      "TX:B3",
+      "TX:B4",
+      "TX:B5",
+      "TX:B6",
+      "TX:B7"
+    ],
+    "textbook-editorial-tx-2026-b.js": [
+      "TX:C1",
+      "TX:C2",
+      "TX:C3",
+      "TX:C4",
+      "TX:C5",
+      "TX:C6"
+    ],
+    "textbook-editorial-tx-2026-c.js": [
+      "TX:D1",
+      "TX:D2",
+      "TX:D3",
+      "TX:D4"
+    ],
+    "textbook-editorial-tx-2026-d.js": [
+      "TX:E1",
+      "TX:E2",
+      "TX:E3",
+      "TX:E4",
+      "TX:E5",
+      "TX:E6"
+    ],
+    "textbook-editorial-tx-2026-e.js": [
+      "TX:F1",
+      "TX:F2",
+      "TX:F3"
+    ],
+    "textbook-editorial-tx-2026-f.js": [
+      "TX:G1",
+      "TX:G2",
+      "TX:G3",
+      "TX:G4"
+    ],
+    "textbook-editorial-atx-2026-a.js": [
+      "ATX:B1",
+      "ATX:B2",
+      "ATX:B3",
+      "ATX:B4",
+      "ATX:B5"
+    ],
+    "textbook-editorial-atx-2026-b.js": [
+      "ATX:C1",
+      "ATX:C2",
+      "ATX:C3",
+      "ATX:C4",
+      "ATX:C5"
+    ],
+    "textbook-editorial-atx-2026-c.js": [
+      "ATX:D1",
+      "ATX:D2",
+      "ATX:D3",
+      "ATX:D4"
+    ],
+    "textbook-editorial-atx-2026-d.js": [
+      "ATX:E1",
+      "ATX:E2",
+      "ATX:E3",
+      "ATX:E4"
     ]
   },
-  "remainingDraftTopics": [
-    "FTX:B6",
-    "FTX:C1",
-    "FTX:C2",
-    "FTX:C3",
-    "FTX:C4",
-    "FTX:C5",
-    "FTX:C6",
-    "FTX:D1",
-    "FTX:D2",
-    "FTX:D3",
-    "FTX:D4",
-    "FTX:D5",
-    "FTX:D6",
-    "FTX:E1",
-    "FTX:E2",
-    "FTX:E3",
-    "FTX:E4",
-    "FTX:E5",
-    "FTX:E6",
-    "FTX:E7",
-    "FTX:E8",
-    "FTX:F1",
-    "FTX:F2",
-    "FTX:F3",
-    "FTX:F4",
-    "FTX:F5",
-    "FTX:F6",
-    "FTX:F7",
-    "FTX:F8",
-    "FTX:G1",
-    "FTX:G2",
-    "FTX:G3",
-    "FTX:G4",
-    "TX:B1",
-    "TX:B2",
-    "TX:B3",
-    "TX:B4",
-    "TX:B5",
-    "TX:B6",
-    "TX:B7",
-    "TX:C1",
-    "TX:C2",
-    "TX:C3",
-    "TX:C4",
-    "TX:C5",
-    "TX:C6",
-    "TX:D1",
-    "TX:D2",
-    "TX:D3",
-    "TX:D4",
-    "TX:E1",
-    "TX:E2",
-    "TX:E3",
-    "TX:E4",
-    "TX:E5",
-    "TX:E6",
-    "TX:F1",
-    "TX:F2",
-    "TX:F3",
-    "TX:G1",
-    "TX:G2",
-    "TX:G3",
-    "TX:G4",
-    "ATX:B1",
-    "ATX:B2",
-    "ATX:B3",
-    "ATX:B4",
-    "ATX:B5",
-    "ATX:C1",
-    "ATX:C2",
-    "ATX:C3",
-    "ATX:C4",
-    "ATX:C5",
-    "ATX:D1",
-    "ATX:D2",
-    "ATX:D3",
-    "ATX:D4",
-    "ATX:E1",
-    "ATX:E2",
-    "ATX:E3",
-    "ATX:E4"
-  ],
-  "remainingByPaper": {
-    "FTX": [
-      {
-        "key": "FTX:B6",
-        "title": "Prepare relevant pages of a tax return"
-      },
-      {
-        "key": "FTX:C1",
-        "title": "Introduction to personal taxation"
-      },
-      {
-        "key": "FTX:C2",
-        "title": "Income from employment and Class 1 National Insurance Contributions"
-      },
-      {
-        "key": "FTX:C3",
-        "title": "Income from property, savings and investments"
-      },
-      {
-        "key": "FTX:C4",
-        "title": "The comprehensive computation of taxable income and income tax liability"
-      },
-      {
-        "key": "FTX:C5",
-        "title": "The use of pension contributions in deferring and minimising income tax liabilities"
-      },
-      {
-        "key": "FTX:C6",
-        "title": "Income tax administration"
-      },
-      {
-        "key": "FTX:D1",
-        "title": "The scope of the taxation of capital gains for individuals"
-      },
-      {
-        "key": "FTX:D2",
-        "title": "The basic principles of computing gains and losses"
-      },
-      {
-        "key": "FTX:D3",
-        "title": "Gains and losses on the disposal of shares and securities"
-      },
-      {
-        "key": "FTX:D4",
-        "title": "Gains and losses on the disposal of movable and immovable property"
-      },
-      {
-        "key": "FTX:D5",
-        "title": "The computation of capital gains tax payable by individuals and the completion of the self-assessment tax return"
-      },
-      {
-        "key": "FTX:D6",
-        "title": "The use of exemptions and reliefs in deferring and minimising tax liabilities arising on the disposal of capital assets"
-      },
-      {
-        "key": "FTX:E1",
-        "title": "The scope of corporation tax"
-      },
-      {
-        "key": "FTX:E2",
-        "title": "Taxable total profits"
-      },
-      {
-        "key": "FTX:E3",
-        "title": "The comprehensive computation of corporation tax liability"
-      },
-      {
-        "key": "FTX:E4",
-        "title": "Chargeable gains for companies"
-      },
-      {
-        "key": "FTX:E5",
-        "title": "Relief for losses"
-      },
-      {
-        "key": "FTX:E6",
-        "title": "The use of exemptions and reliefs in deferring and minimising corporation tax liabilities"
-      },
-      {
-        "key": "FTX:E7",
-        "title": "Complete the corporation tax return"
-      },
-      {
-        "key": "FTX:E8",
-        "title": "Corporation tax administration"
-      },
-      {
-        "key": "FTX:F1",
-        "title": "The scope of value added tax (VAT)"
-      },
-      {
-        "key": "FTX:F2",
-        "title": "The VAT registration requirements"
-      },
-      {
-        "key": "FTX:F3",
-        "title": "The basic principles of VAT"
-      },
-      {
-        "key": "FTX:F4",
-        "title": "VAT invoices and records"
-      },
-      {
-        "key": "FTX:F5",
-        "title": "Administration of VAT"
-      },
-      {
-        "key": "FTX:F6",
-        "title": "The effect of special schemes"
-      },
-      {
-        "key": "FTX:F7",
-        "title": "Preparing and completing VAT returns"
-      },
-      {
-        "key": "FTX:F8",
-        "title": "Communicate VAT information"
-      },
-      {
-        "key": "FTX:G1",
-        "title": "Use computer technology to efficiently access and manipulate relevant information"
-      },
-      {
-        "key": "FTX:G2",
-        "title": "Work on relevant response options, using available functions and technology, as would be required in the workplace"
-      },
-      {
-        "key": "FTX:G3",
-        "title": "Navigate windows and computer screens to create and amend responses to exam requirements, using the appropriate tools"
-      },
-      {
-        "key": "FTX:G4",
-        "title": "Present data and information effectively using the appropriate tools"
-      }
-    ],
-    "TX": [
-      {
-        "key": "TX:B1",
-        "title": "The scope of income tax"
-      },
-      {
-        "key": "TX:B2",
-        "title": "Income from employment"
-      },
-      {
-        "key": "TX:B3",
-        "title": "Income from self-employment"
-      },
-      {
-        "key": "TX:B4",
-        "title": "Property and investment income"
-      },
-      {
-        "key": "TX:B5",
-        "title": "The comprehensive computation of taxable income and income tax liability"
-      },
-      {
-        "key": "TX:B6",
-        "title": "National insurance contributions for employed and self-employed persons"
-      },
-      {
-        "key": "TX:B7",
-        "title": "The use of exemptions and reliefs in deferring and minimising income tax liabilities"
-      },
-      {
-        "key": "TX:C1",
-        "title": "The scope of the taxation of capital gains"
-      },
-      {
-        "key": "TX:C2",
-        "title": "The basic principles of computing gains and losses"
-      },
-      {
-        "key": "TX:C3",
-        "title": "Gains and losses on the disposal of movable and immovable property"
-      },
-      {
-        "key": "TX:C4",
-        "title": "Gains and losses on the disposal of shares and securities"
-      },
-      {
-        "key": "TX:C5",
-        "title": "The computation of capital gains tax"
-      },
-      {
-        "key": "TX:C6",
-        "title": "The use of exemptions and reliefs in deferring and minimising tax liabilities arising on the disposal of capital assets"
-      },
-      {
-        "key": "TX:D1",
-        "title": "The basic principles of computing transfers of value"
-      },
-      {
-        "key": "TX:D2",
-        "title": "The liabilities arising on chargeable lifetime transfers and on the death of an individual"
-      },
-      {
-        "key": "TX:D3",
-        "title": "The use of exemptions in deferring and minimising inheritance tax liabilities"
-      },
-      {
-        "key": "TX:D4",
-        "title": "Payment of inheritance tax"
-      },
-      {
-        "key": "TX:E1",
-        "title": "The scope of corporation tax"
-      },
-      {
-        "key": "TX:E2",
-        "title": "Taxable total profits"
-      },
-      {
-        "key": "TX:E3",
-        "title": "Chargeable gains for companies"
-      },
-      {
-        "key": "TX:E4",
-        "title": "The comprehensive computation of corporation tax liability"
-      },
-      {
-        "key": "TX:E5",
-        "title": "The effect of a group corporate structure for corporation tax purposes"
-      },
-      {
-        "key": "TX:E6",
-        "title": "The use of exemptions and reliefs in deferring and minimising corporation tax liabilities"
-      },
-      {
-        "key": "TX:F1",
-        "title": "The VAT registration requirements"
-      },
-      {
-        "key": "TX:F2",
-        "title": "The computation of VAT liabilities"
-      },
-      {
-        "key": "TX:F3",
-        "title": "The effect of special schemes"
-      },
-      {
-        "key": "TX:G1",
-        "title": "Use computer technology to efficiently access and manipulate relevant information"
-      },
-      {
-        "key": "TX:G2",
-        "title": "Work on relevant response options, using available functions and technology, as would be required in the workplace"
-      },
-      {
-        "key": "TX:G3",
-        "title": "Navigate windows and computer screens to create and amend responses to exam requirements, using the appropriate tools"
-      },
-      {
-        "key": "TX:G4",
-        "title": "Present data and information effectively using the appropriate tools"
-      }
-    ],
-    "ATX": [
-      {
-        "key": "ATX:B1",
-        "title": "Taxes applicable to a given situation or course of action and their impact"
-      },
-      {
-        "key": "ATX:B2",
-        "title": "Alternative ways of achieving personal or business outcomes may lead to different tax consequences"
-      },
-      {
-        "key": "ATX:B3",
-        "title": "Taxation effects of the financial decisions made by businesses (corporate and unincorporated) and by individuals"
-      },
-      {
-        "key": "ATX:B4",
-        "title": "Tax advantages and/or disadvantages of alternative courses of action"
-      },
-      {
-        "key": "ATX:B5",
-        "title": "Statutory obligations imposed in a given situation, including any time limits for action and the implications of non- compliance"
-      },
-      {
-        "key": "ATX:C1",
-        "title": "Types of investment and other expenditure that will result in a reduction in tax liabilities for an individual and/or a business"
-      },
-      {
-        "key": "ATX:C2",
-        "title": "Legitimate tax planning measures, by which the tax liabilities arising from a particular situation or course of action can be mitigated"
-      },
-      {
-        "key": "ATX:C3",
-        "title": "The appropriateness of such investment, expenditure or measures, given a particular taxpayer’s circumstances or stated objectives"
-      },
-      {
-        "key": "ATX:C4",
-        "title": "The mitigation of tax in the manner recommended, by reference to numerical analysis and/or reasoned argument"
-      },
-      {
-        "key": "ATX:C5",
-        "title": "Ethical and professional issues arising from the giving of tax planning advice"
-      },
-      {
-        "key": "ATX:D1",
-        "title": "Communication"
-      },
-      {
-        "key": "ATX:D2",
-        "title": "Analysis and evaluation"
-      },
-      {
-        "key": "ATX:D3",
-        "title": "Scepticism"
-      },
-      {
-        "key": "ATX:D4",
-        "title": "Commercial acumen"
-      },
-      {
-        "key": "ATX:E1",
-        "title": "Use computer technology to efficiently access and manipulate relevant information"
-      },
-      {
-        "key": "ATX:E2",
-        "title": "Work on relevant response options, using available functions and technology, as would be required in the workplace"
-      },
-      {
-        "key": "ATX:E3",
-        "title": "Navigate windows and computer screens to create and amend responses to exam requirements, using the appropriate tools"
-      },
-      {
-        "key": "ATX:E4",
-        "title": "Present data and information effectively, using the appropriate tools"
-      }
-    ]
-  },
-  "authorCount": 619,
-  "totalCatalogued": 700
+  "remainingDraftTopics": [],
+  "remainingByPaper": {},
+  "authorCount": 700,
+  "totalCatalogued": 700,
+  "fullOutcomeVerificationStatus": "NOT_CERTIFIED; structural chapter coverage only"
 }
