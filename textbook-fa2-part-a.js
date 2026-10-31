@@ -37,39 +37,7 @@
       ]
     ]
   },
-  "FA2:A2": {
-    "title": "Maintaining financial records and accounting systems",
-    "sections": [
-      [
-        "Why records are maintained",
-        "A complete and timely accounting system supports management decisions, financial statements, tax records, audit trails, safeguarding assets and relationships with customers/suppliers. Primary transaction records such as invoices, credit notes, receipts, payslips and bank statements provide evidence. A transaction should have a unique reference, correct date, authorisation and traceable entry."
-      ],
-      [
-        "Source documents to the ledger",
-        "For credit sales, sales invoice details enter the sales day book or equivalent transaction module, update customer individual accounts and are posted to control and nominal ledger balances. Credit purchases similarly use the purchases day book and supplier accounts. A cash transaction can enter the bank/cash book directly. Electronic systems may make simultaneous postings, but the accounting logic remains the same."
-      ],
-      [
-        "Double entry and controls",
-        "Every financial event must create equal total debits and credits. A chart of accounts and coding conventions classify entries; separate general ledger and subsidiary ledgers may be reconciled through control accounts. Access permissions, sequential numbering, backups, reconciliations and review of unusual journals reduce error and fraud risk."
-      ],
-      [
-        "Corrections and retention",
-        "When a document is wrong, preserve a clear audit trail; use a credit note, authorised correcting journal or reversing entry according to the underlying transaction. Avoid overwriting original approved amounts with no history. Period-end checks include outstanding receipts, accruals, supplier statements and bank reconciliation. Retention requirements depend on local law."
-      ]
-    ],
-    "workings": [
-      [
-        "Credit sale through books",
-        "An entity sells goods on credit for $2,500 excluding tax and with no sales tax applicable.",
-        "Sales invoice documents transaction. Dr trade receivables $2,500; Cr sales $2,500. The individual customer account increases by $2,500 and the receivables control balance increases accordingly. On settlement Dr bank / Cr receivables."
-      ],
-      [
-        "Audit trail error",
-        "A purchase invoice $1,800 was incorrectly posted as $18,000.",
-        "If the original entry was Dr purchases / Cr payables $18,000, reduce each account by $16,200: Dr payables $16,200, Cr purchases $16,200; retain the correcting journal and invoice reference."
-      ]
-    ]
-  },
+  "FA2:A2": {"title":"Maintaining financial records and accounting systems","sections":[["Why records are maintained","A complete and timely accounting system supports management decisions, financial statements, tax records, audit trails, safeguarding assets and relationships with customers/suppliers. Primary transaction records such as invoices, credit notes, receipts, payslips and bank statements provide evidence. A transaction should have a unique reference, correct date, authorisation and traceable entry."],["Source documents to the ledger","For credit sales, sales invoice details enter the sales day book or equivalent transaction module, update customer individual accounts and are posted to control and nominal ledger balances. Credit purchases similarly use the purchases day book and supplier accounts. A cash transaction can enter the bank/cash book directly. Electronic systems may make simultaneous postings, but the accounting logic remains the same."],["Double entry and controls","Every financial event must create equal total debits and credits. A chart of accounts and coding conventions classify entries; separate general ledger and subsidiary ledgers may be reconciled through control accounts. Access permissions, sequential numbering, backups, reconciliations and review of unusual journals reduce error and fraud risk."],["Corrections and retention","When a document is wrong, preserve a clear audit trail; use a credit note, authorised correcting journal or reversing entry according to the underlying transaction. Avoid overwriting original approved amounts with no history. Period-end checks include outstanding receipts, accruals, supplier statements and bank reconciliation. Retention requirements depend on local law."],["Computerised accounting features, advantages and limitations","Computerised accounting systems capture accounting transactions through invoices, receipts, credit notes and authorised journals and update the appropriate general and subsidiary ledgers. Features may include validation, user-role restrictions, a chart of accounts, automatic document numbering, date cut-off controls, reconciliations, audit logs, transaction search, backups and configurable financial reports. Benefits include quick processing, repeatable calculations, timely outputs and retrieval; limitations include poor source-data accuracy, cyber risk, duplicate imports, unauthorised access, system downtime and reliance on suitable backup recovery. Cloud access permits shared remote working but does not transfer responsibility for proper authorisation or correct accounting to the software provider."],["Accounting records to preserve and inspect","A complete transaction audit trail links originating sales, purchases, inventory, payroll and banking documents with input reference, account code, tax treatment, currency, dates, posting, authorisation and later correction. Preserve a customer's individual account, supplier ledger, nominal controls and reconciled reports at the right reporting cut-off. An accounting entry may be balanced but still incorrectly classify a cash receipt as revenue. Only the affected journal should be reversed or corrected; do not delete records merely because a report needs to agree. Validate source records before exporting finance reports or relying on automatic forecasts."]],"workings":[["Credit sale through books","An entity sells goods on credit for $2,500 excluding tax and with no sales tax applicable.","Sales invoice documents transaction. Dr trade receivables $2,500; Cr sales $2,500. The individual customer account increases by $2,500 and the receivables control balance increases accordingly. On settlement Dr bank / Cr receivables."],["Audit trail error","A purchase invoice $1,800 was incorrectly posted as $18,000.","If the original entry was Dr purchases / Cr payables $18,000, reduce each account by $16,200: Dr payables $16,200, Cr purchases $16,200; retain the correcting journal and invoice reference."],["Cloud system's duplicate-posting risk","A system receives two identical imports of a supplier invoice for $2,400. Both debit inventory and credit payables, but only one valid delivery occurred. Calculate the misstatement and the correcting journal if both posted.","Payables and inventory are each overstated $2,400; the trial balance still balances. Once independent invoice, goods receipt and posting evidence confirms the duplication, reverse the extra journal: Dr trade payables $2,400 / Cr inventory $2,400. Configure a supplier-plus-invoice duplicate alert and preserve the correction audit trail. The correction is not a bank payment and does not clear the valid invoice."],["Information retrieval and control account check","An accounting application's customer ledger shows three debtor balances of $1,200, $850 and $650. The trade receivables control account contains $2,950 at the same date. Identify the expected total and what a trainee accountant should do before changing any ledger.","Individual customer balances total $1,200+$850+$650=$2,700. The control account is $2,950, a $250 excess. Compare dated sales-daybook totals, cash receipts, credit notes and posting references to locate the difference. A trainee should document the $250 mismatch and get authorised correction after identifying the transaction rather than force the personal customer ledgers to agree."]]},
   "FA2:A3": {
     "title": "Regulatory framework and accounting standards",
     "sections": [
@@ -107,39 +75,7 @@
       ]
     ]
   },
-  "FA2:B1": {
-    "title": "Elements of financial statements",
-    "sections": [
-      [
-        "Assets and liabilities",
-        "An asset is a present economic resource controlled by the entity as a result of past events. A liability is a present obligation to transfer an economic resource arising from past events. 'Economic resource' means a right with potential to produce benefits. A liability is not simply a planned future expenditure; a future plan without an existing obligation may not meet recognition conditions."
-      ],
-      [
-        "Equity, income and expenses",
-        "Equity is the residual interest after deducting liabilities from assets. Income increases assets or decreases liabilities and thereby increases equity except owner contributions. Expenses decrease assets or increase liabilities and reduce equity except owner distributions. Owners introducing cash is equity, not revenue; owner drawings are equity reductions, not operating expenses."
-      ],
-      [
-        "Financial statements together",
-        "The statement of financial position shows resources, obligations and residual interest at a date. The statement of profit or loss reports recognised income and expenses over a period. Cash flow information explains cash generation/consumption, which may differ from profit. Correct classification between current/non-current often depends on the expected operating cycle and settlement timing."
-      ],
-      [
-        "Double-entry effect on elements",
-        "Debit increases assets and expenses and reduces liabilities, income and equity. Credit reverses those effects. Control accounts summarise subsidiary balances; a debit trade receivables balance is an asset, a credit trade payables balance is liability. A receivable can be impaired without changing its initial gross invoice amount."
-      ]
-    ],
-    "workings": [
-      [
-        "Net assets",
-        "An entity reports bank $22,000, inventory $13,000, equipment cost $60,000, accumulated depreciation $15,000, trade payables $19,000 and loan $20,000.",
-        "Assets =22,000+13,000+(60,000−15,000)=$80,000. Liabilities $39,000. Equity =80,000−39,000=$41,000."
-      ],
-      [
-        "Income versus capital",
-        "Owner deposits $8,000 and the entity receives $3,000 for services already performed.",
-        "Owner contribution Dr bank / Cr capital $8,000. Service fees Dr bank / Cr revenue $3,000. Treating $8,000 as revenue would overstate profit $8,000."
-      ]
-    ]
-  },
+  "FA2:B1": {"title":"Elements of financial statements","sections":[["Assets and liabilities","An asset is a present economic resource controlled by the entity as a result of past events. A liability is a present obligation to transfer an economic resource arising from past events. 'Economic resource' means a right with potential to produce benefits. A liability is not simply a planned future expenditure; a future plan without an existing obligation may not meet recognition conditions."],["Equity, income and expenses","Equity is the residual interest after deducting liabilities from assets. Income increases assets or decreases liabilities and thereby increases equity except owner contributions. Expenses decrease assets or increase liabilities and reduce equity except owner distributions. Owners introducing cash is equity, not revenue; owner drawings are equity reductions, not operating expenses."],["Financial statements together","The statement of financial position shows resources, obligations and residual interest at a date. The statement of profit or loss reports recognised income and expenses over a period. Cash flow information explains cash generation/consumption, which may differ from profit. Correct classification between current/non-current often depends on the expected operating cycle and settlement timing."],["Double-entry effect on elements","Debit increases assets and expenses and reduces liabilities, income and equity. Credit reverses those effects. Control accounts summarise subsidiary balances; a debit trade receivables balance is an asset, a credit trade payables balance is liability. A receivable can be impaired without changing its initial gross invoice amount."],["Accounting equation and changes in capital","The accounting equation Assets = Liabilities + Equity reconciles financial position. A loan creates a bank asset and matching borrowing obligation, not revenue; an owner contribution increases bank and equity, and drawings reduce bank and equity rather than creating an operating expense. An income transaction changes profit and generally increases equity through retained earnings; an expense has the opposite effect, subject to recognised reserves and other comprehensive income. Identify economic resources, present obligations and residual ownership before posting. Debit/credit agreement alone cannot prove that all events were included or classified correctly."],["Components of primary statements and reconciled performance","The statement of financial position reports assets, liabilities and equity at a reporting date. The statement of profit or loss summarises recognised income and expenses for a period; under relevant accounting frameworks other comprehensive income is separately presented and not necessarily part of profit. Cash flow information distinguishes operating, investing and financing cash movements; the statement of changes in equity reconciles owner contributions, distributions, total comprehensive income and reserve transfers. Accompanying notes help users interpret significant policies, estimates and components. A credit sale can create profit while increasing receivables rather than bank cash."]],"workings":[["Net assets","An entity reports bank $22,000, inventory $13,000, equipment cost $60,000, accumulated depreciation $15,000, trade payables $19,000 and loan $20,000.","Assets =22,000+13,000+(60,000−15,000)=$80,000. Liabilities $39,000. Equity =80,000−39,000=$41,000."],["Income versus capital","Owner deposits $8,000 and the entity receives $3,000 for services already performed.","Owner contribution Dr bank / Cr capital $8,000. Service fees Dr bank / Cr revenue $3,000. Treating $8,000 as revenue would overstate profit $8,000."],["Reconcile opening and closing equity with income and drawings","A business has opening equity $30,000. During the year it earns profit $8,000, the owner introduces new capital of $5,000 and draws $3,000. There is no other comprehensive income or reserve adjustment. Calculate closing equity and identify which movements belong in profit.","Closing equity=$30,000+$8,000+$5,000−$3,000=$40,000. Only the $8,000 earned profit is part of period financial performance under the stated assumptions. The $5,000 contribution and $3,000 drawings are direct equity movements and not revenue or operating expenses. The resulting equity is the residual of assets less liabilities at reporting date."]]},
   "FA2:B2": {
     "title": "Recording financial data and accounting information flow",
     "sections": [
@@ -210,39 +146,7 @@
       ]
     ]
   },
-  "FA2:C2": {
-    "title": "General ledger accounts and balancing",
-    "sections": [
-      [
-        "T-account logic",
-        "An individual account has debit left and credit right. Transactions are posted with corresponding account references and dates. A debit balance is carried forward when debit totals exceed credit totals; for a credit-balance account the opposite holds. The balance carried down (c/d) closes the account and is brought down (b/d) on the opposite side at the start of next period."
-      ],
-      [
-        "Types of accounts",
-        "Bank and receivables commonly carry debit balances; payables, loans, accumulated depreciation, revenue and capital commonly credit balances. Expenses normally debit. Trade receivables and payables control accounts track totals; subsidiary accounts identify individual customers/suppliers."
-      ],
-      [
-        "Ledgers and trial balance",
-        "After balancing, extract debit and credit totals to compile a trial balance. Equality verifies arithmetic of postings but not correct classification, omission or duplicate balanced entries. Investigate unusual account signs, stale suspense balances and unreconciled control accounts before statements."
-      ],
-      [
-        "Posting closing entries",
-        "Revenue and expense accounts are ultimately closed through profit or loss; assets, liabilities and capital carry forward. Under the inventory accounting system, cost of sales may be adjusted for opening/closing stock. Posting closing transfers does not itself create or consume cash."
-      ]
-    ],
-    "workings": [
-      [
-        "Balance a bank T-account",
-        "Opening bank debit $10,000; receipts debit $4,000 and $3,000; payments credit $5,000 and $2,500.",
-        "Total debit $17,000; total credit $7,500; closing bank debit $9,500. In the T-account record $9,500 balance c/d on credit side to balance; next period bring down $9,500 on debit side."
-      ],
-      [
-        "Balance payables ledger",
-        "Opening payable credit $6,000; goods purchased on credit $4,000; supplier paid $7,500.",
-        "Credits $10,000; debit $7,500; closing credit $2,500. The payable balance c/d is placed on debit side and b/d carried on credit next period."
-      ]
-    ]
-  },
+  "FA2:C2": {"title":"General ledger accounts and balancing","sections":[["T-account logic","An individual account has debit left and credit right. Transactions are posted with corresponding account references and dates. A debit balance is carried forward when debit totals exceed credit totals; for a credit-balance account the opposite holds. The balance carried down (c/d) closes the account and is brought down (b/d) on the opposite side at the start of next period."],["Types of accounts","Bank and receivables commonly carry debit balances; payables, loans, accumulated depreciation, revenue and capital commonly credit balances. Expenses normally debit. Trade receivables and payables control accounts track totals; subsidiary accounts identify individual customers/suppliers."],["Ledgers and trial balance","After balancing, extract debit and credit totals to compile a trial balance. Equality verifies arithmetic of postings but not correct classification, omission or duplicate balanced entries. Investigate unusual account signs, stale suspense balances and unreconciled control accounts before statements."],["Posting closing entries","Revenue and expense accounts are ultimately closed through profit or loss; assets, liabilities and capital carry forward. Under the inventory accounting system, cost of sales may be adjusted for opening/closing stock. Posting closing transfers does not itself create or consume cash."],["Post compound journals to general ledger accounts","A general ledger consolidates each nominal asset, liability, equity, income and expense account so that closing balances can be extracted into reports and the trial balance. Source documents or adjusting journals must debit and credit the correct nominal accounts, then each amount appears on its respective T-account side with date and contra-account reference. The personal customer and supplier ledgers supplement control accounts rather than replacing general-ledger totals. A compound posting may include two debits and one credit, for example a credit sales invoice net of tax: Dr receivables for the gross, Cr sales for net and Cr output tax for the tax. Verify debits equal credits and the related control accounts reconcile."],["Posting errors and correction before ledger close","Check normal debit and credit balances, opening and brought-down balances, timing of adjustments and totals of each T-account. An asset debit balance has balance c/d placed temporarily on the credit side, then balance b/d on debit at the new period; a liability works the opposite way. An omitted debit generally creates a temporary imbalance, whereas a duplicated balanced journal can leave trial-balance totals equal while overstating activity. Correct the underlying journal with supporting evidence and independent authorisation; don't invent a bank movement merely to resolve a ledger discrepancy."]],"workings":[["Balance a bank T-account","Opening bank debit $10,000; receipts debit $4,000 and $3,000; payments credit $5,000 and $2,500.","Total debit $17,000; total credit $7,500; closing bank debit $9,500. In the T-account record $9,500 balance c/d on credit side to balance; next period bring down $9,500 on debit side."],["Balance payables ledger","Opening payable credit $6,000; goods purchased on credit $4,000; supplier paid $7,500.","Credits $10,000; debit $7,500; closing credit $2,500. The payable balance c/d is placed on debit side and b/d carried on credit next period."],["Compound sales invoice through three T-accounts","A business invoices a customer $5,000 plus 8% output sales tax and receives no cash yet. Show how the amount is posted to the trade receivables, sales and output-tax general ledger accounts.","Tax=$5,000×8%=$400, gross invoice=$5,400. Debit the trade receivables control ledger $5,400; credit sales revenue $5,000; credit output sales-tax payable $400. The compound journal balances because debit $5,400 equals credits $5,400. The customer's individual subsidiary record also receives the gross invoice, but it is not another general ledger debit. Revenue excludes the tax collected for the authority."],["Balance a liability account and show carried balances","A supplier payable account begins with credit $6,000, records new credit purchases $4,000 and bank payments debited $7,500. Show its ending balance c/d and next period b/d sides.","Supplier account credits total $6,000+$4,000=$10,000; debits from payments are $7,500. The normal credit balance is $2,500. Write balance c/d $2,500 on the debit side to equalise $10,000 on both ledger sides. Next period open Cr payables balance b/d $2,500. The balancing figure is not an additional supplier payment."]]},
   "FA2:D1": {
   "title": "Sales, purchases, discounts, returns and sales tax",
   "sections": [
