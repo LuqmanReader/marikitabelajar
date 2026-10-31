@@ -1,7 +1,8 @@
 # LedgerPeer FIA–ACCA Notes: 2026–27 release and quality status
 
-**Release:** 31 October 2026 · Notes build `2026.10.31.43`  
+**Public community beta release:** 1 November 2026 · Notes build `2026.11.01.01` · **NOT ACCA-certified or academically signed off**  
 **Repository:** `LuqmanReader/marikitabelajar`, main  
+**Public beta release:** [student library](https://luqmanreader.github.io/marikitabelajar/notes.html) · [beta release notes](https://github.com/LuqmanReader/marikitabelajar/blob/main/RELEASE_NOTES_2026-11-01_COMMUNITY_BETA.md) · [PR #30](https://github.com/LuqmanReader/marikitabelajar/pull/30). Academic-release gate remains blocked at 0/700 signed lessons.  
 **Scope:** 25 paper and jurisdiction-variant indices; 700 syllabus topic headings
 
 ## P0–P2 academic improvement run — 31 October 2026, latest verified code
