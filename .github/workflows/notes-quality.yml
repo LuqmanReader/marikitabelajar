@@ -127,6 +127,8 @@ jobs:
         run: node tests/notes-fa1-2026-academic-gate.cjs
       - name: Check corrected FA1 discount accounting and syllabus-scope presentation
         run: node tests/notes-fa1-discount-scope-2026.cjs
+      - name: Reconcile all explicit FA1 FA2 and FFA FA journal corrections
+        run: node tests/notes-manual-journal-reconciliation-2026.cjs
       - name: Verify FR B9 IFRS S1 current-edition coverage and browser cache
         run: node tests/notes-fr-ifrs-s1-2026.cjs
       - name: Verify MA and FMA B3 and C1 2026 detailed syllabus topics

@@ -159,7 +159,7 @@
       [
         "Accrued income",
         "Consultancy fee earned $4,500 before year end but invoiced in January next year.",
-        "Dr accrued income receivable $4,500; Cr fee income $4,500 at year end. Cash collection later Dr bank / Cr receivable."
+        "Dr accrued income receivable $4,500; Cr fee income $4,500 at year end. When the $4,500 fee is invoiced in January, reclassify Dr trade receivables $4,500 / Cr accrued income receivable $4,500 without recognising revenue twice. When the customer subsequently pays, record Dr bank $4,500 / Cr trade receivables $4,500."
       ]
     ]
   },
