@@ -1,0 +1,54 @@
+name: LedgerPeer Notes quality gate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'notes.html'
+      - 'notes-page.js'
+      - 'notes-data.js'
+      - 'notes-expanded-data.js'
+      - 'notes-uk-syllabi.js'
+      - 'notes-visual-*.js'
+      - 'notes-release.json'
+      - 'notes-build.js'
+      - 'subject-catalog.js'
+      - 'acca-published-data.js'
+      - 'textbook-*.js'
+      - 'tests/notes-*.cjs'
+      - '.github/workflows/notes-quality.yml'
+  pull_request:
+    paths:
+      - 'notes.html'
+      - 'notes-page.js'
+      - 'notes-data.js'
+      - 'notes-expanded-data.js'
+      - 'notes-uk-syllabi.js'
+      - 'notes-visual-*.js'
+      - 'notes-release.json'
+      - 'notes-build.js'
+      - 'subject-catalog.js'
+      - 'acca-published-data.js'
+      - 'textbook-*.js'
+      - 'tests/notes-*.cjs'
+      - '.github/workflows/notes-quality.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  notes-regression:
+    name: Structural and release consistency (not ACCA certification)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check all 700 lessons and distinguish drafts
+        run: node tests/notes-all700-teaching.cjs
+      - name: Check textbook depth and lesson coverage
+        run: node tests/notes-depth-regression.cjs
+      - name: Check browser release markers and cache refresh
+        run: node tests/notes-release-regression.cjs
