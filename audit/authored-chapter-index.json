@@ -1,7 +1,7 @@
 {
   "batch": 14,
   "totalExpectedFiles": 76,
-  "completed": 28,
+  "completed": 42,
   "files": {
     "textbook-fa1-part-a.js": [
       "FA1:A1",
@@ -358,6 +358,124 @@
       "FFA:F2",
       "FA:F3",
       "FFA:F3"
+    ],
+    "textbook-editorial-financial-05.js": [
+      "FA:G1",
+      "FFA:G1",
+      "FA:G2",
+      "FFA:G2",
+      "FA:G3",
+      "FFA:G3",
+      "FA:G4",
+      "FFA:G4"
+    ],
+    "textbook-editorial-financial-06.js": [
+      "FA:G5",
+      "FFA:G5",
+      "FA:G6",
+      "FFA:G6",
+      "FA:H1",
+      "FFA:H1",
+      "FA:H2",
+      "FFA:H2"
+    ],
+    "textbook-editorial-financial-07.js": [
+      "FA:I1",
+      "FFA:I1",
+      "FA:I2",
+      "FFA:I2",
+      "FA:I3",
+      "FFA:I3"
+    ],
+    "textbook-editorial-business-01.js": [
+      "BT:A8",
+      "FBT:A8",
+      "BT:A9",
+      "FBT:A9",
+      "BT:B1",
+      "FBT:B1",
+      "BT:B3",
+      "FBT:B3"
+    ],
+    "textbook-editorial-business-02.js": [
+      "FBT:B4",
+      "BT:B4",
+      "FBT:B5",
+      "BT:B5",
+      "FBT:C1",
+      "BT:C1",
+      "FBT:C2",
+      "BT:C2"
+    ],
+    "textbook-editorial-business-03.js": [
+      "FBT:C3",
+      "BT:C3",
+      "FBT:C4",
+      "BT:C4",
+      "FBT:C5",
+      "BT:C5",
+      "FBT:C6",
+      "BT:C6"
+    ],
+    "textbook-editorial-business-04.js": [
+      "BT:C7",
+      "FBT:C7",
+      "BT:D1",
+      "FBT:D1",
+      "BT:D2",
+      "FBT:D2",
+      "BT:D3",
+      "FBT:D3"
+    ],
+    "textbook-editorial-business-05.js": [
+      "BT:D4",
+      "FBT:D4",
+      "BT:D5",
+      "FBT:D5",
+      "BT:D6",
+      "FBT:D6",
+      "BT:E1",
+      "FBT:E1"
+    ],
+    "textbook-editorial-business-06.js": [
+      "FBT:E2",
+      "BT:E2",
+      "FBT:E3",
+      "BT:E3",
+      "FBT:E4",
+      "BT:E4",
+      "FBT:E5",
+      "BT:E5"
+    ],
+    "textbook-editorial-business-07.js": [
+      "BT:F1",
+      "FBT:F1",
+      "BT:F2",
+      "FBT:F2",
+      "BT:F3",
+      "FBT:F3",
+      "BT:F4",
+      "FBT:F4"
+    ],
+    "textbook-editorial-audit-foundation-01.js": [
+      "FAU:B2",
+      "FAU:B3",
+      "FAU:B4",
+      "FAU:C1"
+    ],
+    "textbook-editorial-audit-foundation-02.js": [
+      "FAU:C2"
+    ],
+    "textbook-editorial-audit-foundation-03.js": [
+      "FAU:C3",
+      "FAU:C4",
+      "FAU:D1"
+    ],
+    "textbook-editorial-audit-foundation-04.js": [
+      "FAU:D2",
+      "FAU:D3",
+      "FAU:D4",
+      "FAU:D5"
     ]
   }
 }
