@@ -13,13 +13,13 @@ const files=[
  'textbook-crossqual-a2-professional.js','textbook-crossqual-a3-foundation.js',
  'textbook-crossqual-a3-professional.js','textbook-crossqual-batch4a.js',
  'textbook-crossqual-batch4b.js','textbook-crossqual-batch4c.js',
- 'textbook-crossqual-batch4d.js','textbook-editorial-advanced.js','textbook-editorial-fia-applied.js','textbook-editorial-management-01.js','textbook-editorial-management-02.js','textbook-editorial-management-03.js','textbook-editorial-management-04.js','textbook-editorial-management-05.js','textbook-editorial-financial-01.js','textbook-editorial-financial-02.js','textbook-editorial-financial-03.js','textbook-editorial-financial-04.js','textbook-editorial-financial-05.js','textbook-editorial-financial-06.js','textbook-editorial-financial-07.js','textbook-editorial-business-01.js','textbook-editorial-business-02.js','textbook-editorial-business-03.js','textbook-editorial-business-04.js','textbook-editorial-business-05.js','textbook-editorial-business-06.js','textbook-editorial-business-07.js','textbook-structured-all-remaining.js'
+ 'textbook-crossqual-batch4d.js','textbook-editorial-advanced.js','textbook-editorial-fia-applied.js','textbook-editorial-management-01.js','textbook-editorial-management-02.js','textbook-editorial-management-03.js','textbook-editorial-management-04.js','textbook-editorial-management-05.js','textbook-editorial-financial-01.js','textbook-editorial-financial-02.js','textbook-editorial-financial-03.js','textbook-editorial-financial-04.js','textbook-editorial-financial-05.js','textbook-editorial-financial-06.js','textbook-editorial-financial-07.js','textbook-editorial-business-01.js','textbook-editorial-business-02.js','textbook-editorial-business-03.js','textbook-editorial-business-04.js','textbook-editorial-business-05.js','textbook-editorial-business-06.js','textbook-editorial-business-07.js','textbook-editorial-audit-foundation-01.js','textbook-editorial-audit-foundation-02.js','textbook-editorial-audit-foundation-03.js','textbook-editorial-audit-foundation-04.js','textbook-editorial-audit-foundation-05.js','textbook-editorial-audit-foundation-06.js','textbook-structured-all-remaining.js'
 ];
 const c={LedgerFiaNotes:{},LedgerPublishedSyllabi:{papers:{}}};c.window=c;c.globalThis=c;
 vm.createContext(c);
 for(const file of files)vm.runInContext(fs.readFileSync(file,'utf8'),c,{filename:file,timeout:9000});
 const all=Object.assign({},
- c.LedgerStructuredLessonChapters,c.LedgerEditorialAdvancedChapters,c.LedgerEditorialFiaAppliedChapters,c.LedgerEditorialManagement01,c.LedgerEditorialManagement02,c.LedgerEditorialManagement03,c.LedgerEditorialManagement04,c.LedgerEditorialManagement05,c.LedgerEditorialFinancial01,c.LedgerEditorialFinancial02,c.LedgerEditorialFinancial03,c.LedgerEditorialFinancial04,c.LedgerEditorialFinancial05,c.LedgerEditorialFinancial06,c.LedgerEditorialFinancial07,c.LedgerEditorialBusiness01,c.LedgerEditorialBusiness02,c.LedgerEditorialBusiness03,c.LedgerEditorialBusiness04,c.LedgerEditorialBusiness05,c.LedgerEditorialBusiness06,c.LedgerEditorialBusiness07,
+ c.LedgerStructuredLessonChapters,c.LedgerEditorialAdvancedChapters,c.LedgerEditorialFiaAppliedChapters,c.LedgerEditorialManagement01,c.LedgerEditorialManagement02,c.LedgerEditorialManagement03,c.LedgerEditorialManagement04,c.LedgerEditorialManagement05,c.LedgerEditorialFinancial01,c.LedgerEditorialFinancial02,c.LedgerEditorialFinancial03,c.LedgerEditorialFinancial04,c.LedgerEditorialFinancial05,c.LedgerEditorialFinancial06,c.LedgerEditorialFinancial07,c.LedgerEditorialBusiness01,c.LedgerEditorialBusiness02,c.LedgerEditorialBusiness03,c.LedgerEditorialBusiness04,c.LedgerEditorialBusiness05,c.LedgerEditorialBusiness06,c.LedgerEditorialBusiness07,c.LedgerEditorialAuditFoundation01,c.LedgerEditorialAuditFoundation02,c.LedgerEditorialAuditFoundation03,c.LedgerEditorialAuditFoundation04,c.LedgerEditorialAuditFoundation05,c.LedgerEditorialAuditFoundation06,
  c.LedgerSupplementalTextbooks,c.LedgerSupplementalTextbooksA2,
  c.LedgerSupplementalTextbooksProfessional,c.LedgerSupplementalTextbooksA3Foundation,
  c.LedgerSupplementalTextbooksA3Professional,
@@ -55,8 +55,8 @@ for(const p of c.SubjectCatalog.papers){
 }
 assert.equal(total,700);
 assert.equal(Object.keys(all).length,700,'No unrelated or duplicate chapters');
-assert.equal(authored,370,'Individually authored chapter coverage changed');
-assert.equal(draft,330,'Structured draft count changed');
+assert.equal(authored,390,'Individually authored chapter coverage changed');
+assert.equal(draft,310,'Structured draft count changed');
 assert.equal(c.LedgerStructuredLessonAudit.missingCore.length,0);
 assert.equal(c.LedgerStructuredLessonAudit.weak.length,0);
 const html=fs.readFileSync('notes.html','utf8');
@@ -65,5 +65,5 @@ assert(html.includes('src="textbook-structured-all-remaining.js?v='),'Structured
 assert(html.indexOf('textbook-structured-all-remaining.js')<html.indexOf('notes-page.js'),'Reader loads before structured data');
 assert(page.includes('root.LedgerStructuredLessonChapters||{}'),'Reader does not merge teaching drafts');
 assert(page.includes("sourceKind==='structured-expansion'"),'Reader does not distinguish drafts');
-console.log('PASS: 700/700 topic-specific study pages; 370 authored chapters, 330 structured unverified teaching drafts.');
+console.log('PASS: 700/700 topic-specific study pages; 390 authored chapters, 310 structured unverified teaching drafts.');
 console.log('IMPORTANT: Structural checks do not certify correct, complete 2026-27 individual ACCA learning outcomes.');
