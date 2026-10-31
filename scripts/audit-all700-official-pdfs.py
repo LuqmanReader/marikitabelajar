@@ -172,7 +172,7 @@ for url,item in sources.items():
             chunk="\n".join(ls[start:end])
             # Some two-column PDFs place the first a) on the heading line itself.
             headingLine=ls[best["start"]]
-            inlineFirst=re.search(r"(?i)(?:^|\\s)a\\)\\s+",headingLine)
+            inlineFirst=re.search(r"(?i)(?:^|\s)a\)\s+",headingLine)
             if inlineFirst:chunk=headingLine[inlineFirst.start():]+"\n"+chunk
             # BT/FBT F2 starts at the bottom of PDF page 14; its (a)-(e)
             # requirements continue at the top of the following printed page.
