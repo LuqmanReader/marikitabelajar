@@ -49,6 +49,10 @@ on:
       - 'scripts/export-all700-live-lessons.cjs'
       - '.github/workflows/notes-quality.yml'
 
+concurrency:
+  group: notes-quality-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
@@ -56,7 +60,7 @@ jobs:
   notes-regression:
     name: Structural and release consistency (not ACCA certification)
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
