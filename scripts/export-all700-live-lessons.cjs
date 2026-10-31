@@ -27,7 +27,8 @@ assert(vars.length>70,'Reader precedence unexpectedly changed');
 const live={},winner={},allDefinitions={};
 for(const v of vars){
  for(const [key,ch] of Object.entries(c[v]||{})){
-  (allDefinitions[key]??=[]).push({variable:v,file:provenance[v]||null});
+  const definitions=allDefinitions[key]??=[];
+  if(!definitions.some(item=>item.variable===v))definitions.push({variable:v,file:provenance[v]||null});
   live[key]=ch;
   winner[key]={variable:v,file:provenance[v]||null};
  }
