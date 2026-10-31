@@ -334,7 +334,7 @@ function renderCoverage(){
 async function init(){
  const loading=byId('notesLoading');
  try{
-   if(root.LedgerNotesDocumentBuild!=='2026.10.31.42'||root.LedgerNotesVisualBuild!=='2026.10.31.42')throw Error('Notes page and diagram scripts are from different builds. Select the build button above to check for updates, or reopen Notes with a fresh link.');
+   if(root.LedgerNotesDocumentBuild!=='2026.10.31.43'||root.LedgerNotesVisualBuild!=='2026.10.31.43')throw Error('Notes page and diagram scripts are from different builds. Select the build button above to check for updates, or reopen Notes with a fresh link.');
    if(!root.PersonalHubAuth)throw Error('Student authentication unavailable.');
    const valid=await root.PersonalHubAuth.ready();
    if(!valid){if(!root.PersonalHubAuth.isRedirectingToProfile?.())location.replace('index.html');return}
