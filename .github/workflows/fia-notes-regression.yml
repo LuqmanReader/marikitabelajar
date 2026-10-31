@@ -91,6 +91,12 @@ jobs:
           node --check textbook-editorial-business-05.js
           node --check textbook-editorial-business-06.js
           node --check textbook-editorial-business-07.js
+          node --check textbook-editorial-audit-foundation-01.js
+          node --check textbook-editorial-audit-foundation-02.js
+          node --check textbook-editorial-audit-foundation-03.js
+          node --check textbook-editorial-audit-foundation-04.js
+          node --check textbook-editorial-audit-foundation-05.js
+          node --check textbook-editorial-audit-foundation-06.js
       - name: Test syllabus coverage and retired navigation
         run: |
           node tests/fia-notes-regression.js
