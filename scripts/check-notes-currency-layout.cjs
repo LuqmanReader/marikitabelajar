@@ -65,7 +65,7 @@ const assetVersions={
  'textbook-ma1.js':'20261031managementAcademic',
  'textbook-ma2-part-b.js':'20261031optimalmixv2',
  'textbook-fa2-part-b.js':'20261031noncurrentv3',
- 'notes-visual-all.js':'20261031chapters35',
+ 'notes-visual-all.js':'20261101beta1',
  'textbook-crossqual-a1.js':'20261031accaA1',
  'textbook-crossqual-a2-foundation.js':'20261031v1',
  'textbook-crossqual-a2-professional.js':'20261031v1',
