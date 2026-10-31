@@ -4,6 +4,22 @@
 **Repository:** `LuqmanReader/marikitabelajar`, main  
 **Scope:** 25 paper and jurisdiction-variant indices; 700 syllabus topic headings
 
+## Full-scope outcome and technical review register — 31 October 2026
+
+Merged [PR #25](https://github.com/LuqmanReader/marikitabelajar/pull/25) and [PR #26](https://github.com/LuqmanReader/marikitabelajar/pull/26). The [full-register CI run](https://github.com/LuqmanReader/marikitabelajar/actions/runs/41210006858) and subsequent [practical-skill approval-gate CI run](https://github.com/LuqmanReader/marikitabelajar/actions/runs/41210506594) both passed.
+
+- **2,357/2,357** official detailed outcomes and practical-skill requirements indexed with page links, source and lesson fingerprints, candidate explanations, applications, domain flags and review decisions.
+- **1,489/1,489** published worked questions/solutions inventoried individually, linked to candidate ACCA outcomes, formula recomputations, debit/credit balance results, technical topics and explicit outstanding checks.
+- **1,107** extractable equations recalculated, no detected arithmetic discrepancy; **183** parseable debit/credit groups balance. **12** journal posting statements remain ambiguous.
+- **415** outcome rows have no automatically suggested teaching section; **995** outcome rows have no automatically suggested worked application; **859** worked examples have no extractable equation. These are evidence gaps, not conclusive proof of incorrect content. A conceptual worked example may correctly have no numerical equation.
+- Official **2026–27 ACCA PDF sources: 22/22**; source headings matched for **700/700** lesson records; 358 possible outcome terminology mismatches and 56 practical computer-based requirements remain in the review queue.
+
+The reproducible outputs are `audit/all700-academic-outcome-review-ci.json`, `audit/all700-academic-outcome-review-ci.csv`, `audit/all700-technical-worked-answer-review-ci.json`, `audit/all700-technical-worked-answer-review-ci.csv` and `audit/all700-full-review-summary-ci.md`, published as GitHub Actions artifacts `ledgerpeer-full-2026-27-academic-review`. A six-tab review spreadsheet is available in the associated ChatGPT conversation.
+
+**Release benchmark:** Ordinary development CI may pass while substantive academic/technical reviews remain incomplete. The separate `.github/workflows/notes-academic-release.yml` is intentionally fail-closed until ALL **700/700** current lesson/source hashes, complete outcomes, worked answers, standards/jurisdictions, visual evidence and qualified independent reviews are documented. It also requires actual computer-based exam demonstrations for practical-skill entries.
+
+**Accreditation / independent academic sign-off remains 0/700.** The register provides full review *coverage*, not completion of the professional verification itself; LedgerPeer is not ACCA-affiliated or ACCA-certified.
+
 ## Debit-credit accounting audit (31 October 2026)
 
 The all-700 journal verifier `scripts/audit-all700-journals.py` and its regression were merged via [PR #23](https://github.com/LuqmanReader/marikitabelajar/pull/23), commit `aeda50d49d042176b4483bfb979f830c179a13f7`. [Notes quality gate run 41207524912](https://github.com/LuqmanReader/marikitabelajar/actions/runs/41207524912) **passed** and archived an itemised journal-balance artifact.
