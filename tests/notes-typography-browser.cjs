@@ -136,6 +136,49 @@ async function main(){
     }
     console.log('PASS community-beta typography + notice/navigation layout at',width,'px');
   }
+  // Check the actual standalone SVG embedded by FA1/FA2, NOT just page fonts.
+  const flowSvg=fs.readFileSync(path.join(root,'assets/ledgerpeer-accounting-flow.svg'),'utf8');
+  assert(flowSvg.includes('CUSTOMER SUBLEDGER')&&flowSvg.includes('06 / STATEMENTS'),
+    'Revised accounting information-flow graphic missing');
+  await page.setContent('<!doctype html><html lang="en"><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0"><div style="width:100%;max-width:1220px">'+flowSvg+'</div></body></html>');
+  for(const width of [375,600,925,1440]){
+    await page.setViewport({width,height:900,deviceScaleFactor:1});
+    const actual=await page.evaluate(()=>{
+      const svg=document.querySelector('svg');
+      const titles=Array.from(svg.querySelectorAll('text.lp-card-title'));
+      const body=Array.from(svg.querySelectorAll('.lp-card-body text'));
+      const rects=Array.from(svg.querySelectorAll('rect.lp-card')).map(r=>{
+        const b=r.getBBox();return{x:b.x,y:b.y,right:b.x+b.width,bottom:b.y+b.height};
+      });
+      const textOut=Array.from(svg.querySelectorAll('text.lp-card-title,.lp-card-body text')).map(t=>{
+        const b=t.getBBox();
+        const container=rects.find(r=>b.x>=r.x&&b.y>=r.y&&b.y<=r.bottom);
+        return{text:t.textContent,x:b.x,right:b.x+b.width,y:b.y,
+          cardRight:container?.right,cardFound:!!container,
+          overflow:!container||b.x+b.width>container.right-7};
+      });
+      return{
+       headingFonts:[...new Set(titles.map(el=>getComputedStyle(el).fontFamily))],
+       headingSizes:[...new Set(titles.map(el=>getComputedStyle(el).fontSize))],
+       bodyFonts:[...new Set(body.map(el=>getComputedStyle(el).fontFamily))],
+       bodySizes:[...new Set(body.map(el=>getComputedStyle(el).fontSize))],
+       overflow:textOut.filter(x=>x.overflow),
+       headings:titles.length,bodyLines:body.length,
+       pageWidth:document.documentElement.scrollWidth
+      };
+    });
+    assert.equal(actual.headings,7,'Accounting SVG must have seven coherent card headings');
+    assert.equal(actual.headingFonts.length,1,'Every card heading must use the same display font');
+    assert.equal(actual.headingSizes.length,1,'Every card heading must use the same size');
+    assert.match(actual.headingFonts[0],/Arial Black/i);
+    assert.equal(actual.bodyFonts.length,1,'All seven cards must use the same body font');
+    assert.equal(actual.bodySizes.length,1,'All seven cards must use the same body size');
+    assert.match(actual.bodyFonts[0],/ui-monospace/i);
+    assert.equal(actual.overflow.length,0,
+      'SVG text escapes a card at '+width+'px: '+JSON.stringify(actual.overflow));
+    assert(actual.pageWidth<=width+2,'SVG causes horizontal overflow at '+width+'px');
+    console.log('PASS accounting diagram SVG fonts, card-fit and responsive width at',width,'px');
+  }
   assert.deepEqual(errors,[],'Browser JavaScript exception(s): '+errors);
  }finally{await browser.close()}
 }
