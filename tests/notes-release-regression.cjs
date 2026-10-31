@@ -67,7 +67,7 @@ vm.runInNewContext(fs.readFileSync('notes-build.js','utf8'),{window:win,document
  latest='2026.10.31.13';
  await win.LedgerNotesCheckForUpdates();
  assert.equal(ids.notesReleaseStatus.hidden,false,'A newer manifest must show update banner');
- assert.match(ids.notesReleaseMessage.textContent,/2026\.10\.31\.12/);
+ assert.match(ids.notesReleaseMessage.textContent,/2026\.10\.31\.13/);
  assert(ids.notesReleaseReload.events.click,'Reload button must work');
  ids.notesReleaseReload.events.click();
  const u=new URL(assigned);
