@@ -11,6 +11,7 @@ on:
       - 'acca-published-data.js'
       - 'notes-uk-syllabi.js'
       - 'tests/quiz-generator-regression.js'
+      - 'tests/quiz-casebank-content-regression.cjs'
       - 'tests/quiz-million-simulation.cjs'
       - '.github/workflows/topic-quiz-regression.yml'
   pull_request:
@@ -24,6 +25,7 @@ on:
       - 'acca-published-data.js'
       - 'notes-uk-syllabi.js'
       - 'tests/quiz-generator-regression.js'
+      - 'tests/quiz-casebank-content-regression.cjs'
       - 'tests/quiz-million-simulation.cjs'
   workflow_dispatch:
 permissions:
@@ -47,5 +49,7 @@ jobs:
           node --check quiz-dashboard.js
       - name: Verify topic coverage, scoring and persistence
         run: node tests/quiz-generator-regression.js
+      - name: Check case quality and answer-key reasoning
+        run: node tests/quiz-casebank-content-regression.cjs
       - name: Run 1,000,000 real answer-marking simulations
         run: node tests/quiz-million-simulation.cjs
