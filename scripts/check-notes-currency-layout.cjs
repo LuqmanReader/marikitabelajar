@@ -14,7 +14,7 @@ const files=[
  'textbook-crossqual-a1.js','textbook-crossqual-a2-foundation.js',
  'textbook-crossqual-a2-professional.js','textbook-crossqual-a3-foundation.js',
  'textbook-crossqual-a3-professional.js',
- 'textbook-crossqual-batch4a.js','textbook-crossqual-batch4b.js','textbook-crossqual-batch4c.js','textbook-crossqual-batch4d.js','textbook-editorial-advanced.js','textbook-editorial-fia-applied.js','textbook-editorial-management-01.js','textbook-editorial-management-02.js','textbook-editorial-management-03.js','textbook-editorial-management-04.js','textbook-editorial-management-05.js','textbook-editorial-financial-01.js','textbook-editorial-financial-02.js','textbook-editorial-financial-03.js','textbook-editorial-financial-04.js','textbook-editorial-financial-05.js','textbook-editorial-financial-06.js','textbook-editorial-financial-07.js','textbook-editorial-business-01.js','textbook-editorial-business-02.js','textbook-editorial-business-03.js','textbook-editorial-business-04.js','textbook-editorial-business-05.js','textbook-editorial-business-06.js','textbook-editorial-business-07.js','textbook-editorial-audit-foundation-01.js','textbook-editorial-audit-foundation-02.js','textbook-editorial-audit-foundation-03.js','textbook-editorial-audit-foundation-04.js','textbook-editorial-audit-foundation-05.js','textbook-editorial-audit-foundation-06.js','textbook-structured-all-remaining.js',
+ 'textbook-crossqual-batch4a.js','textbook-crossqual-batch4b.js','textbook-crossqual-batch4c.js','textbook-crossqual-batch4d.js','textbook-editorial-advanced.js','textbook-editorial-fia-applied.js','textbook-editorial-management-01.js','textbook-editorial-management-02.js','textbook-editorial-management-03.js','textbook-editorial-management-04.js','textbook-editorial-management-05.js','textbook-editorial-financial-01.js','textbook-editorial-financial-02.js','textbook-editorial-financial-03.js','textbook-editorial-financial-04.js','textbook-editorial-financial-05.js','textbook-editorial-financial-06.js','textbook-editorial-financial-07.js','textbook-editorial-business-01.js','textbook-editorial-business-02.js','textbook-editorial-business-03.js','textbook-editorial-business-04.js','textbook-editorial-business-05.js','textbook-editorial-business-06.js','textbook-editorial-business-07.js','textbook-editorial-audit-foundation-01.js','textbook-editorial-audit-foundation-02.js','textbook-editorial-audit-foundation-03.js','textbook-editorial-audit-foundation-04.js','textbook-editorial-audit-foundation-05.js','textbook-editorial-audit-foundation-06.js','textbook-editorial-foundation-finance-01.js','textbook-editorial-foundation-finance-02.js','textbook-editorial-foundation-finance-03.js','textbook-editorial-foundation-finance-04.js','textbook-structured-all-remaining.js',
  'notes-visual-workbook-data.js','notes-visual-workbook.js',
  'notes-worked-tables-data.js','notes-worked-tables.js',
  'notes-page.js','fia-study-data-v2.js','fia-study-content-v2.js',
@@ -58,7 +58,7 @@ const sourceAssets=[
  'notes-visual-workbook.js'
 ];
 const assetVersions={
- 'notes-visual-all.js':'20261031chapters13',
+ 'notes-visual-all.js':'20261031chapters14',
  'textbook-crossqual-a1.js':'20261031v2',
  'textbook-crossqual-a2-foundation.js':'20261031v1',
  'textbook-crossqual-a2-professional.js':'20261031v1',
@@ -68,7 +68,7 @@ const assetVersions={
  'textbook-crossqual-batch4b.js':'20261031batch4',
  'textbook-crossqual-batch4c.js':'20261031batch4',
  'textbook-crossqual-batch4d.js':'20261031batch4',
- 'textbook-structured-all-remaining.js':'20261031study700j',
+ 'textbook-structured-all-remaining.js':'20261031study700k',
  'textbook-editorial-advanced.js':'editorial1',
  'textbook-editorial-fia-applied.js':'editorial2',
  'textbook-editorial-management-01.js':'20261031mg1',
@@ -95,7 +95,11 @@ const assetVersions={
  'textbook-editorial-audit-foundation-03.js':'20261031au3',
  'textbook-editorial-audit-foundation-04.js':'20261031au4',
  'textbook-editorial-audit-foundation-05.js':'20261031au5',
- 'textbook-editorial-audit-foundation-06.js':'20261031au6'
+ 'textbook-editorial-audit-foundation-06.js':'20261031au6',
+ 'textbook-editorial-foundation-finance-01.js':'20261031ff1',
+ 'textbook-editorial-foundation-finance-02.js':'20261031ff2',
+ 'textbook-editorial-foundation-finance-03.js':'20261031ff3',
+ 'textbook-editorial-foundation-finance-04.js':'20261031ff4'
 };
 for(const filename of sourceAssets){
  const expected=assetVersions[filename]||'20261030usd5';
