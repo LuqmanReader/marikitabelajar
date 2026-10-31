@@ -29,8 +29,23 @@ function validateSigned({entry,lesson,source,arithmetic,pdf}){
  assert.equal(arithmetic.arithmeticalMismatches,0,key+' arithmetic contradictions unresolved');
  assert.equal(arithmetic.workedCaseCount,lesson.workedCount,key+' worked-case count mismatch');
  assert(Array.isArray(entry.outcomeEvidence),key+' missing outcome evidence');
- const candidates=source.officialDetailedOutcomeCandidates||[];
- assert(candidates.length>0,key+' source outcomes not extractable');
+ const publishedCandidates=source.officialDetailedOutcomeCandidates||[];
+ const practical=!publishedCandidates.length&&source.flags?.includes('COMPUTER_PRACTICAL_SKILL_REQUIRES_HANDS_ON_ASSESSMENT');
+ const practicalAnchor=sha({officialPdfSha256:source.pdfSha256,sourcePdfPage:source.officialTopicPdfPage,
+   topicTitle:source.title,kind:'PRACTICAL'});
+ const candidates=practical?[{letter:'PRACTICAL',sha256:practicalAnchor}]:publishedCandidates;
+ assert(candidates.length>0,key+' source outcomes not extractable or practical skill unsupported');
+ if(practical){
+  const ev=entry.practicalSkillEvidence;
+  assert(ev&&ev.verdict==='PASS',key+' computer-platform skill demonstration missing');
+  assert(hasText(ev.examPlatform,6)&&/^https:\/\//.test(ev.evidenceUrl||''),
+    key+' platform identity and linked demonstration proof required');
+  assert(Array.isArray(ev.demonstratedActions)&&ev.demonstratedActions.length>=2&&
+   ev.demonstratedActions.every(x=>hasText(x,15)),key+' practical computer skills not demonstrated');
+  assert(ev.currentExamPeriodConfirmed===true,key+' practical assessment not tied to current exam edition');
+  assert(hasText(ev.reviewer,5)&&/^\d{4}-\d{2}-\d{2}T/.test(ev.reviewedAt||''),
+    key+' independent reviewed practical attempt missing');
+ }
  assert.equal(entry.outcomeEvidence.length,candidates.length,key+' not every official outcome individually reviewed');
  const byLetter=new Map();
  for(const proof of entry.outcomeEvidence){
@@ -50,7 +65,7 @@ function validateSigned({entry,lesson,source,arithmetic,pdf}){
   for(const n of proof.sectionReferences){
    assert(Number.isInteger(n)&&n>=0&&n<lesson.sections.length,key+' section index not present');
   }
-  assert(Array.isArray(proof.workedCaseReferences)&&proof.workedCaseReferences.length>0,key+' requires exam application evidence');
+  assert(Array.isArray(proof.workedCaseReferences)&&(practical || proof.workedCaseReferences.length>0),key+' requires exam application evidence');
   for(const n of proof.workedCaseReferences)
    assert(Number.isInteger(n)&&n>=0&&n<lesson.worked.length,key+' referenced application not present');
  }
@@ -132,6 +147,25 @@ if(require.main===module){
  tamper(x=>{x.entry.visualEvidence.verdict='PENDING'},/visual review missing/);
  tamper(x=>{x.source.pdfSha256='0'.repeat(64)},/signed syllabus evidence is stale/);
  tamper(x=>{x.arithmetic.arithmeticalMismatches=1},/arithmetic contradictions unresolved/);
+ const practicalSource={...fakeSource,title:'Use computer technology to access and manipulate information',
+  officialDetailedOutcomeCandidates:[],flags:['COMPUTER_PRACTICAL_SKILL_REQUIRES_HANDS_ON_ASSESSMENT']};
+ const pAnchor=sha({officialPdfSha256:practicalSource.pdfSha256,sourcePdfPage:practicalSource.officialTopicPdfPage,
+   topicTitle:practicalSource.title,kind:'PRACTICAL'});
+ const practicalValid=structuredClone(valid);
+ practicalValid.outcomeEvidence=[{...practicalValid.outcomeEvidence[0],letter:'PRACTICAL',
+   sourceAnchorSha256:pAnchor,workedCaseReferences:[]}];
+ practicalValid.practicalSkillEvidence={verdict:'PASS',
+   examPlatform:'Official ACCA computer-based exam practice platform',
+   evidenceUrl:'https://example.test/practical-review',
+   demonstratedActions:['Navigated exam response windows and selected correct controls',
+      'Used digital spreadsheet cells to calculate and present a response'],
+   currentExamPeriodConfirmed:true,reviewer:'Qualified independent examiner',
+   reviewedAt:'2026-10-31T12:45:00Z'};
+ const practicalContext={entry:practicalValid,lesson:synthetic,source:practicalSource,
+   arithmetic:fakeMath,pdf:{fetched:true,periodConfirmed:true,sha256:'1'.repeat(64)}};
+ assert.equal(validateSigned(practicalContext),true,'Complete practical exam evidence should validate');
+ const missingDemo=structuredClone(practicalContext);delete missingDemo.entry.practicalSkillEvidence;
+ assert.throws(()=>validateSigned(missingDemo),/computer-platform skill demonstration missing/);
  console.log('PASS: '+matrix.chapters.length+' evidence records, '+verified.length+' signed chapters; fabricated approval rejected; complete synthetic proof accepted and seven tampered proofs rejected.');
 }
 module.exports={validateSigned};
