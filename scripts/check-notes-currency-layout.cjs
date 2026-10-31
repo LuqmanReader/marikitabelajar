@@ -66,6 +66,7 @@ const assetVersions={
  'textbook-ma2-part-b.js':'20261031optimalmixv2',
  'textbook-fa2-part-b.js':'20261031noncurrentv3',
  'notes-visual-all.js':'20261101beta1',
+ 'notes-visual-workbook.js':'20261101flowv1',
  'textbook-crossqual-a1.js':'20261031accaA1',
  'textbook-crossqual-a2-foundation.js':'20261031v1',
  'textbook-crossqual-a2-professional.js':'20261031v1',
