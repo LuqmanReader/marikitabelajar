@@ -125,37 +125,5 @@
       ]
     ]
   },
-  "MA2:B3": {
-    "title": "Accounting for other expenses",
-    "sections": [
-      [
-        "Other expenses in a cost system",
-        "Besides materials and labour, organisations incur rent, depreciation, utilities, insurance, repairs, royalties, subcontractor charges and administrative/selling expenses. A direct expense is separately traceable to one cost unit; factory rent and depreciation are generally indirect production overhead."
-      ],
-      [
-        "Accruals and prepayments",
-        "Costs belong to the period in which benefits are consumed, not necessarily when cash is paid. An unpaid factory electricity bill increases factory overhead and an accrual liability; a prepaid factory insurance policy represents an asset until consumed. The same timing concept applies to non-production expenses but classification into product cost changes."
-      ],
-      [
-        "Allocation and apportionment",
-        "An overhead clearly arising in one cost centre is allocated there. Shared overheads are apportioned using a fair basis, such as floor area for rent, equipment value for insurance and machine hours for factory power. Apply each chosen rate to the correct driver and distinguish service cost centre from production cost centre."
-      ],
-      [
-        "Classification and controls",
-        "Maintain schedules for depreciation, annual insurance, rent reviews and standing orders. Reconcile actual supplier invoices, accruals and allocations. Avoid adding administration costs to inventory simply to inflate product cost under financial reporting; internal total-cost analysis and inventory valuation serve different purposes."
-      ]
-    ],
-    "workings": [
-      [
-        "Accrued factory cost",
-        "Factory electricity is $3,600 for the final quarter but $600 remains unpaid at year end.",
-        "Record $3,600 factory overhead for the quarter. If cash paid $3,000 has been recorded, debit overhead $600 and credit accrual $600. This changes overhead incurred, not necessarily the overhead absorbed to jobs."
-      ],
-      [
-        "Rent apportionment",
-        "Total factory rent $18,000; departments occupy 500, 300 and 200 m².",
-        "Total 1,000 m²; apportion $9,000, $5,400 and $3,600 respectively. The cost-centre balances together must equal $18,000."
-      ]
-    ]
-  }
+  "MA2:B3": {"title":"Accounting for other expenses","sections":[["Other expenses in a cost system","Besides materials and labour, organisations incur rent, depreciation, utilities, insurance, repairs, royalties, subcontractor charges and administrative/selling expenses. A direct expense is separately traceable to one cost unit; factory rent and depreciation are generally indirect production overhead."],["Accruals and prepayments","Costs belong to the period in which benefits are consumed, not necessarily when cash is paid. An unpaid factory electricity bill increases factory overhead and an accrual liability; a prepaid factory insurance policy represents an asset until consumed. The same timing concept applies to non-production expenses but classification into product cost changes."],["Allocation and apportionment","An overhead clearly arising in one cost centre is allocated there. Shared overheads are apportioned using a fair basis, such as floor area for rent, equipment value for insurance and machine hours for factory power. Apply each chosen rate to the correct driver and distinguish service cost centre from production cost centre."],["Classification and controls","Maintain schedules for depreciation, annual insurance, rent reviews and standing orders. Reconcile actual supplier invoices, accruals and allocations. Avoid adding administration costs to inventory simply to inflate product cost under financial reporting; internal total-cost analysis and inventory valuation serve different purposes."],["Depreciation methods and which expense receives the charge","Straight-line depreciation assigns (cost minus residual value)/useful life when benefits are used evenly; a reducing-balance method charges a fixed percentage of opening carrying amount each period. A factory machine's depreciation is normally production overhead, while office equipment depreciation is typically an administrative expense. In an investment-appraisal cash flow, depreciation itself is noncash, although related tax effects may be relevant if specified. Depreciation is an allocation of the asset's depreciable amount, not a yearly estimate of sale proceeds."],["Accruals, prepayments and asset versus expense decisions","A prepaid insurance payment represents an asset for benefits not yet used; the consumed part is expense. An unpaid electricity bill for services already received requires an expense and accrual liability. Decide whether a payment acquires a resource for future operations (potentially capital) or pays for current maintenance (expense), using applicable recognition rules rather than a fixed dollar threshold. Control systems should reconcile invoices, standing payments and asset registers and correctly assign production versus selling or administrative functions."]],"workings":[["Accrued factory cost","Factory electricity is $3,600 for the final quarter but $600 remains unpaid at year end.","Record $3,600 factory overhead for the quarter. If cash paid $3,000 has been recorded, debit overhead $600 and credit accrual $600. This changes overhead incurred, not necessarily the overhead absorbed to jobs."],["Rent apportionment","Total factory rent $18,000; departments occupy 500, 300 and 200 m².","Total 1,000 m²; apportion $9,000, $5,400 and $3,600 respectively. The cost-centre balances together must equal $18,000."],["Straight-line and reducing-balance depreciation","A production machine costs $50,000 with estimated residual $5,000 and useful life five years. An alternative estimate uses 20% reducing-balance depreciation. Calculate annual straight-line, reducing-balance first-year, and second-year charges.","Straight-line annual charge=($50,000−$5,000)/5=$9,000. Reducing-balance first year=$50,000×20%=$10,000; opening carrying amount for year two=$40,000, so second-year charge=$40,000×20%=$8,000. The choice depends on how benefits are consumed and residual carrying value must be considered over the asset life."],["Prepaid insurance and accrued factory utilities","An annual factory insurance premium $12,000 covers 1 October through the following September. A 31 December reporting date is used. December electricity of $1,400 remains unpaid. Calculate insurance expense, remaining prepaid asset and utilities accrual, assuming linear coverage.","Three months of insurance consumed: $12,000×3/12=$3,000 expense; nine months prepaid=$12,000−$3,000=$9,000 current asset. Electricity: Dr factory overhead expense $1,400 / Cr accrued expenses $1,400. Combined relevant factory expense for these items is $3,000+$1,400=$4,400. The prepayment is not a second expense merely because cash has already been paid."]]}
 };})(window);
