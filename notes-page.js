@@ -78,7 +78,7 @@ function appendOutcomeTeaching(parent,paperCode,topicCode){
    work.append(node('h4','',w.title),node('p','',w.question),node('h5','','WORKING AND ANSWER'),node('p','',w.solution));section.append(work);
   }
  }
- section.append(link('VERIFIED REFERENCE: ACCA 2025–26 STUDY GUIDE ↗',d.source));
+ section.append(link('OLDER-EDITION SOURCE · CHECK CURRENT 2026–27 SYLLABUS ↗',d.source));
  parent.append(section);return true;
 }
 function appendTextbook(parent,paperCode,topicCode){
