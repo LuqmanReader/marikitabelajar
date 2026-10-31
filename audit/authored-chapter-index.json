@@ -1,7 +1,7 @@
 {
   "batch": 14,
   "totalExpectedFiles": 76,
-  "completed": 42,
+  "completed": 56,
   "files": {
     "textbook-fa1-part-a.js": [
       "FA1:A1",
@@ -476,6 +476,91 @@
       "FAU:D3",
       "FAU:D4",
       "FAU:D5"
+    ],
+    "textbook-editorial-audit-foundation-05.js": [
+      "FAU:E1",
+      "FAU:E2",
+      "FAU:E3",
+      "FAU:E4"
+    ],
+    "textbook-editorial-audit-foundation-06.js": [
+      "FAU:F1",
+      "FAU:F2",
+      "FAU:F3",
+      "FAU:F4"
+    ],
+    "textbook-editorial-foundation-finance-01.js": [
+      "FFM:C3",
+      "FFM:C4",
+      "FFM:D1",
+      "FFM:D2"
+    ],
+    "textbook-editorial-foundation-finance-02.js": [
+      "FFM:D3",
+      "FFM:D4",
+      "FFM:E1",
+      "FFM:E2"
+    ],
+    "textbook-editorial-foundation-finance-03.js": [
+      "FFM:F1",
+      "FFM:F2",
+      "FFM:F3",
+      "FFM:F4"
+    ],
+    "textbook-editorial-foundation-finance-04.js": [
+      "FFM:G1",
+      "FFM:G2",
+      "FFM:G3",
+      "FFM:G4"
+    ],
+    "textbook-editorial-pm-01.js": [
+      "PM:B4",
+      "PM:B5",
+      "PM:C4",
+      "PM:C5"
+    ],
+    "textbook-editorial-pm-02.js": [
+      "PM:C6",
+      "PM:D1",
+      "PM:D2",
+      "PM:D3"
+    ],
+    "textbook-editorial-pm-03.js": [
+      "PM:D4",
+      "PM:D5",
+      "PM:D6",
+      "PM:D7"
+    ],
+    "textbook-editorial-pm-04.js": [
+      "PM:E1",
+      "PM:E2"
+    ],
+    "textbook-editorial-pm-05.js": [
+      "PM:E3",
+      "PM:F1",
+      "PM:F2"
+    ],
+    "textbook-editorial-pm-06.js": [
+      "PM:F3",
+      "PM:F4"
+    ],
+    "textbook-editorial-law-eng-2026-part1.js": [
+      "LW:C1",
+      "LW:C2",
+      "LW:D1",
+      "LW:D2",
+      "LW:D3",
+      "LW:D4",
+      "LW:E1",
+      "LW:E2"
+    ],
+    "textbook-editorial-law-eng-2026-part2.js": [
+      "LW:E3",
+      "LW:F1",
+      "LW:F2",
+      "LW:F3",
+      "LW:G1",
+      "LW:H1"
     ]
   }
 }
