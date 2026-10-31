@@ -20,6 +20,8 @@ on:
       - 'audit/notes-2026-27-review-matrix.json'
       - 'audit/authored-chapter-index.json'
       - 'tests/notes-*.cjs'
+      - 'scripts/audit-first350-*.py'
+      - 'scripts/export-first350-live-lessons.cjs'
       - '.github/workflows/notes-quality.yml'
   pull_request:
     paths:
@@ -39,6 +41,8 @@ on:
       - 'audit/notes-2026-27-review-matrix.json'
       - 'audit/authored-chapter-index.json'
       - 'tests/notes-*.cjs'
+      - 'scripts/audit-first350-*.py'
+      - 'scripts/export-first350-live-lessons.cjs'
       - '.github/workflows/notes-quality.yml'
 
 permissions:
