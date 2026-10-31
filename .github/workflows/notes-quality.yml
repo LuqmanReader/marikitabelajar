@@ -99,6 +99,8 @@ jobs:
           if-no-files-found: warn
       - name: Install official PDF audit dependencies
         run: python -m pip install --disable-pip-version-check --quiet pymupdf requests
+      - name: Reconcile MA1 2026-27 systems, information, cost classification and centres
+        run: node tests/notes-ma1-fundamentals-2026.cjs
       - name: Recalculate MA1 MA2 and FFM 2026-27 applied cases
         run: node tests/notes-ma-cash-finance-2026.cjs
       - name: Enforce detailed FA and FFA 2026-27 A1 A3 A4 teaching outcomes
