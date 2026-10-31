@@ -78,6 +78,15 @@ jobs:
             audit/notes-first350-evidence.json
             audit/notes-first350-evidence.md
           if-no-files-found: error
+      - name: Reconcile FA and FFA 2026-27 detailed academic outcomes and numeric results
+        run: node tests/notes-fa-ffa-academic-crosswalk.cjs
+      - name: Upload academic syllabus-to-lesson evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fa-ffa-2026-27-academic-crosswalk
+          path: audit/fa-ffa-2026-27-internal-crosswalk.json
+          if-no-files-found: error
       - name: Check browser release markers and cache refresh
         run: node tests/notes-release-regression.cjs
       - name: Check authoring inventory consistency and pending technical review
