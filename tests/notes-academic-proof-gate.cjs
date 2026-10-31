@@ -57,7 +57,7 @@ function validateSigned({entry,lesson,source,arithmetic,pdf}){
   const proof=byLetter.get(outcome.letter);
   assert(proof,key+' missing outcome '+outcome.letter);
   assert.equal(proof.sourceAnchorSha256,outcome.sha256,key+' official outcome wording changed');
-  assert.equal(proof.sourcePdfPage,source.officialTopicPdfPage,key+' wrong source page');
+  assert.equal(proof.sourcePdfPage,outcome.sourcePdfPage||source.officialTopicPdfPage,key+' wrong source page');
   assert.equal(proof.intellectualLevelReviewed,true,key+' exam level not checked for '+outcome.letter);
   assert.equal(proof.verdict,'PASS',key+' outcome requires a PASS decision for '+outcome.letter);
   assert(hasText(proof.reasoning,80),key+' needs detailed independent academic reasoning for '+outcome.letter);

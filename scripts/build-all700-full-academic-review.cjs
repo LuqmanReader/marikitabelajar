@@ -16,7 +16,8 @@ for(const e of arith.individualChecks)push(maths,e.chapter+'#'+e.caseIndex,e);
 for(const e of journals.checks)push(drcr,e.key+'#'+e.caseIndex,e);
 for(const e of journals.unparsed)push(unclear,e.key+'#'+e.caseIndex,e);
 for(const e of cross.results)push(perTopic,e.topicKey,e);
-assert.equal(lessons.size,700);assert.equal(cross.results.length,2357);
+assert.equal(lessons.size,700);assert.equal(cross.results.length,cross.totalRows,'Official outcome review count drift');
+assert(cross.totalRows>=2357,'Unexpected loss of 2026-27 outcome extraction coverage');
 const stop=new Set('the and this that each which from with have when where your were under using these their into those what also after before explain describe identify calculate prepare apply assess account accounting financial'.split(' '));
 const terms=s=>[...new Set((String(s).toLowerCase().match(/[a-z]{4,}/g)||[]).filter(w=>!stop.has(w)))];
 const domain=s=>{

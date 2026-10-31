@@ -152,12 +152,16 @@ jobs:
         run: node tests/notes-arithmetic-units.cjs
       - name: Reconcile explicitly recorded debit-credit journal postings across 700 lessons
         run: python scripts/audit-all700-journals.py
+      - name: Verify unambiguous debit-credit parser and disclose alternative account options
+        run: node tests/notes-journal-parser-precision.cjs
       - name: Prevent regressions in debit-credit posting evidence
         run: node tests/notes-journal-balance-audit.cjs
       - name: Screen all 700 topic outcomes against 22 official ACCA 2026-27 PDFs
         run: python scripts/audit-all700-official-pdfs.py
       - name: Create all-700 official learning-outcome to teaching crosswalk
         run: node scripts/build-all700-outcome-crosswalk.cjs
+      - name: Check full FA2 D4 and MA2 D2 detailed outcomes and independently recalculated cases
+        run: node tests/notes-p0-outcome-reconciliation-2026.cjs
       - name: Test 700-lesson outcome mapping against live source and official syllabus
         run: node tests/notes-outcome-crosswalk.cjs
       - name: Upload full learning-outcome mapping for academic reviewers

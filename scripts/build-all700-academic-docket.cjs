@@ -52,7 +52,7 @@ for(const lesson of chapters.rows){
  if((risksByTopic.get(key)||[]).length)risks.push('CONTENT_REVIEW_REQUIRED');
  risks.push('DETAILED_OUTCOME_REVIEW_REQUIRED');
  const competencyChecklist=outcomes.map(o=>({
-  outcomeLetter:o.letter,sourcePdfPage:source.officialTopicPdfPage,
+  outcomeLetter:o.letter,sourcePdfPage:o.sourcePdfPage||source.officialTopicPdfPage,
   sourceAnchorSha256:o.sha256,intellectualLevelTags:o.intellectualLevelTags||[],
   automatedTokenComparison:(source.outcomeTokenComparison||[]).find(x=>x.letter===o.letter)||null,
   academicJudgement:'NOT_REVIEWED',teachingEvidence:null,applicationEvidence:null,

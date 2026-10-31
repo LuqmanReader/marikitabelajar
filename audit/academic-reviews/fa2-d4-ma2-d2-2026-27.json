@@ -1,0 +1,266 @@
+{
+  "edition": "ACCA Foundation 2026–27",
+  "reviewType": "INTERNAL_SOURCE_TO_LESSON_SUBSTANTIVE_CROSSWALK_NOT_INDEPENDENT_SIGNOFF",
+  "verifiedByACCA": false,
+  "independentSignoff": false,
+  "records": {
+    "FA2:D4": [
+      {
+        "letter": "a",
+        "sectionIndex": [
+          0,
+          5
+        ],
+        "workedIndex": [
+          5
+        ],
+        "reason": "Non-current assets identified by purpose and period of use, reinforced by asset register."
+      },
+      {
+        "letter": "b",
+        "sectionIndex": [
+          0,
+          5
+        ],
+        "workedIndex": [
+          5
+        ],
+        "reason": "Operating asset versus current resale inventory and statement-of-position classification."
+      },
+      {
+        "letter": "c",
+        "sectionIndex": [
+          0,
+          4
+        ],
+        "workedIndex": [
+          5
+        ],
+        "reason": "Capitalisation contrasted with servicing and period charges."
+      },
+      {
+        "letter": "d",
+        "sectionIndex": [
+          0,
+          4
+        ],
+        "workedIndex": [
+          5
+        ],
+        "reason": "Practical capital/revenue classification with asset register and depreciation corrections."
+      },
+      {
+        "letter": "e",
+        "sectionIndex": [
+          4,
+          7
+        ],
+        "workedIndex": [
+          5
+        ],
+        "reason": "Misclassification effects on assets and profit, including a missing depreciation journal."
+      },
+      {
+        "letter": "f",
+        "sectionIndex": [
+          3,
+          6
+        ],
+        "workedIndex": [
+          1,
+          3,
+          4
+        ],
+        "reason": "Complete acquisition, scrapping, disposal and part-exchange journals."
+      },
+      {
+        "letter": "g",
+        "sectionIndex": [
+          3,
+          6
+        ],
+        "workedIndex": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "reason": "Carrying amount and proceeds compared to calculate disposal gains and losses."
+      },
+      {
+        "letter": "h",
+        "sectionIndex": [
+          1,
+          5
+        ],
+        "workedIndex": [
+          0,
+          6
+        ],
+        "reason": "Purpose of systematic depreciation and the economic pattern of benefit consumption."
+      },
+      {
+        "letter": "i",
+        "sectionIndex": [
+          1,
+          5
+        ],
+        "workedIndex": [
+          0,
+          6
+        ],
+        "reason": "Straight-line and diminishing-balance depreciation independently calculated."
+      },
+      {
+        "letter": "j",
+        "sectionIndex": [
+          5
+        ],
+        "workedIndex": [
+          6
+        ],
+        "reason": "Appropriateness of even-benefit and front-loaded depreciation patterns."
+      },
+      {
+        "letter": "k",
+        "sectionIndex": [
+          2,
+          5
+        ],
+        "workedIndex": [
+          5,
+          6
+        ],
+        "reason": "Debit expense, credit accumulated depreciation; reconcile ledger movements."
+      },
+      {
+        "letter": "l",
+        "sectionIndex": [
+          2,
+          6
+        ],
+        "workedIndex": [
+          5
+        ],
+        "reason": "Asset-register objective, authorisation and reconciliation control."
+      },
+      {
+        "letter": "m",
+        "sectionIndex": [
+          6,
+          7
+        ],
+        "workedIndex": [
+          5
+        ],
+        "reason": "Prepare acquisition, depreciation and closing register figures with ledger validation."
+      },
+      {
+        "letter": "n",
+        "sectionIndex": [
+          7
+        ],
+        "workedIndex": [
+          5
+        ],
+        "reason": "Resolve a $500 accumulated-depreciation discrepancy only after checking evidence."
+      },
+      {
+        "letter": "o",
+        "sectionIndex": [
+          2,
+          5
+        ],
+        "workedIndex": [
+          5
+        ],
+        "reason": "SFP cost less accumulated depreciation and period expense presentation."
+      }
+    ],
+    "MA2:D2": [
+      {
+        "letter": "a",
+        "sectionIndex": [
+          2,
+          5
+        ],
+        "workedIndex": [
+          1,
+          3
+        ],
+        "reason": "Why scarce capacity limits normal demand and requires opportunity-cost decisions."
+      },
+      {
+        "letter": "b",
+        "sectionIndex": [
+          2,
+          5,
+          6
+        ],
+        "workedIndex": [
+          3,
+          4
+        ],
+        "reason": "Identify actual binding machine, labour and material constraints."
+      },
+      {
+        "letter": "c",
+        "sectionIndex": [
+          5,
+          6
+        ],
+        "workedIndex": [
+          3,
+          4
+        ],
+        "reason": "Maximise contribution with one limiting factor or two-constraint feasible corner points."
+      },
+      {
+        "letter": "d",
+        "sectionIndex": [
+          1,
+          7
+        ],
+        "workedIndex": [
+          0,
+          5
+        ],
+        "reason": "Make-or-buy analysis with avoidable costs and capacity opportunity cost."
+      },
+      {
+        "letter": "e",
+        "sectionIndex": [
+          0,
+          7
+        ],
+        "workedIndex": [
+          0,
+          2,
+          5
+        ],
+        "reason": "Distinguish sunk costs, incremental costs and sacrificed contribution."
+      },
+      {
+        "letter": "f",
+        "sectionIndex": [
+          1,
+          2,
+          3,
+          7
+        ],
+        "workedIndex": [
+          0,
+          2,
+          3,
+          5
+        ],
+        "reason": "Apply relevant cash and forgone contributions to realistic choices."
+      }
+    ]
+  },
+  "limitations": [
+    "Mapped curriculum requirements are not automatically academically verified",
+    "Nested syllabus sub-requirements and intellectual levels require independent source-text review",
+    "Full worked-answer evidence must be revalidated after editing"
+  ]
+}
