@@ -15,6 +15,10 @@ on:
       - 'subject-catalog.js'
       - 'acca-published-data.js'
       - 'textbook-*.js'
+      - 'notes-2026-*.js'
+      - 'notes-atx-2026-*.js'
+      - 'audit/notes-2026-27-review-matrix.json'
+      - 'audit/authored-chapter-index.json'
       - 'tests/notes-*.cjs'
       - '.github/workflows/notes-quality.yml'
   pull_request:
@@ -30,6 +34,10 @@ on:
       - 'subject-catalog.js'
       - 'acca-published-data.js'
       - 'textbook-*.js'
+      - 'notes-2026-*.js'
+      - 'notes-atx-2026-*.js'
+      - 'audit/notes-2026-27-review-matrix.json'
+      - 'audit/authored-chapter-index.json'
       - 'tests/notes-*.cjs'
       - '.github/workflows/notes-quality.yml'
 
@@ -61,3 +69,5 @@ jobs:
           if-no-files-found: warn
       - name: Check browser release markers and cache refresh
         run: node tests/notes-release-regression.cjs
+      - name: Check authoring inventory consistency and pending technical review
+        run: node tests/notes-review-matrix.cjs
