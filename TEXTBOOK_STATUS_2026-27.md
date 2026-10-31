@@ -4,6 +4,16 @@
 **Repository:** `LuqmanReader/marikitabelajar`, main  
 **Scope:** 25 paper and jurisdiction-variant indices; 700 syllabus topic headings
 
+## Full 700-topic audit execution — evidence-backed update (31 October 2026)
+
+The repaired GitHub Notes quality workflow **passed** in [run 41206233388](https://github.com/LuqmanReader/marikitabelajar/actions/runs/41206233388), including the full library export, official syllabus source comparison, calculations, cross-reconciled evidence docket, academic approval anti-forgery tests and earlier targeted regressions. The independent student-facing [FIA notes library regression](https://github.com/LuqmanReader/marikitabelajar/actions/runs/41206233486) passed for the same tested revision. More recent curriculum-extraction and FR B9 corrections require their own CI evidence before treating them as tested.
+
+The checked revision provided: **700/700 reader-visible chapters**, **1,484 worked cases**, **22/22 official ACCA 2026–27 PDFs**, **700/700 heading matches**, **2,279 candidate lettered outcomes**, and **1,096 extractable arithmetic calculations with zero detected mismatches**. The candidate-outcome extraction now distinguishes practical computer-based skills from lettered outcomes and documents the unusual AFM F4 official source numbering conflict. The reviewer docket still contained **356 possible detailed-outcome terminology flags** and additional extraction/practical competency review flags. These remain *potential issues*, not demonstrated missing teaching or technical correctness.
+
+A focused substantive correction to **FR B9** has since added 2026–27 IAS 33 EPS (bonus, rights, convertibles, options), IFRS 5 held-for-sale/discontinued operations, IAS 8 policy/estimate/error distinctions, and IFRS S1 disclosures, with revised exam-style worked applications and dedicated test coverage. See the current pull request's CI results for the tested version.
+
+**Important:** full independent academic sign-off is **0/700**. Passing a structural/content-screening pipeline does not independently establish that all 2026–27 learning outcomes, every IFRS/ISA/UK tax rule, every journal, and every worked example have been verified. Do not claim ACCA endorsement.
+
 ## Full-library audit repair (31 October 2026, after the first-350 snapshot)
 
 The repository now includes `scripts/export-all700-live-lessons.cjs`, `tests/notes-all700-evidence.cjs`, `scripts/audit-all700-arithmetic.py`, and `scripts/audit-all700-official-pdfs.py`. The Notes quality workflow is configured to export each **reader-visible** chapter with a SHA-256 fingerprint, record the winning source for duplicate definitions, recalculate machine-extractable arithmetic, and compare syllabus headings with **22 distinct official 2026–27 ACCA PDF URLs** covering all 25 papers/variants. New full-library evidence artifacts are configured for upload. **Their successful end-to-end CI execution has not yet been confirmed here.**
