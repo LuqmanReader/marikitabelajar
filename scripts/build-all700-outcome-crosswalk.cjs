@@ -32,7 +32,9 @@ function score(anchor,title,body,question=''){
  }
  return {points,terms:hits};
 }
+const reviewed=read('audit/academic-reviews/fa2-d4-ma2-d2-2026-27.json');
 const byLetter=new Map((internal.outcomes||[]).map(o=>[o.letter,o]));
+const curated=new Map(Object.entries(reviewed.records||{}).map(([key,rows])=>[key,new Map(rows.map(x=>[x.letter,x]))]));
 const results=[];
 for(const source of off.chapters){
  const ch=m.get(source.key),review=signed.get(source.key);
@@ -44,11 +46,11 @@ for(const source of off.chapters){
  for(const o of outcomes){
   const anchor=o.letter==='PRACTICAL'?source.title:o.anchorWords.join(' ');
   let sections=[],worked=[],method='AUTOMATED CANDIDATE ONLY';
-  const override=source.key==='FR:B9'?byLetter.get(o.letter):null;
+  const override=source.key==='FR:B9'?byLetter.get(o.letter):curated.get(source.key)?.get(o.letter)||null;
   if(override){
    sections=override.sectionIndex.map(i=>({index:i+1,title:ch.sections[i]?.[0]}));
    worked=override.workedIndex.map(i=>({index:i+1,title:ch.worked[i]?.[0]}));
-   assert(sections.every(x=>x.title)&&worked.every(x=>x.title),'Stale FR B9 authoring crosswalk');
+   assert(sections.every(x=>x.title)&&worked.every(x=>x.title),'Stale curated authoring crosswalk '+source.key);
    method='INTERNAL OUTCOME CROSSWALK — NOT SIGNED OFF';
   } else {
    sections=ch.sections.map((s,i)=>({index:i+1,title:s[0],...score(anchor,s[0],s[1])}))
