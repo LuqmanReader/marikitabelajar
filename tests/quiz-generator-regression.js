@@ -3,6 +3,8 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('nod
 const root=path.resolve(__dirname,'..'),read=x=>fs.readFileSync(path.join(root,x),'utf8');
 const engine=require('../quiz-engine.js'),bank=require('../quiz-exam-bank.js');
 globalThis.LedgerQuizEngine=engine;globalThis.LedgerExamScenarios=bank;
+vm.runInThisContext(read('quiz-casebank-knowledge.js'),{filename:'quiz-casebank-knowledge.js'});
+vm.runInThisContext(read('quiz-casebank-ledger.js'),{filename:'quiz-casebank-ledger.js'});
 vm.runInThisContext(read('quiz-quality-engine.js'),{filename:'quiz-quality-engine.js'});
 const c=vm.createContext({window:{}});
 for(const name of ['subject-catalog.js','acca-published-data.js','notes-data.js','notes-uk-syllabi.js','notes-expanded-data.js'])
@@ -74,6 +76,10 @@ const blank=engine.score(mock.questions,{});
 assert.equal(blank.marked,0);assert.equal(blank.correct,0);assert.equal(blank.percent,0);
 const html=read('quiz.html'),page=read('quiz-page.js');
 assert(html.includes('quiz-quality-engine.js'));
+assert(html.indexOf('quiz-casebank-knowledge.js')<html.indexOf('quiz-quality-engine.js'));
+assert(html.indexOf('quiz-casebank-ledger.js')<html.indexOf('quiz-quality-engine.js'));
+assert(html.includes('quiz-casebank-ledger.js?v=case-quality1'));
+
 assert(page.includes("input.type='text'"));
 assert(!page.includes("element('textarea'"));
 console.log(JSON.stringify({syllabusTopicChecks:checked,originalQuestionsGenerated:originalQuestions,limitedTopicSets:limited,foundationMockChecks:mocks,numericalCases:numeric,unsupportedPapers:21}));
