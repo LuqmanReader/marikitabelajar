@@ -5,6 +5,8 @@ const map=JSON.parse(fs.readFileSync('audit/all700-outcome-crosswalk-ci.json','u
 const src=JSON.parse(fs.readFileSync('audit/all700-official-syllabus-evidence-ci.json','utf8'));
 const lessons=JSON.parse(fs.readFileSync('audit/all700-live-lessons-ci.json','utf8'));
 assert.equal(map.lessons,700);
+assert(map.extractedOutcomes>=1000,'Unexpected loss of detailed syllabus outcome extraction');
+assert(map.practicalSkillTopics>=1,'Practical computer-based skill requirements must not disappear');
 assert.equal(map.totalRows,src.totalOutcomeLetterCandidates+map.practicalSkillTopics);
 assert.equal(map.results.length,map.totalRows);
 assert.equal(new Set(map.results.map(x=>x.id)).size,map.totalRows);
