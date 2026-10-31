@@ -71,6 +71,8 @@ jobs:
           name: notes-2026-27-audit-inventory
           path: audit/notes-2026-27-inventory.json
           if-no-files-found: warn
+      - name: Recompute 2026-27 MA FMA B2 forecasting, regression and indices
+        run: node tests/notes-ma-fma-b2-2026-academic.cjs
       - name: Validate FA2 tax, BT ethics, and MA F2 F3 substantive 2026-27 corrections
         run: node tests/notes-first350-substantive-reconciliation.cjs
       - name: Regression for verified MA1, FA-FFA accounting-principle corrections and NPV
