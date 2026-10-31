@@ -606,3 +606,10 @@ footer{margin-top:60px;border-top:2px solid var(--ink);padding-top:20px;font-siz
  outline:3px solid #111;outline-offset:4px;
 }
 .notes-shell .lp-textbook-answer[open]>summary{margin-bottom:12px}
+
+/* Public community-beta teaching-status notice; no green certification badge. */
+.notes-beta-notice{margin:16px clamp(14px,4vw,55px) 0;padding:16px 18px;border:3px solid #111;background:#fff4bd;box-shadow:4px 4px 0 #111;color:#111}
+.notes-beta-notice strong{font:900 15px/1.4 Arial,sans-serif;letter-spacing:.035em}
+.notes-beta-notice p{margin:8px 0 0;font-size:13px;line-height:1.7}
+.notes-beta-notice a{color:#1c43ba;text-decoration:underline;font-weight:900}
+@media(max-width:650px){.notes-beta-notice{margin:12px 14px 0;padding:13px;box-shadow:3px 3px 0 #111}}
