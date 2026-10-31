@@ -51,7 +51,8 @@ for(const [key,requirements] of Object.entries(expectedUpdates)){
  const a=addenda[key];
  assert(a,key+' missing syllabus addendum');
  assert(keys.has(key),key+' not a recognized syllabus heading');
- assert.equal(a.source,catalogue[key.split(':')[0]].source===a.source ? a.source : a.source,'Unexpected source');
+ const paperCode=key.split(':')[0];
+ assert(a.source===catalogue[paperCode].source||(paperCode==='FA2'||paperCode==='FA'||paperCode==='FFA')&&a.source.endsWith('fa2_ffa_s26_j27_examinable_docs.pdf'),key+' should cite the mapped official ACCA syllabus or examinable documents');
  assert(a.source.startsWith('https://www.accaglobal.com/'),'Non-ACCA source '+key);
  assert(a.outcomes.length>=1,'No outcome references '+key);
  for(const id of requirements)assert(a.outcomes.includes(id),key+' missing 2026-27 change '+id);
