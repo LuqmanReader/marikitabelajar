@@ -1,7 +1,7 @@
 {
   "batch": 14,
   "totalExpectedFiles": 76,
-  "completed": 14,
+  "completed": 28,
   "files": {
     "textbook-fa1-part-a.js": [
       "FA1:A1",
@@ -199,6 +199,165 @@
       "FFA:B1",
       "FA:B2",
       "FFA:B2"
+    ],
+    "textbook-crossqual-batch4b.js": [
+      "FAU:A4",
+      "FAU:A5",
+      "FAU:A6",
+      "FAU:B1",
+      "FFM:B1",
+      "FFM:B2",
+      "FFM:C1",
+      "FFM:C2",
+      "FTX:B2",
+      "FTX:B3",
+      "FTX:B4",
+      "FTX:B5"
+    ],
+    "textbook-crossqual-batch4c.js": [
+      "LW:B2",
+      "LW:B3",
+      "LW:B4",
+      "PM:B1",
+      "PM:B2",
+      "PM:B3",
+      "TX:A4",
+      "TX:A5",
+      "TX:A6",
+      "FR:A4",
+      "FR:B1",
+      "FR:B2",
+      "AA:A4",
+      "AA:B1",
+      "AA:B2",
+      "FM:A4",
+      "FM:B1",
+      "FM:B2"
+    ],
+    "textbook-crossqual-batch4d.js": [
+      "SBL:B1",
+      "SBL:B2",
+      "SBL:B3",
+      "SBR:C2",
+      "SBR:C3",
+      "SBR:C4",
+      "AFM:A4",
+      "AFM:A5",
+      "AFM:A6",
+      "APM:A4",
+      "APM:A5",
+      "APM:B1",
+      "ATX:A4",
+      "ATX:A5",
+      "ATX:A6",
+      "AAA:B1",
+      "AAA:B2",
+      "AAA:B3"
+    ],
+    "textbook-editorial-advanced.js": [
+      "FR:B3",
+      "FR:B4",
+      "PM:C1",
+      "PM:C2",
+      "FM:D1",
+      "SBR:C6",
+      "AA:D1",
+      "AAA:D3"
+    ],
+    "textbook-editorial-fia-applied.js": [
+      "FMA:C2",
+      "MA:C2",
+      "FFA:D8",
+      "FA:D8",
+      "FBT:B2",
+      "BT:B2",
+      "FFM:E3",
+      "PM:C3",
+      "FR:B7"
+    ],
+    "textbook-editorial-management-01.js": [
+      "FMA:D1",
+      "MA:D1",
+      "FMA:D2",
+      "MA:D2",
+      "FMA:D3",
+      "MA:D3",
+      "FMA:E2",
+      "MA:E2"
+    ],
+    "textbook-editorial-management-02.js": [
+      "MA:C1",
+      "FMA:C1",
+      "MA:C3",
+      "FMA:C3",
+      "MA:D6",
+      "FMA:D6",
+      "MA:E1",
+      "FMA:E1"
+    ],
+    "textbook-editorial-management-03.js": [
+      "FMA:B4",
+      "MA:B4",
+      "FMA:C4",
+      "MA:C4",
+      "FMA:D4",
+      "MA:D4",
+      "FMA:D5",
+      "MA:D5"
+    ],
+    "textbook-editorial-management-04.js": [
+      "MA:F1",
+      "FMA:F1",
+      "MA:F2",
+      "FMA:F2",
+      "MA:F3",
+      "FMA:F3"
+    ],
+    "textbook-editorial-management-05.js": [
+      "MA:E3",
+      "FMA:E3",
+      "MA:F4",
+      "FMA:F4"
+    ],
+    "textbook-editorial-financial-01.js": [
+      "FFA:C1",
+      "FA:C1",
+      "FFA:C2",
+      "FA:C2",
+      "FFA:D1",
+      "FA:D1",
+      "FFA:D2",
+      "FA:D2"
+    ],
+    "textbook-editorial-financial-02.js": [
+      "FA:D3",
+      "FFA:D3",
+      "FA:D4",
+      "FFA:D4",
+      "FA:D5",
+      "FFA:D5",
+      "FA:D6",
+      "FFA:D6"
+    ],
+    "textbook-editorial-financial-03.js": [
+      "FA:D7",
+      "FFA:D7",
+      "FA:D9",
+      "FFA:D9",
+      "FA:D10",
+      "FFA:D10",
+      "FA:E1",
+      "FFA:E1"
+    ],
+    "textbook-editorial-financial-04.js": [
+      "FA:E2",
+      "FFA:E2",
+      "FA:F1",
+      "FFA:F1",
+      "FA:F2",
+      "FFA:F2",
+      "FA:F3",
+      "FFA:F3"
     ]
   }
 }
