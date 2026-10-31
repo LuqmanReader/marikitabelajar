@@ -1,6 +1,6 @@
 {
-  "batch": 14,
-  "totalExpectedFiles": 76,
+  "batch": 97,
+  "totalExpectedFiles": 97,
   "completed": 97,
   "files": {
     "textbook-fa1-part-a.js": [
@@ -910,5 +910,7 @@
   "remainingByPaper": {},
   "authorCount": 700,
   "totalCatalogued": 700,
-  "fullOutcomeVerificationStatus": "NOT_CERTIFIED; structural chapter coverage only"
+  "fullOutcomeVerificationStatus": "NOT_CERTIFIED; structural chapter coverage only",
+  "catalogueIndexStatus": "700 unique authored source keys, 8 duplicated keys in legacy files; distinct displayed keys remain 700",
+  "metadataUpdated": "2026-10-31"
 }
