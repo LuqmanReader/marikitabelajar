@@ -62,7 +62,7 @@ const doc={
 vm.runInNewContext(fs.readFileSync('notes-build.js','utf8'),{window:win,document:doc,URL,Date,console},{filename:'notes-build.js'});
 (async()=>{
  await new Promise(resolve=>setImmediate(resolve));
- assert.match(stamp.textContent,/2026\.10\.31\.15/);
+ assert.match(stamp.textContent,/2026\.10\.31\.16/);
  assert.equal(ids.notesReleaseStatus.hidden,true,'No false update banner when current');
  latest='2026.10.31.17';
  await win.LedgerNotesCheckForUpdates();
