@@ -58,6 +58,8 @@ const sourceAssets=[
  'notes-visual-workbook.js'
 ];
 const assetVersions={
+ 'textbook-fa1-part-a.js':'20261031academicB1E1F2',
+ 'textbook-fa1-part-b.js':'20261031academicI2J2',
  'textbook-fa2-part-a.js':'20261031acadfa2d1',
  'textbook-ma1.js':'20261031ma1audit',
  'textbook-ma2-part-b.js':'20261031ma2npv',
