@@ -6,7 +6,7 @@
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
-const build='2026.11.01.02';
+const build='2026.11.01.03';
 const html=fs.readFileSync('notes.html','utf8');
 const manifest=JSON.parse(fs.readFileSync('notes-release.json','utf8'));
 const page=fs.readFileSync('notes-page.js','utf8');
@@ -31,7 +31,7 @@ assert(html.indexOf('notes-2026-ifrs18-addenda.js')<html.indexOf('notes-page.js'
 assert(html.indexOf('notes-2026-27-outcome-addenda.js')<html.indexOf('notes-page.js'));
 
 assert(html.includes('notes-build.js?v=20261031chapters11'));
-assert(html.includes('notes.css?v=20261101spacing1'));
+assert(html.includes('notes.css?v=20261101typography1'));
 assert(renderer.includes("root.LedgerNotesVisualBuild='"+build+"'"));
 assert(page.includes("root.LedgerNotesVisualBuild!=='"+build+"'"));
 assert(!renderer.includes("function connector(svg,"));
@@ -79,7 +79,7 @@ vm.runInNewContext(fs.readFileSync('notes-build.js','utf8'),{window:win,document
  await new Promise(resolve=>setImmediate(resolve));
  assert(stamp.textContent.includes(build),'Build stamp must reflect current released build');
  assert.equal(ids.notesReleaseStatus.hidden,true,'No false update banner when current');
- latest='2026.11.01.03';
+ latest='2026.11.01.04';
  await win.LedgerNotesCheckForUpdates();
  assert.equal(ids.notesReleaseStatus.hidden,false,'A newer manifest must show update banner');
  assert(ids.notesReleaseMessage.textContent.includes(build),'Current version should appear in update banner');
