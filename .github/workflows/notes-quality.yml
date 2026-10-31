@@ -67,6 +67,17 @@ jobs:
           name: notes-2026-27-audit-inventory
           path: audit/notes-2026-27-inventory.json
           if-no-files-found: warn
+      - name: Audit the first 350 live teaching chapters and reconcile spot checks
+        run: node tests/notes-first350-evidence.cjs
+      - name: Upload first-half per-topic evidence and risk report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: notes-first350-evidence
+          path: |
+            audit/notes-first350-evidence.json
+            audit/notes-first350-evidence.md
+          if-no-files-found: error
       - name: Check browser release markers and cache refresh
         run: node tests/notes-release-regression.cjs
       - name: Check authoring inventory consistency and pending technical review
