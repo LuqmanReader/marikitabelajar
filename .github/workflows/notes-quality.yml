@@ -50,5 +50,14 @@ jobs:
         run: node tests/notes-all700-teaching.cjs
       - name: Check textbook depth and lesson coverage
         run: node tests/notes-depth-regression.cjs
+      - name: Check 2026-27 curriculum against 700 indexed ACCA topics
+        run: node tests/notes-2026-curriculum.cjs
+      - name: Upload 700-topic audit inventory
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: notes-2026-27-audit-inventory
+          path: audit/notes-2026-27-inventory.json
+          if-no-files-found: warn
       - name: Check browser release markers and cache refresh
         run: node tests/notes-release-regression.cjs
