@@ -58,7 +58,7 @@ const sourceAssets=[
  'notes-visual-workbook.js'
 ];
 const assetVersions={
- 'notes-visual-all.js':'20261031chapters31',
+ 'notes-visual-all.js':'20261031chapters32',
  'textbook-crossqual-a1.js':'20261031v2',
  'textbook-crossqual-a2-foundation.js':'20261031v1',
  'textbook-crossqual-a2-professional.js':'20261031v1',
@@ -76,8 +76,8 @@ const assetVersions={
  'textbook-editorial-management-03.js':'20261031mg3',
  'textbook-editorial-management-04.js':'20261031mg4',
  'textbook-editorial-management-05.js':'20261031mg5',
- 'textbook-editorial-financial-01.js':'20261031fa1b',
- 'textbook-editorial-financial-02.js':'20261031fa2',
+ 'textbook-editorial-financial-01.js':'20261031fa1c',
+ 'textbook-editorial-financial-02.js':'20261031fa2b',
  'textbook-editorial-financial-03.js':'20261031fa3',
  'textbook-editorial-financial-04.js':'20261031fa4',
  'textbook-editorial-financial-05.js':'20261031fa5',
