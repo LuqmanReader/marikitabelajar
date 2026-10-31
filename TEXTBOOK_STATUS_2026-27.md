@@ -1,41 +1,36 @@
-# LedgerPeer accounting textbook — content release
+# LedgerPeer FIA–ACCA Notes: 2026–27 release and quality status
 
-**Release:** 30 October 2026  
-**Source catalogue:** ACCA 2026–27 topic headings already imported in LedgerPeer  
-**Branch:** `content/full-teaching-fa2-ma2-oct2026`
+**Release:** 31 October 2026 · Notes build `2026.10.31.30`  
+**Repository:** `LuqmanReader/marikitabelajar`, main  
+**Scope:** 25 paper and jurisdiction-variant indices; 700 syllabus topic headings
 
-## What has actually been written
+## What is complete
 
-| Paper | Dedicated chapters added | Indexed syllabus headings | Separate teaching sections |
-|---|---:|---:|---:|
-| FA1 Recording Financial Transactions | 19 | 19 | 76 |
-| MA1 Management Information | 13 | 13 | 52 |
-| FA2 Maintaining Financial Records | 22 | 22 | 101 |
-| MA2 Managing Costs and Finance | 20 | 20 | 91 |
-| **Totals** | **74** | **74** | **320** |
+- All **700 indexed topics now have separately authored teaching chapters**, including worked applications. No syllabus topic is limited to the earlier generated structured teaching draft.
+- The audited source index records **97 source files**, **700 unique topic keys**, and **eight pre-existing duplicate source definitions**; where these overlap, the reader's merge order controls which chapter is displayed. The duplicate definitions concern FA1, MA1, FA2, and MA2—not missing syllabus topics.
+- This release rewrote the remaining **102 previously draft-only topics**: **FTX-UK 33, TX-UK 30, ATX-UK 18, AAA-INT 20 and SBL 1**. The earlier 598 chapters were already individually authored.
+- The Notes page loads the edited chapters before the reader; it contains dedicated 2026–27 supplements for IFRS 18 (FA2, FA/FFA, FR, SBR), amended PM/APM learning outcomes, and overseas tax under Finance Act 2025 (ATX-UK A1–A3).
+- FIA and ACCA still have separate qualification filters, while selected numerical and visual bookkeeping resources remain available.
 
-These eight module files contain **163 topic-specific worked solutions** and about **22,000 words of original long-form lesson text**. An additional seven fully described integrated cases provide 50 sequential accounting steps, transactions and reconciling workings.
+## What is NOT certified or verified
 
-The page presents each syllabus heading as its own article and no longer substitutes a single reused general chapter for these four papers. Section contents and worked applications are visible inside each subject topic. An older brief summary and prior-edition outcome notes are retained only in a secondary disclosure area.
+**Chapter count is not learning-outcome certification.** The structural tests show 700 unique authored chapter keys. They cannot independently establish that every paragraph and numerical answer is technically correct, or that all nested a/b/c ACCA learning outcomes are taught to the examination's intellectual level. **Full detailed outcome review remains outstanding for all 700 topics**, except for selected requirements investigated in the 2026–27 change supplements. This is **not an ACCA-endorsed or ACCA-accredited study text**.
 
-**Files:**
-- `textbook-fa1-part-a.js`, `textbook-fa1-part-b.js`
-- `textbook-ma1.js`
-- `textbook-fa2-part-a.js`, `textbook-fa2-part-b.js`, `textbook-fa2-part-c.js`
-- `textbook-ma2-part-a.js`, `textbook-ma2-part-b.js`
-- `textbook-integrated-cases.js`
-- `scripts/check-textbook-2026.cjs`
+Jurisdiction matters: the library uses **LW-ENG, TX-UK, FTX-UK, ATX-UK, SBR-INT, AAA-INT**. The UK tax papers cover **June 2026–June 2027** and the examinable **Finance Act 2025 / 2025–26 tax year**; most other session exams use a September 2026–June 2027 guide. Students should match their actual exam date and jurisdiction to the official guide.
 
-## What remains unfinished
+## Quality gates and source references
 
-This release **does not complete all 25 FIA–ACCA papers**. The other 21 paper indexes still have shorter original lesson entries and shared chapters, but **626 headings** lack the dedicated long-form chapter format.
+1. `node tests/notes-all700-teaching.cjs` — syllabus keys and authored-versus-draft chapter count.
+2. `node tests/notes-depth-regression.cjs` — chapter section and worked-example shape, plus page loader checks.
+3. `node tests/notes-2026-curriculum.cjs` — 700 paper-specific syllabus headings and 16 targeted change supplements, with the full-review limitation explicitly recorded.
+4. `node tests/notes-release-regression.cjs` — build marker and cache refresh.
+5. `audit/authored-chapter-index.json` — source file/key inventory.
+6. `audit/notes-2026-27-review-matrix.json` — 700 individual review entries and outstanding evidence for full sign-off.
 
-Moreover, matching all 74 broad headings is **not the same** as proving full coverage of each 2026–27 syllabus's a/b/c learning outcomes, intellectual level, nested requirements, examinable documents, question formats and professional judgments. The prior eight outcome maps still refer to ACCA 2025–26 detailed guides. The new long-form content provides stronger concept teaching but cannot be called examiner-certified or independently verified line by line against the 2026–27 guides. ACCA publishes the 2026–27 study guides, and official source links remain present in the library.
+The GitHub Actions workflow `.github/workflows/notes-quality.yml` is configured to run these tests when relevant files change. **A configured check is not evidence it passed.** Before any verified status is applied, record the actual test run, source/learning-outcome comparison, mathematical reconciliation and reviewer evidence.
 
-The JavaScript chapters and Notes renderer were syntax-checked; every one of the 74 keys was compared to the 2026–27 imported official paper topic index, and each has at least four separate teaching sections and two worked examples. Sample accounting equations were checked, but all 163 solutions have **not** received independent professional review. Full live browser testing remains outstanding.
+**Official references:** ACCA paper-specific syllabus/study guides, [ACCA 2026/27 syllabus changes](https://www.accaglobal.com/content/dam/ACCA_Global/Students/resourceFinder/acca-syllabus-changes.pdf), [FA2/FA/FFA examinable documents](https://www.accaglobal.com/content/dam/acca/global/PDF-students/fia/fa2_ffa_s26_j27_examinable_docs.pdf), and [ACCA Study Hub](https://www.accaglobal.com/my/en/student/your-study-options/studyhub.html).
 
-## Content standard going forward
+## Required criteria before a full learning-outcome sign-off
 
-A genuinely syllabus-complete topic requires all exact official individual outcomes, fully explained applications, assumptions, journal and T-account workings, statements and disclosures where examinable, exception cases, multiple tested questions, version-specific standards and a reviewed answer key. Do not mark any paper 100% certified until these checks pass.
-
-This release is an actual teaching-content rewrite; it is not another audit-only reclassification.
+For **each** topic: compare every detailed learning outcome and its intellectual level with the correct official 2026–27 guide; verify the exact legal/IFRS/ISA provisions and their examinable period; manually recompute every worked answer and investigate any contradiction; ensure concepts, exceptions, interpretation and realistic exam application are present; check language, formatting, accessibility and visual integrity. Record source page, date and a reviewer decision. None of those requirements is satisfied merely by a chapter's existence or word count.
