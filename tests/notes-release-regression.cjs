@@ -79,10 +79,10 @@ vm.runInNewContext(fs.readFileSync('notes-build.js','utf8'),{window:win,document
  await new Promise(resolve=>setImmediate(resolve));
  assert(stamp.textContent.includes(build),'Build stamp must reflect current released build');
  assert.equal(ids.notesReleaseStatus.hidden,true,'No false update banner when current');
- latest='2026.10.31.44';
+ latest='2026.11.01.02';
  await win.LedgerNotesCheckForUpdates();
  assert.equal(ids.notesReleaseStatus.hidden,false,'A newer manifest must show update banner');
- assert.match(ids.notesReleaseMessage.textContent,/2026\.10\.31\.43/);
+ assert(ids.notesReleaseMessage.textContent.includes(build),'Current version should appear in update banner');
  assert(ids.notesReleaseReload.events.click,'Reload button must work');
  ids.notesReleaseReload.events.click();
  const u=new URL(assigned);
