@@ -99,39 +99,7 @@
       ]
     ]
   },
-  "FA1:I2": {
-    "title": "Reconciling cash records",
-    "sections": [
-      [
-        "Pre-reconciliation review",
-        "Confirm statement date, compare bank cash book and statement, tick matched items and identify direct transactions recorded by bank but not by entity. Update ledger for fees, interest, direct debit and dishonoured receipts first; this produces adjusted cash-book balance."
-      ],
-      [
-        "Timing items",
-        "Outstanding lodgements have been entered in cash book but not yet reached bank statement; they make adjusted cash book higher than bank statement. Unpresented cheques are recorded payments not yet taken by bank; they make adjusted cash book lower than statement, all else equal."
-      ],
-      [
-        "Two equivalent forms",
-        "From adjusted cash book to bank statement: add unpresented cheques, subtract outstanding lodgements. From statement to adjusted book: add outstanding lodgements, subtract unpresented cheques. If a bank overdraft exists, maintain signed balance convention carefully."
-      ],
-      [
-        "Correction of errors",
-        "An entity posting a $980 supplier payment as $890 has overstated its bank ledger $90 and must credit bank another $90. If bank itself made an error, show a reconciliation item and request correction; do not invent a second payment journal."
-      ]
-    ],
-    "workings": [
-      [
-        "Full reconciliation",
-        "Cash book balance debit $10,600, bank fees $100 unrecorded, deposit $2,500 outstanding, cheque $900 unpresented.",
-        "Adjusted book=10,600−100=$10,500. Bank statement expected=10,500+900−2,500=$8,900."
-      ],
-      [
-        "Receipt from customer",
-        "Bank statement shows direct customer transfer $1,200 absent in book.",
-        "Dr bank $1,200 / Cr customer receivable $1,200; adjusted bank increases $1,200. Do not report new sales."
-      ]
-    ]
-  },
+  "FA1:I2": {"title":"Reconciling cash records","sections":[["Pre-reconciliation review","Confirm statement date, compare bank cash book and statement, tick matched items and identify direct transactions recorded by bank but not by entity. Update ledger for fees, interest, direct debit and dishonoured receipts first; this produces adjusted cash-book balance."],["Timing items","Outstanding lodgements have been entered in cash book but not yet reached bank statement; they make adjusted cash book higher than bank statement. Unpresented cheques are recorded payments not yet taken by bank; they make adjusted cash book lower than statement, all else equal."],["Two equivalent forms","From adjusted cash book to bank statement: add unpresented cheques, subtract outstanding lodgements. From statement to adjusted book: add outstanding lodgements, subtract unpresented cheques. If a bank overdraft exists, maintain signed balance convention carefully."],["Correction of errors","An entity posting a $980 supplier payment as $890 has overstated its bank ledger $90 and must credit bank another $90. If bank itself made an error, show a reconciliation item and request correction; do not invent a second payment journal."],["Bank reconciliation: distinguish book adjustments and timing differences","Start with a cash book balance and update it only for information not yet entered in the business ledger, such as bank charges, direct debits, standing-order receipts, bank interest and dishonoured receipts. Post those entries before preparing the bank reconciliation statement. Unpresented cheques were already credited in the cash book but have not reduced the bank statement, and deposits in transit have already increased the cash book but have not reached the bank. Consequently, when reconciling adjusted debit cash book to expected credit bank-statement balance, add unpresented cheques and deduct deposits in transit. A bank error should be investigated and reported to the bank rather than put through the entity cash book without evidence."]],"workings":[["Full reconciliation","Cash book balance debit $10,600, bank fees $100 unrecorded, deposit $2,500 outstanding, cheque $900 unpresented.","Adjusted book=10,600−100=$10,500. Bank statement expected=10,500+900−2,500=$8,900."],["Receipt from customer","Bank statement shows direct customer transfer $1,200 absent in book.","Dr bank $1,200 / Cr customer receivable $1,200; adjusted bank increases $1,200. Do not report new sales."],["Cash book adjustment followed by statement reconciliation","The cash book opens with a debit bank balance of $15,000. The bank statement records unposted monthly fees of $60 and a direct receipt from a customer of $740. Unpresented cheques total $1,400 and outstanding lodgements total $2,200. Calculate the adjusted cash book and the expected bank statement balance, then state the two correcting journals.","Adjusted cash book = $15,000−$60+$740=$15,680 debit. Record fee: Dr bank charges expense $60 / Cr bank $60. Record customer payment: Dr bank $740 / Cr trade receivables $740. Reconcile to statement: adjusted cash book $15,680 + unpresented cheques $1,400 − deposits in transit $2,200 = $14,880. Neither $1,400 nor $2,200 should be posted a second time to bank; they are timing items."]]},
   "FA1:I3": {
     "title": "Reconciling supplier accounts",
     "sections": [
@@ -198,37 +166,5 @@
       ]
     ]
   },
-  "FA1:J2": {
-    "title": "Correcting errors in accounting records",
-    "sections": [
-      [
-        "One-sided and two-sided errors",
-        "A one-sided posting may cause the trial balance to disagree; a double-entry error such as using repairs instead of equipment leaves columns equal. Diagnose by comparing required treatment to actual entry. Correct only the difference, not the full original amount twice."
-      ],
-      [
-        "Error types",
-        "Omission: transaction not entered at all. Commission: posted to wrong personal account. Principle: wrong category of account. Original entry: both sides recorded at same wrong amount. Reversal: both sides opposite. Compensating: errors offset in aggregate. Different types have different profit and trial-balance effects."
-      ],
-      [
-        "Suspense mechanics",
-        "Suspense holds unexplained one-sided difference temporarily. The correction journal posts against suspense only when necessary to clear the imbalance from the one-sided posting. Balance after correction should be nil and trial balance agree."
-      ],
-      [
-        "Financial statement effect",
-        "Profit changes only where correcting a revenue or expense amount, including asset/expense classification. Some corrections move receivable balances between customers without changing profit or total assets. Review prior-period complications separately if relevant to the exam level."
-      ]
-    ],
-    "workings": [
-      [
-        "Wrong purchase amount",
-        "Purchases of $2,400 recorded as $2,040 on both sides.",
-        "Dr purchases $360; Cr supplier payable $360. Trial balance would have agreed before the correction."
-      ],
-      [
-        "Wrong classification",
-        "Repairs expense debited $1,500 for machinery acquisition.",
-        "Dr equipment $1,500; Cr repairs $1,500. Ignore depreciation only if not required; otherwise make it as a second adjusting journal."
-      ]
-    ]
-  }
+  "FA1:J2": {"title":"Correcting errors in accounting records","sections":[["One-sided and two-sided errors","A one-sided posting may cause the trial balance to disagree; a double-entry error such as using repairs instead of equipment leaves columns equal. Diagnose by comparing required treatment to actual entry. Correct only the difference, not the full original amount twice."],["Error types","Omission: transaction not entered at all. Commission: posted to wrong personal account. Principle: wrong category of account. Original entry: both sides recorded at same wrong amount. Reversal: both sides opposite. Compensating: errors offset in aggregate. Different types have different profit and trial-balance effects."],["Suspense mechanics","Suspense holds unexplained one-sided difference temporarily. The correction journal posts against suspense only when necessary to clear the imbalance from the one-sided posting. Balance after correction should be nil and trial balance agree."],["Financial statement effect","Profit changes only where correcting a revenue or expense amount, including asset/expense classification. Some corrections move receivable balances between customers without changing profit or total assets. Review prior-period complications separately if relevant to the exam level."],["Correcting errors with and without suspense accounts","A complete omission, reversal of entries, error of principle, error of original entry or compensating error may leave debit and credit totals equal, so a balanced trial balance does not mean all postings are correct. A one-sided omission, wrong-side posting, or unequal debit and credit typically produces a trial balance difference. For a suspense-account question, first identify the exact side and amount required to equalise the trial balance, then post the correcting journal and clear suspense. An error of principle (for example, debiting repairs instead of equipment) is corrected by reclassification, not automatically through suspense. Quantify the effect on profit, assets and liabilities separately."]],"workings":[["Wrong purchase amount","Purchases of $2,400 recorded as $2,040 on both sides.","Dr purchases $360; Cr supplier payable $360. Trial balance would have agreed before the correction."],["Wrong classification","Repairs expense debited $1,500 for machinery acquisition.","Dr equipment $1,500; Cr repairs $1,500. Ignore depreciation only if not required; otherwise make it as a second adjusting journal."],["Suspense account and one-sided rent omission","A business correctly credits bank $700 for a rent payment but omits the debit to rent. The trial balance is provisionally balanced with suspense. Identify the initial imbalance, which suspense balance was needed and the correcting journal.","Because bank was credited $700 without an equal debit, total credits exceed total debits by $700. A provisional suspense DEBIT $700 balances the trial balance. Correction: Dr rent expense $700 / Cr suspense $700. The suspense account closes to zero, rent expense increases by $700, and period profit falls $700. Bank is already correct and must not be credited again."],["Error of principle with correct double entry","A $2,200 qualifying equipment purchase was posted Dr repairs expense $2,200 / Cr bank $2,200. No depreciation has yet arisen under the question's timing assumption. Give the correct adjustment and explain trial balance and profit effects.","The original Dr repairs / Cr bank agrees arithmetically, so no suspense entry is needed. Reclassify Dr equipment $2,200 / Cr repairs expense $2,200. Bank remains credited only once; equipment increases $2,200 and expense decreases $2,200. Compared with the erroneous entry, profit rises $2,200 before any later depreciation. The trial balance would have balanced both before and after the correction."]]}
 };})(window);
