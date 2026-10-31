@@ -4,6 +4,16 @@
 **Repository:** `LuqmanReader/marikitabelajar`, main  
 **Scope:** 25 paper and jurisdiction-variant indices; 700 syllabus topic headings
 
+## Additional substantiated FA1/FA2 journal corrections — 31 October 2026
+
+Merged [PR #27](https://github.com/LuqmanReader/marikitabelajar/pull/27), tested by [Notes quality CI run 41210998370](https://github.com/LuqmanReader/marikitabelajar/actions/runs/41210998370) with the FIA and Classroom regressions passing as well.
+
+Specific teaching adjustments make the debit and credit amounts explicit for bank charges, misclassified PPE repairs, customer receipt, supplier invoice overposting, capital versus income receipts, sales-tax journal and year-end accrued income. A rejected bank instruction is explicitly described as **no completed payment journal**. The corrected receivable narrative now distinguishes accruing consultancy income, subsequent invoicing, and receiving cash, without recognising revenue twice. New tests also independently recompute published FA/FFA IAS 16 PPE-revaluation cases and the FA1 prompt-payment discount case against ACCA examiner guidance.
+
+**Latest automation numbers:** 700 lessons, 2,357 outcome/practical evidence rows, 1,489 worked cases, **1,107 extractable arithmetic identities with zero discrepancies**, **192 explicitly parseable debit-credit groups numerically balanced**, **4 remaining ambiguous journal groups**. The updated outcome/technical workbook priority queue has 1,906 records of potentially incomplete evidence; overlapping flags and non-numerical teaching are not automatic errors.
+
+The documentation remains **not equivalent to 700 independent academic sign-offs**: full outcome-by-outcome intellectual-level interpretation, applicable standards, interpretation of all journal choices, numerical model assumptions, practical skills, accessibility and a qualified independent review must still be completed. **0/700** fully evidenced signed lessons.
+
 ## Full-scope outcome and technical review register — 31 October 2026
 
 Merged [PR #25](https://github.com/LuqmanReader/marikitabelajar/pull/25) and [PR #26](https://github.com/LuqmanReader/marikitabelajar/pull/26). The [full-register CI run](https://github.com/LuqmanReader/marikitabelajar/actions/runs/41210006858) and subsequent [practical-skill approval-gate CI run](https://github.com/LuqmanReader/marikitabelajar/actions/runs/41210506594) both passed.
