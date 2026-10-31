@@ -37,6 +37,6 @@ assert(rights.includes('$4.60')&&rights.includes('8,000'),'Rights bonus and trea
 assert.equal((4*5+3)/5,4.6);
 assert(Math.abs(300000/(150000+8000)-1.898734)<0.000001);
 const html=fs.readFileSync('notes.html','utf8');
-assert(html.includes('textbook-editorial-fr-2026-a.js?v=20261031frs1v2'),
+assert(html.includes('textbook-editorial-fr-2026-a.js?v=20261031frB9completev3'),
  'Corrected IFRS S1 chapter is not guaranteed to reload');
 console.log('PASS: current FR B9(f) IFRS S1 core-content and worked case exist in published source; NOT independent academic signoff.');
