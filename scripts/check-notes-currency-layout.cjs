@@ -14,7 +14,7 @@ const files=[
  'textbook-crossqual-a1.js','textbook-crossqual-a2-foundation.js',
  'textbook-crossqual-a2-professional.js','textbook-crossqual-a3-foundation.js',
  'textbook-crossqual-a3-professional.js',
- 'textbook-crossqual-batch4a.js','textbook-crossqual-batch4b.js','textbook-crossqual-batch4c.js','textbook-crossqual-batch4d.js','textbook-structured-all-remaining.js',
+ 'textbook-crossqual-batch4a.js','textbook-crossqual-batch4b.js','textbook-crossqual-batch4c.js','textbook-crossqual-batch4d.js','textbook-editorial-advanced.js','textbook-structured-all-remaining.js',
  'notes-visual-workbook-data.js','notes-visual-workbook.js',
  'notes-worked-tables-data.js','notes-worked-tables.js',
  'notes-page.js','fia-study-data-v2.js','fia-study-content-v2.js',
@@ -53,12 +53,12 @@ const sourceAssets=[
  'textbook-crossqual-a1.js','textbook-crossqual-a2-foundation.js',
  'textbook-crossqual-a2-professional.js','textbook-crossqual-a3-foundation.js',
  'textbook-crossqual-a3-professional.js',
- 'textbook-crossqual-batch4a.js','textbook-crossqual-batch4b.js','textbook-crossqual-batch4c.js','textbook-crossqual-batch4d.js','textbook-structured-all-remaining.js',
+ 'textbook-crossqual-batch4a.js','textbook-crossqual-batch4b.js','textbook-crossqual-batch4c.js','textbook-crossqual-batch4d.js','textbook-editorial-advanced.js','textbook-structured-all-remaining.js',
  'notes-visual-workbook-data.js','notes-worked-tables-data.js','notes-visual-all.js',
  'notes-visual-workbook.js'
 ];
 const assetVersions={
- 'notes-visual-all.js':'20261031chapters6',
+ 'notes-visual-all.js':'20261031chapters7',
  'textbook-crossqual-a1.js':'20261031v2',
  'textbook-crossqual-a2-foundation.js':'20261031v1',
  'textbook-crossqual-a2-professional.js':'20261031v1',
@@ -68,7 +68,8 @@ const assetVersions={
  'textbook-crossqual-batch4b.js':'20261031batch4',
  'textbook-crossqual-batch4c.js':'20261031batch4',
  'textbook-crossqual-batch4d.js':'20261031batch4',
- 'textbook-structured-all-remaining.js':'20261031study700c'
+ 'textbook-structured-all-remaining.js':'20261031study700d',
+ 'textbook-editorial-advanced.js':'editorial1'
 };
 for(const filename of sourceAssets){
  const expected=assetVersions[filename]||'20261030usd5';

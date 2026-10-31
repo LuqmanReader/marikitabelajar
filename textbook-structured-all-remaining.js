@@ -8,6 +8,7 @@
 const notes=root.LedgerFiaNotes||{};
 const syllabus=root.LedgerNotesSyllabi?.papers||{};
 const existing=Object.assign({},
+ root.LedgerEditorialAdvancedChapters||{},
  root.LedgerSupplementalTextbooks||{},
  root.LedgerSupplementalTextbooksA2||{},
  root.LedgerSupplementalTextbooksProfessional||{},
