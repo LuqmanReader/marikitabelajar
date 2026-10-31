@@ -22,7 +22,7 @@ assert.equal(400*0.01,4);
 assert.equal(400-4,396);
 assert.equal(2000*.9*.98,1764);
 const html=fs.readFileSync('notes.html','utf8');
-assert(html.includes('textbook-fa1-part-a.js?v=20261031academicdiscountv5'),'Corrected FA1 chapter must bypass old browser cache');
+assert(html.includes('textbook-fa1-part-a.js?v=20261031academicdiscountv6'),'Corrected FA1 chapter must bypass old browser cache');
 const page=fs.readFileSync('notes-page.js','utf8');
 assert(!page.includes('VERIFIED REFERENCE: ACCA 2025–26'),'Misleading prior-edition verified badge returned');
 assert(page.includes('OLDER-EDITION SOURCE · CHECK CURRENT 2026–27 SYLLABUS'));
