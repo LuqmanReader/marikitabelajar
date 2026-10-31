@@ -21,6 +21,7 @@ on:
       - 'audit/authored-chapter-index.json'
       - 'tests/notes-*.cjs'
       - 'scripts/audit-first350-*.py'
+      - 'scripts/audit-all700-*.py'
       - 'scripts/export-first350-live-lessons.cjs'
       - 'scripts/export-all700-live-lessons.cjs'
       - '.github/workflows/notes-quality.yml'
@@ -43,6 +44,7 @@ on:
       - 'audit/authored-chapter-index.json'
       - 'tests/notes-*.cjs'
       - 'scripts/audit-first350-*.py'
+      - 'scripts/audit-all700-*.py'
       - 'scripts/export-first350-live-lessons.cjs'
       - 'scripts/export-all700-live-lessons.cjs'
       - '.github/workflows/notes-quality.yml'
@@ -125,6 +127,21 @@ jobs:
           if-no-files-found: warn
       - name: Install official PDF audit dependencies
         run: python -m pip install --disable-pip-version-check --quiet pymupdf requests
+      - name: Recompute extractable equations across all 700 published lessons
+        run: python scripts/audit-all700-arithmetic.py
+      - name: Screen all 700 topic outcomes against 22 official ACCA 2026-27 PDFs
+        run: python scripts/audit-all700-official-pdfs.py
+      - name: Upload whole-library arithmetic and official-syllabus evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: notes-all700-official-and-maths-review
+          path: |
+            audit/all700-arithmetic-evidence-ci.json
+            audit/all700-arithmetic-evidence-ci.md
+            audit/all700-official-syllabus-evidence-ci.json
+            audit/all700-official-syllabus-evidence-ci.md
+          if-no-files-found: warn
       - name: Reconcile MA1 2026-27 systems, information, cost classification and centres
         run: node tests/notes-ma1-fundamentals-2026.cjs
       - name: Recalculate MA1 MA2 and FFM 2026-27 applied cases
