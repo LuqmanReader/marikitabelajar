@@ -39,6 +39,8 @@ jobs:
       - name: Verify JavaScript syntax
         run: |
           node --check quiz-exam-bank.js
+          node --check quiz-casebank-knowledge.js
+          node --check quiz-casebank-ledger.js
           node --check quiz-engine.js
           node --check quiz-quality-engine.js
           node --check quiz-page.js
