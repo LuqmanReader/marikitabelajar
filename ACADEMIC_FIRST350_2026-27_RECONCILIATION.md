@@ -6,11 +6,11 @@
 
 ## Evidence and reproducibility
 
-Every first-half student-visible lesson was exported using the **same source merge/override order as the live Notes reader**. The live corpus contains **716 worked-example entries** as of the documented source scan. All 10 relevant official ACCA PDF guides were downloaded directly in CI and the cover/examinable period checked. **350/350 chapter topic headings matched official syllabus page candidates**. Approximate text matching alone is not evidence that every nested outcome is covered or that every explanation is correct.
+Every first-half student-visible lesson was exported using the **same source merge/override order as the live Notes reader**. The live corpus contains **730 worked-example entries** as of the documented source scan. All 10 relevant official ACCA PDF guides were downloaded directly in CI and the cover/examinable period checked. **350/350 chapter topic headings matched official syllabus page candidates**. Approximate text matching alone is not evidence that every nested outcome is covered or that every explanation is correct.
 
 The source audit screened the official detailed study-guide content for **1,283 candidate lettered outcomes** after removal of Roman-numeral subitems, cross-page handling and a special note for practical exam technology skills. It recorded **197 topics with possible missing terminology** for substantive review and **12 practical computer-based competency topics requiring hands-on evaluation**. These are review queues; a lexical mismatch can be a false positive and a lexical match does not establish technical accuracy.
 
-The independent arithmetic scanner inspected **716 published worked cases**, recomputed **614 machine-extractable arithmetic identities**, and found **no mismatches in those extractable identities** at the last successful run. This is **NOT** independent recomputation of every worked solution or proof that assumptions, accounting entries and tax rules are sound. It cannot assess equations that are not machine readable, narrative qualitative questions, journals or legal details.
+The independent arithmetic scanner inspected **730 published worked cases**, recomputed **650 machine-extractable arithmetic identities**, and found **no mismatches in those extractable identities** at the last successful run. This is **NOT** independent recomputation of every worked solution or proof that assumptions, accounting entries and tax rules are sound. It cannot assess equations that are not machine readable, narrative qualitative questions, journals or legal details.
 
 ## 13 papers included
 
@@ -42,8 +42,9 @@ The independent arithmetic scanner inspected **716 published worked cases**, rec
 7. **BT:F2 and FBT:F2 — professional ethics:** Added the five official detailed requirements on IESBA/ACCA codes, professional body responsibilities, profession attributes, accountant ethical responsibilities and protected escalation of suspected illegal/unethical conduct.
 8. **FMA:F2 and MA:F2 — applied performance measurement:** Replaced narrow margins/days coverage with Balanced Scorecard, economy/efficiency/effectiveness, efficiency/capacity/activity, ROI, residual income, resource utilisation, quality and TQM with quantified applications.
 9. **FMA:F3 and MA:F3 — cost reduction and value analysis:** Added explicit differentiation between cost control and sustained reduction, method evaluation, value analysis and further worked scenarios.
+10. **MA:B2 and FMA:B2 — analytical forecasting:** Replaced a single high–low case with eight original teaching sections and eight application scenarios per paper, covering step costs, scatter/regression, correlation and r², time-series and seasonal forecasting, inflation, Laspeyres/Paasche indices and product lifecycle limits.
 
-These are **13 chapter records improved in this review cycle**, covering multiple paper codes, in addition to the previously committed FA/FFA C1–D5 work and the FA2:D4 disposal-account correction. The latest Notes release is **2026.10.31.34** with versioned asset refreshes so students obtain revised content.
+These are **15 chapter records improved in this review cycle**, covering multiple paper codes, in addition to the previously committed FA/FFA C1–D5 work and the FA2:D4 disposal-account correction. The latest Notes release is **2026.10.31.35** with versioned asset refreshes so students obtain revised content.
 
 ## Source and proof chain
 
@@ -58,6 +59,6 @@ These are **13 chapter records improved in this review cycle**, covering multipl
 
 ## Material limitations and next work required before full academic sign-off
 
-**Neither 350/350 heading matching nor 614 correct arithmetic identities is full academic verification.** The 197 potential detailed-outcome gaps remain for review (some may be extraction false positives). Twelve computer-application competencies need practical exam simulations. A qualified independent reviewer has not separately approved every rule, explanation, answer, effective standard, legislation provision, exam variant, visual or case. The repository's 700-topic review matrix therefore correctly retains `NOT_VERIFIED` statuses and **0 full independent academic sign-offs**, rather than falsely certifying material for students.
+**Neither 350/350 heading matching nor 650 correct arithmetic identities is full academic verification.** The 197 potential detailed-outcome gaps remain for review (some may be extraction false positives). Twelve computer-application competencies need practical exam simulations. A qualified independent reviewer has not separately approved every rule, explanation, answer, effective standard, legislation provision, exam variant, visual or case. The repository's 700-topic review matrix therefore correctly retains `NOT_VERIFIED` statuses and **0 full independent academic sign-offs**, rather than falsely certifying material for students.
 
 A full sign-off must individually check every nested K/S objective against source text, ensure appropriate depth and pedagogical examples, recompute each applicable result and journal, verify legal/effective dates and visuals, and record reviewer evidence for each lesson. The unresolved cases are not declared safe or certified just because the automated CI passes.
