@@ -72,6 +72,50 @@ async function main(){
    assert.equal(result.arrows,'none','Old arrow overlaps have returned at '+width);
    console.log('PASS viewport',width, '| timeline:',result.columns,'| brand font pairing correct | no clipping');
   }
+  // Render the ACTUAL community beta notice and navigation with the live CSS.
+  // Guard against the staggered buttons and mismatched left edges seen in production.
+  const notesHtml=fs.readFileSync(path.join(root,'notes.html'),'utf8');
+  const notice=notesHtml.match(/<aside class="notes-beta-notice"[\\s\\S]*?<\\/aside>/)?.[0];
+  const nav=notesHtml.match(/<nav class="back-navigation-row"[\\s\\S]*?<\\/nav>/)?.[0];
+  assert(notice&&nav,'Community beta notice or navigation missing from Notes');
+  assert(nav.includes('href="hub.html"')&&nav.includes('href="index.html#access"'),
+    'Do not replace the existing functional navigation URLs');
+  await page.setContent('<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><main class="notes-shell">'+notice+nav+'<section class="notes-hero"><h1>Learn the syllabus</h1></section></main></body></html>');
+  await page.addStyleTag({path:path.join(root,'notes.css')});
+  await page.addStyleTag({path:path.join(root,'site-nav.css')});
+  for(const width of [375,600,925,1440]){
+    await page.setViewport({width,height:800,deviceScaleFactor:1});
+    const layout=await page.evaluate(()=>{
+      const rect=selector=>{const r=document.querySelector(selector).getBoundingClientRect();
+        return {x:r.x,y:r.y,right:r.right,bottom:r.bottom,height:r.height}};
+      const items=Array.from(document.querySelectorAll('.back-navigation-row .site-back')).map(el=>{
+        const r=el.getBoundingClientRect();return{x:r.x,y:r.y,right:r.right,bottom:r.bottom}});
+      return {notice:rect('.notes-beta-notice'),nav:rect('.back-navigation-row'),
+        hero:rect('.notes-hero'),buttons:items,
+        scrollWidth:document.documentElement.scrollWidth};
+    });
+    assert.equal(layout.buttons.length,2,'Navigation must retain both buttons');
+    assert(Math.abs(layout.notice.x-layout.nav.x)<=2,
+      'Banner and navigation left edges must align: '+width+'px '+JSON.stringify(layout));
+    assert(Math.abs(layout.nav.x-layout.hero.x)<=2,
+      'Banner/buttons and hero must align: '+width+'px');
+    assert(layout.nav.y-layout.notice.bottom>=20,
+      'Beta banner shadow must have breathing room before navigation: '+width+'px');
+    assert(layout.hero.y-layout.nav.bottom>=20,
+      'Navigation shadow must have breathing room before hero: '+width+'px');
+    assert(layout.buttons.every(b=>b.x>=-1&&b.right<=width+1),
+      'Navigation buttons must not exceed viewport width: '+width+'px');
+    assert(layout.scrollWidth<=width+2,
+      'Beta banner/navigation horizontal overflow: '+width+'px');
+    if(width>=600){
+      assert(Math.abs(layout.buttons[0].y-layout.buttons[1].y)<=2,
+        'Back navigation buttons are vertically staggered: '+width+'px');
+    }else if(layout.buttons[1].y>layout.buttons[0].y+2){
+      assert(layout.buttons[1].y-layout.buttons[0].bottom>=8,
+        'Wrapped mobile buttons must have a visible gap');
+    }
+    console.log('PASS community-beta notice/navigation layout at',width,'px');
+  }
   assert.deepEqual(errors,[],'Browser JavaScript exception(s): '+errors);
  }finally{await browser.close()}
 }
