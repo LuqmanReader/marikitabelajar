@@ -1,0 +1,1401 @@
+{
+  "date": "2026-10-31",
+  "source": "https://www.accaglobal.com/content/dam/acca/global/PDF-students/fia/studyguides/fa_ffa_s26_j27_syllabus_and_study_guide.pdf",
+  "edition": "Sept 2026 to June 2027",
+  "scope": "FA/FFA C1-C2 D1-D5",
+  "paperTopicCount": 14,
+  "mappedDetailedOutcomePairs": 86,
+  "distinctDetailedOutcomes": 43,
+  "checkedNumericalResults": 58,
+  "distinctWorkedScenarios": 29,
+  "failures": [],
+  "independentProfessionalSignoff": false,
+  "officialAccaApproval": false,
+  "note": "This is an internal source-to-lesson syllabus crosswalk with recomputed numerical endpoints. It does not demonstrate independent checking of every journal phrase, IFRS condition, or editorial explanation. Academic sign-off remains pending.",
+  "outcomes": [
+    {
+      "key": "FA:C1",
+      "outcome": "C1(a)",
+      "summary": "Main financial data sources",
+      "officialPage": 9,
+      "evidenceTitle": "Business documents and what each proves",
+      "explanationCharCount": 1001,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:C1",
+      "outcome": "C1(b)",
+      "summary": "Twelve transaction source documents",
+      "officialPage": 9,
+      "evidenceTitle": "Business documents and what each proves",
+      "explanationCharCount": 1001,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:C1",
+      "outcome": "C1(c)",
+      "summary": "Apply accounting equation",
+      "officialPage": 9,
+      "evidenceTitle": "Accounting principle and substance",
+      "explanationCharCount": 441,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:C1",
+      "outcome": "C1(d)",
+      "summary": "Computerised accounting and cloud records",
+      "officialPage": 9,
+      "evidenceTitle": "Recording sources, cloud systems and information quality",
+      "explanationCharCount": 909,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:C1",
+      "outcome": "C1(e)",
+      "summary": "Accounting information, policies and deadlines",
+      "officialPage": 9,
+      "evidenceTitle": "Recording sources, cloud systems and information quality",
+      "explanationCharCount": 909,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:C1",
+      "outcome": "C1(f)",
+      "summary": "Sales, purchases, receipts and payments",
+      "officialPage": 9,
+      "evidenceTitle": "Detailed entries and reconciliations",
+      "explanationCharCount": 434,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:C2",
+      "outcome": "C2(a)",
+      "summary": "Functions and types of ledger accounts",
+      "officialPage": 9,
+      "evidenceTitle": "Types of ledger account and initial recording",
+      "explanationCharCount": 587,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:C2",
+      "outcome": "C2(b)",
+      "summary": "Initial recording of financial information",
+      "officialPage": 9,
+      "evidenceTitle": "Types of ledger account and initial recording",
+      "explanationCharCount": 587,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:C2",
+      "outcome": "C2(c)",
+      "summary": "Journal entries and posting to ledger",
+      "officialPage": 9,
+      "evidenceTitle": "Types of ledger account and initial recording",
+      "explanationCharCount": 587,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:C2",
+      "outcome": "C2(d)",
+      "summary": "Correct journal for stated narrative",
+      "officialPage": 9,
+      "evidenceTitle": "Detailed entries and reconciliations",
+      "explanationCharCount": 468,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:C2",
+      "outcome": "C2(e)",
+      "summary": "Balance and close general ledger accounts",
+      "officialPage": 9,
+      "evidenceTitle": "Balancing, closing and carrying forward accounts",
+      "explanationCharCount": 598,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D1",
+      "outcome": "D1(a)",
+      "summary": "Record sales and purchases",
+      "officialPage": 9,
+      "evidenceTitle": "Double entries for purchases, returns and supplier discounts",
+      "explanationCharCount": 678,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D1",
+      "outcome": "D1(b)",
+      "summary": "Record purchase and sales returns",
+      "officialPage": 9,
+      "evidenceTitle": "Double entries for purchases, returns and supplier discounts",
+      "explanationCharCount": 678,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D1",
+      "outcome": "D1(c)",
+      "summary": "Principle of sales tax",
+      "officialPage": 9,
+      "evidenceTitle": "Sales-tax postings and control account",
+      "explanationCharCount": 675,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D1",
+      "outcome": "D1(d)",
+      "summary": "Calculate and post sales tax",
+      "officialPage": 9,
+      "evidenceTitle": "Sales-tax postings and control account",
+      "explanationCharCount": 675,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D1",
+      "outcome": "D1(e)",
+      "summary": "Discounts received",
+      "officialPage": 9,
+      "evidenceTitle": "Double entries for purchases, returns and supplier discounts",
+      "explanationCharCount": 678,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D1",
+      "outcome": "D1(f)",
+      "summary": "Allowed trade and settlement discounts under IFRS",
+      "officialPage": 9,
+      "evidenceTitle": "IFRS 15 settlement discounts allowed to customers",
+      "explanationCharCount": 781,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D2",
+      "outcome": "D2(a)",
+      "summary": "Record cash transactions in bank ledger",
+      "officialPage": 10,
+      "evidenceTitle": "Detailed entries and reconciliations",
+      "explanationCharCount": 419,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D2",
+      "outcome": "D2(b)",
+      "summary": "Need for petty cash transaction record",
+      "officialPage": 10,
+      "evidenceTitle": "Accounting principle and substance",
+      "explanationCharCount": 437,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D3",
+      "outcome": "D3(a)",
+      "summary": "Inventory adjustments for reporting",
+      "officialPage": 10,
+      "evidenceTitle": "Exam judgement and common errors",
+      "explanationCharCount": 408,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D3",
+      "outcome": "D3(b)",
+      "summary": "Record cost of sales and closing inventory",
+      "officialPage": 10,
+      "evidenceTitle": "Continuous and periodic inventory records and purchase cost",
+      "explanationCharCount": 725,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D3",
+      "outcome": "D3(c)",
+      "summary": "IFRS requirements for inventory valuation",
+      "officialPage": 10,
+      "evidenceTitle": "Accounting scope and recognition",
+      "explanationCharCount": 477,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D3",
+      "outcome": "D3(d)",
+      "summary": "Qualifying inventory costs",
+      "officialPage": 10,
+      "evidenceTitle": "Continuous and periodic inventory records and purchase cost",
+      "explanationCharCount": 725,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D3",
+      "outcome": "D3(e)",
+      "summary": "Continuous and periodic inventory records",
+      "officialPage": 10,
+      "evidenceTitle": "Continuous and periodic inventory records and purchase cost",
+      "explanationCharCount": 725,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D3",
+      "outcome": "D3(f)",
+      "summary": "FIFO and both periodic and continuous AVCO",
+      "officialPage": 10,
+      "evidenceTitle": "Comparing FIFO, periodic AVCO and continuous AVCO",
+      "explanationCharCount": 676,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D3",
+      "outcome": "D3(g)",
+      "summary": "Effects of inventory costing on profit and assets",
+      "officialPage": 10,
+      "evidenceTitle": "Comparing FIFO, periodic AVCO and continuous AVCO",
+      "explanationCharCount": 676,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D4",
+      "outcome": "D4(a)",
+      "summary": "Define non-current assets",
+      "officialPage": 10,
+      "evidenceTitle": "Accounting scope and recognition",
+      "explanationCharCount": 516,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D4",
+      "outcome": "D4(b)",
+      "summary": "Current versus non-current assets",
+      "officialPage": 10,
+      "evidenceTitle": "Acquiring, revaluing and disclosing tangible non-current assets",
+      "explanationCharCount": 1072,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D4",
+      "outcome": "D4(c)",
+      "summary": "Asset expenditure versus expense",
+      "officialPage": 10,
+      "evidenceTitle": "Accounting scope and recognition",
+      "explanationCharCount": 516,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D4",
+      "outcome": "D4(d)",
+      "summary": "Classify capital and revenue expenditure",
+      "officialPage": 10,
+      "evidenceTitle": "Accounting scope and recognition",
+      "explanationCharCount": 516,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D4",
+      "outcome": "D4(e)",
+      "summary": "Record purchase and disposal of PPE",
+      "officialPage": 10,
+      "evidenceTitle": "Disposals, part-exchange and revaluation reserves",
+      "explanationCharCount": 814,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D4",
+      "outcome": "D4(f)",
+      "summary": "Disposal gains including part-exchange",
+      "officialPage": 10,
+      "evidenceTitle": "Disposals, part-exchange and revaluation reserves",
+      "explanationCharCount": 814,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D4",
+      "outcome": "D4(g)",
+      "summary": "Revalue PPE and reflect OCI/financial position",
+      "officialPage": 10,
+      "evidenceTitle": "Acquiring, revaluing and disclosing tangible non-current assets",
+      "explanationCharCount": 1072,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D4",
+      "outcome": "D4(h)",
+      "summary": "Disposal of previously revalued PPE",
+      "officialPage": 10,
+      "evidenceTitle": "Disposals, part-exchange and revaluation reserves",
+      "explanationCharCount": 814,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D4",
+      "outcome": "D4(i)",
+      "summary": "PPE balances and movement disclosures",
+      "officialPage": 10,
+      "evidenceTitle": "Acquiring, revaluing and disclosing tangible non-current assets",
+      "explanationCharCount": 1072,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D4",
+      "outcome": "D4(j)",
+      "summary": "Non-current asset register and purpose",
+      "officialPage": 10,
+      "evidenceTitle": "Disposals, part-exchange and revaluation reserves",
+      "explanationCharCount": 814,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D5",
+      "outcome": "D5(a)",
+      "summary": "Purpose of depreciation",
+      "officialPage": 11,
+      "evidenceTitle": "Accounting scope and recognition",
+      "explanationCharCount": 464,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D5",
+      "outcome": "D5(b)",
+      "summary": "Calculate straight-line and reducing-balance depreciation",
+      "officialPage": 11,
+      "evidenceTitle": "Choosing the method and posting the charge",
+      "explanationCharCount": 853,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D5",
+      "outcome": "D5(c)",
+      "summary": "Appropriate methods for different asset use",
+      "officialPage": 11,
+      "evidenceTitle": "Choosing the method and posting the charge",
+      "explanationCharCount": 853,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D5",
+      "outcome": "D5(d)",
+      "summary": "Depreciation charges and accumulated depreciation in ledgers",
+      "officialPage": 11,
+      "evidenceTitle": "Choosing the method and posting the charge",
+      "explanationCharCount": 853,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D5",
+      "outcome": "D5(e)",
+      "summary": "Revalued asset depreciation and surplus transfers",
+      "officialPage": 11,
+      "evidenceTitle": "Prospective changes and depreciation after revaluation",
+      "explanationCharCount": 786,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D5",
+      "outcome": "D5(f)",
+      "summary": "Changes to useful-life and residual-value estimates",
+      "officialPage": 11,
+      "evidenceTitle": "Prospective changes and depreciation after revaluation",
+      "explanationCharCount": 786,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FA:D5",
+      "outcome": "D5(g)",
+      "summary": "Report depreciation in performance and financial position",
+      "officialPage": 11,
+      "evidenceTitle": "Choosing the method and posting the charge",
+      "explanationCharCount": 853,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:C1",
+      "outcome": "C1(a)",
+      "summary": "Main financial data sources",
+      "officialPage": 9,
+      "evidenceTitle": "Business documents and what each proves",
+      "explanationCharCount": 1001,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:C1",
+      "outcome": "C1(b)",
+      "summary": "Twelve transaction source documents",
+      "officialPage": 9,
+      "evidenceTitle": "Business documents and what each proves",
+      "explanationCharCount": 1001,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:C1",
+      "outcome": "C1(c)",
+      "summary": "Apply accounting equation",
+      "officialPage": 9,
+      "evidenceTitle": "Accounting principle and substance",
+      "explanationCharCount": 441,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:C1",
+      "outcome": "C1(d)",
+      "summary": "Computerised accounting and cloud records",
+      "officialPage": 9,
+      "evidenceTitle": "Recording sources, cloud systems and information quality",
+      "explanationCharCount": 909,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:C1",
+      "outcome": "C1(e)",
+      "summary": "Accounting information, policies and deadlines",
+      "officialPage": 9,
+      "evidenceTitle": "Recording sources, cloud systems and information quality",
+      "explanationCharCount": 909,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:C1",
+      "outcome": "C1(f)",
+      "summary": "Sales, purchases, receipts and payments",
+      "officialPage": 9,
+      "evidenceTitle": "Detailed entries and reconciliations",
+      "explanationCharCount": 434,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:C2",
+      "outcome": "C2(a)",
+      "summary": "Functions and types of ledger accounts",
+      "officialPage": 9,
+      "evidenceTitle": "Types of ledger account and initial recording",
+      "explanationCharCount": 587,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:C2",
+      "outcome": "C2(b)",
+      "summary": "Initial recording of financial information",
+      "officialPage": 9,
+      "evidenceTitle": "Types of ledger account and initial recording",
+      "explanationCharCount": 587,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:C2",
+      "outcome": "C2(c)",
+      "summary": "Journal entries and posting to ledger",
+      "officialPage": 9,
+      "evidenceTitle": "Types of ledger account and initial recording",
+      "explanationCharCount": 587,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:C2",
+      "outcome": "C2(d)",
+      "summary": "Correct journal for stated narrative",
+      "officialPage": 9,
+      "evidenceTitle": "Detailed entries and reconciliations",
+      "explanationCharCount": 468,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:C2",
+      "outcome": "C2(e)",
+      "summary": "Balance and close general ledger accounts",
+      "officialPage": 9,
+      "evidenceTitle": "Balancing, closing and carrying forward accounts",
+      "explanationCharCount": 598,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D1",
+      "outcome": "D1(a)",
+      "summary": "Record sales and purchases",
+      "officialPage": 9,
+      "evidenceTitle": "Double entries for purchases, returns and supplier discounts",
+      "explanationCharCount": 678,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D1",
+      "outcome": "D1(b)",
+      "summary": "Record purchase and sales returns",
+      "officialPage": 9,
+      "evidenceTitle": "Double entries for purchases, returns and supplier discounts",
+      "explanationCharCount": 678,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D1",
+      "outcome": "D1(c)",
+      "summary": "Principle of sales tax",
+      "officialPage": 9,
+      "evidenceTitle": "Sales-tax postings and control account",
+      "explanationCharCount": 675,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D1",
+      "outcome": "D1(d)",
+      "summary": "Calculate and post sales tax",
+      "officialPage": 9,
+      "evidenceTitle": "Sales-tax postings and control account",
+      "explanationCharCount": 675,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D1",
+      "outcome": "D1(e)",
+      "summary": "Discounts received",
+      "officialPage": 9,
+      "evidenceTitle": "Double entries for purchases, returns and supplier discounts",
+      "explanationCharCount": 678,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D1",
+      "outcome": "D1(f)",
+      "summary": "Allowed trade and settlement discounts under IFRS",
+      "officialPage": 9,
+      "evidenceTitle": "IFRS 15 settlement discounts allowed to customers",
+      "explanationCharCount": 781,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D2",
+      "outcome": "D2(a)",
+      "summary": "Record cash transactions in bank ledger",
+      "officialPage": 10,
+      "evidenceTitle": "Detailed entries and reconciliations",
+      "explanationCharCount": 419,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D2",
+      "outcome": "D2(b)",
+      "summary": "Need for petty cash transaction record",
+      "officialPage": 10,
+      "evidenceTitle": "Accounting principle and substance",
+      "explanationCharCount": 437,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D3",
+      "outcome": "D3(a)",
+      "summary": "Inventory adjustments for reporting",
+      "officialPage": 10,
+      "evidenceTitle": "Exam judgement and common errors",
+      "explanationCharCount": 408,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D3",
+      "outcome": "D3(b)",
+      "summary": "Record cost of sales and closing inventory",
+      "officialPage": 10,
+      "evidenceTitle": "Continuous and periodic inventory records and purchase cost",
+      "explanationCharCount": 725,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D3",
+      "outcome": "D3(c)",
+      "summary": "IFRS requirements for inventory valuation",
+      "officialPage": 10,
+      "evidenceTitle": "Accounting scope and recognition",
+      "explanationCharCount": 477,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D3",
+      "outcome": "D3(d)",
+      "summary": "Qualifying inventory costs",
+      "officialPage": 10,
+      "evidenceTitle": "Continuous and periodic inventory records and purchase cost",
+      "explanationCharCount": 725,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D3",
+      "outcome": "D3(e)",
+      "summary": "Continuous and periodic inventory records",
+      "officialPage": 10,
+      "evidenceTitle": "Continuous and periodic inventory records and purchase cost",
+      "explanationCharCount": 725,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D3",
+      "outcome": "D3(f)",
+      "summary": "FIFO and both periodic and continuous AVCO",
+      "officialPage": 10,
+      "evidenceTitle": "Comparing FIFO, periodic AVCO and continuous AVCO",
+      "explanationCharCount": 676,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D3",
+      "outcome": "D3(g)",
+      "summary": "Effects of inventory costing on profit and assets",
+      "officialPage": 10,
+      "evidenceTitle": "Comparing FIFO, periodic AVCO and continuous AVCO",
+      "explanationCharCount": 676,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D4",
+      "outcome": "D4(a)",
+      "summary": "Define non-current assets",
+      "officialPage": 10,
+      "evidenceTitle": "Accounting scope and recognition",
+      "explanationCharCount": 516,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D4",
+      "outcome": "D4(b)",
+      "summary": "Current versus non-current assets",
+      "officialPage": 10,
+      "evidenceTitle": "Acquiring, revaluing and disclosing tangible non-current assets",
+      "explanationCharCount": 1072,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D4",
+      "outcome": "D4(c)",
+      "summary": "Asset expenditure versus expense",
+      "officialPage": 10,
+      "evidenceTitle": "Accounting scope and recognition",
+      "explanationCharCount": 516,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D4",
+      "outcome": "D4(d)",
+      "summary": "Classify capital and revenue expenditure",
+      "officialPage": 10,
+      "evidenceTitle": "Accounting scope and recognition",
+      "explanationCharCount": 516,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D4",
+      "outcome": "D4(e)",
+      "summary": "Record purchase and disposal of PPE",
+      "officialPage": 10,
+      "evidenceTitle": "Disposals, part-exchange and revaluation reserves",
+      "explanationCharCount": 814,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D4",
+      "outcome": "D4(f)",
+      "summary": "Disposal gains including part-exchange",
+      "officialPage": 10,
+      "evidenceTitle": "Disposals, part-exchange and revaluation reserves",
+      "explanationCharCount": 814,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D4",
+      "outcome": "D4(g)",
+      "summary": "Revalue PPE and reflect OCI/financial position",
+      "officialPage": 10,
+      "evidenceTitle": "Acquiring, revaluing and disclosing tangible non-current assets",
+      "explanationCharCount": 1072,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D4",
+      "outcome": "D4(h)",
+      "summary": "Disposal of previously revalued PPE",
+      "officialPage": 10,
+      "evidenceTitle": "Disposals, part-exchange and revaluation reserves",
+      "explanationCharCount": 814,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D4",
+      "outcome": "D4(i)",
+      "summary": "PPE balances and movement disclosures",
+      "officialPage": 10,
+      "evidenceTitle": "Acquiring, revaluing and disclosing tangible non-current assets",
+      "explanationCharCount": 1072,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D4",
+      "outcome": "D4(j)",
+      "summary": "Non-current asset register and purpose",
+      "officialPage": 10,
+      "evidenceTitle": "Disposals, part-exchange and revaluation reserves",
+      "explanationCharCount": 814,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D5",
+      "outcome": "D5(a)",
+      "summary": "Purpose of depreciation",
+      "officialPage": 11,
+      "evidenceTitle": "Accounting scope and recognition",
+      "explanationCharCount": 464,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D5",
+      "outcome": "D5(b)",
+      "summary": "Calculate straight-line and reducing-balance depreciation",
+      "officialPage": 11,
+      "evidenceTitle": "Choosing the method and posting the charge",
+      "explanationCharCount": 853,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D5",
+      "outcome": "D5(c)",
+      "summary": "Appropriate methods for different asset use",
+      "officialPage": 11,
+      "evidenceTitle": "Choosing the method and posting the charge",
+      "explanationCharCount": 853,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D5",
+      "outcome": "D5(d)",
+      "summary": "Depreciation charges and accumulated depreciation in ledgers",
+      "officialPage": 11,
+      "evidenceTitle": "Choosing the method and posting the charge",
+      "explanationCharCount": 853,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D5",
+      "outcome": "D5(e)",
+      "summary": "Revalued asset depreciation and surplus transfers",
+      "officialPage": 11,
+      "evidenceTitle": "Prospective changes and depreciation after revaluation",
+      "explanationCharCount": 786,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D5",
+      "outcome": "D5(f)",
+      "summary": "Changes to useful-life and residual-value estimates",
+      "officialPage": 11,
+      "evidenceTitle": "Prospective changes and depreciation after revaluation",
+      "explanationCharCount": 786,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    },
+    {
+      "key": "FFA:D5",
+      "outcome": "D5(g)",
+      "summary": "Report depreciation in performance and financial position",
+      "officialPage": 11,
+      "evidenceTitle": "Choosing the method and posting the charge",
+      "explanationCharCount": 853,
+      "status": "INTERNAL_EVIDENCE_MATCHED",
+      "externalPeerApproval": false
+    }
+  ],
+  "numericalChecks": [
+    {
+      "key": "FA:C1",
+      "caseName": "Worked case 1",
+      "caseIndex": 1,
+      "independentlyComputed": 20400,
+      "displayText": "$20,400",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FA:C1",
+      "caseName": "Worked case 2",
+      "caseIndex": 2,
+      "independentlyComputed": 500,
+      "displayText": "$500",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FA:C1",
+      "caseName": "Source-document chain and purchase reconciliation",
+      "caseIndex": 3,
+      "independentlyComputed": 400,
+      "displayText": "$400",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FA:C1",
+      "caseName": "Cloud-bank mapping and the accounting equation",
+      "caseIndex": 4,
+      "independentlyComputed": 8000,
+      "displayText": "$8,000",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FA:C2",
+      "caseName": "Worked case 1",
+      "caseIndex": 1,
+      "independentlyComputed": 29000,
+      "displayText": "$29,000",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FA:C2",
+      "caseName": "Worked case 2",
+      "caseIndex": 2,
+      "independentlyComputed": 4800,
+      "displayText": "$4,800",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FA:C2",
+      "caseName": "Bank ledger balancing and sides",
+      "caseIndex": 3,
+      "independentlyComputed": 7900,
+      "displayText": "$7,900",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FA:C2",
+      "caseName": "Nominal account closing to profit",
+      "caseIndex": 4,
+      "independentlyComputed": 31000,
+      "displayText": "$31,000",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FA:D1",
+      "caseName": "Worked case 1",
+      "caseIndex": 1,
+      "independentlyComputed": 6600.000000000001,
+      "displayText": "$6,600",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FA:D1",
+      "caseName": "Worked case 2",
+      "caseIndex": 2,
+      "independentlyComputed": 5390,
+      "displayText": "$5,390",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FA:D1",
+      "caseName": "Sales-tax input/output ledger",
+      "caseIndex": 3,
+      "independentlyComputed": 400,
+      "displayText": "$400",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FA:D1",
+      "caseName": "Settlement discount anticipated but not taken",
+      "caseIndex": 4,
+      "independentlyComputed": 90,
+      "displayText": "$90",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FA:D1",
+      "caseName": "Settlement discount unexpectedly taken",
+      "caseIndex": 5,
+      "independentlyComputed": 4410,
+      "displayText": "$4,410",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FA:D2",
+      "caseName": "Worked case 1",
+      "caseIndex": 1,
+      "independentlyComputed": 13460,
+      "displayText": "$13,460",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FA:D2",
+      "caseName": "Worked case 2",
+      "caseIndex": 2,
+      "independentlyComputed": 10,
+      "displayText": "$10",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FA:D3",
+      "caseName": "Case study 1",
+      "caseIndex": 1,
+      "independentlyComputed": 4200,
+      "displayText": "$4,200",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FA:D3",
+      "caseName": "Case study 2",
+      "caseIndex": 2,
+      "independentlyComputed": 13.8,
+      "displayText": "$13.80",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FA:D3",
+      "caseName": "FIFO versus continuous and periodic AVCO",
+      "caseIndex": 3,
+      "independentlyComputed": 580,
+      "displayText": "$580",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FA:D3",
+      "caseName": "Periodic inventory closing journals",
+      "caseIndex": 4,
+      "independentlyComputed": 35000,
+      "displayText": "$35,000",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FA:D4",
+      "caseName": "Case study 1",
+      "caseIndex": 1,
+      "independentlyComputed": 85500,
+      "displayText": "$85,500",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FA:D4",
+      "caseName": "Case study 2",
+      "caseIndex": 2,
+      "independentlyComputed": 3300,
+      "displayText": "$3,300",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FA:D4",
+      "caseName": "Revaluation upward with accumulated depreciation elimination",
+      "caseIndex": 3,
+      "independentlyComputed": 15000,
+      "displayText": "$15,000",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FA:D4",
+      "caseName": "Disposal of previously revalued asset",
+      "caseIndex": 4,
+      "independentlyComputed": 5000,
+      "displayText": "$5,000",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FA:D4",
+      "caseName": "PPE movement note reconciliation",
+      "caseIndex": 5,
+      "independentlyComputed": 83000,
+      "displayText": "$83,000",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FA:D4",
+      "caseName": "PPE part-exchange disposal ledger",
+      "caseIndex": 6,
+      "independentlyComputed": 4000,
+      "displayText": "$4,000",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FA:D5",
+      "caseName": "Case study 1",
+      "caseIndex": 1,
+      "independentlyComputed": 4500,
+      "displayText": "$4,500",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FA:D5",
+      "caseName": "Case study 2",
+      "caseIndex": 2,
+      "independentlyComputed": 45000,
+      "displayText": "$45,000",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FA:D5",
+      "caseName": "Change in useful-life and residual estimates",
+      "caseIndex": 3,
+      "independentlyComputed": 17000,
+      "displayText": "$17,000",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FA:D5",
+      "caseName": "Revalued asset depreciation and optional surplus transfer",
+      "caseIndex": 4,
+      "independentlyComputed": 15000,
+      "displayText": "$15,000",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FFA:C1",
+      "caseName": "Worked case 1",
+      "caseIndex": 1,
+      "independentlyComputed": 20400,
+      "displayText": "$20,400",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FFA:C1",
+      "caseName": "Worked case 2",
+      "caseIndex": 2,
+      "independentlyComputed": 500,
+      "displayText": "$500",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FFA:C1",
+      "caseName": "Source-document chain and purchase reconciliation",
+      "caseIndex": 3,
+      "independentlyComputed": 400,
+      "displayText": "$400",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FFA:C1",
+      "caseName": "Cloud-bank mapping and the accounting equation",
+      "caseIndex": 4,
+      "independentlyComputed": 8000,
+      "displayText": "$8,000",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FFA:C2",
+      "caseName": "Worked case 1",
+      "caseIndex": 1,
+      "independentlyComputed": 29000,
+      "displayText": "$29,000",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FFA:C2",
+      "caseName": "Worked case 2",
+      "caseIndex": 2,
+      "independentlyComputed": 4800,
+      "displayText": "$4,800",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FFA:C2",
+      "caseName": "Bank ledger balancing and sides",
+      "caseIndex": 3,
+      "independentlyComputed": 7900,
+      "displayText": "$7,900",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FFA:C2",
+      "caseName": "Nominal account closing to profit",
+      "caseIndex": 4,
+      "independentlyComputed": 31000,
+      "displayText": "$31,000",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FFA:D1",
+      "caseName": "Worked case 1",
+      "caseIndex": 1,
+      "independentlyComputed": 6600.000000000001,
+      "displayText": "$6,600",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FFA:D1",
+      "caseName": "Worked case 2",
+      "caseIndex": 2,
+      "independentlyComputed": 5390,
+      "displayText": "$5,390",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FFA:D1",
+      "caseName": "Sales-tax input/output ledger",
+      "caseIndex": 3,
+      "independentlyComputed": 400,
+      "displayText": "$400",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FFA:D1",
+      "caseName": "Settlement discount anticipated but not taken",
+      "caseIndex": 4,
+      "independentlyComputed": 90,
+      "displayText": "$90",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FFA:D1",
+      "caseName": "Settlement discount unexpectedly taken",
+      "caseIndex": 5,
+      "independentlyComputed": 4410,
+      "displayText": "$4,410",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FFA:D2",
+      "caseName": "Worked case 1",
+      "caseIndex": 1,
+      "independentlyComputed": 13460,
+      "displayText": "$13,460",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FFA:D2",
+      "caseName": "Worked case 2",
+      "caseIndex": 2,
+      "independentlyComputed": 10,
+      "displayText": "$10",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FFA:D3",
+      "caseName": "Case study 1",
+      "caseIndex": 1,
+      "independentlyComputed": 4200,
+      "displayText": "$4,200",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FFA:D3",
+      "caseName": "Case study 2",
+      "caseIndex": 2,
+      "independentlyComputed": 13.8,
+      "displayText": "$13.80",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FFA:D3",
+      "caseName": "FIFO versus continuous and periodic AVCO",
+      "caseIndex": 3,
+      "independentlyComputed": 580,
+      "displayText": "$580",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FFA:D3",
+      "caseName": "Periodic inventory closing journals",
+      "caseIndex": 4,
+      "independentlyComputed": 35000,
+      "displayText": "$35,000",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FFA:D4",
+      "caseName": "Case study 1",
+      "caseIndex": 1,
+      "independentlyComputed": 85500,
+      "displayText": "$85,500",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FFA:D4",
+      "caseName": "Case study 2",
+      "caseIndex": 2,
+      "independentlyComputed": 3300,
+      "displayText": "$3,300",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FFA:D4",
+      "caseName": "Revaluation upward with accumulated depreciation elimination",
+      "caseIndex": 3,
+      "independentlyComputed": 15000,
+      "displayText": "$15,000",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FFA:D4",
+      "caseName": "Disposal of previously revalued asset",
+      "caseIndex": 4,
+      "independentlyComputed": 5000,
+      "displayText": "$5,000",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FFA:D4",
+      "caseName": "PPE movement note reconciliation",
+      "caseIndex": 5,
+      "independentlyComputed": 83000,
+      "displayText": "$83,000",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FFA:D4",
+      "caseName": "PPE part-exchange disposal ledger",
+      "caseIndex": 6,
+      "independentlyComputed": 4000,
+      "displayText": "$4,000",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FFA:D5",
+      "caseName": "Case study 1",
+      "caseIndex": 1,
+      "independentlyComputed": 4500,
+      "displayText": "$4,500",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FFA:D5",
+      "caseName": "Case study 2",
+      "caseIndex": 2,
+      "independentlyComputed": 45000,
+      "displayText": "$45,000",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FFA:D5",
+      "caseName": "Change in useful-life and residual estimates",
+      "caseIndex": 3,
+      "independentlyComputed": 17000,
+      "displayText": "$17,000",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    },
+    {
+      "key": "FFA:D5",
+      "caseName": "Revalued asset depreciation and optional surplus transfer",
+      "caseIndex": 4,
+      "independentlyComputed": 15000,
+      "displayText": "$15,000",
+      "result": "FIGURE_CORROBORATED",
+      "reviewLimit": "Not every narrative or journal assumption fully peer reviewed"
+    }
+  ]
+}
