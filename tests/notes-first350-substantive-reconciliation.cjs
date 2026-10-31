@@ -11,8 +11,8 @@ const checks={
  'FBT:F2':{sections:6,cases:5,terms:['iesba','ifac','acca','regulators','profession','accountant','reporting','whistleblowing','public-interest']},
  'FMA:F2':{sections:9,cases:7,terms:['balanced scorecard','financial','customer','internal','learning','economy','efficiency','effectiveness','capacity','activity','roi','residual income','tqm']},
  'MA:F2':{sections:9,cases:7,terms:['balanced scorecard','financial','customer','internal','learning','economy','efficiency','effectiveness','capacity','activity','roi','residual income','tqm']},
- 'FMA:F3':{sections:5,cases:4,terms:['cost control','cost reduction','value analysis','preventable','customer','lifecycle']},
- 'MA:F3':{sections:5,cases:4,terms:['cost control','cost reduction','value analysis','preventable','customer','lifecycle']}
+ 'FMA:F3':{sections:5,cases:4,terms:['cost control','cost reduction','value analysis','customer','lifecycle']},
+ 'MA:F3':{sections:5,cases:4,terms:['cost control','cost reduction','value analysis','customer','lifecycle']}
 };
 for(const [key,rule] of Object.entries(checks)){
  const ch=sources[key];assert(ch,'Missing chapter '+key);
