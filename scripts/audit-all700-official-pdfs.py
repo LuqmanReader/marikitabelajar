@@ -184,6 +184,32 @@ for url,item in sources.items():
                 right=next((x["text"] for x in extracted if x["page"]==best["page"] and x["column"]==2),"")
                 right=re.split(r"(?m)^\s*"+str(crossColumnEnd[key])+r"\.\s+\w",right,maxsplit=1)[0]
                 chunk=right+"\n"+chunk
+            continuationPages={}
+            if key=="FA2:D4":
+                # The asset-register subrequirements can continue into the
+                # following PDF column/page after letter m). They must be read
+                # from ACCA's actual PDF, not inferred from an older syllabus.
+                later=sorted((c for c in extracted
+                       if (c["page"],c["column"])>(best["page"],best["column"])
+                       and c["page"]<=best["page"]+1),
+                       key=lambda c:(c["page"],c["column"]))
+                for col in later:
+                    body=col["text"]
+                    nextTopic=re.search(r"(?m)^\s*5\.\s+(?:Accrued|Accrual)",body,re.I)
+                    if nextTopic:body=body[:nextTopic.start()]
+                    n=re.search(r"(?m)^\s*n\)\s*(.*)",body)
+                    o=re.search(r"(?m)^\s*o\)\s*(.*)",body)
+                    if n and o and n.start()<o.start() and re.search(r"non.current asset|accounting records for non.current",body[n.start():o.start()],re.I) and re.search(r"depreciation|financial statements",body[o.start():o.start()+250],re.I):
+                        chunk+="\\n"+body[n.start():]
+                        continuationPages.update({"n":col["page"],"o":col["page"]})
+                        note.append("OFFICIAL_FA2_ASSET_OUTCOME_COLUMN_CONTINUATION")
+                        break
+                print("FA2_D4_PDF_CONTINUATION",{"sourcePdfPage":best["page"],"sourceColumn":best["column"],
+                      "restoredLetters":sorted(continuationPages),
+                      "nearbyColumns":[{"page":c["page"],"column":c["column"],
+                            "hasN":bool(re.search(r"(?m)^\s*n\)",c["text"])),
+                            "hasO":bool(re.search(r"(?m)^\s*o\)",c["text"]))}
+                            for c in later[:4]]},flush=True)
             # BT/FBT F2 starts at the bottom of PDF page 14; its (a)-(e)
             # requirements continue at the top of the following printed page.
             if key in ("BT:F2","FBT:F2"):
@@ -202,7 +228,8 @@ for url,item in sources.items():
                 requirement=chunk[m.start():end_of_outcome]
                 levels=sorted(set(re.findall(r"\[\s*(?:K|S|[123])\s*\]",requirement,re.I)))
                 outcomes.append({"letter":letter,"sha256":hashlib.sha256(phrase.encode()).hexdigest()[:16],
-                                 "anchorWords":normalize(phrase).split()[:8],"intellectualLevelTags":levels})
+                                 "anchorWords":normalize(phrase).split()[:8],"intellectualLevelTags":levels,
+                                 "sourcePdfPage":continuationPages.get(letter,best["page"])})
                 expectedLetter+=1
             # FTX, FAU and FFM end with practical computer-based skills stated
             # directly as topic objectives, without lettered sub-outcomes.
