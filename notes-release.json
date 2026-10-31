@@ -1,6 +1,11 @@
 {
-  "build": "2026.10.31.43",
+  "build": "2026.11.01.01",
   "module": "notes",
   "currency": "$",
-  "diagram": "branded-type-readable-timeline-v8"
+  "diagram": "branded-type-readable-timeline-v8",
+  "channel": "community-beta",
+  "releaseDate": "2026-11-01",
+  "academicSignoff": "pending",
+  "academicApprovedLessons": 0,
+  "notes": "700 authored lessons published for community beta review, not independently academically signed off or ACCA endorsed"
 }
