@@ -78,7 +78,7 @@
 
 <text class="lp-display lp-card-title" x="52" y="435">CUSTOMER SUBLEDGER</text>
 <text class="lp-display lp-card-title" x="526" y="435">05 / ADJUSTMENTS</text>
-<text class="lp-display lp-card-title" x="894" y="435">06 / FINANCIAL STATEMENTS</text>
+<text class="lp-display lp-card-title" x="894" y="435">06 / STATEMENTS</text>
 <path class="lp-rule" d="M52 448 H418 M526 448 H785 M894 448 H1168"/>
 <g class="lp-body lp-card-body">
  <text x="52" y="475">Customer A: Dr $1,200</text>
@@ -89,9 +89,9 @@
  <text x="526" y="503">depreciation, etc.</text>
  <text x="526" y="531">Adjusted trial balance</text>
 
- <text x="894" y="475">Profit or loss</text>
- <text x="894" y="503">Financial position</text>
- <text x="894" y="531">After adjustments</text>
+ <text x="894" y="475">Financial statements</text>
+ <text x="894" y="503">Profit or loss</text>
+ <text x="894" y="531">Financial position</text>
 </g>
 <path class="lp-path" d="M811 480 H867" marker-end="url(#lp-arrow)"/>
 
