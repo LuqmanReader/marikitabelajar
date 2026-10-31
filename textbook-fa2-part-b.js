@@ -112,7 +112,7 @@
       [
         "Disposal ledger and proceeds",
         "Equipment cost $80,000, accumulated depreciation $55,000 at disposal, proceeds $29,000.",
-        "Dr accumulated depreciation $55,000 / Cr asset $55,000 plus transfer the remaining gross cost to disposal account (or Dr disposal $80,000 / Cr asset $80,000 and Dr accum dep $55,000 / Cr disposal $55,000). Dr bank $29,000 / Cr disposal $29,000. Disposal credits $84,000 vs debit $80,000, giving $4,000 profit, transferred Dr disposal / Cr profit-on-disposal income."
+        "Use the gross-cost disposal account consistently: (1) transfer asset cost Dr disposal $80,000 / Cr PPE cost $80,000; (2) transfer accumulated depreciation Dr accumulated depreciation $55,000 / Cr disposal $55,000; (3) record proceeds Dr bank $29,000 / Cr disposal $29,000. Disposal account debits $80,000; credits $55,000+$29,000=$84,000; credit excess is a $4,000 GAIN. Close with Dr disposal $4,000 / Cr gain on disposal (profit or loss) $4,000. The asset cost and its accumulated depreciation are now both removed, and there is no duplicated credit to PPE."
       ],
       [
         "Part exchange",
