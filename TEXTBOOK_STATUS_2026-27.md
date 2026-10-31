@@ -4,6 +4,18 @@
 **Repository:** `LuqmanReader/marikitabelajar`, main  
 **Scope:** 25 paper and jurisdiction-variant indices; 700 syllabus topic headings
 
+## Latest tested release — full-library verification pipeline (31 October 2026)
+
+**Deployment:** Merged [PR #22](https://github.com/LuqmanReader/marikitabelajar/pull/22), commit `04d5fea9405c1ac78261ce5ff304f25179025ae5`. The updated source is on `main`.
+
+**Verified CI execution:** [Notes quality gate run 41207123972](https://github.com/LuqmanReader/marikitabelajar/actions/runs/41207123972) passed, as did the FIA and Classroom regressions from the same PR revision.
+
+**Measured outputs:** 700/700 actual published chapters; **1,489** worked cases inventoried; **1,107** extractable arithmetic identities recalculated with zero flagged mismatches; all **22** official ACCA 2026–27 source PDFs downloaded and dated; **700/700** official headings aligned; **2,301** candidate detailed outcomes extracted. The source matcher explicitly handles cross-column outcomes, direct unlettered UK tax objectives, and an AFM F4 numbering anomaly in ACCA's guide.
+
+The current whole-library review queue still reports **358 possible detailed-outcome terminology discrepancies**, **56 practical computer-skill review flags**, and other source-extraction qualifications. These flags are not confirmed wrong lessons. **0/700** chapters have documented independent academic sign-off; machine-check results must not be represented as full verification or external ACCA approval.
+
+**Substantive repair:** `FR:B9` now covers all six lettered ACCA 2026–27 topic outcomes at the instructional level, including IFRS 5, IAS 8, IAS 33 EPS calculations and IFRS S1, with worked exam-style examples. The mapped internal crosswalk is `audit/academic-reviews/fr-b9-2026-27.json`, explicitly not an independent professional certification.
+
 ## Full 700-topic audit execution — evidence-backed update (31 October 2026)
 
 The repaired GitHub Notes quality workflow **passed** in [run 41206233388](https://github.com/LuqmanReader/marikitabelajar/actions/runs/41206233388), including the full library export, official syllabus source comparison, calculations, cross-reconciled evidence docket, academic approval anti-forgery tests and earlier targeted regressions. The independent student-facing [FIA notes library regression](https://github.com/LuqmanReader/marikitabelajar/actions/runs/41206233486) passed for the same tested revision. More recent curriculum-extraction and FR B9 corrections require their own CI evidence before treating them as tested.
