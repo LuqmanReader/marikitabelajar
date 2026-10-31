@@ -1,6 +1,7 @@
 name: LedgerPeer Notes quality gate
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
     paths:
