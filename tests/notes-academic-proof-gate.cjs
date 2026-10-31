@@ -107,6 +107,31 @@ if(require.main===module){
  const fakeMath={arithmeticalMismatches:0,workedCaseCount:1};
  assert.throws(()=>validateSigned({entry:forged,lesson:synthetic,source:fakeSource,arithmetic:fakeMath,pdf:{fetched:true,periodConfirmed:true,sha256:'1'.repeat(64)}}),
    /stale|missing|requires|not checked|verification|evidence|proof/i,'Incomplete academic signoff must fail');
- console.log('PASS: '+matrix.chapters.length+' evidence records, '+verified.length+' signed chapters with complete per-outcome and per-case proof, fabricated approval rejected.');
+ const valid={
+  ...forged,
+  reviewerDecision:'Reviewed all syllabus outcome requirements and documented every technical decision and result.',
+  verifiedContentSha256:synthetic.contentSha256,
+  verifiedOfficialPdfSha256:fakeSource.pdfSha256,
+  outcomeEvidence:[{letter:'a',sourceAnchorSha256:'abc',sourcePdfPage:8,intellectualLevelReviewed:true,
+   verdict:'PASS',reasoning:'I independently checked the complete stated outcome, its examination level and the explanation in this lesson against the official current-edition guide.',
+   sectionReferences:[0],workedCaseReferences:[0]}],
+  workedAnswerEvidence:[{caseIndex:0,caseSha256:sha(synthetic.worked[0]),arithmeticAndMethodVerified:true,
+   journalsAndAssumptionsVerified:true,verdict:'PASS',
+   recomputedSteps:'All inputs, assumptions, arithmetic transformations, account classifications and journal directions were independently recomputed and agreed with the actual case.'}],
+  visualEvidence:{verdict:'PASS',description:'Examined the rendered desktop and mobile display for legibility, layout and accessibility.'},
+  jurisdictionEvidence:{verdict:'PASS',description:'Exam period, applicable jurisdiction and relevant technical standards individually checked.'}
+ };
+ const context={entry:valid,lesson:synthetic,source:fakeSource,arithmetic:fakeMath,pdf:{fetched:true,periodConfirmed:true,sha256:'1'.repeat(64)}};
+ assert.equal(validateSigned(context),true,'Fully completed synthetic approval fixture should validate');
+ const tamper=(change,expected)=>{const altered=structuredClone(context);change(altered);
+   assert.throws(()=>validateSigned(altered),expected);};
+ tamper(x=>{x.entry.outcomeEvidence=[]},/not every official outcome/);
+ tamper(x=>{x.entry.outcomeEvidence[0].verdict='PENDING'},/requires a PASS decision/);
+ tamper(x=>{x.entry.workedAnswerEvidence[0].caseSha256='0'.repeat(64)},/worked example changed/);
+ tamper(x=>{x.entry.workedAnswerEvidence[0].journalsAndAssumptionsVerified=false},/entries\/assumptions/);
+ tamper(x=>{x.entry.visualEvidence.verdict='PENDING'},/visual review missing/);
+ tamper(x=>{x.source.pdfSha256='0'.repeat(64)},/signed syllabus evidence is stale/);
+ tamper(x=>{x.arithmetic.arithmeticalMismatches=1},/arithmetic contradictions unresolved/);
+ console.log('PASS: '+matrix.chapters.length+' evidence records, '+verified.length+' signed chapters; fabricated approval rejected; complete synthetic proof accepted and seven tampered proofs rejected.');
 }
 module.exports={validateSigned};
