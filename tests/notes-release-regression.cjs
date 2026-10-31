@@ -31,7 +31,7 @@ assert(html.indexOf('notes-2026-ifrs18-addenda.js')<html.indexOf('notes-page.js'
 assert(html.indexOf('notes-2026-27-outcome-addenda.js')<html.indexOf('notes-page.js'));
 
 assert(html.includes('notes-build.js?v=20261031chapters11'));
-assert(html.includes('notes.css?v=20261101beta1'));
+assert(html.includes('notes.css?v=20261101spacing1'));
 assert(renderer.includes("root.LedgerNotesVisualBuild='"+build+"'"));
 assert(page.includes("root.LedgerNotesVisualBuild!=='"+build+"'"));
 assert(!renderer.includes("function connector(svg,"));
