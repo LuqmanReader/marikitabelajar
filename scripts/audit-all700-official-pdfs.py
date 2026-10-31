@@ -164,7 +164,9 @@ for url,item in sources.items():
         outcomes=[]
         if matched:
             ls=best["lines"];start=best["start"]+1  # First detailed outcome can follow heading immediately; candidate window is NOT the start offset.
-            end=min(len(ls),start+90)
+            # Some long FA2 topics have more than 90 extracted PDF lines;
+            # do not silently drop the final lettered outcomes.
+            end=min(len(ls),start+240)
             for i in range(start,end):
                 v=ls[i].strip()
                 if re.match(r"^\d{1,2}\.\s+\w",v):
