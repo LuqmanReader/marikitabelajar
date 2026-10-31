@@ -68,12 +68,13 @@ def candidates(column):
     out=[]
     for i,line in enumerate(lines):
         z=line.strip()
-        mm=re.match(r"^(\d{1,2})\.\s*(.*)$",z)
+        mm=re.match(r"^(\d{1,2})(?:\.\s*|\s+)(.*)$",z)
+        if not mm and re.fullmatch(r"\d{1,2}\.?",z):mm=re.match(r"^(\d{1,2})",z)
         if not mm: continue
         no=int(mm.group(1))
         if no>20: continue
         for n in [1,2,3,4,5]:
-            v=" ".join([mm.group(2)]+lines[i+1:i+n]).strip()
+            v=" ".join([(mm.group(2) if mm.lastindex and mm.lastindex>=2 else "")]+lines[i+1:i+n]).strip()
             if not v:continue
             out.append({"n":no,"start":i,"width":n,"text":v,"page":column["page"],"column":column["column"],"lines":lines})
     return out
@@ -115,9 +116,10 @@ for url,item in sources.items():
     for row in item["rows"]:
         key=row["key"];topicNo=int(key.split(":")[1][1:])
         same=[x for x in cand if x["n"]==topicNo]
-        ranked=sorted(same,key=lambda c:similarity(row["title"],c["text"]),reverse=True)
+        expectedDetailedTitle="Key principles and concepts of accounting" if key in ("FA:B1","FFA:B1") else row["title"]
+        ranked=sorted(same,key=lambda c:similarity(expectedDetailedTitle,c["text"]),reverse=True)
         best=ranked[0] if ranked else None
-        matchScore=round(similarity(row["title"],best["text"]),3) if best else 0
+        matchScore=round(similarity(expectedDetailedTitle,best["text"]),3) if best else 0
         matched=bool(best and matchScore>=.75)
         note=[]
         if entry["error"]:note.append("OFFICIAL_PDF_UNAVAILABLE_OR_INVALID")
@@ -157,6 +159,8 @@ for url,item in sources.items():
             "officialPdfCurrentPeriod":entry["periodConfirmed"],
             "officialTopicPdfPage":best["page"] if matched else None,
             "topicHeadingMatchScore":matchScore,
+            "acccOverviewDetailedGuideLabelConflict":key in ("FA:B1","FFA:B1"),
+            "detailedGuideTitleUsed":expectedDetailedTitle,
             "nearestOfficialHeadingCandidate":best["text"][:130] if best else None,
             "nearestOfficialHeadingCandidatePdfPage":best["page"] if best else None,
             "officialDetailedOutcomeCandidates":outcomes,
