@@ -13,13 +13,13 @@ const files=[
  'textbook-crossqual-a2-professional.js','textbook-crossqual-a3-foundation.js',
  'textbook-crossqual-a3-professional.js','textbook-crossqual-batch4a.js',
  'textbook-crossqual-batch4b.js','textbook-crossqual-batch4c.js',
- 'textbook-crossqual-batch4d.js','textbook-editorial-advanced.js','textbook-editorial-fia-applied.js','textbook-editorial-management-01.js','textbook-editorial-management-02.js','textbook-structured-all-remaining.js'
+ 'textbook-crossqual-batch4d.js','textbook-editorial-advanced.js','textbook-editorial-fia-applied.js','textbook-editorial-management-01.js','textbook-editorial-management-02.js','textbook-editorial-management-03.js','textbook-editorial-management-04.js','textbook-editorial-management-05.js','textbook-structured-all-remaining.js'
 ];
 const c={LedgerFiaNotes:{},LedgerPublishedSyllabi:{papers:{}}};c.window=c;c.globalThis=c;
 vm.createContext(c);
 for(const file of files)vm.runInContext(fs.readFileSync(file,'utf8'),c,{filename:file,timeout:9000});
 const all=Object.assign({},
- c.LedgerStructuredLessonChapters,c.LedgerEditorialAdvancedChapters,c.LedgerEditorialFiaAppliedChapters,c.LedgerEditorialManagement01,c.LedgerEditorialManagement02,
+ c.LedgerStructuredLessonChapters,c.LedgerEditorialAdvancedChapters,c.LedgerEditorialFiaAppliedChapters,c.LedgerEditorialManagement01,c.LedgerEditorialManagement02,c.LedgerEditorialManagement03,c.LedgerEditorialManagement04,c.LedgerEditorialManagement05,
  c.LedgerSupplementalTextbooks,c.LedgerSupplementalTextbooksA2,
  c.LedgerSupplementalTextbooksProfessional,c.LedgerSupplementalTextbooksA3Foundation,
  c.LedgerSupplementalTextbooksA3Professional,
@@ -55,8 +55,8 @@ for(const p of c.SubjectCatalog.papers){
 }
 assert.equal(total,700);
 assert.equal(Object.keys(all).length,700,'No unrelated or duplicate chapters');
-assert.equal(authored,242,'Individually authored chapter coverage changed');
-assert.equal(draft,458,'Structured draft count changed');
+assert.equal(authored,260,'Individually authored chapter coverage changed');
+assert.equal(draft,440,'Structured draft count changed');
 assert.equal(c.LedgerStructuredLessonAudit.missingCore.length,0);
 assert.equal(c.LedgerStructuredLessonAudit.weak.length,0);
 const html=fs.readFileSync('notes.html','utf8');
@@ -65,5 +65,5 @@ assert(html.includes('src="textbook-structured-all-remaining.js?v='),'Structured
 assert(html.indexOf('textbook-structured-all-remaining.js')<html.indexOf('notes-page.js'),'Reader loads before structured data');
 assert(page.includes('root.LedgerStructuredLessonChapters||{}'),'Reader does not merge teaching drafts');
 assert(page.includes("sourceKind==='structured-expansion'"),'Reader does not distinguish drafts');
-console.log('PASS: 700/700 topic-specific study pages; 242 authored chapters, 458 structured unverified teaching drafts.');
+console.log('PASS: 700/700 topic-specific study pages; 260 authored chapters, 440 structured unverified teaching drafts.');
 console.log('IMPORTANT: Structural checks do not certify correct, complete 2026-27 individual ACCA learning outcomes.');
