@@ -152,7 +152,7 @@ async function main(){
       });
       const textOut=Array.from(svg.querySelectorAll('text.lp-card-title,.lp-card-body text')).map(t=>{
         const b=t.getBBox();
-        const container=rects.find(r=>b.x>=r.x&&b.y>=r.y&&b.y<=r.bottom);
+        const container=rects.find(r=>b.x>=r.x&&b.x<r.right&&b.y>=r.y&&b.y<=r.bottom);
         return{text:t.textContent,x:b.x,right:b.x+b.width,y:b.y,
           cardRight:container?.right,cardFound:!!container,
           overflow:!container||b.x+b.width>container.right-7};
