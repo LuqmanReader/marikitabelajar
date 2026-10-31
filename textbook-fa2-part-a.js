@@ -244,45 +244,72 @@
     ]
   },
   "FA2:D1": {
-    "title": "Sales, purchases, discounts, returns and sales tax",
-    "sections": [
-      [
-        "Sales and purchases records",
-        "A sales invoice establishes the customer's obligation and normally increases revenue and trade receivables. Purchases of inventories increase inventory (perpetual system) or purchases/cost of sales account (periodic system) and supplier liabilities. Cash settlement changes bank and personal accounts; it is not another sale or purchase."
-      ],
-      [
-        "Trade versus settlement discounts",
-        "Trade discount is deducted from catalogue/list price before recording the invoice. Settlement/cash discount depends on early payment terms; the expected amount of consideration and any subsequent discount are recorded according to the question's framework. Keep the selling price, tax base and timing rules clear. A discount offered but not earned should not automatically reduce the bank receipt."
-      ],
-      [
-        "Returns inwards and outwards",
-        "Customer returns reduce net sales and gross receivables: Dr sales returns / Cr trade receivables; if applicable, adjust output sales tax and inventory/cost of sales. Supplier credit note for purchase returns reduces what is owed: Dr trade payables / Cr purchase returns (or inventory) with corresponding input-tax treatment. Returns inwards belong to sales, returns outwards to purchases."
-      ],
-      [
-        "Sales-tax accounting",
-        "For tax-inclusive total T and rate r, net = T/(1+r); tax =T−net. For tax-exclusive net N, tax=N×r; gross=N×(1+r). Output tax on taxable sales increases tax payable, and recoverable input tax can offset it. Nonrecoverable purchase tax forms part of the relevant cost. Specific Malaysia/UK rules are not presumed without exam facts."
-      ],
-      [
-        "Cost of sales and cutoff",
-        "Under a periodic system, cost of sales = opening inventory + net purchases + inward freight/other costs − closing inventory; follow stipulated treatment of carriage. Sales cut-off and supplier receipt cut-off affect both profit and assets/liabilities. Do not charge purchase of long-term equipment to cost of goods sold."
-      ]
+  "title": "Sales, purchases, discounts, returns and sales tax",
+  "sections": [
+    [
+      "Sales and purchases records",
+      "A sales invoice establishes the customer's obligation and normally increases revenue and trade receivables. Purchases of inventories increase inventory (perpetual system) or purchases/cost of sales account (periodic system) and supplier liabilities. Cash settlement changes bank and personal accounts; it is not another sale or purchase."
     ],
-    "workings": [
-      [
-        "Discounts and output tax",
-        "List price $5,000; trade discount 20%, sales tax 6% on net invoice amount; ignore settlement discount.",
-        "Invoice net =5,000×80%=$4,000. Output tax=4,000×6%=$240. Total receivable $4,240. Journal Dr receivables 4,240 / Cr sales 4,000 / Cr tax payable 240."
-      ],
-      [
-        "Customer return including tax",
-        "Original invoice for goods $1,000 net plus 8% sales tax. Customer returns half of goods and credit note is issued.",
-        "Dr sales returns $500; Dr output tax payable $40; Cr receivables $540. The remaining customer balance is $540, assuming no other transactions."
-      ],
-      [
-        "Gross profit",
-        "Opening stock $5,000, purchases $32,000, purchase returns $2,000, carriage inwards $1,000 and closing stock $6,000. Sales $60,000, sales returns $4,000.",
-        "Net sales=$56,000; net purchases=$30,000; cost of sales=5,000+30,000+1,000−6,000=$30,000. Gross profit=56,000−30,000=$26,000."
-      ]
+    [
+      "Trade versus settlement discounts",
+      "Trade discount is deducted from catalogue/list price before recording the invoice. Settlement/cash discount depends on early payment terms; the expected amount of consideration and any subsequent discount are recorded according to the question's framework. Keep the selling price, tax base and timing rules clear. A discount offered but not earned should not automatically reduce the bank receipt."
+    ],
+    [
+      "Returns inwards and outwards",
+      "Customer returns reduce net sales and gross receivables: Dr sales returns / Cr trade receivables; if applicable, adjust output sales tax and inventory/cost of sales. Supplier credit note for purchase returns reduces what is owed: Dr trade payables / Cr purchase returns (or inventory) with corresponding input-tax treatment. Returns inwards belong to sales, returns outwards to purchases."
+    ],
+    [
+      "Sales-tax accounting",
+      "For tax-inclusive total T and rate r, net = T/(1+r); tax =T−net. For tax-exclusive net N, tax=N×r; gross=N×(1+r). Output tax on taxable sales increases tax payable, and recoverable input tax can offset it. Nonrecoverable purchase tax forms part of the relevant cost. Specific Malaysia/UK rules are not presumed without exam facts."
+    ],
+    [
+      "Cost of sales and cutoff",
+      "Under a periodic system, cost of sales = opening inventory + net purchases + inward freight/other costs − closing inventory; follow stipulated treatment of carriage. Sales cut-off and supplier receipt cut-off affect both profit and assets/liabilities. Do not charge purchase of long-term equipment to cost of goods sold."
+    ],
+    [
+      "Sales tax: registration, taxable supplies and information sources",
+      "Sales-tax obligations depend on the applicable law and jurisdiction: first determine whether the entity is required or eligible to register, the registration threshold and effective registration date, and whether particular supplies are standard-rated, reduced-rated, zero-rated, exempt or outside the tax system. Zero-rated taxable supplies are not necessarily equivalent to exempt supplies: the right to recover input tax and reporting treatment may differ. Obtain requirements from the current tax authority legislation, official guidance and valid invoices, not an unsupported assumed tax rate. Standard documentation generally identifies the supplier, customer where required, invoice number/date, supply description, net value, applicable rate, tax amount and gross total, as the governing law requires. A learner must distinguish rules about registering and reporting from the arithmetic of the output/input tax ledger."
+    ],
+    [
+      "Sales tax: accounting schemes, filing and penalties",
+      "Common tax-accounting methods distinguish a sales/invoice-date (accrual) basis from a cash-receipts/payment basis where local law permits the scheme. Under an invoice basis, a credit sale may create an output-tax liability before customer cash is collected; on a permitted cash scheme, liability generally follows qualifying receipts, with input-tax recovery timing governed by local rules. Record output sales tax and allowable recoverable input sales tax separately or in one properly reconciled control account. Generate a return from audited sales and purchase ledgers: reconcile net taxable turnover, output tax, input tax recoverable, corrections and net tax owed or repayable. Keep a filing calendar and tax authority references; late registration, late returns, underpayments and late payments may produce jurisdiction-specific interest and penalties. Never invent amounts or universal legal deadlines: identify which tax rates and sanctions the question supplies or the official authority confirms."
+    ],
+    [
+      "Trade versus prompt-payment discounts under revenue recognition",
+      "A seller's unconditional trade discount reduces the transaction price before revenue is recorded. Under IFRS 15, an early-settlement discount offered to a customer is variable consideration: estimate the amount the seller expects to be entitled to, subject to the constraint on variable consideration. If prompt payment is expected, the transaction-price estimate is net of the discount and later reversed if not taken. If full payment is expected and early payment unexpectedly qualifies, reduce receivable and revenue by the discount actually allowed when recognising settlement. Discounts received by a purchaser are a separate purchase-side issue; do not automatically record a seller's settlement discount as a financing charge. When sales tax is involved, calculate it using the transaction base and adjustment rules expressly specified by the applicable regime."
     ]
-  }
+  ],
+  "workings": [
+    [
+      "Discounts and output tax",
+      "List price $5,000; trade discount 20%, sales tax 6% on net invoice amount; ignore settlement discount.",
+      "Invoice net =5,000×80%=$4,000. Output tax=4,000×6%=$240. Total receivable $4,240. Journal Dr receivables 4,240 / Cr sales 4,000 / Cr tax payable 240."
+    ],
+    [
+      "Customer return including tax",
+      "Original invoice for goods $1,000 net plus 8% sales tax. Customer returns half of goods and credit note is issued.",
+      "Dr sales returns $500; Dr output tax payable $40; Cr receivables $540. The remaining customer balance is $540, assuming no other transactions."
+    ],
+    [
+      "Gross profit",
+      "Opening stock $5,000, purchases $32,000, purchase returns $2,000, carriage inwards $1,000 and closing stock $6,000. Sales $60,000, sales returns $4,000.",
+      "Net sales=$56,000; net purchases=$30,000; cost of sales=5,000+30,000+1,000−6,000=$30,000. Gross profit=56,000−30,000=$26,000."
+    ],
+    [
+      "Sales-tax control ledger and return reconciliation",
+      "A VAT-style question specifies taxable net sales $24,000 at 10%, eligible taxable net purchases $11,000 at 10%, and an additional $200 of input tax on a mixed-use cost that is explicitly non-recoverable. All relevant invoices are valid, there are no other supplies, and the law permits offsetting eligible input against output tax. Calculate the return and show key ledger postings.",
+      "Output tax = $24,000×10%=$2,400. Recoverable input tax = $11,000×10%=$1,100; the separately specified $200 is non-recoverable and must be attributed to the appropriate cost, not used to reduce the tax balance. Net tax payable = $2,400−$1,100=$1,300. Record sales Dr receivables $26,400 / Cr sales $24,000 / Cr output-tax control $2,400; record eligible purchases Dr inventory/purchases $11,000 / Dr recoverable-input-tax control $1,100 / Cr payables $12,100. Reconcile credit output of $2,400 and debit allowable input of $1,100; net payable $1,300. The non-recoverable $200 is not a claim on the tax authority. Settlement when due: Dr tax payable $1,300 / Cr bank $1,300."
+    ],
+    [
+      "Invoice versus cash accounting and filing risk",
+      "Assume a jurisdiction allows a cash-accounting scheme for a qualifying registered trader and taxes specified supplies at 10%. On 28 December the trader issues a credit sales invoice for $5,000 net. The customer pays on 15 January. Reporting closes 31 December. Calculate illustrative output tax under invoice-based and qualifying cash-based schemes, ignoring other transactions.",
+      "The invoice specifies $5,000×10%=$500 of output tax. Under the assumed invoice accounting basis, output tax of $500 belongs in the December tax period despite receipt arriving in January; Dr receivables $5,500 / Cr revenue $5,000 / Cr output tax $500, subject to the applicable tax-point rules. Under the assumed eligible cash basis, output tax of $500 becomes reportable when the $5,500 cash is received in January, subject to governing exceptions. Both approaches yield total output tax $500 eventually, but the cash-flow and reporting periods differ. The organisation must verify eligibility, filing dates, supporting invoices and any locally applicable interest or penalties rather than assuming a universal rule."
+    ],
+    [
+      "Settlement discount expected and actual amount",
+      "A supplier sells goods for $8,000 after a trade discount and offers an additional 5% discount for payment within ten days. The seller expects the customer to pay within the discount period and eventually receives full payment after the window. Ignore sales tax. Determine the initial seller journal, the required later adjustment, and the settlement.",
+      "Expected early-payment discount = $8,000×5%=$400. Initially the expected consideration is $7,600: Dr receivables $7,600 / Cr revenue $7,600. When the prompt-payment window expires without discount, adjust Dr receivables $400 / Cr revenue $400; the contractual price due is now $8,000. On subsequent payment Dr bank $8,000 / Cr receivables $8,000. Total revenue $8,000 reflects the consideration ultimately expected and received. The $400 reversal is a variable-consideration change, not bank interest."
+    ]
+  ]
+}
 };})(window);
