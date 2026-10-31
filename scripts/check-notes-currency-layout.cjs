@@ -66,6 +66,7 @@ const assetVersions={
  'textbook-ma2-part-b.js':'20261031optimalmixv2',
  'textbook-fa2-part-b.js':'20261031noncurrentv3',
  'notes-visual-all.js':'20261101beta1',
+ 'notes-visual-workbook.js':'20261101flowv1',
  'textbook-crossqual-a1.js':'20261031accaA1',
  'textbook-crossqual-a2-foundation.js':'20261031v1',
  'textbook-crossqual-a2-professional.js':'20261031v1',
@@ -114,7 +115,7 @@ for(const filename of sourceAssets){
  errors.push('Outdated/missing cache-bust query: '+filename);
 }
 if(!html.includes('href="notes.css?v=20261101typography1"'))errors.push('Stylesheet cache query outdated');
-if(!read('notes-visual-workbook.js').includes("src+'?v=20261030v8'"))
+if(!read('notes-visual-workbook.js').includes("src+'?v=20261101flowv1'"))
  errors.push('Static illustrations will remain cached in previous currency');
 console.log(JSON.stringify({inspected:files.length,exampleDollarOccurrences:dollars,failures:errors.length},null,2));
 if(errors.length){errors.forEach(e=>console.error('FAIL',e));process.exitCode=1}
