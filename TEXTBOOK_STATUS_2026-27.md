@@ -4,6 +4,14 @@
 **Repository:** `LuqmanReader/marikitabelajar`, main  
 **Scope:** 25 paper and jurisdiction-variant indices; 700 syllabus topic headings
 
+## Debit-credit accounting audit (31 October 2026)
+
+The all-700 journal verifier `scripts/audit-all700-journals.py` and its regression were merged via [PR #23](https://github.com/LuqmanReader/marikitabelajar/pull/23), commit `aeda50d49d042176b4483bfb979f830c179a13f7`. [Notes quality gate run 41207524912](https://github.com/LuqmanReader/marikitabelajar/actions/runs/41207524912) **passed** and archived an itemised journal-balance artifact.
+
+The run reconstructed **183 uniquely parseable debit/credit posting groups**, all with equal totals, and separately reported **12 ambiguous/alternative posting groups** for manual review. The mathematical expression audit still reported **1,107 extractable identities / zero mismatches** across **1,489 worked cases**. These two checks confirm specified arithmetic identities and entry balances; they do not prove account selection, financial reporting compliance or the full validity of each worked solution.
+
+**Academic outcome-by-outcome sign-off remains outstanding**; 0/700 lessons are independently certified. Avoid representing automated arithmetic as a completed academic audit.
+
 ## Latest tested release — full-library verification pipeline (31 October 2026)
 
 **Deployment:** Merged [PR #22](https://github.com/LuqmanReader/marikitabelajar/pull/22), commit `04d5fea9405c1ac78261ce5ff304f25179025ae5`. The updated source is on `main`.
