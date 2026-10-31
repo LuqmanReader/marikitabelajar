@@ -157,6 +157,8 @@ for url,item in sources.items():
             "officialPdfCurrentPeriod":entry["periodConfirmed"],
             "officialTopicPdfPage":best["page"] if matched else None,
             "topicHeadingMatchScore":matchScore,
+            "nearestOfficialHeadingCandidate":best["text"][:130] if best else None,
+            "nearestOfficialHeadingCandidatePdfPage":best["page"] if best else None,
             "officialDetailedOutcomeCandidates":outcomes,
             "outcomeTokenComparison":matchedKeywords,
             "lessonSha256":row["contentSha256"],"publishedWorkedCases":row["publishedWorkedCount"],
@@ -167,6 +169,7 @@ for url,item in sources.items():
           "ERROR",entry["error"],flush=True)
 
 assert len(out)==350,len(out)
+print("UNMATCHED_2026_SOURCE",json.dumps([{"key":r["key"],"title":r["title"],"nearest":r["nearestOfficialHeadingCandidate"],"candidatePage":r["nearestOfficialHeadingCandidatePdfPage"],"score":r["topicHeadingMatchScore"]} for r in out if not r["officialTopicPdfPage"]],ensure_ascii=False),flush=True)
 counts={}
 for r in out:
     for flag in r["flags"]:counts[flag]=counts.get(flag,0)+1
