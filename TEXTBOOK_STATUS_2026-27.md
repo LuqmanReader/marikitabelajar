@@ -4,6 +4,20 @@
 **Repository:** `LuqmanReader/marikitabelajar`, main  
 **Scope:** 25 paper and jurisdiction-variant indices; 700 syllabus topic headings
 
+## P0–P2 academic improvement run — 31 October 2026, latest verified code
+
+Merged [PR #28](https://github.com/LuqmanReader/marikitabelajar/pull/28), commit `371b61e21fd3e497a93edc949c3fc030da3fe543`. [Passing full Notes quality CI run 41215805734](https://github.com/LuqmanReader/marikitabelajar/actions/runs/41215805734) and accompanying FIA / Classroom regressions tested the changed sources.
+
+**Substantive educational fixes:** FA2 D4 now includes part-exchange and scrapping journals, a complete asset-register/ledger reconciliation, choice of depreciation basis, and related worked scenarios. MA2 D2 now includes a one-resource optimal production mix with minimum commitments, a two-constraint graphical linear programme, and genuine lost-contribution opportunity costs. Both are mapped outcome by outcome (21 requirements total) in `audit/academic-reviews/fa2-d4-ma2-d2-2026-27.json`; these are internal technical mappings, not independent examiner approvals. Seven original worked examples were added.
+
+**Official-source reconciliation fix:** The primary 2026–27 ACCA FA2 PDF splits detailed asset requirements n) and o) across two columns. The audit now captures and individually page-references all **15** FA2 D4 outcomes instead of silently accepting 13. It remains a document extractor, not a full subject examiner.
+
+**Latest passing automated figures:** **700/700** published lessons, **2,359** individually indexed outcomes/practical skills (**2,303** candidate detailed outcomes plus 56 practical requirements), **1,496** worked cases, **1,130** independently recomputed extractable equations without discrepancies, and **206/206** parseable debit/credit groups balanced. The journal parser now correctly ignores prose figures after a posted amount and separately notes **one alternative account presentation** for technical review.
+
+**Outstanding evidence queue:** **411** outcome records have no automatically identified teaching-section match; **989** have no automatically identified worked application; **859** worked cases lack machine-extractable equations (often legitimately conceptual). There are **357** possible missing-outcome-terminology flags. These flags need individual judgement and source corrections where genuinely deficient. Browser layout, CBE competence and qualified independent reviews remain unfinished.
+
+**P2 remains BLOCKED BY DESIGN:** No academic sign-off has been invented. 0/700 chapters currently have full independently evidenced academic, numerical, technical, jurisdiction and rendered visual verification. The separately configured academic release gate must remain failing until there are 700 evidenced individual approvals; a green Notes development CI run does not permit a claim of ACCA certification or affiliation.
+
 ## Additional substantiated FA1/FA2 journal corrections — 31 October 2026
 
 Merged [PR #27](https://github.com/LuqmanReader/marikitabelajar/pull/27), tested by [Notes quality CI run 41210998370](https://github.com/LuqmanReader/marikitabelajar/actions/runs/41210998370) with the FIA and Classroom regressions passing as well.
