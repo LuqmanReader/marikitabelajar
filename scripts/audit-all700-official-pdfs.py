@@ -124,8 +124,23 @@ for url,item in sources.items():
     cand=[c for col in extracted for c in candidates(col)]
     for row in item["rows"]:
         key=row["key"];topicNo=int(key.split(":")[1][1:])
-        same=[x for x in cand if x["n"]==topicNo]
-        expectedDetailedTitle="Key principles and concepts of accounting" if key in ("FA:B1","FFA:B1") else row["topicTitle"]
+        # Exact, reviewed exceptions for official overview vs detailed-study-guide titles.
+        # Do NOT weaken the global match threshold to hide genuine syllabus gaps.
+        sourceTitleOverrides={
+            "FA:B1":"Key principles and concepts of accounting",
+            "FFA:B1":"Key principles and concepts of accounting",
+            "FR:B9":"Reporting financial and non-financial performance",
+            "ATX:B1":"Identify and advise on the taxes applicable to a given course of action and their impact",
+            "ATX:B3":"Advise how taxation can affect the financial decisions made by businesses (corporate and unincorporated) and by individuals",
+            "ATX:B4":"Assess the tax advantages and disadvantages of alternative courses of action",
+        }
+        # ACCA AFM 2026-27 syllabus overview page 6 labels F4 Commercial acumen,
+        # but the official detailed guide on printed page 13 repeats "3.".
+        # Locate by unique heading, preserving an explicit source-erratum flag.
+        numberingException=(key=="AFM:F4")
+        candidateNumber=3 if numberingException else topicNo
+        same=[x for x in cand if x["n"]==candidateNumber]
+        expectedDetailedTitle=sourceTitleOverrides.get(key,row["topicTitle"])
         ranked=sorted(same,key=lambda c:similarity(expectedDetailedTitle,c["text"]),reverse=True)
         # Many heading windows have the same source position, so compare distinct
         # locations instead of treating overlapping windows as independent matches.
@@ -142,6 +157,7 @@ for url,item in sources.items():
         matched=bool(best and matchScore>=.75)
         note=[]
         if ambiguous:note.append("OFFICIAL_TOPIC_MAPPING_AMBIGUOUS")
+        if numberingException:note.append("OFFICIAL_SOURCE_NUMBERING_CONFLICT_F4_LABELLED_3")
         if entry["error"]:note.append("OFFICIAL_PDF_UNAVAILABLE_OR_INVALID")
         if not matched:note.append("TOPIC_HEADING_NOT_RELIABLY_MATCHED")
         # Candidate outcomes only, not guaranteed: extract until next topic-number heading.
@@ -200,6 +216,8 @@ for url,item in sources.items():
             "topicHeadingMatchScore":matchScore,"alternateHeadingMatchScore":runnerUpScore,
             "alternateHeadingPdfPage":runnerUp["page"] if runnerUp else None,
             "topicMatchAmbiguous":ambiguous,
+            "sourceTitleExceptionApplied":key in sourceTitleOverrides,
+            "sourceNumberExceptionApplied":numberingException,
             "acccOverviewDetailedGuideLabelConflict":key in ("FA:B1","FFA:B1"),
             "detailedGuideTitleUsed":expectedDetailedTitle,
             "nearestOfficialHeadingCandidate":best["text"][:130] if best else None,
