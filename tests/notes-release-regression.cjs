@@ -6,7 +6,7 @@
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
-const build='2026.10.31.30';
+const build='2026.10.31.31';
 const html=fs.readFileSync('notes.html','utf8');
 const manifest=JSON.parse(fs.readFileSync('notes-release.json','utf8'));
 const page=fs.readFileSync('notes-page.js','utf8');
@@ -72,12 +72,12 @@ const doc={
 vm.runInNewContext(fs.readFileSync('notes-build.js','utf8'),{window:win,document:doc,URL,Date,console},{filename:'notes-build.js'});
 (async()=>{
  await new Promise(resolve=>setImmediate(resolve));
- assert.match(stamp.textContent,/2026\.10\.31\.30/);
+ assert.match(stamp.textContent,/2026\.10\.31\.31/);
  assert.equal(ids.notesReleaseStatus.hidden,true,'No false update banner when current');
- latest='2026.10.31.31';
+ latest='2026.10.31.32';
  await win.LedgerNotesCheckForUpdates();
  assert.equal(ids.notesReleaseStatus.hidden,false,'A newer manifest must show update banner');
- assert.match(ids.notesReleaseMessage.textContent,/2026\.10\.31\.31/);
+ assert.match(ids.notesReleaseMessage.textContent,/2026\.10\.31\.32/);
  assert(ids.notesReleaseReload.events.click,'Reload button must work');
  ids.notesReleaseReload.events.click();
  const u=new URL(assigned);
