@@ -9,6 +9,8 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('nod
 const root=path.resolve(__dirname,'..'),read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const engine=require('../quiz-engine.js'),bank=require('../quiz-exam-bank.js');
 globalThis.LedgerQuizEngine=engine;globalThis.LedgerExamScenarios=bank;
+vm.runInThisContext(read('quiz-casebank-knowledge.js'),{filename:'quiz-casebank-knowledge.js'});
+vm.runInThisContext(read('quiz-casebank-ledger.js'),{filename:'quiz-casebank-ledger.js'});
 vm.runInThisContext(read('quiz-quality-engine.js'),{filename:'quiz-quality-engine.js'});
 const scope=vm.createContext({window:{}});
 for(const p of ['subject-catalog.js','acca-published-data.js','notes-data.js','notes-uk-syllabi.js','notes-expanded-data.js'])
