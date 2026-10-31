@@ -1,0 +1,44 @@
+name: LedgerPeer independently verified academic release gate
+
+# Unlike the development quality workflow, this MUST fail until all 700
+# chapters have current 2026-27 evidence and independent sign-off.
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  academic-release:
+    name: Require evidence-backed approval of every published chapter
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Export actual student-visible content and current chapter hashes
+        run: node scripts/export-all700-live-lessons.cjs
+      - name: Install official syllabus and arithmetic audit dependencies
+        run: python -m pip install --disable-pip-version-check --quiet pymupdf requests
+      - name: Recalculate the full lesson library
+        run: python scripts/audit-all700-arithmetic.py
+      - name: Verify the full original ACCA 2026–27 source set
+        run: python scripts/audit-all700-official-pdfs.py
+      - name: Validate all existing academic evidence claims
+        run: node tests/notes-academic-proof-gate.cjs
+      - name: Block release unless all 700 lessons satisfy documented review requirements
+        run: node tests/notes-academic-release-eligibility.cjs
+      - name: Archive evidence and release eligibility verdict
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ledgerpeer-academic-release-evidence
+          path: |
+            audit/all700-academic-release-eligibility.json
+            audit/all700-official-syllabus-evidence-ci.json
+            audit/all700-arithmetic-evidence-ci.json
+          if-no-files-found: warn
