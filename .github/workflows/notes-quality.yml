@@ -92,6 +92,8 @@ jobs:
           if-no-files-found: warn
       - name: Install official PDF audit dependencies
         run: python -m pip install --disable-pip-version-check --quiet pymupdf requests
+      - name: Enforce detailed FA and FFA 2026-27 A1 A3 A4 teaching outcomes
+        run: node tests/notes-fa-ffa-a1-a3-a4-2026.cjs
       - name: Compare all 350 live lessons with source PDFs and evidence pages
         run: python scripts/audit-first350-official-pdfs.py
       - name: Upload first-350 official source evidence for detailed academic review
