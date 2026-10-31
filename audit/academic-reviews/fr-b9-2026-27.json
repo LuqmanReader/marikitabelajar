@@ -1,0 +1,95 @@
+{
+  "reviewKind": "Internal technical syllabus-to-lesson reconciliation; not independent academic certification",
+  "paper": "FR",
+  "topicKey": "FR:B9",
+  "examPeriod": "September 2026 to June 2027",
+  "jurisdiction": "INT",
+  "officialSource": "https://www.accaglobal.com/content/dam/acca/global/PDF-students/acca/f7/studyguides/fr_s26_j27_syllabus_and_study_guide.pdf",
+  "officialPdfPage": 10,
+  "scope": "Six detailed FR B9 a-f outcomes, with bonus, rights and diluted EPS cases; student-visible reader content is checked by regression",
+  "externalProfessionalSignoff": false,
+  "reviewStatus": "INTERNAL_COVERAGE_AND_ARITHMETIC_RECONCILIATION_ONLY",
+  "outcomes": [
+    {
+      "letter": "a",
+      "level": 2,
+      "focus": "Explain the separate reporting of discontinued-operations results",
+      "sectionIndex": [
+        0
+      ],
+      "workedIndex": [
+        0
+      ],
+      "check": "Chapter distinguishes qualifying major component disposal from closing a minor kiosk and mentions separate post-tax presentation"
+    },
+    {
+      "letter": "b",
+      "level": 2,
+      "focus": "Classify and measure assets held for sale, discontinued operations",
+      "sectionIndex": [
+        0
+      ],
+      "workedIndex": [
+        0
+      ],
+      "check": "Lower of carrying value and fair value less costs to sell; depreciation ceases upon classification; $100,000 versus $92,000 yields $8,000 impairment"
+    },
+    {
+      "letter": "c",
+      "level": 2,
+      "focus": "Separate disclosure of material items of income or expense",
+      "sectionIndex": [
+        4,
+        5
+      ],
+      "workedIndex": [
+        5
+      ],
+      "check": "Material disclosures distinguished from excluding an ordinary payroll expense"
+    },
+    {
+      "letter": "d",
+      "level": 2,
+      "focus": "Accounting-policy changes, accounting-estimate changes and prior errors",
+      "sectionIndex": [
+        1,
+        4
+      ],
+      "workedIndex": [
+        1
+      ],
+      "check": "Retrospective policies/errors versus prospective estimates; remaining carrying $60,000 divided by three years is $20,000"
+    },
+    {
+      "letter": "e",
+      "level": 2,
+      "focus": "Basic and diluted earnings per share, bonus, rights, convertibles and options",
+      "sectionIndex": [
+        2
+      ],
+      "workedIndex": [
+        2,
+        3
+      ],
+      "check": "Bonus comparative denominator 187,500 -> EPS $1.60; standalone convertible $1.65; TERP $4.60; treasury stock incremental 8,000 shares"
+    },
+    {
+      "letter": "f",
+      "level": 1,
+      "focus": "Objective, scope and core elements of IFRS S1 disclosures",
+      "sectionIndex": [
+        6
+      ],
+      "workedIndex": [
+        6
+      ],
+      "check": "Identifies material sustainability-financial information and governance, strategy, risk management, metrics and targets, with flood-risk scenario"
+    }
+  ],
+  "limitations": [
+    "No independent qualified accountant/ACCA reviewer signature",
+    "Full source law/standards cross-examination not professionally certified",
+    "Rendered mobile accessibility and all possible variant casework not externally assessed"
+  ],
+  "result": "TARGETED_COVERAGE_NOW_PRESENT; INDEPENDENT_SIGNOFF_PENDING"
+}
