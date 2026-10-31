@@ -180,7 +180,7 @@ for url,item in sources.items():
             crossColumnEnd={"TX:B2":3,"SBL:C3":4}
             if key in crossColumnEnd:
                 right=next((x["text"] for x in extracted if x["page"]==best["page"] and x["column"]==2),"")
-                right=re.split(r"(?m)^\\s*"+str(crossColumnEnd[key])+r"\\.\\s+\\w",right,maxsplit=1)[0]
+                right=re.split(r"(?m)^\s*"+str(crossColumnEnd[key])+r"\.\s+\w",right,maxsplit=1)[0]
                 chunk=right+"\n"+chunk
             # BT/FBT F2 starts at the bottom of PDF page 14; its (a)-(e)
             # requirements continue at the top of the following printed page.
@@ -217,7 +217,7 @@ for url,item in sources.items():
                 phrase=best["text"][:210]
                 outcomes=[{"letter":"main","sha256":hashlib.sha256(phrase.encode()).hexdigest()[:16],
                            "anchorWords":normalize(phrase).split()[:8],
-                           "intellectualLevelTags":re.findall(r"\\[[123]\\]",phrase)}]
+                           "intellectualLevelTags":re.findall(r"\[[123]\]",phrase)}]
                 note.append("UNLETTERED_DIRECT_REQUIREMENT_REVIEW" if key!="TX:E6" else "IMPLICIT_CROSS_SECTION_REQUIREMENT_REVIEW")
             if not outcomes and not isPlatformSkill:note.append("DETAILED_OUTCOME_LETTERS_NOT_EXTRACTED")
             if isPlatformSkill:note.append("COMPUTER_PRACTICAL_SKILL_REQUIRES_HANDS_ON_ASSESSMENT")
