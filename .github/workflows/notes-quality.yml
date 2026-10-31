@@ -69,6 +69,17 @@ jobs:
           if-no-files-found: warn
       - name: Export all 350 student-visible lesson records
         run: node scripts/export-first350-live-lessons.cjs
+      - name: Recompute extractable arithmetic identities across all 350 live chapters
+        run: python scripts/audit-first350-arithmetic.py
+      - name: Upload full first-half arithmetic reconciliation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: notes-first350-maths-review
+          path: |
+            audit/first350-arithmetic-evidence-ci.json
+            audit/first350-arithmetic-evidence-ci.md
+          if-no-files-found: warn
       - name: Install official PDF audit dependencies
         run: python -m pip install --disable-pip-version-check --quiet pymupdf requests
       - name: Compare all 350 live lessons with source PDFs and evidence pages
