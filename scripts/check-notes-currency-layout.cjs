@@ -58,6 +58,7 @@ const sourceAssets=[
  'notes-visual-workbook.js'
 ];
 const assetVersions={
+ 'textbook-fa2-part-b.js':'20261031fa2disposal',
  'notes-visual-all.js':'20261031chapters32',
  'textbook-crossqual-a1.js':'20261031v2',
  'textbook-crossqual-a2-foundation.js':'20261031v1',
