@@ -11,7 +11,7 @@ raw=json.loads((ROOT/"audit/all700-live-lessons-ci.json").read_text())
 assert len(raw["rows"])==700
 NUM=r"(?:\(?\s*[-+]?\s*[$£]?\s*[\d,]+(?:\.\d+)?\s*%?\s*\)?)"
 OP=r"(?:[+\-*\/×÷−])"
-FORMULA=re.compile(r"(?=((?:[-+−]?\s*[$£]?\s*\d|\()\s*[()$£\d\s,.\-+*/×÷−%^]{2,100})\s*=\s*([+\-−]?\s*[$£]?\s*[\d,]+(?:\.\d+)?\s*%?))")
+FORMULA=re.compile(r"(?=((?:[-+−]?\s*[$£]?\s*\d|\()\s*[()$£\d\s,.\-+*/×÷−%^]{2,100})\s*=\s*([+\-−]?\s*[$£]?\s*[\d,]+(?:\.\d+)?\s*(?:%|(?:bn|m|k)\b)?))",re.I)
 ALLOWED=re.compile(r"^[\d.\s()+\-*/%]+$")
 def clean(s):
     s=s.replace("$","").replace("£","").replace(",","").replace("×","*").replace("÷","/").replace("−","-").replace("^","**")
@@ -86,13 +86,17 @@ for chapter in raw["rows"]:
             # POINTS (10.0), while a decimal ratio equals a fraction (0.10).
             # Compare using the expression's stated presentation basis.
             percentPoints=bool(percentage and re.search(r"(?:×|\*)\s*100\s*$",left))
+            # Recognise financial statement scale suffixes on the reported RHS.
+            # E.g. "6 × $200,000 = $1.2m" is 1,200,000, not 1.2.
+            unit=re.search(r"(?i)(bn|m|k)$",right)
+            scale={"bn":1e9,"m":1e6,"k":1e3}.get(unit.group(1).lower(),1) if unit else 1
+            displayed=right[:-len(unit.group(1))].strip() if unit else right.rstrip("%")
             try:
-                rawReported=float(right.rstrip("%"))
-                observed=rawReported if percentPoints else rawReported/100 if percentage else rawReported
+                rawReported=float(displayed)
+                observed=rawReported if percentPoints else rawReported/100 if percentage else rawReported*scale
             except ValueError:continue
-            displayed=right.rstrip("%")
             decimal=len(displayed.split(".")[1]) if "." in displayed else 0
-            tolerance=max(0.0101, 0.51*(10**(-decimal)))
+            tolerance=max(0.0101, 0.51*(10**(-decimal))*scale)
             if percentage and not percentPoints:tolerance/=100
             valid+=1
             good=abs(result-observed)<=tolerance
