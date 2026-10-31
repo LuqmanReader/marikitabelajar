@@ -127,10 +127,21 @@ for url,item in sources.items():
         same=[x for x in cand if x["n"]==topicNo]
         expectedDetailedTitle="Key principles and concepts of accounting" if key in ("FA:B1","FFA:B1") else row["topicTitle"]
         ranked=sorted(same,key=lambda c:similarity(expectedDetailedTitle,c["text"]),reverse=True)
-        best=ranked[0] if ranked else None
+        # Many heading windows have the same source position, so compare distinct
+        # locations instead of treating overlapping windows as independent matches.
+        distinct=[];seen=set()
+        for candidate in ranked:
+            location=(candidate["page"],candidate["column"],candidate["start"])
+            if location in seen:continue
+            seen.add(location);distinct.append(candidate)
+        best=distinct[0] if distinct else None
+        runnerUp=distinct[1] if len(distinct)>1 else None
         matchScore=round(similarity(expectedDetailedTitle,best["text"]),3) if best else 0
+        runnerUpScore=round(similarity(expectedDetailedTitle,runnerUp["text"]),3) if runnerUp else 0
+        ambiguous=bool(runnerUp and runnerUpScore>=.75 and matchScore-runnerUpScore<.06)
         matched=bool(best and matchScore>=.75)
         note=[]
+        if ambiguous:note.append("OFFICIAL_TOPIC_MAPPING_AMBIGUOUS")
         if entry["error"]:note.append("OFFICIAL_PDF_UNAVAILABLE_OR_INVALID")
         if not matched:note.append("TOPIC_HEADING_NOT_RELIABLY_MATCHED")
         # Candidate outcomes only, not guaranteed: extract until next topic-number heading.
@@ -186,7 +197,9 @@ for url,item in sources.items():
             "variant":row["variant"],"officialPdf":url,"pdfSha256":entry["sha256"],
             "officialPdfCurrentPeriod":entry["periodConfirmed"],
             "officialTopicPdfPage":best["page"] if matched else None,
-            "topicHeadingMatchScore":matchScore,
+            "topicHeadingMatchScore":matchScore,"alternateHeadingMatchScore":runnerUpScore,
+            "alternateHeadingPdfPage":runnerUp["page"] if runnerUp else None,
+            "topicMatchAmbiguous":ambiguous,
             "acccOverviewDetailedGuideLabelConflict":key in ("FA:B1","FFA:B1"),
             "detailedGuideTitleUsed":expectedDetailedTitle,
             "nearestOfficialHeadingCandidate":best["text"][:130] if best else None,
