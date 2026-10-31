@@ -134,12 +134,27 @@ for url,item in sources.items():
                 if re.match(r"^\d{1,2}\.\s+\w",v):
                     end=i;break
             chunk="\n".join(ls[start:end])
+            # BT/FBT F2 starts at the bottom of PDF page 14; its (a)-(e)
+            # requirements continue at the top of the following printed page.
+            if key in ("BT:F2","FBT:F2"):
+                nextPageLeft=next((x["text"] for x in extracted if x["page"]==best["page"]+1 and x["column"]==1),"")
+                chunk += "\n"+re.split(r"(?m)^\s*3\.\s*Corporate codes of ethics",nextPageLeft,maxsplit=1)[0]
+            # Roman-numeral subpoints such as i) or v) are not distinct ACCA
+            # lettered outcomes: retain only successive a), b), c)... marks.
+            expectedLetter=ord("a")
             for m in re.finditer(r"(?m)^\s*([a-z])\)\s*(.*)",chunk):
+                letter=m.group(1)
+                if ord(letter)!=expectedLetter:continue
                 tail=chunk[m.start():m.start()+250].splitlines()
                 phrase=" ".join(tail[:3])[:180]
-                outcomes.append({"letter":m.group(1),"sha256":hashlib.sha256(phrase.encode()).hexdigest()[:16],
+                outcomes.append({"letter":letter,"sha256":hashlib.sha256(phrase.encode()).hexdigest()[:16],
                                  "anchorWords":normalize(phrase).split()[:8]})
-            if not outcomes:note.append("DETAILED_OUTCOME_LETTERS_NOT_EXTRACTED")
+                expectedLetter+=1
+            # FTX, FAU and FFM end with practical computer-based skills stated
+            # directly as topic objectives, without lettered sub-outcomes.
+            isPlatformSkill=key in tuple(p+":"+area+str(i) for p,area in (("FTX","G"),("FAU","F"),("FFM","G")) for i in range(1,5))
+            if not outcomes and not isPlatformSkill:note.append("DETAILED_OUTCOME_LETTERS_NOT_EXTRACTED")
+            if isPlatformSkill:note.append("COMPUTER_PRACTICAL_SKILL_REQUIRES_HANDS_ON_ASSESSMENT")
         teaching=" ".join([x[1] for x in row["sections"]]+[x[1]+" "+x[2] for x in row["worked"]])
         lessonTokens=set(normalize(teaching).split())
         matchedKeywords=[]
@@ -173,6 +188,8 @@ for url,item in sources.items():
           "ERROR",entry["error"],flush=True)
 
 assert len(out)==350,len(out)
+assert len(pdfs)==10 and all(p["periodConfirmed"] for p in pdfs),"All ten 2026-27 official ACCA PDF editions are mandatory"
+assert sum(bool(r["officialTopicPdfPage"]) for r in out)==350,"Every first-350 topic must match the primary official 2026-27 detailed study guide"
 print("UNMATCHED_2026_SOURCE",json.dumps([{"key":r["key"],"title":r["title"],"nearest":r["nearestOfficialHeadingCandidate"],"candidatePage":r["nearestOfficialHeadingCandidatePdfPage"],"score":r["topicHeadingMatchScore"]} for r in out if not r["officialTopicPdfPage"]],ensure_ascii=False),flush=True)
 counts={}
 for r in out:
