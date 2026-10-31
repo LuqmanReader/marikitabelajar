@@ -9,7 +9,7 @@ function qualificationOf(code){return FIA_PAPERS.some(p=>p.code===code)?'fia':AC
 const syllabus=root.LedgerNotesSyllabi?.papers||{};
 const lessons=root.LedgerFiaNotes||{};
 const outcomeLessons=root.LedgerOutcomeLessons||{};
-const syllabusAddenda=root.Ledger2026OutcomeAddenda?.topics||{};
+const syllabusAddenda=Object.assign({},root.Ledger2026OutcomeAddenda?.topics||{},root.Ledger2026IFRS18Addenda?.topics||{});
 const textbookLessons=Object.assign({},root.LedgerStructuredLessonChapters||{},root.LedgerEditorialAdvancedChapters||{},root.LedgerEditorialFiaAppliedChapters||{},root.LedgerEditorialManagement01||{},root.LedgerEditorialManagement02||{},root.LedgerEditorialManagement03||{},root.LedgerEditorialManagement04||{},root.LedgerEditorialManagement05||{},root.LedgerEditorialFinancial01||{},root.LedgerEditorialFinancial02||{},root.LedgerEditorialFinancial03||{},root.LedgerEditorialFinancial04||{},root.LedgerEditorialFinancial05||{},root.LedgerEditorialFinancial06||{},root.LedgerEditorialFinancial07||{},root.LedgerEditorialBusiness01||{},root.LedgerEditorialBusiness02||{},root.LedgerEditorialBusiness03||{},root.LedgerEditorialBusiness04||{},root.LedgerEditorialBusiness05||{},root.LedgerEditorialBusiness06||{},root.LedgerEditorialBusiness07||{},root.LedgerEditorialAuditFoundation01||{},root.LedgerEditorialAuditFoundation02||{},root.LedgerEditorialAuditFoundation03||{},root.LedgerEditorialAuditFoundation04||{},root.LedgerEditorialAuditFoundation05||{},root.LedgerEditorialAuditFoundation06||{},root.LedgerEditorialFoundationFinance01||{},root.LedgerEditorialFoundationFinance02||{},root.LedgerEditorialFoundationFinance03||{},root.LedgerEditorialFoundationFinance04||{},root.LedgerEditorialPM01||{},root.LedgerEditorialPM02||{},root.LedgerEditorialPM03||{},root.LedgerEditorialPM04||{},root.LedgerEditorialPM05||{},root.LedgerEditorialPM06||{},root.LedgerEditorialLawENG2026||{},root.LedgerEditorialLawENG2026Part2||{},root.LedgerEditorialSBR2026A||{},root.LedgerEditorialSBR2026B||{},root.LedgerEditorialFR2026A||{},root.LedgerEditorialFR2026B||{},root.LedgerEditorialAA2026A||{},root.LedgerEditorialAA2026B||{},root.LedgerEditorialAA2026C||{},root.LedgerEditorialFM2026A||{},root.LedgerEditorialFM2026B||{},root.LedgerEditorialFM2026C||{},root.LedgerEditorialAFM2026A||{},root.LedgerEditorialAFM2026B||{},root.LedgerEditorialAFM2026C||{},root.LedgerEditorialAPM2026A||{},root.LedgerEditorialAPM2026B||{},root.LedgerEditorialSBL2026A||{},root.LedgerEditorialSBL2026B||{},root.LedgerEditorialSBL2026C||{},root.LedgerEditorialSBL2026D||{},root.LedgerEditorialAAA2026A||{},root.LedgerEditorialManagement03||{},root.LedgerEditorialManagement04||{},root.LedgerEditorialManagement05||{},root.LedgerSupplementalTextbooks||{},root.LedgerSupplementalTextbooksA2||{},root.LedgerSupplementalTextbooksProfessional||{},root.LedgerSupplementalTextbooksA3Foundation||{},root.LedgerSupplementalTextbooksA3Professional||{},root.LedgerSupplementalTextbooksBatch4A||{},root.LedgerSupplementalTextbooksBatch4B||{},root.LedgerSupplementalTextbooksBatch4C||{},root.LedgerSupplementalTextbooksBatch4D||{},root.LedgerTextbookFA1A||{},root.LedgerTextbookFA1B||{},root.LedgerTextbookMA1||{},root.LedgerTextbookMA2A||{},root.LedgerTextbookMA2B||{},root.LedgerTextbookFA2A||{},root.LedgerTextbookFA2B||{},root.LedgerTextbookFA2C||{});
 const integratedCases=root.LedgerMasterCases||{};
 const renderChapterVisual=root.renderLedgerChapterVisual||null;
@@ -133,8 +133,8 @@ function appendTextbook(parent,paperCode,topicCode){
  const syllabusUpdate=syllabusAddenda[paperCode+':'+topicCode];
  if(syllabusUpdate){
   const patch=node('section','lp-textbook lp-2026-addendum');
-  patch.append(node('p','lp-textbook-eyebrow','2026–27 SYLLABUS CHANGE REVIEW · SELECTED OUTCOMES ONLY'));
-  patch.append(node('h4','','New and amended requirements: '+syllabusUpdate.outcomes.join(', ')));
+  patch.append(node('p','lp-textbook-eyebrow','2026–27 EXAMINABLE CONTENT UPDATE · SELECTED OUTCOMES ONLY'));
+  patch.append(node('h4','','Current examinable requirements: '+syllabusUpdate.outcomes.join(', ')));
   patch.append(node('p','','This independent LedgerPeer addendum addresses the specified ACCA learning outcomes; it does not certify the entire chapter or confer ACCA accreditation.'));
   for(const [heading,explanation] of syllabusUpdate.sections){
     const entry=node('section','lp-textbook-section');
@@ -335,7 +335,7 @@ function renderCoverage(){
 async function init(){
  const loading=byId('notesLoading');
  try{
-   if(root.LedgerNotesDocumentBuild!=='2026.10.31.25'||root.LedgerNotesVisualBuild!=='2026.10.31.25')throw Error('Notes page and diagram scripts are from different builds. Select the build button above to check for updates, or reopen Notes with a fresh link.');
+   if(root.LedgerNotesDocumentBuild!=='2026.10.31.26'||root.LedgerNotesVisualBuild!=='2026.10.31.26')throw Error('Notes page and diagram scripts are from different builds. Select the build button above to check for updates, or reopen Notes with a fresh link.');
    if(!root.PersonalHubAuth)throw Error('Student authentication unavailable.');
    const valid=await root.PersonalHubAuth.ready();
    if(!valid){if(!root.PersonalHubAuth.isRedirectingToProfile?.())location.replace('index.html');return}
