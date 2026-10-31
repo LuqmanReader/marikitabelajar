@@ -95,7 +95,7 @@ const assetVersions={
  'textbook-editorial-business-04.js':'20261031technologyC7',
  'textbook-editorial-business-05.js':'20261031bt5',
  'textbook-editorial-business-06.js':'20261031bt6',
- 'textbook-editorial-business-07.js':'20261031ethicsF1',
+ 'textbook-editorial-business-07.js':'20261031ethicsF1b',
  'textbook-editorial-audit-foundation-01.js':'20261031au1',
  'textbook-editorial-audit-foundation-02.js':'20261031au2',
  'textbook-editorial-audit-foundation-03.js':'20261031au3',
