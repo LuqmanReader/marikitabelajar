@@ -93,10 +93,27 @@ async function main(){
         return {x:r.x,y:r.y,right:r.right,bottom:r.bottom,height:r.height}};
       const items=Array.from(document.querySelectorAll('.back-navigation-row .site-back')).map(el=>{
         const r=el.getBoundingClientRect();return{x:r.x,y:r.y,right:r.right,bottom:r.bottom}});
+      const font=selector=>getComputedStyle(document.querySelector(selector)).fontFamily;
       return {notice:rect('.notes-beta-notice'),nav:rect('.back-navigation-row'),
         hero:rect('.notes-hero'),buttons:items,
+        fonts:{
+          brandDisplay:font('.notes-hero h1'),
+          betaTitle:font('.notes-beta-notice>strong'),
+          brandBody:font('.notes-shell'),
+          betaBody:font('.notes-beta-notice>p'),
+          betaBold:font('.notes-beta-notice>p b'),
+          betaLink:font('.notes-beta-notice>p a'),
+          firstBack:font('.back-navigation-row .site-back:first-child'),
+          secondBack:font('.back-navigation-row .site-back:last-child')
+        },
         scrollWidth:document.documentElement.scrollWidth};
     });
+    assert.equal(layout.fonts.betaTitle,layout.fonts.brandDisplay,
+      'Community beta heading must match LedgerPeer display typography at '+width+'px');
+    for(const key of ['betaBody','betaBold','betaLink','firstBack','secondBack']){
+      assert.equal(layout.fonts[key],layout.fonts.brandBody,
+        'Community beta '+key+' must use LedgerPeer body typography at '+width+'px');
+    }
     assert.equal(layout.buttons.length,2,'Navigation must retain both buttons');
     assert(Math.abs(layout.notice.x-layout.nav.x)<=2,
       'Banner and navigation left edges must align: '+width+'px '+JSON.stringify(layout));
@@ -117,7 +134,7 @@ async function main(){
       assert(layout.buttons[1].y-layout.buttons[0].bottom>=8,
         'Wrapped mobile buttons must have a visible gap');
     }
-    console.log('PASS community-beta notice/navigation layout at',width,'px');
+    console.log('PASS community-beta typography + notice/navigation layout at',width,'px');
   }
   assert.deepEqual(errors,[],'Browser JavaScript exception(s): '+errors);
  }finally{await browser.close()}
