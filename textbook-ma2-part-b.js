@@ -308,7 +308,7 @@
       [
         "NPV calculation",
         "Outlay $40,000 today; three end-year inflows of $17,000; discount rate 10%.",
-        "NPV =−40,000 + 17,000/1.10 + 17,000/1.10² + 17,000/1.10³ ≈ −40,000+15,454.55+14,049.59+12,772.35 = +$2,276.49. Accept on the stated NPV criterion."
+        "NPV =−40,000 + 17,000/1.10 + 17,000/1.10² + 17,000/1.10³ = −40,000 + 17,000×[(1−1.10^(−3))/0.10] = +$2,276.48 when the full-precision annuity factor is used (individual annual present values rounded only for display: $15,454.55, $14,049.59 and $12,772.35). Accept on the stated NPV criterion."
       ],
       [
         "IRR interpolation",
