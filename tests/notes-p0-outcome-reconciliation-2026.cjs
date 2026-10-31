@@ -59,4 +59,12 @@ requires(a,['$900','$1,125','−$225']);
 assert.equal(100*(35-26)-(100*1.5/2)*15,-225);
 assert(!ma.workings.some(w=>w[0]==='Special order with opportunity cost'),
  'Spare-capacity example must not misleadingly claim nonzero opportunity cost');
+const crosswalk=JSON.parse(fs.readFileSync('audit/all700-outcome-crosswalk-ci.json','utf8'));
+for(const [key,count] of [['FA2:D4',15],['MA2:D2',6]]){
+ const actual=crosswalk.results.filter(r=>r.topicKey===key);
+ assert.equal(actual.length,count,'Official syllabus-to-teaching mappings incomplete for '+key);
+ assert(actual.every(r=>r.mappingMethod==='INTERNAL OUTCOME CROSSWALK — NOT SIGNED OFF'));
+ assert(actual.every(r=>r.suggestedSections.length>0&&r.suggestedWorkedCases.length>0),
+  'Each curated outcome requires applied written and numerical evidence');
+}
 console.log('PASS: 2026-27 FA2 D4 15 official outcomes, MA2 D2 six outcomes, added cases with independent cash, ledger, scarce-resource and LP arithmetic.');
