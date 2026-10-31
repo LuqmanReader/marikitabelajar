@@ -54,6 +54,15 @@ const rows=matrix.chapters.map(r=>{
 assert.equal(new Set(rows.map(x=>x.key)).size,700);
 assert.equal(Object.keys(live).length,700,'Published chapter set changed');
 const duplicates=rows.filter(r=>r.sourceDefinitions.length>1).map(r=>({key:r.key,definitions:r.sourceDefinitions,selected:r.liveSource}));
+const expectedWinners={
+ 'FA1:A2':'textbook-fa1-part-a.js','FA1:A3':'textbook-fa1-part-a.js',
+ 'MA1:A2':'textbook-ma1.js','MA1:B1':'textbook-ma1.js',
+ 'MA2:A2':'textbook-ma2-part-a.js','MA2:A3':'textbook-ma2-part-a.js',
+ 'FA2:A2':'textbook-fa2-part-a.js','FA2:A3':'textbook-fa2-part-a.js'
+};
+assert.deepEqual(duplicates.map(d=>d.key).sort(),Object.keys(expectedWinners).sort(),'Unexpected duplicate teaching-key inventory');
+for(const [key,filename] of Object.entries(expectedWinners))
+ assert.equal(winner[key]?.file,filename,'Reader is showing the wrong authoritative original lesson for '+key);
 const output={generatedAt:new Date().toISOString(),method:'Exact 700-lesson source extraction using notes-page.js merge precedence; NOT academic certification',count:rows.length,duplicateCount:duplicates.length,duplicates,rows};
 fs.mkdirSync('audit',{recursive:true});
 fs.writeFileSync('audit/all700-live-lessons-ci.json',JSON.stringify(output,null,2)+'\n');
