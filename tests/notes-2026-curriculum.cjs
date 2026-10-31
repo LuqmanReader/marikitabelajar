@@ -9,12 +9,12 @@ const fs=require('node:fs');
 const vm=require('node:vm');
 const ctx={};ctx.window=ctx;ctx.globalThis=ctx;ctx.LedgerFiaNotes={};ctx.LedgerPublishedSyllabi={papers:{}};
 vm.createContext(ctx);
-for(const name of ['subject-catalog.js','acca-published-data.js','notes-uk-syllabi.js','notes-2026-27-outcome-addenda.js','notes-2026-ifrs18-addenda.js']){
+for(const name of ['subject-catalog.js','acca-published-data.js','notes-uk-syllabi.js','notes-2026-27-outcome-addenda.js','notes-2026-ifrs18-addenda.js','notes-atx-2026-overseas-addenda.js']){
  vm.runInContext(fs.readFileSync(name,'utf8'),ctx,{filename:name,timeout:10000});
 }
 const papers=ctx.SubjectCatalog.papers;
 const catalogue=ctx.LedgerNotesSyllabi.papers;
-const addenda=Object.assign({},ctx.Ledger2026OutcomeAddenda.topics,ctx.Ledger2026IFRS18Addenda.topics);
+const addenda=Object.assign({},ctx.Ledger2026OutcomeAddenda.topics,ctx.Ledger2026IFRS18Addenda.topics,ctx.Ledger2026ATXOverseasAddenda.topics);
 const expectedPapers=['FA1','MA1','FA2','MA2','FBT','FMA','FFA','FAU','FFM','FTX','BT','MA','FA','LW','PM','TX','FR','AA','FM','SBL','SBR','AFM','APM','ATX','AAA'];
 assert.equal(papers.length,25);
 assert.deepEqual(Array.from(papers,p=>p.code).sort(),expectedPapers.sort(),'Paper list changed');
@@ -39,13 +39,16 @@ for(const paper of papers){
 }
 assert.equal(topicEntries.length,700,'Every FIA/ACCA index topic must be accounted for');
 assert.equal(keys.size,700);
-assert.equal(Object.keys(addenda).length,13,'Expected 13 unique syllabus-specific 2026-27 addenda');
+assert.equal(Object.keys(addenda).length,16,'Expected 13 unique syllabus-specific 2026-27 addenda');
 const expectedUpdates={
  'PM:A3':['A3d'],'PM:B5':['B5b'],'PM:E2':['E2a','E2d'],
  'APM:A1':['A1e'],'APM:A3':['A3b(iv)'],'APM:A4':['A4b'],'APM:A5':['A5c'],
  'APM:B4':['B4i'],'FA2:G1':['IFRS 18 examinable'],
  'FA:G2':['IFRS 18 examinable'],'FFA:G2':['IFRS 18 examinable'],
- 'FR:D1':['IFRS 18 presentation'],'SBR:C10':['C10f']
+ 'FR:D1':['IFRS 18 presentation'],'SBR:C10':['C10f'],
+ 'ATX:A1':['A1','Four-year FIG claim and allowance trade-off'],
+ 'ATX:A2':['A2','Finance Act 2025 foreign gains claim'],
+ 'ATX:A3':['A3','10 of the previous 20 tax years']
 };
 for(const [key,requirements] of Object.entries(expectedUpdates)){
  const a=addenda[key];
@@ -69,12 +72,18 @@ assert(pm['APM:B4'].workings.some(w=>w[2].includes('99.7222')));
 assert(fa['SBR:C10'].sections.some(x=>/reconciliation/.test(x[1])));
 const html=fs.readFileSync('notes.html','utf8');
 const page=fs.readFileSync('notes-page.js','utf8');
-for(const script of ['notes-2026-27-outcome-addenda.js','notes-2026-ifrs18-addenda.js']){
+for(const script of ['notes-2026-27-outcome-addenda.js','notes-2026-ifrs18-addenda.js','notes-atx-2026-overseas-addenda.js']){
  assert(html.includes(script+'?v='),script+' missing from published page');
  assert(html.indexOf(script)<html.indexOf('notes-page.js'),script+' script loads too late');
 }
 assert(page.includes('const syllabusAddenda=Object.assign('),'Reader fails to merge 2026-27 addenda');
+const authoredIndex=JSON.parse(fs.readFileSync('audit/authored-chapter-index.json','utf8'));
+assert.equal(authoredIndex.authorCount,700,'Every topic requires a written chapter');
+assert.equal(authoredIndex.remainingDraftTopics.length,0,'No draft-only topics may remain');
+assert(!html.includes('591 have individually authored'),'Homepage uses obsolete count');
+assert(!html.includes('Other papers still need equivalent chapters'),'Homepage is stale');
+assert(!page.includes('FA2%20S25-A26'),'Reader contains an old syllabus link');
 const report={builtAt:new Date().toISOString(),auditType:'structural index and selected learning-outcome review ONLY; NOT ACCA certification',total:topicEntries.length,papers:papers.map(p=>({code:p.code,count:catalogue[p.code].topics.length,variant:catalogue[p.code].variant,edition:catalogue[p.code].edition,source:catalogue[p.code].source})),targetedAddenda:Object.keys(addenda),unverifiedFullOutcomeTopics:700,entries:topicEntries};
 fs.mkdirSync('audit',{recursive:true});
 fs.writeFileSync('audit/notes-2026-27-inventory.json',JSON.stringify(report,null,2)+'\n');
-console.log('PASS: 25 papers / 700 indexed topics, original ACCA source references, 13 independently updated topic sections, full-outcome verification explicitly pending.');
+console.log('PASS: 25 papers / 700 indexed topics, original ACCA source references, 16 independently updated topic sections, full-outcome verification explicitly pending.');
