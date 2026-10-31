@@ -110,7 +110,7 @@ for(const [paper,syll] of Object.entries(syllabus)){
  }
 }
 const html=read('notes.html'),css=read('notes.css');
-if(!html.includes('notes-visual-all.js?v=20261031chapters16'))errors.push('interactive JS cache not refreshed');
+if(!html.includes('notes-visual-all.js?v=20261031chapters17'))errors.push('interactive JS cache not refreshed');
 if(!html.includes('notes.css?v=20261031chapters2'))errors.push('interactive stylesheet cache not refreshed');
 if(!css.includes('.lv-interactive-card')||!css.includes('.lv-card-content')||!css.includes('.lv-purchase-match-grid'))errors.push('interactive/workflow CSS missing');
 console.log(JSON.stringify({papers:Object.keys(syllabus).length,topics:count,interactive,buttonsTested,untruncatedSections,preservedWorkflows,errors:errors.length},null,2));
