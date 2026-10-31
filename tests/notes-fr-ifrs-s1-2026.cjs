@@ -36,6 +36,18 @@ const rights=ch.workings.find(w=>w[0]==='Rights issue TERP and diluted options')
 assert(rights.includes('$4.60')&&rights.includes('8,000'),'Rights bonus and treasury share dilution incorrectly presented');
 assert.equal((4*5+3)/5,4.6);
 assert(Math.abs(300000/(150000+8000)-1.898734)<0.000001);
+const crosswalk=JSON.parse(fs.readFileSync('audit/academic-reviews/fr-b9-2026-27.json','utf8'));
+assert.equal(crosswalk.topicKey,'FR:B9');
+assert.equal(crosswalk.externalProfessionalSignoff,false,'Internal crosswalk cannot impersonate professional approval');
+assert.deepEqual(crosswalk.outcomes.map(x=>x.letter),['a','b','c','d','e','f']);
+for(const outcome of crosswalk.outcomes){
+ assert([1,2,3].includes(outcome.level),'Missing documented intellectual level '+outcome.letter);
+ for(const index of outcome.sectionIndex)
+  assert(Number.isInteger(index)&&index>=0&&index<ch.sections.length,'Outcome '+outcome.letter+' lacks actual section index');
+ for(const index of outcome.workedIndex)
+  assert(Number.isInteger(index)&&index>=0&&index<ch.workings.length,'Outcome '+outcome.letter+' lacks worked-example mapping');
+ assert(outcome.check.length>40,'Outcome requires a substantive mapped-requirement note');
+}
 const html=fs.readFileSync('notes.html','utf8');
 assert(html.includes('textbook-editorial-fr-2026-a.js?v=20261031frB9completev3'),
  'Corrected IFRS S1 chapter is not guaranteed to reload');
