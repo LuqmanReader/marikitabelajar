@@ -124,25 +124,64 @@ for url,item in sources.items():
     cand=[c for col in extracted for c in candidates(col)]
     for row in item["rows"]:
         key=row["key"];topicNo=int(key.split(":")[1][1:])
-        same=[x for x in cand if x["n"]==topicNo]
-        expectedDetailedTitle="Key principles and concepts of accounting" if key in ("FA:B1","FFA:B1") else row["topicTitle"]
+        # Exact, reviewed exceptions for official overview vs detailed-study-guide titles.
+        # Do NOT weaken the global match threshold to hide genuine syllabus gaps.
+        sourceTitleOverrides={
+            "FA:B1":"Key principles and concepts of accounting",
+            "FFA:B1":"Key principles and concepts of accounting",
+            "FR:B9":"Reporting financial and non-financial performance",
+            "ATX:B1":"Identify and advise on the taxes applicable to a given course of action and their impact",
+            "ATX:B3":"Advise how taxation can affect the financial decisions made by businesses (corporate and unincorporated) and by individuals",
+            "ATX:B4":"Assess the tax advantages and disadvantages of alternative courses of action",
+        }
+        # ACCA AFM 2026-27 syllabus overview page 6 labels F4 Commercial acumen,
+        # but the official detailed guide on printed page 13 repeats "3.".
+        # Locate by unique heading, preserving an explicit source-erratum flag.
+        numberingException=(key=="AFM:F4")
+        candidateNumber=3 if numberingException else topicNo
+        same=[x for x in cand if x["n"]==candidateNumber]
+        expectedDetailedTitle=sourceTitleOverrides.get(key,row["topicTitle"])
         ranked=sorted(same,key=lambda c:similarity(expectedDetailedTitle,c["text"]),reverse=True)
-        best=ranked[0] if ranked else None
+        # Many heading windows have the same source position, so compare distinct
+        # locations instead of treating overlapping windows as independent matches.
+        distinct=[];seen=set()
+        for candidate in ranked:
+            location=(candidate["page"],candidate["column"],candidate["start"])
+            if location in seen:continue
+            seen.add(location);distinct.append(candidate)
+        best=distinct[0] if distinct else None
+        runnerUp=distinct[1] if len(distinct)>1 else None
         matchScore=round(similarity(expectedDetailedTitle,best["text"]),3) if best else 0
+        runnerUpScore=round(similarity(expectedDetailedTitle,runnerUp["text"]),3) if runnerUp else 0
+        ambiguous=bool(runnerUp and runnerUpScore>=.75 and matchScore-runnerUpScore<.06)
         matched=bool(best and matchScore>=.75)
         note=[]
+        if ambiguous:note.append("OFFICIAL_TOPIC_MAPPING_AMBIGUOUS")
+        if numberingException:note.append("OFFICIAL_SOURCE_NUMBERING_CONFLICT_F4_LABELLED_3")
         if entry["error"]:note.append("OFFICIAL_PDF_UNAVAILABLE_OR_INVALID")
         if not matched:note.append("TOPIC_HEADING_NOT_RELIABLY_MATCHED")
         # Candidate outcomes only, not guaranteed: extract until next topic-number heading.
         outcomes=[]
         if matched:
-            ls=best["lines"];start=best["start"]+max(best["width"],1)
+            ls=best["lines"];start=best["start"]+1  # First detailed outcome can follow heading immediately; candidate window is NOT the start offset.
             end=min(len(ls),start+90)
             for i in range(start,end):
                 v=ls[i].strip()
                 if re.match(r"^\d{1,2}\.\s+\w",v):
                     end=i;break
             chunk="\n".join(ls[start:end])
+            # Some two-column PDFs place the first a) on the heading line itself.
+            headingLine=ls[best["start"]]
+            inlineFirst=re.search(r"(?i)(?:^|\s)a\)\s+",headingLine)
+            if inlineFirst:chunk=headingLine[inlineFirst.start():]+"\n"+chunk
+            # TX B2 and SBL C3 start at the foot of the left column.
+            # Their first examinable a), b), ... requirements begin at the TOP
+            # of the right column on the SAME printed page.
+            crossColumnEnd={"TX:B2":3,"SBL:C3":4}
+            if key in crossColumnEnd:
+                right=next((x["text"] for x in extracted if x["page"]==best["page"] and x["column"]==2),"")
+                right=re.split(r"(?m)^\s*"+str(crossColumnEnd[key])+r"\.\s+\w",right,maxsplit=1)[0]
+                chunk=right+"\n"+chunk
             # BT/FBT F2 starts at the bottom of PDF page 14; its (a)-(e)
             # requirements continue at the top of the following printed page.
             if key in ("BT:F2","FBT:F2"):
@@ -165,7 +204,21 @@ for url,item in sources.items():
                 expectedLetter+=1
             # FTX, FAU and FFM end with practical computer-based skills stated
             # directly as topic objectives, without lettered sub-outcomes.
-            isPlatformSkill=key in tuple(p+":"+area+str(i) for p,area in (("FTX","G"),("FAU","F"),("FFM","G")) for i in range(1,5))
+            practicalPrefixes=("use computer technology to efficiently","work on relevant response options",
+                "navigate windows and computer screens","present data and information effectively")
+            isPlatformSkill=normalize(row["topicTitle"]).startswith(practicalPrefixes)
+            # Some official study-guide objectives are directly stated without
+            # lettered a), b) subparts. They are STILL examinable requirements.
+            directUnlettered={
+                "TX:E6","ATX:B1","ATX:B4","ATX:B5",
+                "ATX:C1","ATX:C2","ATX:C3","ATX:C4","ATX:C5",
+            }
+            if not outcomes and key in directUnlettered:
+                phrase=best["text"][:210]
+                outcomes=[{"letter":"main","sha256":hashlib.sha256(phrase.encode()).hexdigest()[:16],
+                           "anchorWords":normalize(phrase).split()[:8],
+                           "intellectualLevelTags":re.findall(r"\[[123]\]",phrase)}]
+                note.append("UNLETTERED_DIRECT_REQUIREMENT_REVIEW" if key!="TX:E6" else "IMPLICIT_CROSS_SECTION_REQUIREMENT_REVIEW")
             if not outcomes and not isPlatformSkill:note.append("DETAILED_OUTCOME_LETTERS_NOT_EXTRACTED")
             if isPlatformSkill:note.append("COMPUTER_PRACTICAL_SKILL_REQUIRES_HANDS_ON_ASSESSMENT")
         teaching=" ".join([x[1] for x in row["sections"]]+[x[1]+" "+x[2] for x in row["worked"]])
@@ -183,10 +236,14 @@ for url,item in sources.items():
                 note.append("POSSIBLE_MISSING_DETAILED_OUTCOME_TERMINOLOGY")
         # Metadata includes SHA-256 of the entire actual student-visible lesson, not an assertion of correct content.
         out.append({"key":key,"paper":row["paper"],"title":row["topicTitle"],"edition":row["edition"],
-            "variant":row["variant"],"officialPdf":url,"pdfSha256":entry["sha256"],
+            "variant":row["jurisdiction"],"officialPdf":url,"pdfSha256":entry["sha256"],
             "officialPdfCurrentPeriod":entry["periodConfirmed"],
             "officialTopicPdfPage":best["page"] if matched else None,
-            "topicHeadingMatchScore":matchScore,
+            "topicHeadingMatchScore":matchScore,"alternateHeadingMatchScore":runnerUpScore,
+            "alternateHeadingPdfPage":runnerUp["page"] if runnerUp else None,
+            "topicMatchAmbiguous":ambiguous,
+            "sourceTitleExceptionApplied":key in sourceTitleOverrides,
+            "sourceNumberExceptionApplied":numberingException,
             "acccOverviewDetailedGuideLabelConflict":key in ("FA:B1","FFA:B1"),
             "detailedGuideTitleUsed":expectedDetailedTitle,
             "nearestOfficialHeadingCandidate":best["text"][:130] if best else None,

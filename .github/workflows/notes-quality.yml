@@ -1,6 +1,7 @@
 name: LedgerPeer Notes quality gate
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
     paths:
@@ -18,6 +19,7 @@ on:
       - 'notes-2026-*.js'
       - 'notes-atx-2026-*.js'
       - 'audit/notes-2026-27-review-matrix.json'
+      - 'audit/academic-reviews/*.json'
       - 'audit/authored-chapter-index.json'
       - 'tests/notes-*.cjs'
       - 'scripts/audit-first350-*.py'
@@ -42,6 +44,7 @@ on:
       - 'notes-2026-*.js'
       - 'notes-atx-2026-*.js'
       - 'audit/notes-2026-27-review-matrix.json'
+      - 'audit/academic-reviews/*.json'
       - 'audit/authored-chapter-index.json'
       - 'tests/notes-*.cjs'
       - 'scripts/audit-first350-*.py'
@@ -120,6 +123,8 @@ jobs:
         run: node tests/notes-fa1-2026-academic-gate.cjs
       - name: Check corrected FA1 discount accounting and syllabus-scope presentation
         run: node tests/notes-fa1-discount-scope-2026.cjs
+      - name: Verify FR B9 IFRS S1 current-edition coverage and browser cache
+        run: node tests/notes-fr-ifrs-s1-2026.cjs
       - name: Verify MA and FMA B3 and C1 2026 detailed syllabus topics
         run: node tests/notes-ma-fma-2026-b3-c1.cjs
       - name: Recompute extractable arithmetic identities across all 350 live chapters
@@ -137,6 +142,8 @@ jobs:
         run: python -m pip install --disable-pip-version-check --quiet pymupdf requests
       - name: Recompute extractable equations across all 700 published lessons
         run: python scripts/audit-all700-arithmetic.py
+      - name: Verify scaled financial units in extracted academic arithmetic
+        run: node tests/notes-arithmetic-units.cjs
       - name: Screen all 700 topic outcomes against 22 official ACCA 2026-27 PDFs
         run: python scripts/audit-all700-official-pdfs.py
       - name: Reconcile all 700 chapters with source, arithmetic and content evidence
