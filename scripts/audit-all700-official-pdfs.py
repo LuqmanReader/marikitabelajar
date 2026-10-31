@@ -194,7 +194,7 @@ for url,item in sources.items():
                 note.append("POSSIBLE_MISSING_DETAILED_OUTCOME_TERMINOLOGY")
         # Metadata includes SHA-256 of the entire actual student-visible lesson, not an assertion of correct content.
         out.append({"key":key,"paper":row["paper"],"title":row["topicTitle"],"edition":row["edition"],
-            "variant":row["variant"],"officialPdf":url,"pdfSha256":entry["sha256"],
+            "variant":row["jurisdiction"],"officialPdf":url,"pdfSha256":entry["sha256"],
             "officialPdfCurrentPeriod":entry["periodConfirmed"],
             "officialTopicPdfPage":best["page"] if matched else None,
             "topicHeadingMatchScore":matchScore,"alternateHeadingMatchScore":runnerUpScore,
