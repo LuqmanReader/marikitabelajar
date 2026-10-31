@@ -163,13 +163,17 @@ for url,item in sources.items():
         # Candidate outcomes only, not guaranteed: extract until next topic-number heading.
         outcomes=[]
         if matched:
-            ls=best["lines"];start=best["start"]+max(best["width"],1)
+            ls=best["lines"];start=best["start"]+1  # First detailed outcome can follow heading immediately; candidate window is NOT the start offset.
             end=min(len(ls),start+90)
             for i in range(start,end):
                 v=ls[i].strip()
                 if re.match(r"^\d{1,2}\.\s+\w",v):
                     end=i;break
             chunk="\n".join(ls[start:end])
+            # Some two-column PDFs place the first a) on the heading line itself.
+            headingLine=ls[best["start"]]
+            inlineFirst=re.search(r"(?i)(?:^|\\s)a\\)\\s+",headingLine)
+            if inlineFirst:chunk=headingLine[inlineFirst.start():]+"\n"+chunk
             # BT/FBT F2 starts at the bottom of PDF page 14; its (a)-(e)
             # requirements continue at the top of the following printed page.
             if key in ("BT:F2","FBT:F2"):
@@ -192,7 +196,9 @@ for url,item in sources.items():
                 expectedLetter+=1
             # FTX, FAU and FFM end with practical computer-based skills stated
             # directly as topic objectives, without lettered sub-outcomes.
-            isPlatformSkill=key in tuple(p+":"+area+str(i) for p,area in (("FTX","G"),("FAU","F"),("FFM","G")) for i in range(1,5))
+            practicalPrefixes=("use computer technology to efficiently","work on relevant response options",
+                "navigate windows and computer screens","present data and information effectively")
+            isPlatformSkill=normalize(row["topicTitle"]).startswith(practicalPrefixes)
             if not outcomes and not isPlatformSkill:note.append("DETAILED_OUTCOME_LETTERS_NOT_EXTRACTED")
             if isPlatformSkill:note.append("COMPUTER_PRACTICAL_SKILL_REQUIRES_HANDS_ON_ASSESSMENT")
         teaching=" ".join([x[1] for x in row["sections"]]+[x[1]+" "+x[2] for x in row["worked"]])
