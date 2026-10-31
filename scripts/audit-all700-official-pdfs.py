@@ -174,6 +174,14 @@ for url,item in sources.items():
             headingLine=ls[best["start"]]
             inlineFirst=re.search(r"(?i)(?:^|\s)a\)\s+",headingLine)
             if inlineFirst:chunk=headingLine[inlineFirst.start():]+"\n"+chunk
+            # TX B2 and SBL C3 start at the foot of the left column.
+            # Their first examinable a), b), ... requirements begin at the TOP
+            # of the right column on the SAME printed page.
+            crossColumnEnd={"TX:B2":3,"SBL:C3":4}
+            if key in crossColumnEnd:
+                right=next((x["text"] for x in extracted if x["page"]==best["page"] and x["column"]==2),"")
+                right=re.split(r"(?m)^\\s*"+str(crossColumnEnd[key])+r"\\.\\s+\\w",right,maxsplit=1)[0]
+                chunk=right+"\n"+chunk
             # BT/FBT F2 starts at the bottom of PDF page 14; its (a)-(e)
             # requirements continue at the top of the following printed page.
             if key in ("BT:F2","FBT:F2"):
@@ -199,6 +207,18 @@ for url,item in sources.items():
             practicalPrefixes=("use computer technology to efficiently","work on relevant response options",
                 "navigate windows and computer screens","present data and information effectively")
             isPlatformSkill=normalize(row["topicTitle"]).startswith(practicalPrefixes)
+            # Some official study-guide objectives are directly stated without
+            # lettered a), b) subparts. They are STILL examinable requirements.
+            directUnlettered={
+                "TX:E6","ATX:B1","ATX:B4","ATX:B5",
+                "ATX:C1","ATX:C2","ATX:C3","ATX:C4","ATX:C5",
+            }
+            if not outcomes and key in directUnlettered:
+                phrase=best["text"][:210]
+                outcomes=[{"letter":"main","sha256":hashlib.sha256(phrase.encode()).hexdigest()[:16],
+                           "anchorWords":normalize(phrase).split()[:8],
+                           "intellectualLevelTags":re.findall(r"\\[[123]\\]",phrase)}]
+                note.append("UNLETTERED_DIRECT_REQUIREMENT_REVIEW" if key!="TX:E6" else "IMPLICIT_CROSS_SECTION_REQUIREMENT_REVIEW")
             if not outcomes and not isPlatformSkill:note.append("DETAILED_OUTCOME_LETTERS_NOT_EXTRACTED")
             if isPlatformSkill:note.append("COMPUTER_PRACTICAL_SKILL_REQUIRES_HANDS_ON_ASSESSMENT")
         teaching=" ".join([x[1] for x in row["sections"]]+[x[1]+" "+x[2] for x in row["worked"]])
