@@ -6,15 +6,15 @@
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
-const build='2026.10.31.33';
+const build='2026.10.31.34';
 const html=fs.readFileSync('notes.html','utf8');
 const manifest=JSON.parse(fs.readFileSync('notes-release.json','utf8'));
 const page=fs.readFileSync('notes-page.js','utf8');
 const renderer=fs.readFileSync('notes-visual-all.js','utf8');
 assert.equal(manifest.build,build);
 assert(html.includes('window.LedgerNotesDocumentBuild="'+build+'"'));
-assert(html.includes('notes-visual-all.js?v=20261031chapters33'));
-assert(html.includes('notes-page.js?v=20261031chapters39'));
+assert(html.includes('notes-visual-all.js?v=20261031chapters34'));
+assert(html.includes('notes-page.js?v=20261031chapters40'));
 assert(html.includes('notes-2026-27-outcome-addenda.js?v=20261031outcomes25'));
 assert(page.includes('root.Ledger2026OutcomeAddenda?.topics||{}'));
 assert(page.includes('root.Ledger2026IFRS18Addenda?.topics||{}'));
@@ -72,12 +72,12 @@ const doc={
 vm.runInNewContext(fs.readFileSync('notes-build.js','utf8'),{window:win,document:doc,URL,Date,console},{filename:'notes-build.js'});
 (async()=>{
  await new Promise(resolve=>setImmediate(resolve));
- assert.match(stamp.textContent,/2026\.10\.31\.33/);
+ assert.match(stamp.textContent,/2026\.10\.31\.34/);
  assert.equal(ids.notesReleaseStatus.hidden,true,'No false update banner when current');
- latest='2026.10.31.34';
+ latest='2026.10.31.35';
  await win.LedgerNotesCheckForUpdates();
  assert.equal(ids.notesReleaseStatus.hidden,false,'A newer manifest must show update banner');
- assert.match(ids.notesReleaseMessage.textContent,/2026\.10\.31\.34/);
+ assert.match(ids.notesReleaseMessage.textContent,/2026\.10\.31\.35/);
  assert(ids.notesReleaseReload.events.click,'Reload button must work');
  ids.notesReleaseReload.events.click();
  const u=new URL(assigned);
