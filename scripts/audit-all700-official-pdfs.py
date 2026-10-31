@@ -95,12 +95,21 @@ for url,item in sources.items():
     try:
         if urlparse(url).hostname!="www.accaglobal.com" or not url.lower().endswith(".pdf"):
             raise ValueError("Not official ACCA PDF path")
-        response=session.get(url,timeout=35)
-        response.raise_for_status()
-        if not response.content.startswith(b"%PDF"):raise ValueError("Not a PDF response")
+        cache=ROOT/"audit"/".official-pdf-cache"
+        cache.mkdir(parents=True,exist_ok=True)
+        cache_file=cache/(hashlib.sha256(url.encode()).hexdigest()+".pdf")
+        if cache_file.exists():
+            pdf_bytes=cache_file.read_bytes()
+        else:
+            response=session.get(url,timeout=35)
+            response.raise_for_status()
+            pdf_bytes=response.content
+            if pdf_bytes.startswith(b"%PDF"):
+                cache_file.write_bytes(pdf_bytes)
+        if not pdf_bytes.startswith(b"%PDF"):raise ValueError("Not a PDF response")
         entry["fetched"]=True
-        entry["sha256"]=hashlib.sha256(response.content).hexdigest()
-        doc=fitz.open(stream=response.content,filetype="pdf")
+        entry["sha256"]=hashlib.sha256(pdf_bytes).hexdigest()
+        doc=fitz.open(stream=pdf_bytes,filetype="pdf")
         entry["pages"]=len(doc)
         cover=" ".join(doc[p].get_text("text") for p in range(min(3,len(doc)))).lower()
         entry["periodConfirmed"]=bool("2026" in cover and "2027" in cover)
