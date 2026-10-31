@@ -28,6 +28,7 @@ on:
       - 'scripts/export-all700-live-lessons.cjs'
       - 'scripts/build-all700-academic-docket.cjs'
       - 'scripts/build-all700-outcome-crosswalk.cjs'
+      - 'scripts/build-all700-full-academic-review.cjs'
       - '.github/workflows/notes-quality.yml'
   pull_request:
     paths:
@@ -54,6 +55,7 @@ on:
       - 'scripts/export-all700-live-lessons.cjs'
       - 'scripts/build-all700-academic-docket.cjs'
       - 'scripts/build-all700-outcome-crosswalk.cjs'
+      - 'scripts/build-all700-full-academic-review.cjs'
       - '.github/workflows/notes-quality.yml'
 
 concurrency:
@@ -165,6 +167,22 @@ jobs:
             audit/all700-outcome-crosswalk-ci.json
             audit/all700-outcome-crosswalk-ci.csv
           if-no-files-found: warn
+      - name: Generate complete outcome-by-outcome academic and worked-answer technical review registers
+        run: node scripts/build-all700-full-academic-review.cjs
+      - name: Check every outcome and answer has current review evidence
+        run: node tests/notes-full-academic-review.cjs
+      - name: Upload full outcome and worked-answer technical review records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ledgerpeer-full-2026-27-academic-review
+          path: |
+            audit/all700-academic-outcome-review-ci.json
+            audit/all700-academic-outcome-review-ci.csv
+            audit/all700-technical-worked-answer-review-ci.json
+            audit/all700-technical-worked-answer-review-ci.csv
+            audit/all700-full-review-summary-ci.md
+          if-no-files-found: error
       - name: Reconcile all 700 chapters with source, arithmetic and content evidence
         run: node scripts/build-all700-academic-docket.cjs
       - name: Upload cross-reconciled 700-lesson academic review docket
