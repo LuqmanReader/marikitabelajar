@@ -116,6 +116,8 @@ jobs:
         run: node tests/notes-fa2-ma2-2026-academic-audit.cjs
       - name: Verify all FA1 2026 detailed exam skill areas and worked-case results
         run: node tests/notes-fa1-2026-academic-gate.cjs
+      - name: Check corrected FA1 discount accounting and syllabus-scope presentation
+        run: node tests/notes-fa1-discount-scope-2026.cjs
       - name: Verify MA and FMA B3 and C1 2026 detailed syllabus topics
         run: node tests/notes-ma-fma-2026-b3-c1.cjs
       - name: Recompute extractable arithmetic identities across all 350 live chapters
