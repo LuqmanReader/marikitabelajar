@@ -6,16 +6,21 @@
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
-const build='2026.10.31.43';
+const build='2026.11.01.01';
 const html=fs.readFileSync('notes.html','utf8');
 const manifest=JSON.parse(fs.readFileSync('notes-release.json','utf8'));
 const page=fs.readFileSync('notes-page.js','utf8');
 const renderer=fs.readFileSync('notes-visual-all.js','utf8');
 assert.equal(manifest.build,build);
 assert(html.includes('window.LedgerNotesDocumentBuild="'+build+'"'));
-assert(html.includes('notes-visual-all.js?v=20261031chapters35'));
-assert(html.includes('notes-page.js?v=20261031chapters43'));
+assert(html.includes('notes-visual-all.js?v=20261101beta1'));
+assert(html.includes('notes-page.js?v=20261101beta1'));
 assert(html.includes('notes-2026-27-outcome-addenda.js?v=20261031outcomes25'));
+assert(html.includes('COMMUNITY BETA · 1 NOV 2026'));
+assert(html.includes('Not ACCA-certified, approved or endorsed.'));
+assert(!html.includes('ACCA-certified lessons now available'));
+assert.equal(manifest.channel,'community-beta');
+assert.equal(manifest.academicSignoff,'pending');
 assert(page.includes('root.Ledger2026OutcomeAddenda?.topics||{}'));
 assert(page.includes('root.Ledger2026IFRS18Addenda?.topics||{}'));
 assert(page.includes('root.Ledger2026ATXOverseasAddenda?.topics||{}'));
@@ -26,7 +31,7 @@ assert(html.indexOf('notes-2026-ifrs18-addenda.js')<html.indexOf('notes-page.js'
 assert(html.indexOf('notes-2026-27-outcome-addenda.js')<html.indexOf('notes-page.js'));
 
 assert(html.includes('notes-build.js?v=20261031chapters11'));
-assert(html.includes('notes.css?v=20261031chapters2'));
+assert(html.includes('notes.css?v=20261101beta1'));
 assert(renderer.includes("root.LedgerNotesVisualBuild='"+build+"'"));
 assert(page.includes("root.LedgerNotesVisualBuild!=='"+build+"'"));
 assert(!renderer.includes("function connector(svg,"));
