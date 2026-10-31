@@ -24,6 +24,7 @@ on:
       - 'scripts/audit-all700-*.py'
       - 'scripts/export-first350-live-lessons.cjs'
       - 'scripts/export-all700-live-lessons.cjs'
+      - 'scripts/build-all700-academic-docket.cjs'
       - '.github/workflows/notes-quality.yml'
   pull_request:
     paths:
@@ -47,6 +48,7 @@ on:
       - 'scripts/audit-all700-*.py'
       - 'scripts/export-first350-live-lessons.cjs'
       - 'scripts/export-all700-live-lessons.cjs'
+      - 'scripts/build-all700-academic-docket.cjs'
       - '.github/workflows/notes-quality.yml'
 
 concurrency:
@@ -137,6 +139,17 @@ jobs:
         run: python scripts/audit-all700-arithmetic.py
       - name: Screen all 700 topic outcomes against 22 official ACCA 2026-27 PDFs
         run: python scripts/audit-all700-official-pdfs.py
+      - name: Reconcile all 700 chapters with source, arithmetic and content evidence
+        run: node scripts/build-all700-academic-docket.cjs
+      - name: Upload cross-reconciled 700-lesson academic review docket
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: notes-all700-academic-docket
+          path: |
+            audit/all700-academic-docket-ci.json
+            audit/all700-academic-docket-ci.md
+          if-no-files-found: warn
       - name: Upload whole-library arithmetic and official-syllabus evidence
         if: always()
         uses: actions/upload-artifact@v4
