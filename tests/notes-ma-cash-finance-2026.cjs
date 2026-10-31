@@ -10,7 +10,7 @@ const targets={
  'MA1:E2':['spreadsheet','average','IF(','assumption','formula'],
  'MA1:E3':['sort','filter','SUBTOTAL','print','chart'],
  'MA2:E1':['cash','receivable','solvency','liquidity','manufactur'],
- 'MA2:E2':['treasury','bank','authoris','security','supplier'],
+ 'MA2:E2':['treasury','bank','authoris','safeguard','supplier'],
  'MA2:E3':['budget','weighted','forecast','financ','opening'],
  'MA2:E4':['overdraft','cash','borrowing','equity','matur'],
  'FFM:D4':['venture','guarantee','lender','asymmetry','SME'],
