@@ -16,7 +16,7 @@ const files=[
 'textbook-crossqual-a1.js','textbook-crossqual-a2-foundation.js',
  'textbook-crossqual-a2-professional.js','textbook-crossqual-a3-foundation.js',
  'textbook-crossqual-a3-professional.js',
- 'textbook-crossqual-batch4a.js','textbook-crossqual-batch4b.js','textbook-crossqual-batch4c.js','textbook-crossqual-batch4d.js','textbook-editorial-advanced.js','textbook-editorial-fia-applied.js','textbook-editorial-management-01.js','textbook-editorial-management-02.js','notes-visual-all.js'
+ 'textbook-crossqual-batch4a.js','textbook-crossqual-batch4b.js','textbook-crossqual-batch4c.js','textbook-crossqual-batch4d.js','textbook-editorial-advanced.js','textbook-editorial-fia-applied.js','textbook-editorial-management-01.js','textbook-editorial-management-02.js','textbook-editorial-management-03.js','textbook-editorial-management-04.js','textbook-editorial-management-05.js','notes-visual-all.js'
 ];
 const ctx={LedgerFiaNotes:{},LedgerPublishedSyllabi:{papers:{}},console};
 ctx.window=ctx;ctx.globalThis=ctx;
@@ -31,7 +31,7 @@ const chapterSets=[
 'LedgerSupplementalTextbooksProfessional','LedgerSupplementalTextbooksA3Foundation',
 'LedgerSupplementalTextbooksA3Professional',
 'LedgerSupplementalTextbooksBatch4A','LedgerSupplementalTextbooksBatch4B',
-'LedgerSupplementalTextbooksBatch4C','LedgerSupplementalTextbooksBatch4D','LedgerEditorialAdvancedChapters','LedgerEditorialFiaAppliedChapters','LedgerEditorialManagement01','LedgerEditorialManagement02','LedgerTextbookFA1A','LedgerTextbookFA1B',
+'LedgerSupplementalTextbooksBatch4C','LedgerSupplementalTextbooksBatch4D','LedgerEditorialAdvancedChapters','LedgerEditorialFiaAppliedChapters','LedgerEditorialManagement01','LedgerEditorialManagement02','LedgerEditorialManagement03','LedgerEditorialManagement04','LedgerEditorialManagement05','LedgerTextbookFA1A','LedgerTextbookFA1B',
 'LedgerTextbookMA1','LedgerTextbookMA2A','LedgerTextbookMA2B','LedgerTextbookFA2A',
 'LedgerTextbookFA2B','LedgerTextbookFA2C'];
 const chapters=Object.assign({},...chapterSets.map(name=>ctx[name]||{}));
@@ -58,7 +58,7 @@ for(const paper of catalog){
  }
 }
 const allSupplemental=Object.assign({},ctx.LedgerSupplementalTextbooks,ctx.LedgerSupplementalTextbooksA2,ctx.LedgerSupplementalTextbooksProfessional,ctx.LedgerSupplementalTextbooksA3Foundation,ctx.LedgerSupplementalTextbooksA3Professional,ctx.LedgerSupplementalTextbooksBatch4A,
-ctx.LedgerSupplementalTextbooksBatch4B,ctx.LedgerSupplementalTextbooksBatch4C,ctx.LedgerSupplementalTextbooksBatch4D,ctx.LedgerEditorialAdvancedChapters,ctx.LedgerEditorialFiaAppliedChapters,ctx.LedgerEditorialManagement01,ctx.LedgerEditorialManagement02);
+ctx.LedgerSupplementalTextbooksBatch4B,ctx.LedgerSupplementalTextbooksBatch4C,ctx.LedgerSupplementalTextbooksBatch4D,ctx.LedgerEditorialAdvancedChapters,ctx.LedgerEditorialFiaAppliedChapters,ctx.LedgerEditorialManagement01,ctx.LedgerEditorialManagement02,ctx.LedgerEditorialManagement03,ctx.LedgerEditorialManagement04,ctx.LedgerEditorialManagement05);
 for(const [key,chapter] of Object.entries(allSupplemental)){
  assert(chapter.title&&chapter.sections.length>=3,key+': insufficient sections');
  assert(chapter.workings.length>0,key+': no worked examination application');
@@ -69,9 +69,9 @@ for(const [key,chapter] of Object.entries(allSupplemental)){
     key+': weak worked scenario');
 }
 assert.equal(topics,700,'Unexpected syllabus count; update audit after rechecking curriculum');
-assert.equal(Object.keys(allSupplemental).length,176,'Expected extended original FIA and ACCA teaching');
-assert.equal(extended,242,'Unique extended lesson count changed; review overlaps and depth');
-assert.equal(short,458,'Introductory chapter count changed; update coverage audit');
+assert.equal(Object.keys(allSupplemental).length,194,'Expected extended original FIA and ACCA teaching');
+assert.equal(extended,260,'Unique extended lesson count changed; review overlaps and depth');
+assert.equal(short,440,'Introductory chapter count changed; update coverage audit');
 const html=fs.readFileSync(path.join(root,'notes.html'),'utf8');
 const page=fs.readFileSync(path.join(root,'notes-page.js'),'utf8');
 for(const file of files.filter(x=>x.startsWith('textbook-crossqual'))){
