@@ -6,7 +6,7 @@
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
-const build='2026.10.31.35';
+const build='2026.10.31.36';
 const html=fs.readFileSync('notes.html','utf8');
 const manifest=JSON.parse(fs.readFileSync('notes-release.json','utf8'));
 const page=fs.readFileSync('notes-page.js','utf8');
@@ -74,7 +74,7 @@ vm.runInNewContext(fs.readFileSync('notes-build.js','utf8'),{window:win,document
  await new Promise(resolve=>setImmediate(resolve));
  assert.match(stamp.textContent,/2026\.10\.31\.35/);
  assert.equal(ids.notesReleaseStatus.hidden,true,'No false update banner when current');
- latest='2026.10.31.36';
+ latest='2026.10.31.37';
  await win.LedgerNotesCheckForUpdates();
  assert.equal(ids.notesReleaseStatus.hidden,false,'A newer manifest must show update banner');
  assert.match(ids.notesReleaseMessage.textContent,/2026\.10\.31\.36/);
