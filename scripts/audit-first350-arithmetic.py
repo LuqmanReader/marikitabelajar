@@ -73,14 +73,18 @@ for chapter in raw["rows"]:
                 unparsed+=1;continue
             right=m.group(2).strip().replace("−","-").replace(",","").replace("$","").replace("£","")
             percentage=right.endswith("%")
-            try:observed=float(right.rstrip("%"))/100 if percentage else float(right)
+            # An expression multiplying a ratio by 100 computes percentage
+            # POINTS (10.0), while a decimal ratio equals a fraction (0.10).
+            # Compare using the expression's stated presentation basis.
+            percentPoints=bool(percentage and re.search(r"(?:×|\*)\s*100\s*$",left))
+            try:
+                rawReported=float(right.rstrip("%"))
+                observed=rawReported if percentPoints else rawReported/100 if percentage else rawReported
             except ValueError:continue
-            # Two-decimal currency values are generally rounded to the cent;
-            # whole numbers may be a stated whole-unit rounding.
             displayed=right.rstrip("%")
             decimal=len(displayed.split(".")[1]) if "." in displayed else 0
             tolerance=max(0.0101, 0.51*(10**(-decimal)))
-            if percentage:tolerance/=100
+            if percentage and not percentPoints:tolerance/=100
             valid+=1
             good=abs(result-observed)<=tolerance
             # For adverse/favourable variances, books conventionally show a positive
