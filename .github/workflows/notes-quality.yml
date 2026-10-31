@@ -202,6 +202,34 @@ jobs:
           if-no-files-found: warn
       - name: Block unsupported academic sign-off for any of the 700 topics
         run: node tests/notes-academic-proof-gate.cjs
+      - name: Evaluate strict academic-release decision while preserving development CI
+        shell: bash
+        run: |
+          set +e
+          node tests/notes-academic-release-eligibility.cjs
+          code=$?
+          set -e
+          RELEASE_CODE="$code" node - <<'NODE'
+          const fs=require('node:fs'),assert=require('node:assert/strict');
+          const report=JSON.parse(fs.readFileSync('audit/all700-academic-release-eligibility.json','utf8'));
+          const exitCode=Number(process.env.RELEASE_CODE);
+          assert.equal(report.verifiedWithFullEvidence+report.blockedLessons,700);
+          assert.equal(report.academicReleaseEligible,report.verifiedWithFullEvidence===700);
+          assert.equal(exitCode,report.academicReleaseEligible?0:1,
+            'Release gate exit code must match current academically verified library state');
+          console.log('RELEASE_CHECK_EVIDENCE',JSON.stringify({
+            eligible:report.academicReleaseEligible,
+            independentlyVerified:report.verifiedWithFullEvidence,
+            blocked:report.blockedLessons
+          }));
+          NODE
+      - name: Upload academic-release verdict separate from routine quality checks
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ledgerpeer-academic-release-eligibility
+          path: audit/all700-academic-release-eligibility.json
+          if-no-files-found: warn
       - name: Upload whole-library arithmetic and official-syllabus evidence
         if: always()
         uses: actions/upload-artifact@v4
