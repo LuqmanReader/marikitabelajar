@@ -60,6 +60,15 @@ for chapter in raw["rows"]:
             if m.end(2) in seen_rhs:continue
             seen_rhs.add(m.end(2))
             left=m.group(1).strip()
+            # A numeric suffix cut out of a function call (for example
+            # sqrt(2)/4*100%=35.36%) is NOT the original equation. Treat it
+            # as unsupported here, not as a false arithmetic contradiction.
+            # Its full numerical result is independently asserted by the
+            # dedicated MA/FMA B3 academic regression test.
+            prefix=answer[max(0,m.start(1)-24):m.start(1)]
+            if re.search(r"(?:sqrt|log|ln|exp|abs|round)\s*$",prefix,re.I):
+                unparsed+=1
+                continue
             # Skip intermediate sums in chained equalities (A+B=first part+second part=total).
             if re.match(r"\s*[+\-−×÷*/]",answer[m.end(2):]):continue
             # A subexpression preceded by an operator is not the full original equation.
