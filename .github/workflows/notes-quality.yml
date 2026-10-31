@@ -27,6 +27,7 @@ on:
       - 'scripts/export-first350-live-lessons.cjs'
       - 'scripts/export-all700-live-lessons.cjs'
       - 'scripts/build-all700-academic-docket.cjs'
+      - 'scripts/build-all700-outcome-crosswalk.cjs'
       - '.github/workflows/notes-quality.yml'
   pull_request:
     paths:
@@ -52,6 +53,7 @@ on:
       - 'scripts/export-first350-live-lessons.cjs'
       - 'scripts/export-all700-live-lessons.cjs'
       - 'scripts/build-all700-academic-docket.cjs'
+      - 'scripts/build-all700-outcome-crosswalk.cjs'
       - '.github/workflows/notes-quality.yml'
 
 concurrency:
@@ -150,6 +152,19 @@ jobs:
         run: node tests/notes-journal-balance-audit.cjs
       - name: Screen all 700 topic outcomes against 22 official ACCA 2026-27 PDFs
         run: python scripts/audit-all700-official-pdfs.py
+      - name: Create all-700 official learning-outcome to teaching crosswalk
+        run: node scripts/build-all700-outcome-crosswalk.cjs
+      - name: Test 700-lesson outcome mapping against live source and official syllabus
+        run: node tests/notes-outcome-crosswalk.cjs
+      - name: Upload full learning-outcome mapping for academic reviewers
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: notes-2026-27-all700-outcome-crosswalk
+          path: |
+            audit/all700-outcome-crosswalk-ci.json
+            audit/all700-outcome-crosswalk-ci.csv
+          if-no-files-found: warn
       - name: Reconcile all 700 chapters with source, arithmetic and content evidence
         run: node scripts/build-all700-academic-docket.cjs
       - name: Upload cross-reconciled 700-lesson academic review docket
