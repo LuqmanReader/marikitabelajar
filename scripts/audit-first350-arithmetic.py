@@ -11,7 +11,7 @@ raw=json.loads((ROOT/"audit/first350-live-lessons-ci.json").read_text())
 assert len(raw["rows"])==350
 NUM=r"(?:\(?\s*[-+]?\s*[$£]?\s*[\d,]+(?:\.\d+)?\s*%?\s*\)?)"
 OP=r"(?:[+\-*\/×÷−])"
-FORMULA=re.compile(r"((?:[-+−]?\s*[$£]?\s*\d|\()\s*[()$£\d\s,.\-+*/×÷−%^]{2,100})\s*=\s*([+\-−]?\s*[$£]?\s*[\d,]+(?:\.\d+)?\s*%?)")
+FORMULA=re.compile(r"(?=((?:[-+−]?\s*[$£]?\s*\d|\()\s*[()$£\d\s,.\-+*/×÷−%^]{2,100})\s*=\s*([+\-−]?\s*[$£]?\s*[\d,]+(?:\.\d+)?\s*%?))")
 ALLOWED=re.compile(r"^[\d.\s()+\-*/%]+$")
 def clean(s):
     s=s.replace("$","").replace("£","").replace(",","").replace("×","*").replace("÷","/").replace("−","-").replace("^","**")
@@ -52,10 +52,16 @@ for chapter in raw["rows"]:
     duplicate[contentHash].append(key)
     for case_index,case in enumerate(chapter["worked"]):
         title,question,answer=case
-        for m in FORMULA.finditer(answer):
+        seen_rhs=set()
+        # Overlapping candidates are needed: prose such as “invoice $10 = $40−$8+$10=$42”
+        # must not swallow $40 before the full subsequent arithmetic equality.
+        candidates=sorted(FORMULA.finditer(answer),key=lambda m:(m.end(2),-(m.end(2)-m.start(1))))
+        for m in candidates:
+            if m.end(2) in seen_rhs:continue
+            seen_rhs.add(m.end(2))
             left=m.group(1).strip()
             # Skip intermediate sums in chained equalities (A+B=first part+second part=total).
-            if re.match(r"\s*[+\-−×÷*/]",answer[m.end():]):continue
+            if re.match(r"\s*[+\-−×÷*/]",answer[m.end(2):]):continue
             # A subexpression preceded by an operator is not the full original equation.
             if re.search(r"[+\-−×÷*/]\s*$",answer[max(0,m.start()-6):m.start()]):continue
             # Retain only a plausible numeric calculation. The preceding prose is
@@ -79,7 +85,7 @@ for chapter in raw["rows"]:
             good=abs(result-observed)<=tolerance
             # For adverse/favourable variances, books conventionally show a positive
             # magnitude plus the variance direction, not a negative amount.
-            direction=re.match(r"\s*(?:adverse|favourable|favorable|A\b|F\b)",answer[m.end():],re.I)
+            direction=re.match(r"\s*(?:adverse|favourable|favorable|A\b|F\b)",answer[m.end(2):],re.I)
             if not good and direction and abs(abs(result)-abs(observed))<=tolerance:
                 good=True
             item={"chapter":key,"caseIndex":case_index+1,"caseTitle":title,
