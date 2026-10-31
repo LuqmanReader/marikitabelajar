@@ -9,7 +9,7 @@ function qualificationOf(code){return FIA_PAPERS.some(p=>p.code===code)?'fia':AC
 const syllabus=root.LedgerNotesSyllabi?.papers||{};
 const lessons=root.LedgerFiaNotes||{};
 const outcomeLessons=root.LedgerOutcomeLessons||{};
-const textbookLessons=Object.assign({},root.LedgerStructuredLessonChapters||{},root.LedgerEditorialAdvancedChapters||{},root.LedgerEditorialFiaAppliedChapters||{},root.LedgerEditorialManagement01||{},root.LedgerEditorialManagement02||{},root.LedgerSupplementalTextbooks||{},root.LedgerSupplementalTextbooksA2||{},root.LedgerSupplementalTextbooksProfessional||{},root.LedgerSupplementalTextbooksA3Foundation||{},root.LedgerSupplementalTextbooksA3Professional||{},root.LedgerSupplementalTextbooksBatch4A||{},root.LedgerSupplementalTextbooksBatch4B||{},root.LedgerSupplementalTextbooksBatch4C||{},root.LedgerSupplementalTextbooksBatch4D||{},root.LedgerTextbookFA1A||{},root.LedgerTextbookFA1B||{},root.LedgerTextbookMA1||{},root.LedgerTextbookMA2A||{},root.LedgerTextbookMA2B||{},root.LedgerTextbookFA2A||{},root.LedgerTextbookFA2B||{},root.LedgerTextbookFA2C||{});
+const textbookLessons=Object.assign({},root.LedgerStructuredLessonChapters||{},root.LedgerEditorialAdvancedChapters||{},root.LedgerEditorialFiaAppliedChapters||{},root.LedgerEditorialManagement01||{},root.LedgerEditorialManagement02||{},root.LedgerEditorialManagement03||{},root.LedgerEditorialManagement04||{},root.LedgerEditorialManagement05||{},root.LedgerSupplementalTextbooks||{},root.LedgerSupplementalTextbooksA2||{},root.LedgerSupplementalTextbooksProfessional||{},root.LedgerSupplementalTextbooksA3Foundation||{},root.LedgerSupplementalTextbooksA3Professional||{},root.LedgerSupplementalTextbooksBatch4A||{},root.LedgerSupplementalTextbooksBatch4B||{},root.LedgerSupplementalTextbooksBatch4C||{},root.LedgerSupplementalTextbooksBatch4D||{},root.LedgerTextbookFA1A||{},root.LedgerTextbookFA1B||{},root.LedgerTextbookMA1||{},root.LedgerTextbookMA2A||{},root.LedgerTextbookMA2B||{},root.LedgerTextbookFA2A||{},root.LedgerTextbookFA2B||{},root.LedgerTextbookFA2C||{});
 const integratedCases=root.LedgerMasterCases||{};
 const renderChapterVisual=root.renderLedgerChapterVisual||null;
 const renderNumericalTable=root.renderLedgerNumericalTable||null;
@@ -314,7 +314,7 @@ function renderCoverage(){
 async function init(){
  const loading=byId('notesLoading');
  try{
-   if(root.LedgerNotesDocumentBuild!=='2026.10.31.8'||root.LedgerNotesVisualBuild!=='2026.10.31.8')throw Error('Notes page and diagram scripts are from different builds. Select the build button above to check for updates, or reopen Notes with a fresh link.');
+   if(root.LedgerNotesDocumentBuild!=='2026.10.31.9'||root.LedgerNotesVisualBuild!=='2026.10.31.9')throw Error('Notes page and diagram scripts are from different builds. Select the build button above to check for updates, or reopen Notes with a fresh link.');
    if(!root.PersonalHubAuth)throw Error('Student authentication unavailable.');
    const valid=await root.PersonalHubAuth.ready();
    if(!valid){if(!root.PersonalHubAuth.isRedirectingToProfile?.())location.replace('index.html');return}
