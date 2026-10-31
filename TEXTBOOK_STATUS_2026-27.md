@@ -1,6 +1,6 @@
 # LedgerPeer FIA–ACCA Notes: 2026–27 release and quality status
 
-**Release:** 31 October 2026 · Notes build `2026.10.31.38`  
+**Release:** 31 October 2026 · Notes build `2026.10.31.42`  
 **Repository:** `LuqmanReader/marikitabelajar`, main  
 **Scope:** 25 paper and jurisdiction-variant indices; 700 syllabus topic headings
 
@@ -8,9 +8,9 @@
 
 The first **350** student-visible lesson records (FA1:A1 through FA:G4) have been read from the actual Notes page source order and compared to **10 distinct dated official 2026–27 ACCA PDFs**, including separate exam cycles for FAU/FFM (December 2026–June 2027) and FTX-UK (June 2026–June 2027). The detailed syllabus extraction yielded **1,283 paper-specific lettered outcome candidates** across the 350 chapter headings. This is a source-to-content *screening*, **not 1,283 independent academic sign-offs**.
 
-- **774** published worked cases were inventoried; **689** extractable arithmetic equalities recalculated without a reported mismatch. Remaining statements, accounting classifications and journals have not all been independently assessed.
-- Official-source evidence still identifies **188 possible missing-detailed-outcome terminology flags** and **12 hands-on computer-skill assessment flags**. These flags are risk signals, not definitive failures or definitive passes.
-- The lesson-depth gate still finds **244 low-text-depth reviews**, **53 fewer-than-two-worked-cases reviews**, **48 short-solution reviews** and **8 multiple-source definitions**. An editorial word count is not an ACCA threshold.
+- **838** published worked cases were inventoried; **797** extractable arithmetic identities recalculated without a reported mismatch. Remaining statements, accounting classifications and journals have not all been independently assessed.
+- Official-source evidence still identifies **174 possible missing-detailed-outcome terminology flags** and **12 hands-on computer-skill assessment flags**. These flags are risk signals, not definitive failures or definitive passes.
+- The lesson-depth gate still finds **224 low-text-depth reviews**, **51 fewer-than-two-worked-cases reviews**, **48 short-solution reviews** and **8 multiple-source definitions**. An editorial word count is not an ACCA threshold.
 - Additional direct syllabus reconciliation and worked applications have been committed for **22 first-half lesson records** in the current revision, including FA1 A1–A3, FA/FFA A1/A3/A4, MA1 A1/A2/C1/C2/E1–E3, MA2 E1–E4, and FFM D4/F4. Earlier corrections for FA/FFA C/D sections and other topics remain part of the release.
 - GitHub Notes academic-evidence regression **passed** on [the first-350 gate run](https://github.com/LuqmanReader/marikitabelajar/actions/runs/41191921970). The full audit evidence is available as that run's source matching, arithmetic, and student-visible lesson artifacts.
 
