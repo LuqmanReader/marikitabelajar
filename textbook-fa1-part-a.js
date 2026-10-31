@@ -99,39 +99,7 @@
       ]
     ]
   },
-  "FA1:B1": {
-    "title": "Double-entry bookkeeping",
-    "sections": [
-      [
-        "Dual aspect and equation",
-        "Every recorded transaction affects at least two ledger entries such that total debits equal credits. Assets = equity + liabilities. Debit increases assets and expenses, while credit increases liabilities, revenue and capital. Memorise the underlying classification, not 'debit means money in'."
-      ],
-      [
-        "Examples of account relationships",
-        "Cash sale: Dr bank, Cr revenue. Credit purchase of goods: Dr inventory or purchases, Cr trade payables. Supplier settlement: Dr payables, Cr bank. Accrued expense: Dr expense, Cr accrual liability. Owner drawing: Dr drawings, Cr bank."
-      ],
-      [
-        "Reversals and contra accounts",
-        "Accumulated depreciation usually carries a credit balance offsetting an asset's cost, not the same as a new liability. A receivables allowance similarly offsets an asset balance. Correct an incorrect posting with an appropriate reversing or reclassification journal, preserving the original trail."
-      ],
-      [
-        "Checks",
-        "Sum individual debits and credits before posting a compound journal. Then ask which asset, obligation or income has really changed; a balanced entry to the wrong type of account remains wrong."
-      ]
-    ],
-    "workings": [
-      [
-        "Compound transaction",
-        "Customer pays $1,700 comprising $1,500 invoice settlement and $200 cash sale.",
-        "Dr bank $1,700; Cr trade receivables $1,500; Cr sales $200. Debits and credits both $1,700."
-      ],
-      [
-        "Pay supplier",
-        "Entity owes supplier $6,000 and settles $4,000.",
-        "Dr payables $4,000 / Cr bank $4,000; supplier still owed $2,000."
-      ]
-    ]
-  },
+  "FA1:B1": {"title":"Double-entry bookkeeping","sections":[["Dual aspect and equation","Every recorded transaction affects at least two ledger entries such that total debits equal credits. Assets = equity + liabilities. Debit increases assets and expenses, while credit increases liabilities, revenue and capital. Memorise the underlying classification, not 'debit means money in'."],["Examples of account relationships","Cash sale: Dr bank, Cr revenue. Credit purchase of goods: Dr inventory or purchases, Cr trade payables. Supplier settlement: Dr payables, Cr bank. Accrued expense: Dr expense, Cr accrual liability. Owner drawing: Dr drawings, Cr bank."],["Reversals and contra accounts","Accumulated depreciation usually carries a credit balance offsetting an asset's cost, not the same as a new liability. A receivables allowance similarly offsets an asset balance. Correct an incorrect posting with an appropriate reversing or reclassification journal, preserving the original trail."],["Checks","Sum individual debits and credits before posting a compound journal. Then ask which asset, obligation or income has really changed; a balanced entry to the wrong type of account remains wrong."],["Debits, credits and compound journals in a trial-balance context","Posting requires identifying the economic substance before choosing sides. A credit customer payment does not generate another sale; it exchanges receivables for bank. A cash purchase of equipment replaces bank with a non-current asset. A bank loan adds both a bank asset and loan liability. In compound entries the sum of all debits must equal the sum of all credits, while each class of account has the correct normal balance. A numerical agreement alone does not prove classification, cut-off, source validity or completeness. Use an independent invoice, receipt or bank transaction to test the journal."]],"workings":[["Compound transaction","Customer pays $1,700 comprising $1,500 invoice settlement and $200 cash sale.","Dr bank $1,700; Cr trade receivables $1,500; Cr sales $200. Debits and credits both $1,700."],["Pay supplier","Entity owes supplier $6,000 and settles $4,000.","Dr payables $4,000 / Cr bank $4,000; supplier still owed $2,000."],["Compound credit transaction and loan","An entity buys machinery for $6,000, pays $2,000 immediately from bank, and finances the remaining $4,000 with a new supplier payable. It then receives a $5,000 bank loan. State the journal entries and net changes in assets and liabilities.","Purchase: Dr machinery $6,000 / Cr bank $2,000 / Cr trade payable $4,000. Borrowing: Dr bank $5,000 / Cr loan payable $5,000. Net bank change = +$3,000; machinery +$6,000, so total assets rise $9,000. Liabilities increase by supplier $4,000 plus bank loan $5,000 = $9,000. Equity does not change. Each compound entry balances without classifying the loan receipt as revenue."]]},
   "FA1:B2": {
     "title": "Journal entries",
     "sections": [
@@ -297,39 +265,7 @@
       ]
     ]
   },
-  "FA1:E1": {
-    "title": "Prepare general ledger accounts",
-    "sections": [
-      [
-        "Posting from transactions",
-        "Nominal ledger captures assets, liabilities, capital, income and expenses. Post dates, account names and debit/credit values from day-book totals or journals and keep references. Do not post sales day-book totals directly into bank when sales are on credit."
-      ],
-      [
-        "Balance accounts",
-        "Add debit and credit sides, put closing balance c/d on the smaller side so both totals equal, then bring it down on the opposite side at start of next period. An asset bank debit balance becomes a credit c/d entry at year end solely for balancing the account."
-      ],
-      [
-        "Trial balance preparation",
-        "After balancing nominal accounts, extract closing debit and credit balances. Revenue usually credit, expense debit, liability credit, assets debit. An agreed trial balance is not proof of no omission."
-      ],
-      [
-        "Control account reconciliation",
-        "Receivables/payables control accounts should agree with subsidiary customer/supplier balances after correcting reconciling items. Investigate differences rather than force one side."
-      ]
-    ],
-    "workings": [
-      [
-        "Receivables T account",
-        "Opening receivables Dr $8,000, credit sales Dr $14,000, receipts Cr $11,000, sales returns Cr $1,000.",
-        "Closing receivables debit=8,000+14,000−11,000−1,000=$10,000."
-      ],
-      [
-        "Loan account",
-        "Opening loan Cr $20,000, new borrowing Cr $5,000, capital repayment Dr $4,000.",
-        "Closing loan Cr $21,000. Loan interest, if charged, is recorded separately."
-      ]
-    ]
-  },
+  "FA1:E1": {"title":"Prepare general ledger accounts","sections":[["Posting from transactions","Nominal ledger captures assets, liabilities, capital, income and expenses. Post dates, account names and debit/credit values from day-book totals or journals and keep references. Do not post sales day-book totals directly into bank when sales are on credit."],["Balance accounts","Add debit and credit sides, put closing balance c/d on the smaller side so both totals equal, then bring it down on the opposite side at start of next period. An asset bank debit balance becomes a credit c/d entry at year end solely for balancing the account."],["Trial balance preparation","After balancing nominal accounts, extract closing debit and credit balances. Revenue usually credit, expense debit, liability credit, assets debit. An agreed trial balance is not proof of no omission."],["Control account reconciliation","Receivables/payables control accounts should agree with subsidiary customer/supplier balances after correcting reconciling items. Investigate differences rather than force one side."],["Closing and bringing forward a balanced general ledger","Balance a T-account only after recording all transactions and relevant correction journals. For a receivables account, debit opening receivables and credit sales; credit customer payments, sales returns and authorised write-offs. When debits exceed credits, put balance carried down on the credit side to make equal totals and bring balance down to the debit side of the next period. For liabilities the normal balance is reversed. Ensure the balance appears on the correct side of the trial balance, and reconcile control accounts with a list of individual customer or supplier balances."]],"workings":[["Receivables T account","Opening receivables Dr $8,000, credit sales Dr $14,000, receipts Cr $11,000, sales returns Cr $1,000.","Closing receivables debit=8,000+14,000−11,000−1,000=$10,000."],["Loan account","Opening loan Cr $20,000, new borrowing Cr $5,000, capital repayment Dr $4,000.","Closing loan Cr $21,000. Loan interest, if charged, is recorded separately."],["Complete receivables T-account and balance brought down","A business begins with $8,000 debit trade receivables, records credit sales $14,000, customer receipts $11,000 and sales returns $1,000. Set out the debit and credit postings, balancing figure and opening balance of the next period.","Debit side: opening balance b/d $8,000 and credit sales $14,000, total $22,000. Credit side before balancing: bank receipts $11,000 and sales returns $1,000, total $12,000. Place balance c/d $10,000 on CREDIT side, giving $22,000 on each side. In next period bring down Dr receivables $10,000. This is an asset and appears as a debit balance in the trial balance; the balance c/d is not a further customer payment."]]},
   "FA1:F1": {
     "title": "Maintain cash records",
     "sections": [
@@ -363,37 +299,5 @@
       ]
     ]
   },
-  "FA1:F2": {
-    "title": "Maintain petty cash record",
-    "sections": [
-      [
-        "Petty cash purpose",
-        "Petty cash handles modest authorised expenses without relying on frequent main-bank payments. An imprest float is held at a fixed authorised amount; replenishment equals approved payments so balance returns to float. A voucher documents date, supplier, reason, approval and amount."
-      ],
-      [
-        "Analysed petty cash book",
-        "Enter each voucher under appropriate expense column, such as travel, postage or stationery. At period end total analysed columns and agree their sum to paid vouchers; do not record all transactions as one vague general expense."
-      ],
-      [
-        "Reimbursement and controls",
-        "Replenish petty cash by cash or bank transfer against vouchers. Cash on hand + vouchers should equal the float before reimbursement, ignoring approved adjustments. Physical counts and segregation reduce risk."
-      ],
-      [
-        "Shortages and irregularities",
-        "A shortage cannot be corrected by fabricating stationery expense. Check vouchers, arithmetic and cash count, then authorise a documented shortage entry if required by policy."
-      ]
-    ],
-    "workings": [
-      [
-        "Imprest reimbursement",
-        "Float $500; stationery $70, postage $45, travel $65, sundries $20. No shortage.",
-        "Vouchers total $200; cash left $300. Replenish $200 to restore $500. Expense coding: Dr stationery 70, postage 45, travel 65, sundries 20; Cr bank/cash reimbursement 200."
-      ],
-      [
-        "Shortage",
-        "Float $250; approved vouchers $120; cash counted $125.",
-        "Expected cash $130, actual $125, shortage $5. Investigate; do not reimburse $125 as if vouchers were all authorised."
-      ]
-    ]
-  }
+  "FA1:F2": {"title":"Maintain petty cash record","sections":[["Petty cash purpose","Petty cash handles modest authorised expenses without relying on frequent main-bank payments. An imprest float is held at a fixed authorised amount; replenishment equals approved payments so balance returns to float. A voucher documents date, supplier, reason, approval and amount."],["Analysed petty cash book","Enter each voucher under appropriate expense column, such as travel, postage or stationery. At period end total analysed columns and agree their sum to paid vouchers; do not record all transactions as one vague general expense."],["Reimbursement and controls","Replenish petty cash by cash or bank transfer against vouchers. Cash on hand + vouchers should equal the float before reimbursement, ignoring approved adjustments. Physical counts and segregation reduce risk."],["Shortages and irregularities","A shortage cannot be corrected by fabricating stationery expense. Check vouchers, arithmetic and cash count, then authorise a documented shortage entry if required by policy."],["Petty cash: analysis columns and accounting control","An analysed petty cash book records each supported voucher once, identifies the employee or supplier, and classifies the amount to categories such as postage, stationery, local travel and cleaning. The analysis-column totals must equal the expenditure total. Under an imprest arrangement the authorised float equals counted physical cash plus valid vouchers, unless an identified difference is being investigated. When the cash count does not reconcile, first recount and inspect voucher numbering and mathematical totals; do not automatically classify a missing amount as normal expenditure."]],"workings":[["Imprest reimbursement","Float $500; stationery $70, postage $45, travel $65, sundries $20. No shortage.","Vouchers total $200; cash left $300. Replenish $200 to restore $500. Expense coding: Dr stationery 70, postage 45, travel 65, sundries 20; Cr bank/cash reimbursement 200."],["Shortage","Float $250; approved vouchers $120; cash counted $125.","Expected cash $130, actual $125, shortage $5. Investigate; do not reimburse $125 as if vouchers were all authorised."],["Petty cash analysis and replenishment journal","A cashier holds a fixed $400 imprest. Authorised vouchers are stationery $56, postage $24, local travel $70 and cleaning $30. Cash counted before reimbursement is $220. Calculate the total vouchers, expected cash, replenishment and reimbursement journal.","Voucher analysis: stationery $56 + postage $24 + local travel $70 + cleaning $30 = $180. Expected cash $400−$180=$220, exactly the count, so there is no shortage. Replenish $180. Post Dr stationery expense $56, Dr postage expense $24, Dr travel expense $70 and Dr cleaning expense $30 / Cr bank $180. After reimbursement, physical petty cash returns to $400; the expense analysis balances the voucher total."]]}
 };})(window);
