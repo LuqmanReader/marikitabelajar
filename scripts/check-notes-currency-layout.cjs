@@ -59,12 +59,12 @@ const sourceAssets=[
 ];
 const assetVersions={
  'textbook-ma2-part-a.js':'20261031ma2Aoutcome',
- 'textbook-fa1-part-a.js':'20261031academicdiscountv5',
- 'textbook-fa1-part-b.js':'20261031official2026v4',
- 'textbook-fa2-part-a.js':'20261031fa2Aoutcome',
+ 'textbook-fa1-part-a.js':'20261031academicdiscountv6',
+ 'textbook-fa1-part-b.js':'20261031journalv5',
+ 'textbook-fa2-part-a.js':'20261031journalv2',
  'textbook-ma1.js':'20261031managementAcademic',
  'textbook-ma2-part-b.js':'20261031costTimeValue',
- 'textbook-fa2-part-b.js':'20261031fa2disposal',
+ 'textbook-fa2-part-b.js':'20261031journalv2',
  'notes-visual-all.js':'20261031chapters35',
  'textbook-crossqual-a1.js':'20261031accaA1',
  'textbook-crossqual-a2-foundation.js':'20261031v1',
