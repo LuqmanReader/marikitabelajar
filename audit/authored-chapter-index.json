@@ -1,7 +1,7 @@
 {
   "batch": 14,
   "totalExpectedFiles": 76,
-  "completed": 76,
+  "completed": 80,
   "files": {
     "textbook-fa1-part-a.js": [
       "FA1:A1",
@@ -760,6 +760,35 @@
       "AAA:D2",
       "AAA:D4",
       "AAA:D5"
+    ],
+    "textbook-editorial-sbl-2026-e.js": [
+      "SBL:G1"
+    ],
+    "textbook-editorial-aaa-2026-b.js": [
+      "AAA:E1",
+      "AAA:E2",
+      "AAA:E3",
+      "AAA:E4",
+      "AAA:F1",
+      "AAA:F2",
+      "AAA:F3",
+      "AAA:F4",
+      "AAA:F5",
+      "AAA:G1"
+    ],
+    "textbook-editorial-aaa-2026-c1.js": [
+      "AAA:G2",
+      "AAA:G3",
+      "AAA:H1",
+      "AAA:H2",
+      "AAA:H3",
+      "AAA:H4"
+    ],
+    "textbook-editorial-aaa-2026-c2.js": [
+      "AAA:I1",
+      "AAA:I2",
+      "AAA:I3",
+      "AAA:I4"
     ]
   },
   "remainingDraftTopics": [
@@ -826,7 +855,6 @@
     "TX:G2",
     "TX:G3",
     "TX:G4",
-    "SBL:G1",
     "ATX:B1",
     "ATX:B2",
     "ATX:B3",
@@ -844,27 +872,7 @@
     "ATX:E1",
     "ATX:E2",
     "ATX:E3",
-    "ATX:E4",
-    "AAA:E1",
-    "AAA:E2",
-    "AAA:E3",
-    "AAA:E4",
-    "AAA:F1",
-    "AAA:F2",
-    "AAA:F3",
-    "AAA:F4",
-    "AAA:F5",
-    "AAA:G1",
-    "AAA:G2",
-    "AAA:G3",
-    "AAA:H1",
-    "AAA:H2",
-    "AAA:H3",
-    "AAA:H4",
-    "AAA:I1",
-    "AAA:I2",
-    "AAA:I3",
-    "AAA:I4"
+    "ATX:E4"
   ],
   "remainingByPaper": {
     "FTX": [
@@ -1123,12 +1131,6 @@
         "title": "Present data and information effectively using the appropriate tools"
       }
     ],
-    "SBL": [
-      {
-        "key": "SBL:G1",
-        "title": "Finance transformation"
-      }
-    ],
     "ATX": [
       {
         "key": "ATX:B1",
@@ -1202,90 +1204,8 @@
         "key": "ATX:E4",
         "title": "Present data and information effectively, using the appropriate tools"
       }
-    ],
-    "AAA": [
-      {
-        "key": "AAA:E1",
-        "title": "Subsequent events and going concern"
-      },
-      {
-        "key": "AAA:E2",
-        "title": "Completion and final review"
-      },
-      {
-        "key": "AAA:E3",
-        "title": "Auditor’s reports"
-      },
-      {
-        "key": "AAA:E4",
-        "title": "Reports to those charged with governance and management"
-      },
-      {
-        "key": "AAA:F1",
-        "title": "Audit-related and assurance services"
-      },
-      {
-        "key": "AAA:F2",
-        "title": "Specific assignments"
-      },
-      {
-        "key": "AAA:F3",
-        "title": "The audit of performance information (pre-determined objectives) in the public sector"
-      },
-      {
-        "key": "AAA:F4",
-        "title": "Reporting on other assignments"
-      },
-      {
-        "key": "AAA:F5",
-        "title": "The assurance of sustainability"
-      },
-      {
-        "key": "AAA:G1",
-        "title": "Professional and ethical developments"
-      },
-      {
-        "key": "AAA:G2",
-        "title": "Developments in sustainability assurance"
-      },
-      {
-        "key": "AAA:G3",
-        "title": "Other current issues"
-      },
-      {
-        "key": "AAA:H1",
-        "title": "Communication"
-      },
-      {
-        "key": "AAA:H2",
-        "title": "Analysis and evaluation"
-      },
-      {
-        "key": "AAA:H3",
-        "title": "Professional Scepticism and Judgement"
-      },
-      {
-        "key": "AAA:H4",
-        "title": "Commercial acumen"
-      },
-      {
-        "key": "AAA:I1",
-        "title": "Use computer technology to efficiently access and manipulate relevant information"
-      },
-      {
-        "key": "AAA:I2",
-        "title": "Work on relevant response options, using available functions and technology, as required by the workspace"
-      },
-      {
-        "key": "AAA:I3",
-        "title": "Navigate windows and computer screens to create and amend responses to exam requirements, using the appropriate tools"
-      },
-      {
-        "key": "AAA:I4",
-        "title": "Present data and information effectively, using the appropriate tools."
-      }
     ]
   },
-  "authorCount": 598,
+  "authorCount": 619,
   "totalCatalogued": 700
 }
