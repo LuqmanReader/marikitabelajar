@@ -12,8 +12,8 @@ ROOT=Path(__file__).resolve().parents[1]
 lesson_json=json.loads((ROOT/"audit/all700-live-lessons-ci.json").read_text())
 assert len(lesson_json["rows"])==700
 token=re.compile(r"\b(Dr|Cr)\b",re.I)
-money=re.compile(r"\$\s*([\d,]+(?:\.\d+)?)")
-after_equals=re.compile(r"=\s*\$\s*([\d,]+(?:\.\d+)?)")
+money=re.compile(r"\$\s*((?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?)")
+after_equals=re.compile(r"=\s*\$\s*((?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?)")
 segments=re.compile(r";|\n|\.(?=\s+[A-Z])")
 results=[];ambiguous=[];alternatives=[];per_paper=defaultdict(lambda:{"checked":0,"balanced":0,"mismatches":0,"unparsed":0})
 for chapter in lesson_json["rows"]:
