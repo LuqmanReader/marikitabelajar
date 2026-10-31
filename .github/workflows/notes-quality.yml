@@ -144,6 +144,8 @@ jobs:
         run: python scripts/audit-all700-arithmetic.py
       - name: Verify scaled financial units in extracted academic arithmetic
         run: node tests/notes-arithmetic-units.cjs
+      - name: Reconcile explicitly recorded debit-credit journal postings across 700 lessons
+        run: python scripts/audit-all700-journals.py
       - name: Screen all 700 topic outcomes against 22 official ACCA 2026-27 PDFs
         run: python scripts/audit-all700-official-pdfs.py
       - name: Reconcile all 700 chapters with source, arithmetic and content evidence
@@ -167,6 +169,8 @@ jobs:
           path: |
             audit/all700-arithmetic-evidence-ci.json
             audit/all700-arithmetic-evidence-ci.md
+            audit/all700-journal-balance-ci.json
+            audit/all700-journal-balance-ci.md
             audit/all700-official-syllabus-evidence-ci.json
             audit/all700-official-syllabus-evidence-ci.md
           if-no-files-found: warn
