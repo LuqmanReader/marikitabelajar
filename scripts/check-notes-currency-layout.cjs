@@ -58,10 +58,11 @@ const sourceAssets=[
  'notes-visual-workbook.js'
 ];
 const assetVersions={
+ 'textbook-fa2-part-a.js':'20261031acadfa2d1',
  'textbook-ma1.js':'20261031ma1audit',
  'textbook-ma2-part-b.js':'20261031ma2npv',
  'textbook-fa2-part-b.js':'20261031fa2disposal',
- 'notes-visual-all.js':'20261031chapters33',
+ 'notes-visual-all.js':'20261031chapters34',
  'textbook-crossqual-a1.js':'20261031v2',
  'textbook-crossqual-a2-foundation.js':'20261031v1',
  'textbook-crossqual-a2-professional.js':'20261031v1',
@@ -77,7 +78,7 @@ const assetVersions={
  'textbook-editorial-management-01.js':'20261031mg1',
  'textbook-editorial-management-02.js':'20261031mg2',
  'textbook-editorial-management-03.js':'20261031mg3',
- 'textbook-editorial-management-04.js':'20261031mg4',
+ 'textbook-editorial-management-04.js':'20261031mg4academic',
  'textbook-editorial-management-05.js':'20261031mg5',
  'textbook-editorial-financial-01.js':'20261031fa1c',
  'textbook-editorial-financial-02.js':'20261031fa2b',
@@ -92,7 +93,7 @@ const assetVersions={
  'textbook-editorial-business-04.js':'20261031bt4',
  'textbook-editorial-business-05.js':'20261031bt5',
  'textbook-editorial-business-06.js':'20261031bt6',
- 'textbook-editorial-business-07.js':'20261031bt7',
+ 'textbook-editorial-business-07.js':'20261031bt7academic',
  'textbook-editorial-audit-foundation-01.js':'20261031au1',
  'textbook-editorial-audit-foundation-02.js':'20261031au2',
  'textbook-editorial-audit-foundation-03.js':'20261031au3',
