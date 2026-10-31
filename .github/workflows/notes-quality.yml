@@ -71,6 +71,8 @@ jobs:
           name: notes-2026-27-audit-inventory
           path: audit/notes-2026-27-inventory.json
           if-no-files-found: warn
+      - name: Regression for verified MA1, FA-FFA accounting-principle corrections and NPV
+        run: node tests/notes-2026-academic-corrections.cjs
       - name: Export all 350 student-visible lesson records
         run: node scripts/export-first350-live-lessons.cjs
       - name: Recompute extractable arithmetic identities across all 350 live chapters
