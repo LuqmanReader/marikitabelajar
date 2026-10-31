@@ -70,6 +70,7 @@ jobs:
           node --check textbook-crossqual-batch4d.js
           node --check textbook-structured-all-remaining.js
           node --check textbook-editorial-advanced.js
+          node --check textbook-editorial-fia-applied.js
       - name: Test syllabus coverage and retired navigation
         run: |
           node tests/fia-notes-regression.js
