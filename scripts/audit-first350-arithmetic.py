@@ -11,7 +11,7 @@ raw=json.loads((ROOT/"audit/first350-live-lessons-ci.json").read_text())
 assert len(raw["rows"])==350
 NUM=r"(?:\(?\s*[-+]?\s*[$£]?\s*[\d,]+(?:\.\d+)?\s*%?\s*\)?)"
 OP=r"(?:[+\-*\/×÷−])"
-FORMULA=re.compile(r"([()$£\d\s,.\-+*/×÷−%^]+)\s*=\s*([+\-−]?\s*[$£]?\s*[\d,]+(?:\.\d+)?\s*%?)")
+FORMULA=re.compile(r"((?:[$£]?\s*\d|\()\s*[()$£\d\s,.\-+*/×÷−%^]{2,100})\s*=\s*([+\-−]?\s*[$£]?\s*[\d,]+(?:\.\d+)?\s*%?)")
 ALLOWED=re.compile(r"^[\d.\s()+\-*/%]+$")
 def clean(s):
     s=s.replace("$","").replace("£","").replace(",","").replace("×","*").replace("÷","/").replace("−","-").replace("^","**")
