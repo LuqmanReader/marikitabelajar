@@ -88,6 +88,8 @@ jobs:
           if-no-files-found: error
       - name: Reconcile BT/FBT 2026 accounting technology, cybersecurity and ethics
         run: node tests/notes-bt-fbt-2026-technology-ethics.cjs
+      - name: Validate MA2 2026 depreciation and investment time value arithmetic
+        run: node tests/notes-ma2-depreciation-investment-2026.cjs
       - name: Reconcile FA2 and MA2 2026 records and cost-management outcomes
         run: node tests/notes-fa2-ma2-2026-academic-audit.cjs
       - name: Verify all FA1 2026 detailed exam skill areas and worked-case results
