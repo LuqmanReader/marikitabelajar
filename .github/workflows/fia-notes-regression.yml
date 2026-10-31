@@ -36,6 +36,7 @@ on:
       - 'tests/notes-depth-regression.cjs'
       - 'tests/notes-all700-teaching.cjs'
       - 'tests/notes-editorial-academic-regression.cjs'
+      - 'tests/notes-fia-applied-editorial.cjs'
       - '.github/workflows/fia-notes-regression.yml'
   pull_request:
   workflow_dispatch:
@@ -80,6 +81,7 @@ jobs:
           node tests/notes-depth-regression.cjs
           node tests/notes-all700-teaching.cjs
           node tests/notes-editorial-academic-regression.cjs
+          node tests/notes-fia-applied-editorial.cjs
 
 
       - name: Verify real browser typography and layout at five widths
