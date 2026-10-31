@@ -146,6 +146,8 @@ jobs:
         run: node tests/notes-arithmetic-units.cjs
       - name: Reconcile explicitly recorded debit-credit journal postings across 700 lessons
         run: python scripts/audit-all700-journals.py
+      - name: Prevent regressions in debit-credit posting evidence
+        run: node tests/notes-journal-balance-audit.cjs
       - name: Screen all 700 topic outcomes against 22 official ACCA 2026-27 PDFs
         run: python scripts/audit-all700-official-pdfs.py
       - name: Reconcile all 700 chapters with source, arithmetic and content evidence
