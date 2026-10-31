@@ -75,8 +75,11 @@ async function main(){
   // Render the ACTUAL community beta notice and navigation with the live CSS.
   // Guard against the staggered buttons and mismatched left edges seen in production.
   const notesHtml=fs.readFileSync(path.join(root,'notes.html'),'utf8');
-  const notice=notesHtml.match(/<aside class="notes-beta-notice"[\\s\\S]*?<\\/aside>/)?.[0];
-  const nav=notesHtml.match(/<nav class="back-navigation-row"[\\s\\S]*?<\\/nav>/)?.[0];
+  const noticeStart=notesHtml.indexOf('<aside class="notes-beta-notice"');
+  const navStart=notesHtml.indexOf('<nav class="back-navigation-row"');
+  assert(noticeStart>=0&&navStart>=0,'Required Notes markup not found');
+  const notice=notesHtml.slice(noticeStart,notesHtml.indexOf('</aside>',noticeStart)+8);
+  const nav=notesHtml.slice(navStart,notesHtml.indexOf('</nav>',navStart)+6);
   assert(notice&&nav,'Community beta notice or navigation missing from Notes');
   assert(nav.includes('href="hub.html"')&&nav.includes('href="index.html#access"'),
     'Do not replace the existing functional navigation URLs');
