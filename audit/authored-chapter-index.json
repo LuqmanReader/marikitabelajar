@@ -1,7 +1,7 @@
 {
   "batch": 14,
   "totalExpectedFiles": 76,
-  "completed": 56,
+  "completed": 70,
   "files": {
     "textbook-fa1-part-a.js": [
       "FA1:A1",
@@ -561,6 +561,147 @@
       "LW:F3",
       "LW:G1",
       "LW:H1"
+    ],
+    "textbook-editorial-sbr-int-2026-a.js": [
+      "SBR:C5",
+      "SBR:C7",
+      "SBR:C8",
+      "SBR:C9",
+      "SBR:C10",
+      "SBR:C11",
+      "SBR:D1"
+    ],
+    "textbook-editorial-sbr-int-2026-b.js": [
+      "SBR:D2",
+      "SBR:D3",
+      "SBR:E1",
+      "SBR:F1",
+      "SBR:G1",
+      "SBR:G2",
+      "SBR:G3",
+      "SBR:G4"
+    ],
+    "textbook-editorial-fr-2026-a.js": [
+      "FR:B5",
+      "FR:B6",
+      "FR:B8",
+      "FR:B9",
+      "FR:B10",
+      "FR:B11",
+      "FR:B12"
+    ],
+    "textbook-editorial-fr-2026-b.js": [
+      "FR:C1",
+      "FR:C2",
+      "FR:C3",
+      "FR:C4",
+      "FR:D1",
+      "FR:D2",
+      "FR:E1",
+      "FR:E2",
+      "FR:E3",
+      "FR:E4"
+    ],
+    "textbook-editorial-aa-2026-a.js": [
+      "AA:B3",
+      "AA:B4",
+      "AA:B5",
+      "AA:B6",
+      "AA:C1",
+      "AA:C2",
+      "AA:C3",
+      "AA:C4",
+      "AA:C5",
+      "AA:C6"
+    ],
+    "textbook-editorial-aa-2026-b.js": [
+      "AA:D2",
+      "AA:D3",
+      "AA:D4",
+      "AA:D5",
+      "AA:D6",
+      "AA:D7"
+    ],
+    "textbook-editorial-aa-2026-c.js": [
+      "AA:E1",
+      "AA:E2",
+      "AA:E3",
+      "AA:E4",
+      "AA:E5",
+      "AA:F1",
+      "AA:F2",
+      "AA:F3",
+      "AA:F4"
+    ],
+    "textbook-editorial-fm-2026-a.js": [
+      "FM:B3",
+      "FM:C1",
+      "FM:C2",
+      "FM:C3",
+      "FM:D2",
+      "FM:D3",
+      "FM:D4",
+      "FM:E1"
+    ],
+    "textbook-editorial-fm-2026-b.js": [
+      "FM:E2",
+      "FM:E3",
+      "FM:E4",
+      "FM:E5",
+      "FM:F1",
+      "FM:F2",
+      "FM:F3",
+      "FM:F4"
+    ],
+    "textbook-editorial-fm-2026-c.js": [
+      "FM:G1",
+      "FM:G2",
+      "FM:G3",
+      "FM:G4",
+      "FM:H1",
+      "FM:H2",
+      "FM:H3",
+      "FM:H4"
+    ],
+    "textbook-editorial-afm-2026-a.js": [
+      "AFM:B1",
+      "AFM:B2",
+      "AFM:B3",
+      "AFM:B4",
+      "AFM:B5",
+      "AFM:C1",
+      "AFM:C2",
+      "AFM:C3",
+      "AFM:C4"
+    ],
+    "textbook-editorial-afm-2026-b.js": [
+      "AFM:D1",
+      "AFM:D2",
+      "AFM:E1",
+      "AFM:E2",
+      "AFM:E3",
+      "AFM:F1",
+      "AFM:F2",
+      "AFM:F3",
+      "AFM:F4"
+    ],
+    "textbook-editorial-afm-2026-c.js": [
+      "AFM:G1",
+      "AFM:G2",
+      "AFM:G3",
+      "AFM:G4"
+    ],
+    "textbook-editorial-apm-2026-a.js": [
+      "APM:B2",
+      "APM:B3",
+      "APM:B4",
+      "APM:C1",
+      "APM:D1",
+      "APM:D2",
+      "APM:E1",
+      "APM:E2",
+      "APM:E3",
+      "APM:E4"
     ]
   }
 }
