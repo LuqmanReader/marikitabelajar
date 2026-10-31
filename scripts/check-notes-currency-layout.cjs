@@ -58,7 +58,7 @@ const sourceAssets=[
  'notes-visual-workbook.js'
 ];
 const assetVersions={
- 'notes-visual-all.js':'20261031chapters22',
+ 'notes-visual-all.js':'20261031chapters23',
  'textbook-crossqual-a1.js':'20261031v2',
  'textbook-crossqual-a2-foundation.js':'20261031v1',
  'textbook-crossqual-a2-professional.js':'20261031v1',
@@ -68,7 +68,7 @@ const assetVersions={
  'textbook-crossqual-batch4b.js':'20261031batch4',
  'textbook-crossqual-batch4c.js':'20261031batch4',
  'textbook-crossqual-batch4d.js':'20261031batch4',
- 'textbook-structured-all-remaining.js':'20261031study700s',
+ 'textbook-structured-all-remaining.js':'20261031study700t',
  'textbook-editorial-advanced.js':'editorial1',
  'textbook-editorial-fia-applied.js':'editorial2',
  'textbook-editorial-management-01.js':'20261031mg1',
