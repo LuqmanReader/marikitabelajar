@@ -34,7 +34,7 @@ const cguLoss=200000-150000,remaining=cguLoss-20000;
 approx(remaining*(80000/180000),13333.3333);
 approx(remaining*(100000/180000),16666.6667);
 assert.equal(100*Math.min(46,52-8)+80*Math.min(35,44-5),7200);
-assert.equal(210*((120*14+180*18)/(120+180)),3444);
+approx(210*((120*14+180*18)/(120+180)),3444);
 assert.equal(900*(28-(12+6+3))-2100,4200);
 assert.equal(300*(70/2)-300*(96/3),900);
 assert.equal(120000/(80-50),4000);
