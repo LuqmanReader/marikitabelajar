@@ -1,0 +1,29 @@
+{
+  "batch": 14,
+  "totalExpectedFiles": 76,
+  "completed": 14,
+  "files": {
+    "textbook-fa1-part-a.js": [],
+    "textbook-fa1-part-b.js": [],
+    "textbook-ma1.js": [],
+    "textbook-ma2-part-a.js": [],
+    "textbook-ma2-part-b.js": [],
+    "textbook-fa2-part-a.js": [],
+    "textbook-fa2-part-b.js": [],
+    "textbook-fa2-part-c.js": [],
+    "textbook-crossqual-a1.js": [
+      "MA:A1",
+      "SBL:A1",
+      "APM:A1",
+      "ATX:A1",
+      "FAU:A1",
+      "FFM:A1",
+      "FTX:A1"
+    ],
+    "textbook-crossqual-a2-foundation.js": [],
+    "textbook-crossqual-a2-professional.js": [],
+    "textbook-crossqual-a3-foundation.js": [],
+    "textbook-crossqual-a3-professional.js": [],
+    "textbook-crossqual-batch4a.js": []
+  }
+}
