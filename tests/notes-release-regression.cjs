@@ -6,7 +6,7 @@
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
-const build='2026.11.01.01';
+const build='2026.11.01.02';
 const html=fs.readFileSync('notes.html','utf8');
 const manifest=JSON.parse(fs.readFileSync('notes-release.json','utf8'));
 const page=fs.readFileSync('notes-page.js','utf8');
@@ -79,7 +79,7 @@ vm.runInNewContext(fs.readFileSync('notes-build.js','utf8'),{window:win,document
  await new Promise(resolve=>setImmediate(resolve));
  assert(stamp.textContent.includes(build),'Build stamp must reflect current released build');
  assert.equal(ids.notesReleaseStatus.hidden,true,'No false update banner when current');
- latest='2026.11.01.02';
+ latest='2026.11.01.03';
  await win.LedgerNotesCheckForUpdates();
  assert.equal(ids.notesReleaseStatus.hidden,false,'A newer manifest must show update banner');
  assert(ids.notesReleaseMessage.textContent.includes(build),'Current version should appear in update banner');
