@@ -156,8 +156,12 @@ for url,item in sources.items():
                 if ord(letter)!=expectedLetter:continue
                 tail=chunk[m.start():m.start()+250].splitlines()
                 phrase=" ".join(tail[:3])[:180]
+                following=re.search(r"(?m)^\s*[a-z]\)\s*",chunk[m.end():])
+                end_of_outcome=m.end()+following.start() if following else len(chunk)
+                requirement=chunk[m.start():end_of_outcome]
+                levels=sorted(set(re.findall(r"\[\s*(?:K|S|[123])\s*\]",requirement,re.I)))
                 outcomes.append({"letter":letter,"sha256":hashlib.sha256(phrase.encode()).hexdigest()[:16],
-                                 "anchorWords":normalize(phrase).split()[:8]})
+                                 "anchorWords":normalize(phrase).split()[:8],"intellectualLevelTags":levels})
                 expectedLetter+=1
             # FTX, FAU and FFM end with practical computer-based skills stated
             # directly as topic objectives, without lettered sub-outcomes.
