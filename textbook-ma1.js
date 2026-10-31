@@ -1,71 +1,7 @@
 /* Original LedgerPeer detailed MA1 textbook lessons A1–E3. */
 (function(root){'use strict';root.LedgerTextbookMA1={
-  "MA1:A1": {
-    "title": "Business organisations and accounting systems",
-    "sections": [
-      [
-        "Organisation types and objectives",
-        "Sole traders, partnerships, incorporated companies and public/non-profit entities differ in ownership, liability, governance and performance aims. Accounting supports stewardship and decisions regardless of whether profit is the primary objective. A distinct legal entity often separates personal and business assets; record owner contributions and drawings correctly."
-      ],
-      [
-        "Financial versus management accounting",
-        "Financial accounts summarise performance and position for external and internal users using prescribed accounting principles. Management accounts support internal planning, costing, budgeting and control and may use future estimates and non-financial indicators. They can be produced daily or by product; there is no requirement that internal costs equal external accounting classifications."
-      ],
-      [
-        "Records and systems",
-        "Transactions pass from source documents through classification, journals and ledgers to reports. An integrated accounting system shares records across modules; separate subsystems require reconciliation. A coding structure should distinguish products, departments, types of cost and responsibility centres."
-      ],
-      [
-        "Control and accuracy",
-        "Validation, authorisation, separation of duties, backing up data and reconciliation reduce errors. A report based on double-counted invoices is misleading even if its spreadsheet formula is mathematically correct. Use consistent dates, currencies, units and versions."
-      ]
-    ],
-    "workings": [
-      [
-        "Classification scenario",
-        "A charity's director needs cost per meal, weekly cash balance and annual statement of financial position.",
-        "Cost per meal and weekly cash forecast are internal management information; statement of financial position summarises assets, liabilities and equity/net funds for reporting. The charity may optimise service coverage rather than profit."
-      ],
-      [
-        "Owner capital",
-        "An individual sets up a sole trader business with $15,000 cash and immediately withdraws $1,000 for personal use.",
-        "Assets and equity rise $15,000 on investment, then both fall $1,000 on drawings. Withdrawals are not operating expenses."
-      ]
-    ]
-  },
-  "MA1:A2": {
-    "title": "Nature and purpose of management information",
-    "sections": [
-      [
-        "Decision information",
-        "Managers need relevant information for long-term strategy, medium-term resource planning and day-to-day operations. The highest-level report may show broad demand and investment forecasts, while a shift supervisor needs timely machine output and material waste figures. Different decisions need different frequency and precision."
-      ],
-      [
-        "Financial and non-financial measures",
-        "Cost, revenue, profit, contribution and cash are financial. Delivery time, defect count, absenteeism, quality and customer retention are non-financial. Use a balanced set: lower cost per unit from poor quality is not automatically improvement."
-      ],
-      [
-        "Quality of information",
-        "Relevant, timely, accurate enough, complete, comparable, understandable and economical information supports better decisions. Source and scope must be identifiable; a mean alone can conceal an extreme. Historical data is not a guarantee of future demand."
-      ],
-      [
-        "Reports and feedback",
-        "A useful report states objectives, planned and actual figures, the variance, possible causes and action owners. Exceptions deserve investigation proportionate to materiality; avoid automatic blame or treating every percentage movement as important."
-      ]
-    ],
-    "workings": [
-      [
-        "Capacity decision",
-        "Manager sees monthly output 7,000 units versus plan 6,000, but customer returns rise from 1% to 6%.",
-        "Higher volume is favourable numerically, but returns indicate potentially worsening quality and net contribution. Report both metrics and investigate causes."
-      ],
-      [
-        "Report context",
-        "Costs rose $4,000 from $20,000 to $24,000 while output rose 1,000 from 4,000 to 5,000 units.",
-        "Old unit cost $5; new $4.80. Higher total spending alone does not indicate inefficiency."
-      ]
-    ]
-  },
+  "MA1:A1": {"title":"Business organisations and accounting systems","sections":[["Organisation types and objectives","Sole traders, partnerships, incorporated companies and public/non-profit entities differ in ownership, liability, governance and performance aims. Accounting supports stewardship and decisions regardless of whether profit is the primary objective. A distinct legal entity often separates personal and business assets; record owner contributions and drawings correctly."],["Financial versus management accounting","Financial accounts summarise performance and position for external and internal users using prescribed accounting principles. Management accounts support internal planning, costing, budgeting and control and may use future estimates and non-financial indicators. They can be produced daily or by product; there is no requirement that internal costs equal external accounting classifications."],["Records and systems","Transactions pass from source documents through classification, journals and ledgers to reports. An integrated accounting system shares records across modules; separate subsystems require reconciliation. A coding structure should distinguish products, departments, types of cost and responsibility centres."],["Control and accuracy","Validation, authorisation, separation of duties, backing up data and reconciliation reduce errors. A report based on double-counted invoices is misleading even if its spreadsheet formula is mathematically correct. Use consistent dates, currencies, units and versions."],["Management information in different organisational systems","An integrated accounting system can use a single transaction record to update the purchasing module, payable ledger, stock record, cost-centre analysis and general ledger, reducing duplicate input while increasing the impact of a single incorrect account code. A stand-alone wages or point-of-sale system transfers totals into the main ledger and must be reconciled. Managers should distinguish a legal entity from a reporting unit and the organisation's responsibility structure. The cost and detail of information differ between commercial, governmental and not-for-profit organisations; non-financial service measures remain relevant even where revenue is not a primary objective."],["Systems, authorisation and decision-making responsibilities","An organisation needs source documents, process controls, account codes, review, secure data storage and output reports. A transaction-processing system records high-volume daily events; management information systems summarise this data for planning and control. Separate authorisation, custody of assets, recording and independent reconciliation. A large organisation may have finance, cost accounting and treasury functions, while a sole trader combines them but still needs compensating review. The value of a report depends on being accurate, timely, understandable and fit for the decision rather than on software sophistication alone."]],"workings":[["Classification scenario","A charity's director needs cost per meal, weekly cash balance and annual statement of financial position.","Cost per meal and weekly cash forecast are internal management information; statement of financial position summarises assets, liabilities and equity/net funds for reporting. The charity may optimise service coverage rather than profit."],["Owner capital","An individual sets up a sole trader business with $15,000 cash and immediately withdraws $1,000 for personal use.","Assets and equity rise $15,000 on investment, then both fall $1,000 on drawings. Withdrawals are not operating expenses."],["Integrated production and purchases records","A factory receives $6,000 of materials on credit for production and then issues $2,500 of them to manufacturing. Show the changes to inventory, supplier obligations and work in progress in a properly integrated recording system.","At receipt Dr raw-material inventory $6,000 / Cr trade payables $6,000; the purchase updates purchasing records, inventory and supplier ledgers. At issue Dr work-in-progress inventory $2,500 / Cr raw-material inventory $2,500. Remaining raw materials $6,000−$2,500=$3,500; work in progress rises $2,500 and payable remains $6,000 until settlement. A stock issue does not create a new supplier invoice or an additional purchase."],["Management and external reporting purposes","A regional hospital incurs $540,000 costs to provide 9,000 treatment sessions. Management needs operational cost per session; external users also need financial position and how public funding was spent. Calculate the internal measure and identify a non-financial companion metric.","Average service cost is $540,000/9,000=$60 per treatment session. This supports planning and benchmarking, but differences in treatment complexity or outcome quality can make a raw comparison misleading. Pair it with measures such as waiting time, quality outcomes or patient satisfaction. External financial statements serve stewardship, accountability and funding decisions over a reporting period rather than replacing this detailed operational report."]]},
+  "MA1:A2": {"title":"Nature and purpose of management information","sections":[["Decision information","Managers need relevant information for long-term strategy, medium-term resource planning and day-to-day operations. The highest-level report may show broad demand and investment forecasts, while a shift supervisor needs timely machine output and material waste figures. Different decisions need different frequency and precision."],["Financial and non-financial measures","Cost, revenue, profit, contribution and cash are financial. Delivery time, defect count, absenteeism, quality and customer retention are non-financial. Use a balanced set: lower cost per unit from poor quality is not automatically improvement."],["Quality of information","Relevant, timely, accurate enough, complete, comparable, understandable and economical information supports better decisions. Source and scope must be identifiable; a mean alone can conceal an extreme. Historical data is not a guarantee of future demand."],["Reports and feedback","A useful report states objectives, planned and actual figures, the variance, possible causes and action owners. Exceptions deserve investigation proportionate to materiality; avoid automatic blame or treating every percentage movement as important."],["Types, levels and communication of management information","Strategic managers need long-horizon demand, financing, competitor and capacity information; tactical managers need department budgets, resource allocations and variance analysis; operational supervisors need timely production volumes, quality exceptions and attendance. Information can be internal or external, quantitative or qualitative, financial or non-financial, historical or forward-looking. A production report may require daily measures, while investment planning uses longer periods and explicit assumptions. Present the degree of aggregation and frequency appropriate to the decision maker and explain why one central company-wide ratio cannot answer every local problem."],["Information usefulness, costs and decision traps","Quality depends on relevance, completeness, reliable source, timeliness, comparability, clear presentation and cost versus benefit. The collection cost of extremely precise measurements can outweigh the benefit for a small decision, while using a cheap but stale figure can cause expensive errors. Variance analysis should separate volume, price, mix and process causes where possible. A favourable cost per unit is not automatically desirable if quality deteriorates, workers are unsafe or customers return goods. Encourage an independent check of unusual values and clear ownership of corrective actions."]],"workings":[["Capacity decision","Manager sees monthly output 7,000 units versus plan 6,000, but customer returns rise from 1% to 6%.","Higher volume is favourable numerically, but returns indicate potentially worsening quality and net contribution. Report both metrics and investigate causes."],["Report context","Costs rose $4,000 from $20,000 to $24,000 while output rose 1,000 from 4,000 to 5,000 units.","Old unit cost $5; new $4.80. Higher total spending alone does not indicate inefficiency."],["Strategic versus operational reports","A retailer's senior team is deciding whether to open two stores next year, while a store supervisor decides tomorrow's staffing. State two information items and suitable reporting frequencies for each.","The senior team needs store-demand forecasts, capital and expected returns over months or years, possibly with competitor trends and downside scenarios. The supervisor needs the next day's forecast visitor traffic and staff availability, with hourly scheduling detail where useful. Aggregated annual revenue alone is too slow for tomorrow's staffing, while hourly queue data alone does not establish whether a store investment earns its cost of capital."],["Report output, quality and per-unit cost","Factory cost increases from $48,000 to $51,000 while output grows from 12,000 to 15,000 units. Defects increase from 120 to 450 units. Calculate total cost per unit and defect rates in both periods and evaluate.","Old cost per unit $48,000/12,000=$4.00; new $51,000/15,000=$3.40, a $0.60 (15%) reduction. Old defect rate 120/12,000=1%; new 450/15,000=3%. The cost measure looks favourable, but quality has worsened threefold. A useful management report must include both costs and defects and investigate why improvement in one metric came with deterioration in another."]]},
   "MA1:B1": {
     "title": "Transaction processing systems",
     "sections": [
@@ -132,72 +68,8 @@
       ]
     ]
   },
-  "MA1:C1": {
-    "title": "Cost classification and behaviour",
-    "sections": [
-      [
-        "Direct/indirect and production/non-production",
-        "Direct material and direct labour trace to a cost unit; indirect cost is overhead. Production overhead supports output, while distribution/admin/selling costs relate to other functions. Prime cost = direct material + direct labour + direct expenses. Production cost = prime cost + production overhead."
-      ],
-      [
-        "Variable, fixed and semi-variable",
-        "Variable total cost changes with volume but per-unit rate may stay constant; fixed total cost remains stable within a relevant range; stepped fixed costs rise at capacity thresholds; semi-variable costs include fixed and variable portions. An average total cost per unit includes a spread of fixed cost and is not always the cost of one more unit."
-      ],
-      [
-        "High-low method",
-        "Select highest and lowest activity observations, derive variable cost/unit from cost change per activity difference, then infer fixed cost from total cost minus variable component. The method is approximate and can be distorted by abnormal costs or inflation."
-      ],
-      [
-        "Decision cost categories",
-        "Avoidable future costs and opportunity costs are relevant to alternatives; historical sunk costs are not. 'Fixed' and 'variable' describe behaviour, while 'direct' and 'indirect' describe traceability. A cost may be fixed and direct, or variable and indirect."
-      ]
-    ],
-    "workings": [
-      [
-        "High-low",
-        "At 600 units cost $6,600; at 1,000 units cost $9,000.",
-        "Variable rate=(9,000−6,600)/(1,000−600)=$6/unit. Fixed cost=9,000−1,000×6=$3,000. Forecast at 800 units $7,800."
-      ],
-      [
-        "Prime and production cost",
-        "Direct material $4,000, labour $2,000, direct expenses $600 and production overhead $1,500.",
-        "Prime cost $6,600; production cost $8,100. Exclude selling cost from manufacturing inventory cost."
-      ]
-    ]
-  },
-  "MA1:C2": {
-    "title": "Cost units, centres and responsibility centres",
-    "sections": [
-      [
-        "Cost unit and cost centre",
-        "A cost unit is the product/service quantity for which cost is measured, such as one batch, item, passenger-kilometre or patient-day. A cost centre is a location, department or activity collecting costs, such as assembly or maintenance. They are different levels of analysis."
-      ],
-      [
-        "Profit and investment centres",
-        "A profit centre manager is responsible for both revenue and controllable costs; an investment centre adds responsibility for assets/capital invested. Cost centre managers primarily manage cost and service quality. Do not judge a production maintenance team solely on net sales it cannot control."
-      ],
-      [
-        "Allocation and responsibility",
-        "Trace directly attributable costs to the appropriate centre; apportion shared charges using a defensible base. A shared head-office cost may not be controllable by branch manager; distinguish controlled expenditure from allocated total cost."
-      ],
-      [
-        "Unit-cost measures",
-        "Cost per unit = relevant total cost / correctly defined output units. For hospitals, patient-days may be more meaningful than number of patients; for delivery, tonne-kilometres can reflect service volume better than vehicle count."
-      ]
-    ],
-    "workings": [
-      [
-        "Service cost unit",
-        "Bus operates 300 km with 30 average passengers and costs $9,000.",
-        "Passenger-km =300×30=9,000; cost per passenger-km $1."
-      ],
-      [
-        "Investment-centre metric",
-        "Division makes profit $24,000 on capital employed $200,000.",
-        "Simple ROI =24,000/200,000 ×100%=12%. Interpretation requires comparable accounting policies and investment risk."
-      ]
-    ]
-  },
+  "MA1:C1": {"title":"Cost classification and behaviour","sections":[["Direct/indirect and production/non-production","Direct material and direct labour trace to a cost unit; indirect cost is overhead. Production overhead supports output, while distribution/admin/selling costs relate to other functions. Prime cost = direct material + direct labour + direct expenses. Production cost = prime cost + production overhead."],["Variable, fixed and semi-variable","Variable total cost changes with volume but per-unit rate may stay constant; fixed total cost remains stable within a relevant range; stepped fixed costs rise at capacity thresholds; semi-variable costs include fixed and variable portions. An average total cost per unit includes a spread of fixed cost and is not always the cost of one more unit."],["High-low method","Select highest and lowest activity observations, derive variable cost/unit from cost change per activity difference, then infer fixed cost from total cost minus variable component. The method is approximate and can be distorted by abnormal costs or inflation."],["Decision cost categories","Avoidable future costs and opportunity costs are relevant to alternatives; historical sunk costs are not. 'Fixed' and 'variable' describe behaviour, while 'direct' and 'indirect' describe traceability. A cost may be fixed and direct, or variable and indirect."],["Classification dimensions and cost-volume behaviour","Traceability and behaviour are independent attributes. A direct cost can be fixed (for example, an exclusive machine lease for one product line) or variable (materials per unit). An indirect cost may be fixed factory rent or variable indirect consumables. Separately classify costs by function—production, administration, distribution, selling—or by decision relevance such as avoidable, opportunity and sunk costs. Total fixed cost is constant only within a defined relevant capacity range; fixed cost per unit falls as output rises. Total variable cost normally changes with activity while the variable cost per unit is stable for the simplified linear model. Step-fixed costs rise when another supervisor, shift or machine is required."],["High-low limitations and decision application","The high-low method estimates a mixed-cost equation Y=a+bX from the two observations at highest and lowest ACTIVITY, not the highest and lowest total costs unless these coincide. The variable rate b equals the change in total cost divided by the change in activity, and fixed element a is the total cost less b times activity. Verify a using both points and predict only within an appropriate relevant range; exceptional shutdowns, abnormal inflation and step changes can invalidate the linear model. Do not equate accounting total cost with relevant incremental cash outflow when making short-run decisions."]],"workings":[["High-low","At 600 units cost $6,600; at 1,000 units cost $9,000.","Variable rate=(9,000−6,600)/(1,000−600)=$6/unit. Fixed cost=9,000−1,000×6=$3,000. Forecast at 800 units $7,800."],["Prime and production cost","Direct material $4,000, labour $2,000, direct expenses $600 and production overhead $1,500.","Prime cost $6,600; production cost $8,100. Exclude selling cost from manufacturing inventory cost."],["High-low semi-variable maintenance cost","Factory maintenance costs $8,300 at 500 machine-hours and $10,700 at 900 machine-hours, with both periods inside the same relevant range. Estimate fixed and variable cost and predict maintenance cost at 700 hours.","Variable component per hour = ($10,700−$8,300)/(900−500)=$2,400/400=$6. Fixed component = $8,300−500×$6=$5,300. Predicted cost at 700 hours = $5,300+700×$6=$9,500. Check at 900 hours: $5,300+900×$6=$10,700. The estimate assumes similar cost behaviour within the range."],["Distinguish unit cost and marginal cost","A workshop has monthly fixed factory cost $9,000 and variable manufacturing cost $12 per unit. At 1,000 units calculate total cost and average cost. If output increases to 1,100 without crossing a fixed-cost step, calculate the incremental cost and new average.","At 1,000 units total cost = $9,000+1,000×$12=$21,000; average cost $21.00. For the next 100 units, incremental variable cost = 100×$12=$1,200; fixed cost remains $9,000. At 1,100 units total cost is $22,200 and average $22,200/1,100≈$20.18. The incremental cost per extra unit is $12 under the stated relevant-range assumption, not the prior $21 average."]]},
+  "MA1:C2": {"title":"Cost units, centres and responsibility centres","sections":[["Cost unit and cost centre","A cost unit is the product/service quantity for which cost is measured, such as one batch, item, passenger-kilometre or patient-day. A cost centre is a location, department or activity collecting costs, such as assembly or maintenance. They are different levels of analysis."],["Profit and investment centres","A profit centre manager is responsible for both revenue and controllable costs; an investment centre adds responsibility for assets/capital invested. Cost centre managers primarily manage cost and service quality. Do not judge a production maintenance team solely on net sales it cannot control."],["Allocation and responsibility","Trace directly attributable costs to the appropriate centre; apportion shared charges using a defensible base. A shared head-office cost may not be controllable by branch manager; distinguish controlled expenditure from allocated total cost."],["Unit-cost measures","Cost per unit = relevant total cost / correctly defined output units. For hospitals, patient-days may be more meaningful than number of patients; for delivery, tonne-kilometres can reflect service volume better than vehicle count."],["Cost units, cost centres and responsibility measures","A cost unit is the chosen unit of output or service whose cost is measured—for example an item, batch, meal, passenger-kilometre or patient-day. A cost centre records the cost of a place, function or activity, such as assembly, stores or maintenance. A profit centre adds responsibility for revenue as well as controllable costs, while an investment centre also controls capital employed and must consider both profit and investment. Trace directly attributable costs rather than arbitrarily averaging all common costs; a cost allocated to a department is not necessarily within the department manager's control. Performance measures need responsibility aligned with decision authority."],["Apportionment, ROI and residual income","Shared rent may be apportioned using floor area, insurance using asset value and cafeteria expense using headcount where those bases reasonably reflect benefit or resource use. Cost units must match the activity denominator; cost per occupied patient-day differs from cost per patient admission. Investment centre returns can be compared using ROI = profit/capital employed and residual income RI = profit − required return on capital. ROI can discourage managers from accepting a worthwhile investment if it reduces their existing percentage even when its return exceeds the capital charge, whereas residual income may reward the increase in absolute economic contribution. Use consistent profit and asset definitions and examine service quality alongside financial performance."]],"workings":[["Service cost unit","Bus operates 300 km with 30 average passengers and costs $9,000.","Passenger-km =300×30=9,000; cost per passenger-km $1."],["Investment-centre metric","Division makes profit $24,000 on capital employed $200,000.","Simple ROI =24,000/200,000 ×100%=12%. Interpretation requires comparable accounting policies and investment risk."],["Apportion shared factory rent","Two production cost centres A and B occupy 720 m² and 480 m² respectively. Total factory rent is $18,000 for the period. Allocate rent by floor space and reconcile the shared cost.","Total floor area = 720+480=1,200 m². A uses 720/1,200=60%, so allocate $18,000×60%=$10,800. B uses 40%, so allocate $7,200. The totals reconcile to $18,000. The allocation does not imply that either departmental manager could individually avoid this factory rent."],["ROI versus residual income on new investment","An investment division has controllable profit $48,000 and capital employed $300,000. It considers a project requiring $100,000 that will increase annual operating profit by $14,000. Required return is 10%. Calculate division ROI and RI before and after the project.","Before project ROI = $48,000/$300,000=16% and RI = $48,000−10%×$300,000=$18,000. After project profit = $62,000, capital $400,000, ROI = $62,000/$400,000=15.5% and RI = $62,000−10%×$400,000=$22,000. The project lowers division ROI from 16% to 15.5% but raises residual income $4,000, reflecting a 14% project return above the 10% required rate."]]},
   "MA1:D1": {
     "title": "Accounting for materials",
     "sections": [
