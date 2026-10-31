@@ -33,39 +33,7 @@
       ]
     ]
   },
-  "MA2:A2": {
-    "title": "Cost accounting systems",
-    "sections": [
-      [
-        "Purpose and structure",
-        "A cost accounting system gathers costs by cost centre, cost object and period so management can price products, control resources and prepare budgets. A cost object may be a job, batch, process, service, department or customer. The system should be more detailed than external financial reporting where decisions require it."
-      ],
-      [
-        "Integrated and interlocking systems",
-        "In an integrated system, financial and cost accounts share one set of general ledger records. An interlocking system maintains separate financial and cost ledgers, using control accounts to reconcile movements. In either case the amount of direct materials issued, payroll allocated, overhead incurred, work in progress and finished goods should be traceable to authorised underlying records."
-      ],
-      [
-        "Cost flow through manufacturing",
-        "Raw materials purchased increase material inventory. Materials issued for production are charged to work in progress (WIP); labour and production overhead follow. Finished units move from WIP to finished goods, and units sold move from finished goods to cost of sales. Indirect costs initially collect in overhead control before being absorbed. At each stage check beginning balance + additions − transfers = ending balance."
-      ],
-      [
-        "Coding and documentation",
-        "Purchase requisitions and goods received notes establish authorised receipts. Material issue notes transfer materials to a job, while timesheets and job cards track hours. Cost codes identify direct/indirect, cost centre and product. An incorrectly coded record can give a fully balanced but misleading cost account; regular reconciliation and exception reports are necessary."
-      ]
-    ],
-    "workings": [
-      [
-        "Manufacturing flow reconciliation",
-        "Opening WIP $4,000, direct material $12,000, direct labour $8,000, absorbed production overhead $6,000 and closing WIP $5,000.",
-        "Production cost transferred to finished goods = 4,000 + 12,000 + 8,000 + 6,000 − 5,000 = $25,000. The $5,000 closing WIP stays in current assets."
-      ],
-      [
-        "Cost reconciliation",
-        "The financial ledger records factory overhead $10,200 while production jobs have absorbed $9,800.",
-        "Under-absorption is $400. Investigate the difference and account for it under the system's specified policy rather than silently making overhead equal the absorbed figure."
-      ]
-    ]
-  },
+  "MA2:A2": {"title":"Cost accounting systems","sections":[["Purpose and structure","A cost accounting system gathers costs by cost centre, cost object and period so management can price products, control resources and prepare budgets. A cost object may be a job, batch, process, service, department or customer. The system should be more detailed than external financial reporting where decisions require it."],["Integrated and interlocking systems","In an integrated system, financial and cost accounts share one set of general ledger records. An interlocking system maintains separate financial and cost ledgers, using control accounts to reconcile movements. In either case the amount of direct materials issued, payroll allocated, overhead incurred, work in progress and finished goods should be traceable to authorised underlying records."],["Cost flow through manufacturing","Raw materials purchased increase material inventory. Materials issued for production are charged to work in progress (WIP); labour and production overhead follow. Finished units move from WIP to finished goods, and units sold move from finished goods to cost of sales. Indirect costs initially collect in overhead control before being absorbed. At each stage check beginning balance + additions − transfers = ending balance."],["Coding and documentation","Purchase requisitions and goods received notes establish authorised receipts. Material issue notes transfer materials to a job, while timesheets and job cards track hours. Cost codes identify direct/indirect, cost centre and product. An incorrectly coded record can give a fully balanced but misleading cost account; regular reconciliation and exception reports are necessary."],["Job, batch, process and service costing systems","Job costing accumulates direct materials, labour and applied overhead for a separately identifiable customer order. Batch costing gathers costs of a homogeneous batch, then divides by completed units. Process costing collects production costs by continuous department or process and may require equivalent-unit calculations for unfinished output. Service costing uses a suitable activity denominator such as passenger-kilometres or patient-days. Select a costing system based on the production process rather than assuming every manufacturer uses job costing. An integrated system shares a ledger with financial accounting, while an interlocking system maintains separate cost and financial accounts requiring reconciliation."],["Cost code, cost unit and cost-centre controls","A cost code can combine department, product, specific job and direct-versus-indirect classification. A cost unit is the output for which cost is calculated, while a cost centre is the location or responsibility department accumulating cost. In a factory, purchase documents establish raw material receipt; issue notes transfer materials to work in progress; time records charge direct labour; and factory overhead is absorbed using a planned rate. Completed goods transfer from WIP to finished inventory, while actual factory overhead is reconciled with amounts absorbed. A computerised system can validate duplicate codes and produce department reports, but incorrect master data or an unauthorised job code can still make reports inaccurate."]],"workings":[["Manufacturing flow reconciliation","Opening WIP $4,000, direct material $12,000, direct labour $8,000, absorbed production overhead $6,000 and closing WIP $5,000.","Production cost transferred to finished goods = 4,000 + 12,000 + 8,000 + 6,000 − 5,000 = $25,000. The $5,000 closing WIP stays in current assets."],["Cost reconciliation","The financial ledger records factory overhead $10,200 while production jobs have absorbed $9,800.","Under-absorption is $400. Investigate the difference and account for it under the system's specified policy rather than silently making overhead equal the absorbed figure."],["Select job, batch and service cost units","A machine shop completes a special customer job costing $15,000; a bakery makes one batch of 300 loaves at $1,800; a bus service incurs $24,000 to carry 400 average passengers over 60 km. Identify the costing methods and appropriate cost per unit.","The machine shop uses job costing and the whole $15,000 is the cost of that identified job. Bakery batch unit cost is $1,800/300=$6 per loaf. Passenger service uses service costing: passenger-kilometres=400×60=24,000 and cost per passenger-kilometre=$24,000/24,000=$1. The service cost unit is a passenger-kilometre, not the bus depot cost centre."],["Reconcile factory cost flow and work in progress","A manufacturer purchases $10,000 raw material on credit, issues $6,000 for a job, incurs $3,000 direct labour and absorbs $2,000 production overhead. The job is completed this month and no other transactions occur. Show the principal manufacturing ledger transfers and closing manufacturing inventory balances.","Receipt Dr raw-material inventory $10,000 / Cr trade payables $10,000. Issue Dr work in progress $6,000 / Cr raw materials $6,000. Labour Dr WIP $3,000 / Cr wages payable/control $3,000. Absorb overhead Dr WIP $2,000 / Cr overhead control $2,000. Job completion Dr finished goods $11,000 / Cr WIP $11,000. Closing raw material is $4,000, WIP nil and finished goods $11,000. Actual overhead expenditure must separately be recorded and reconciled."]]},
   "MA2:A3": {
     "title": "Cost classification",
     "sections": [
@@ -108,43 +76,7 @@
       ]
     ]
   },
-  "MA2:A4": {
-    "title": "Information for comparison and performance",
-    "sections": [
-      [
-        "Choosing a meaningful benchmark",
-        "A budget provides a planned benchmark; a previous year's actual figure supplies historical performance; a benchmark from a comparable business can reveal operating differences. Compare the same activity definition and season. A higher total expenditure may reflect increased output rather than inefficiency. State any restrictions on controllability and mix."
-      ],
-      [
-        "Fixed budget versus flexed budget",
-        "The original fixed budget uses budgeted activity, while a flexed budget restates variable costs and revenues at actual activity using budgeted rates. Fixed costs ordinarily remain at planned amounts within the relevant range. The flexed budget separates the effect of doing more or fewer units from the cost/price performance at actual volume."
-      ],
-      [
-        "Variance conventions",
-        "For revenue, actual minus flexed budget is favourable if positive; for cost, flexed budget minus actual is favourable if positive. Clearly label F/A rather than relying on sign alone. An adverse cost variance is not automatically managerial negligence: inflation, quality upgrades, abnormal scrap and breakdowns can be explanatory factors."
-      ],
-      [
-        "Exception reporting and investigation",
-        "Management by exception concentrates attention on material, recurring, controllable or unusual differences. Set a tolerance by amount, percentage and risk. Comparing actual to budget only says that a deviation exists; investigate invoices, output units, material grades, waste records, supplier agreements and production downtime to find why."
-      ],
-      [
-        "Management action",
-        "Separate decisions about reducing waste from altering purchasing prices or revising an unrealistic plan. Consider whether the cost of investigating a difference is lower than the expected benefit. Avoid gaming a favourable variance at the expense of product quality or future capacity."
-      ]
-    ],
-    "workings": [
-      [
-        "Complete flexed budget",
-        "Plan 1,000 units at price $20, variable production $7/unit, variable selling $2/unit and fixed costs $5,000. Actual volume 1,200 units; revenue $23,000; variable production $8,700; selling $2,600; fixed $5,100.",
-        "Original contribution = 1,000×(20−7−2)=$11,000; original profit $6,000. Flexed revenue 1,200×20=$24,000; flexed variable production $8,400; selling $2,400; fixed $5,000; flexed profit $8,200. Actual profit 23,000−8,700−2,600−5,100=$6,600. Performance variance against flexed profit $1,600 adverse."
-      ],
-      [
-        "Break down profit variance",
-        "Use the previous scenario and compute component variances.",
-        "Revenue $1,000 A (23,000 versus 24,000); production $300 A; variable selling $200 A; fixed $100 A. Total $1,600 A. The volume effect is separate: flexed profit $8,200 minus original $6,000 = $2,200 favourable."
-      ]
-    ]
-  },
+  "MA2:A4": {"title":"Information for comparison and performance","sections":[["Choosing a meaningful benchmark","A budget provides a planned benchmark; a previous year's actual figure supplies historical performance; a benchmark from a comparable business can reveal operating differences. Compare the same activity definition and season. A higher total expenditure may reflect increased output rather than inefficiency. State any restrictions on controllability and mix."],["Fixed budget versus flexed budget","The original fixed budget uses budgeted activity, while a flexed budget restates variable costs and revenues at actual activity using budgeted rates. Fixed costs ordinarily remain at planned amounts within the relevant range. The flexed budget separates the effect of doing more or fewer units from the cost/price performance at actual volume."],["Variance conventions","For revenue, actual minus flexed budget is favourable if positive; for cost, flexed budget minus actual is favourable if positive. Clearly label F/A rather than relying on sign alone. An adverse cost variance is not automatically managerial negligence: inflation, quality upgrades, abnormal scrap and breakdowns can be explanatory factors."],["Exception reporting and investigation","Management by exception concentrates attention on material, recurring, controllable or unusual differences. Set a tolerance by amount, percentage and risk. Comparing actual to budget only says that a deviation exists; investigate invoices, output units, material grades, waste records, supplier agreements and production downtime to find why."],["Management action","Separate decisions about reducing waste from altering purchasing prices or revising an unrealistic plan. Consider whether the cost of investigating a difference is lower than the expected benefit. Avoid gaming a favourable variance at the expense of product quality or future capacity."],["Comparison bases, budgets and forecast adjustments","A budget sets the authorised plan; a forecast estimates the likely result under present assumptions. Comparators include the previous reporting period, comparable business performance, the current budget, a flexed budget at actual volume and standard costs. Always normalise for currency, product mix, production volume, accounting period and other changes before interpreting a difference. Fixed budgets use the original planned volume; flexible budgets keep planned unit revenues and variable rates but calculate them at the actual activity level, while fixed costs remain unchanged within the relevant range."],["Analysis and managerial response to variances","A positive sales-revenue difference against an appropriate benchmark may be favourable, while an unexpectedly high cost is usually adverse, subject to service quality and commercial circumstances. Distinguish activity-volume effects from selling-price or resource-use differences, and present the cause as a hypothesis requiring evidence. Investigate large, recurrent or controllable variances first; an adverse cost from essential safety maintenance is not automatically poor management. The report should state period, unit, budget/flexed/actual values, absolute variance, percentage, responsibility and recommended action."]],"workings":[["Complete flexed budget","Plan 1,000 units at price $20, variable production $7/unit, variable selling $2/unit and fixed costs $5,000. Actual volume 1,200 units; revenue $23,000; variable production $8,700; selling $2,600; fixed $5,100.","Original contribution = 1,000×(20−7−2)=$11,000; original profit $6,000. Flexed revenue 1,200×20=$24,000; flexed variable production $8,400; selling $2,400; fixed $5,000; flexed profit $8,200. Actual profit 23,000−8,700−2,600−5,100=$6,600. Performance variance against flexed profit $1,600 adverse."],["Break down profit variance","Use the previous scenario and compute component variances.","Revenue $1,000 A (23,000 versus 24,000); production $300 A; variable selling $200 A; fixed $100 A. Total $1,600 A. The volume effect is separate: flexed profit $8,200 minus original $6,000 = $2,200 favourable."],["Full fixed versus flexed budget reconciliation","A firm budgets 2,000 products at selling price $15, variable cost $7 per unit, and fixed operating cost $6,000. Actual output and sales are 2,500, with sales at $15 per unit, actual variable cost $18,250 and fixed cost $6,200. Compute fixed-budget profit, flexed-budget profit, actual profit and actual-versus-flexed variance.","Original budget profit=2,000×($15−$7)−$6,000=$10,000. Flexed profit=2,500×($15−$7)−$6,000=$14,000. Actual profit=2,500×$15−$18,250−$6,200=$13,050. Actual versus flexed is $950 adverse, composed of variable spending $18,250−2,500×$7=$750 adverse and fixed spending $6,200−$6,000=$200 adverse. The $4,000 favourable volume effect is separately the change from fixed to flexed planned profit."],["Cost per unit compared at unequal activity levels","A department spent $50,000 producing 10,000 units last quarter and $54,000 producing 12,000 identical units this quarter with no price inflation. Compare cost per unit and explain why total spending alone can mislead.","Previous unit cost=$50,000/10,000=$5.00; current=$54,000/12,000=$4.50, a reduction $0.50 or 10% per unit. Total cost rose $4,000 while activity rose 20%, so a fixed-cost and volume-aware comparison is required before judging efficiency. Check output quality, overtime and differing product mix if facts are not otherwise identical."]]},
   "MA2:A5": {
     "title": "Reporting management information",
     "sections": [
