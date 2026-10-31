@@ -28,7 +28,7 @@ assert.equal(84000/14000,6);
 assert.equal(79000-12500*6,4000);
 assertResult('MA1:D3','Overhead absorption rate and shortfall','$4,000');
 assert.equal(3600+80*12+300+80*8,5500);
-assert.equal(5500*1.1,6050);
+assert(Math.abs(5500*1.1-6050)<.001,'Markup multiplication must round to $6,050');
 assertResult('MA1:D4','Separate job-card costing with markup','$6,050');
 assert.equal((4000+2400+1600+800)/400,22);
 assertResult('MA1:D4','Batch size and setup cost','$22.00');
