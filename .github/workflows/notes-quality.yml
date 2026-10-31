@@ -86,6 +86,10 @@ jobs:
           name: first350-live-student-lessons
           path: audit/first350-live-lessons-ci.json
           if-no-files-found: error
+      - name: Verify all FA1 2026 detailed exam skill areas and worked-case results
+        run: node tests/notes-fa1-2026-academic-gate.cjs
+      - name: Verify MA and FMA B3 and C1 2026 detailed syllabus topics
+        run: node tests/notes-ma-fma-2026-b3-c1.cjs
       - name: Recompute extractable arithmetic identities across all 350 live chapters
         run: python scripts/audit-first350-arithmetic.py
       - name: Upload full first-half arithmetic reconciliation evidence
