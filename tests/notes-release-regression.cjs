@@ -74,7 +74,7 @@ vm.runInNewContext(fs.readFileSync('notes-build.js','utf8'),{window:win,document
  await new Promise(resolve=>setImmediate(resolve));
  assert.match(stamp.textContent,/2026\.10\.31\.42/);
  assert.equal(ids.notesReleaseStatus.hidden,true,'No false update banner when current');
- latest='2026.10.31.43';
+ latest='2026.10.31.44';
  await win.LedgerNotesCheckForUpdates();
  assert.equal(ids.notesReleaseStatus.hidden,false,'A newer manifest must show update banner');
  assert.match(ids.notesReleaseMessage.textContent,/2026\.10\.31\.43/);
