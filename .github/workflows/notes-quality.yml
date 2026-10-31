@@ -150,6 +150,8 @@ jobs:
             audit/all700-academic-docket-ci.json
             audit/all700-academic-docket-ci.md
           if-no-files-found: warn
+      - name: Block unsupported academic sign-off for any of the 700 topics
+        run: node tests/notes-academic-proof-gate.cjs
       - name: Upload whole-library arithmetic and official-syllabus evidence
         if: always()
         uses: actions/upload-artifact@v4
