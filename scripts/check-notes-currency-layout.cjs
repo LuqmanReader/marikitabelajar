@@ -58,8 +58,8 @@ const sourceAssets=[
  'notes-visual-workbook.js'
 ];
 const assetVersions={
- 'textbook-fa1-part-a.js':'20261031official2026v3',
- 'textbook-fa1-part-b.js':'20261031official2026v3',
+ 'textbook-fa1-part-a.js':'20261031official2026v4',
+ 'textbook-fa1-part-b.js':'20261031official2026v4',
  'textbook-fa2-part-a.js':'20261031acadfa2d1',
  'textbook-ma1.js':'20261031managementAcademic',
  'textbook-ma2-part-b.js':'20261031cashOutcome',
@@ -70,7 +70,7 @@ const assetVersions={
  'textbook-crossqual-a2-professional.js':'20261031v1',
  'textbook-crossqual-a3-foundation.js':'20261031accaA3',
  'textbook-crossqual-a3-professional.js':'20261031v1',
- 'textbook-crossqual-batch4a.js':'20261031accaA4',
+ 'textbook-crossqual-batch4a.js':'20261031accaB3verified',
  'textbook-crossqual-batch4b.js':'20261031batch4',
  'textbook-crossqual-batch4c.js':'20261031batch4',
  'textbook-crossqual-batch4d.js':'20261031batch4',
@@ -78,7 +78,7 @@ const assetVersions={
  'textbook-editorial-advanced.js':'editorial1',
  'textbook-editorial-fia-applied.js':'editorial2',
  'textbook-editorial-management-01.js':'20261031mg1',
- 'textbook-editorial-management-02.js':'20261031mg2',
+ 'textbook-editorial-management-02.js':'20261031maC1verified',
  'textbook-editorial-management-03.js':'20261031mg3',
  'textbook-editorial-management-04.js':'20261031mg4academic',
  'textbook-editorial-management-05.js':'20261031mg5',
