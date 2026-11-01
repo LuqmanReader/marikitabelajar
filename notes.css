@@ -1,8 +1,8 @@
-:root{--ink:#111;--cream:#f4eedd;--yellow:#ffcd30;--blue:#294bdf;--red:#f06952;--green:#adebc6}
-*{box-sizing:border-box}[hidden]{display:none!important}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font:15px/1.65 ui-monospace,"SFMono-Regular",Consolas,monospace}button,input,select{font:inherit}
+:root{--ink:#111;--cream:#f4eedd;--yellow:#ffcd30;--blue:#294bdf;--red:#f06952;--green:#adebc6;--font-display:"Arial Black","Helvetica Neue",Impact,sans-serif;--font-body:ui-monospace,"JetBrains Mono","Space Mono",Menlo,Consolas,monospace}
+*{box-sizing:border-box}[hidden]{display:none!important}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--ink);font:15px/1.65 var(--font-body)}button,input,select{font:inherit}
 a{color:inherit}a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
 .notes-top{border-bottom:4px solid var(--ink);background:#fff;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:12px clamp(14px,4vw,55px)}
-.notes-brand{font:900 20px/1 Arial,sans-serif;letter-spacing:-.045em;display:flex;align-items:center;gap:12px;text-decoration:none}.notes-brand img{object-fit:contain}.notes-brand small{font-size:10px;letter-spacing:.11em;color:#555;display:block;margin-top:5px}
+.notes-brand{font:900 20px/1 var(--font-display);letter-spacing:-.045em;display:flex;align-items:center;gap:12px;text-decoration:none}.notes-brand img{object-fit:contain}.notes-brand small{font-size:10px;letter-spacing:.11em;color:#555;display:block;margin-top:5px}
 .notes-top nav{display:flex;align-items:center;gap:9px;flex-wrap:wrap}.notes-top nav a,.notes-back{padding:9px 12px;text-decoration:none;border:3px solid var(--ink);font-size:11px;font-weight:900;background:var(--yellow);box-shadow:3px 3px var(--ink)}.notes-top nav a{background:#fff}
 .notes-top nav a:hover,.notes-back:hover{transform:translate(-1px,-1px);box-shadow:4px 4px var(--ink)}
 .notes-shell{max-width:1350px;margin:0 auto;padding:30px clamp(14px,3vw,36px) 70px}.notes-back{display:inline-block;margin-bottom:20px}
@@ -449,8 +449,8 @@ footer{margin-top:60px;border-top:2px solid var(--ink);padding-top:20px;font-siz
    Body: original LedgerPeer monospaced reading/coding type.
    Do not introduce separate Arial/Helvetica prose into individual lesson modules. */
 .notes-shell{
-  --lp-type-display:"Arial Black","Helvetica Neue",Impact,Arial,sans-serif;
-  --lp-type-body:ui-monospace,"JetBrains Mono","Space Mono",Menlo,Consolas,monospace;
+  --lp-type-display:var(--font-display);
+  --lp-type-body:var(--font-body);
   --lp-type-size:15px;
   --lp-type-leading:1.72;
   font-family:var(--lp-type-body);
