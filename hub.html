@@ -121,6 +121,9 @@
   }
 
   .examlist{display:flex;flex-direction:column;gap:14px;}
+  .attempt-group-heading{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:22px 0 12px;padding-bottom:7px;border-bottom:2px solid var(--ink);}
+  .attempt-group-heading h3{font-family:inherit;font-size:12px;font-weight:900;letter-spacing:.035em;text-transform:uppercase;margin:0;}
+  .attempt-group-heading .count{font-size:10px;color:var(--grey);font-weight:700;white-space:nowrap;}
 
   .examcard-wrap{position:relative;}
   .menu-btn{
@@ -622,6 +625,8 @@
   }catch(e){ /* ignore */ }
 
   EXAMS=ExamModel.normalize(EXAMS);
+  // Keep Chapter Sets for topic mastery and debrief; exclude from test statistics.
+  var TEST_EXAMS=EXAMS.filter(function(e){return e.testType==='pre'||e.testType==='mock';});
   var ANALYSIS_EXAMS=[];
   try{ANALYSIS_EXAMS=ExamModel.analysisExams(EXAMS,localStorage);}catch(e){ANALYSIS_EXAMS=EXAMS.slice();}
   function escapeText(value){return String(value).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
@@ -669,13 +674,13 @@
   }
 
   function renderMarquee(){
-    var totalCorrect = EXAMS.reduce(function(a,e){return a+e.correct;},0);
-    var totalQ = EXAMS.reduce(function(a,e){return a+e.total;},0);
+    var totalCorrect = TEST_EXAMS.reduce(function(a,e){return a+e.correct;},0);
+    var totalQ = TEST_EXAMS.reduce(function(a,e){return a+e.total;},0);
     var avgPct = totalQ ? Math.round((totalCorrect/totalQ)*100) : 0;
     var msgs = [
       'LEDGERPEER',
-      EXAMS.length + ' EXAMS LOGGED',
-      avgPct + '% AVERAGE SCORE',
+      TEST_EXAMS.length + ' TESTS LOGGED',
+      avgPct + '% AVERAGE TEST SCORE',
       'LedgerPeer CORRECTIONS ENGINE'
     ];
     var text = msgs.join('   ★   ') + '   ★   ';
@@ -685,7 +690,7 @@
   function renderDash(){
     var bySubject = {};
     var order = [];
-    EXAMS.forEach(function(e){
+    TEST_EXAMS.forEach(function(e){
       if(!bySubject[e.subject]){ bySubject[e.subject] = []; order.push(e.subject); }
       bySubject[e.subject].push(e);
     });
@@ -702,13 +707,13 @@
       html += '<div class="dash panel">' +
         '<div class="stat correct"><div class="num">' + totalCorrect + '</div><div class="lbl">Correct</div></div>' +
         '<div class="stat incorrect"><div class="num">' + totalIncorrect + '</div><div class="lbl">Incorrect</div></div>' +
-        '<div class="stat"><div class="num">' + avgPct + '%</div><div class="lbl">Avg Score</div></div>' +
-        '<div class="stat"><div class="num">' + exams.length + '</div><div class="lbl">Exams</div></div>' +
+        '<div class="stat"><div class="num">' + avgPct + '%</div><div class="lbl">Avg Test Score</div></div>' +
+        '<div class="stat"><div class="num">' + exams.length + '</div><div class="lbl">Tests</div></div>' +
       '</div>';
     });
 
-    if(!EXAMS.length){
-      html = '<div class="chart-empty">No exam attempts yet. Add or import an attempt to start tracking your performance.</div>';
+    if(!TEST_EXAMS.length){
+      html = '<div class="chart-empty">No Progress Tests or Mock Tests yet. Chapter Sets appear separately below as topic practice.</div>';
     }
     document.getElementById('subjectDash').innerHTML = html;
   }
@@ -725,9 +730,18 @@
     var html = '';
     order.forEach(function(subject){
       var exams = bySubject[subject];
-      html += '<div class="section-title"><h2>' + subject + '</h2><span class="count">' + exams.length + ' attempt' + (exams.length===1?'':'s') + '</span></div>';
-      html += '<div class="examlist">';
-      exams.forEach(function(e){
+      html += '<div class="section-title"><h2>' + subject + '</h2><span class="count">' + exams.length + ' saved attempt' + (exams.length===1?'':'s') + '</span></div>';
+      var categories=[
+        {type:'pre',label:'Progress Tests'},
+        {type:'mock',label:'Mock Tests'},
+        {type:'set',label:'Chapter Sets · Topic Practice'}
+      ];
+      categories.forEach(function(category){
+        var entries=exams.filter(function(e){return e.testType===category.type;});
+        if(!entries.length)return;
+        html += '<div class="attempt-group-heading"><h3>'+category.label+'</h3><span class="count">'+entries.length+' attempt'+(entries.length===1?'':'s')+'</span></div>';
+        html += '<div class="examlist">';
+        entries.forEach(function(e){
         var pct = e.total ? Math.round((e.correct/e.total)*100) : '—';
         html += '<div class="examcard-wrap">' +
           '<a class="examcard ' + scoreClass(pct) + '" href="' + e.file + '">' +
@@ -741,8 +755,9 @@
             '<button type="button" class="menu-delete" data-delete-id="' + e.id + '">Delete this attempt</button>' +
           '</div>' +
         '</div>';
+        });
+        html += '</div>';
       });
-      html += '</div>';
     });
 
     if(!EXAMS.length){
@@ -796,7 +811,7 @@
 
   function renderConfidenceCalibration(){
     var rows=[];
-    ANALYSIS_EXAMS.forEach(function(e){
+    ANALYSIS_EXAMS.filter(function(e){return e.testType==='pre'||e.testType==='mock';}).forEach(function(e){
       var raw=localStorage.getItem('tymba_exam_confidence:'+e.id);
       if(!e.total)return;
       var c=parseInt(raw,10);
