@@ -137,7 +137,7 @@
       marks:q.original_marks==null?null:q.original_marks,
       max_marks:q.original_max_marks==null?null:q.original_max_marks,
       pdf_page:q.pdf_page||null,
-      visual_review_required:!!q.visual_review_required||/\b(?:graph|chart|diagram|figure|table)\b/i.test(plain(q.qtext)),
+      visual_review_required:!!q.visual_review_required||/<img\b|\[Image unavailable/i.test(q.qtext||'')||/\b(?:graph|chart|diagram|figure|table)\b/i.test(plain(q.qtext)),
       answer_capture_status:q.answer_capture_status||'not_captured'
     }));
     const responseShape={
