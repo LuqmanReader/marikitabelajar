@@ -9,6 +9,7 @@ on:
       - 'syllabus-catalog.js'
       - 'official-exam-registry.js'
       - 'revision-flow.js'
+      - 'correction-pdf.js'
       - 'answer-option-match.js'
       - 'pdf-topic-suggestions.js'
       - 'view.html'
@@ -34,5 +35,9 @@ jobs:
         run: node tests/debrief-image-answer-regression.js
       - name: Test FIA/ACCA PDF attempt import formats
         run: node tests/pdf-parser-regression.js
+      - name: Create and inspect correction PDF output
+        run: |
+          npm install --no-save --package-lock=false --ignore-scripts pdf-lib@1.17.1
+          node tests/correction-pdf-regression.cjs
       - name: Test email confirmation and callback safety
         run: node tests/email-confirmation-regression.js
