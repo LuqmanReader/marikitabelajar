@@ -52,9 +52,9 @@ const question={qno:50,is_correct:true,qtext:'What is the operating cash cycle? 
  options:[],your_answer:'50',correct_answer:'50',original_marks:2,original_max_marks:2};
 const meta={id:'exam-test',subject,testType:'mock',testNumber:2,title:'Mock Test 2'};
 const request=w.RevisionFlow.prompt(meta,[question],syllabus.topics,[question]);
-assert(request.includes('IMAGE EVIDENCE:'));
-assert(request.includes('"image_not_in_text_export":true'));
-assert(request.includes('topic_status "related"'));
+assert(request.includes('visual evidence is missing'));
+assert(request.includes('"visual_review_required":true'));
+assert(request.includes('matched or related'));
 const response={schema:'personal-hub-debrief-v2',exam_id:meta.id,paper:meta.subject,
  paper_code:code,attempt_signature:w.RevisionFlow.signature([question]),
  questions:[{qno:50,chapter:syllabus.topics.find(t=>t.startsWith('E1 · ')),topic_status:'related',
