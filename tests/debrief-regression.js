@@ -45,7 +45,7 @@ function tryCase(code){
  const questions=[q(1),q(2)];
  const meta={id:'exam-'+code,subject:label,testType:'set',testNumber:2,title:'Set 2',setChapter:verified.topics[0]};
  const prompt=debrief.prompt(meta,questions,verified.topics,questions);
- for(const keyword of [label,'ATTEMPT TYPE: Chapter Set; number 2','SET TARGET SYLLABUS TOPIC',verified.topics[0],'STUDENT-SELECTED PAPER CODE','APPROVED ACCA SYLLABUS','QUESTION DATA:']){
+ for(const keyword of [label,'Exam: Chapter Set 2','Allowed topic headings',verified.topics[0],'Syllabus edition','QUESTIONS:']){
    assert(prompt.includes(keyword),'Debrief prompt missing '+keyword+' on '+code);
  }
  const originalSig=debrief.signature(questions);
