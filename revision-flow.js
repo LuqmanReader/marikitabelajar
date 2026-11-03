@@ -7,6 +7,7 @@
     if(typeof document!=='undefined'){
       var doc=new DOMParser().parseFromString(String(html||''),'text/html');
       doc.querySelectorAll('script,style').forEach(function(el){el.remove();});
+        doc.querySelectorAll('img,svg,canvas').forEach(function(el){el.replaceWith(doc.createTextNode('[Question figure present — attach the original image for visual analysis]'));});
       doc.querySelectorAll('br,p,tr,li').forEach(function(el){el.appendChild(doc.createTextNode('\n'));});
       return doc.body.textContent.trim();
     }
@@ -20,9 +21,16 @@
       if(!allowed.includes(n.tagName)){n.replaceWith.apply(n,Array.from(n.childNodes));return;}
       var src=n.tagName==='IMG'?n.getAttribute('src'):null;
       Array.from(n.attributes).forEach(function(a){n.removeAttribute(a.name);});
-      if(src){
-        if(/^data:image\/(?:png|jpeg|gif|webp);base64,/i.test(src)){n.setAttribute('src',src);n.setAttribute('alt','Question image');}
-        else n.replaceWith(doc.createTextNode('[Image unavailable in this export — consult the original question.]'));
+      if(n.tagName==='IMG'){
+        // Preserve embedded figures and safe HTTPS image references from the source review.
+        // HTML exports frequently retain image URLs, not the actual pixels. The review
+        // page offers a local screenshot attachment when a remote image cannot load.
+        if(src&&src.length<=1800000&&(/^data:image\/(?:png|jpeg|gif|webp);base64,/i.test(src)||/^https:\/\/[^\s"'<>]+$/i.test(src))){
+          n.setAttribute('src',src);
+          n.setAttribute('alt','Question figure');
+          n.setAttribute('loading','lazy');
+          n.setAttribute('referrerpolicy','no-referrer');
+        } else n.replaceWith(doc.createTextNode('[Image unavailable in this export — attach a screenshot of the original question.]'));
       }
     });
     return doc.body.innerHTML;
@@ -79,9 +87,9 @@
         }
       }
       if(own(q,'topic_status')){
-        if(!['matched','outside','unreadable'].includes(q.topic_status))throw new Error('Q'+n+': topic_status must be matched, outside, or unreadable.');
-        if(q.topic_status==='matched'&&!item.chapter)throw new Error('Q'+n+': matched questions need an official syllabus label.');
-        if(q.topic_status!=='matched'&&item.chapter)throw new Error('Q'+n+': outside/unreadable questions must have chapter "".');
+        if(!['matched','related','outside','unreadable'].includes(q.topic_status))throw new Error('Q'+n+': topic_status must be matched, related, outside, or unreadable.');
+        if((q.topic_status==='matched'||q.topic_status==='related')&&!item.chapter)throw new Error('Q'+n+': matched/related questions need an official syllabus label.');
+        if((q.topic_status==='outside'||q.topic_status==='unreadable')&&item.chapter)throw new Error('Q'+n+': outside/unreadable questions must have chapter "".');
       }
       fields.forEach(function(k){if(own(q,k))item[k]=textField(q[k],k);});
       if(own(q,'debrief'))item.debrief=textField(q.debrief,'debrief');
@@ -148,7 +156,7 @@
       };
       if(q.source_feedback){var sourceNote=plain(q.source_feedback);if(sourceNote&&sourceNote!==item.question)item.source_feedback=sourceNote.slice(0,800);}
       if(q.source_result)item.source_grade=String(q.source_result);
-      if(/<img\b/i.test(q.qtext||'')||(q.options||[]).some(function(o){return /<img\b/i.test(o.text||'');}))item.image_not_in_text_export=true;
+      if(/<img\b/i.test(q.qtext||'')||(q.options||[]).some(function(o){return /<img\b/i.test(o.text||'');})||/\[Image unavailable/i.test(q.qtext||''))item.image_not_in_text_export=true;
       return item;
     });
     var instruction=[
@@ -159,10 +167,11 @@
       'OFFICIAL ACCA EXAM FORMAT REFERENCE: '+(fullFormat?fullFormat.formatSource:'Not available'),
       'Act as my FIA/ACCA exam debrief tutor and ACCA syllabus topic classifier.',
       'For EVERY numbered question: (1) choose one specific primary topic, (2) explain the reasoning, (3) show calculations or say Not applicable, (4) justify the recorded answer and explain my mistake if relevant, (5) suggest one practice focus.',
-       'OFFICIAL ACCA SYLLABUS CLASSIFICATION: Use ONLY one exact subtopic label from the official syllabus list for the paper manually chosen by the student. Never invent a chapter, and never force a question under a loosely related topic. For out-of-syllabus questions use chapter "", topic_status "outside", and explain why in topic_reason. For illegible questions use chapter "", topic_status "unreadable". For valid syllabus matches use topic_status "matched". Such questions are excluded from topic graphs, but their recorded marks stay unchanged.',
+       'OFFICIAL ACCA SYLLABUS CLASSIFICATION: Use ONLY one exact subtopic label from the official syllabus list for the paper manually chosen by the student. Never invent a chapter, and never force a question under a loosely related topic. For a directly assessed official topic use topic_status "matched". If a question applies an extension or technique not explicitly assessed but is clearly connected to an official topic, use that exact official chapter with topic_status "related" and clearly explain the limit in topic_reason. Only use chapter "" and topic_status "outside" when there is genuinely no defensible syllabus relationship. For illegible source use chapter "" and topic_status "unreadable". Outside/unreadable questions are excluded from topic graphs; original marks never change.',
        'For EVERY question, explain WHY this official topic is the primary syllabus match in topic_reason. The topic_reason is separate from the working and justification. Questions sharing the same syllabus learning outcome MUST share the same official label.',
        'Do NOT use examples from another paper as topic labels. The exact allowed syllabus labels below are the single source of truth; choose the same heading for every question testing the same learning outcome.',
-      'The question data comes from the saved HTML attempt-review page. Treat its recorded questions, selected answers, correct answers, marks and grading as the source of truth. If an image or figure is unavailable in the HTML export, never invent it; explicitly flag the question as unreadable or uncertain.',
+      'The question data comes from the saved HTML attempt-review page. Treat its recorded questions, selected answers, correct answers, marks and grading as the source of truth. A question can be assigned to a topic if its topic is clear from the text even when a figure is missing; indicate the missing visual evidence instead of declaring the entire item unreadable. Never invent figures or re-grade answers.',
+       'IMAGE EVIDENCE: Copying this prompt transfers text, NOT image pixels. For items flagged image_not_in_text_export, inspect the original image file attached alongside this request, or explicitly say the figure is unavailable and request the screenshot. Never claim to have seen a missing image.',
       'Respect all recorded marks and grading. Never alter question number, score, original recorded correct answer or the marking decision. If a learner-selected choice was not captured from the HTML, never invent it or diagnose its specific mistake.',
       'Explain EVERY question, including correct ones, in full teaching detail. Give concept, calculations with steps where applicable, justification of the answer, and a specific practice focus. For uncertain source content, state the limitation in the relevant explanation instead of guessing.',
       'Return ONLY one COMPLETE valid JSON object with every requested question exactly once. No Markdown fences or extra prose. All feedback fields must be strings; calculation must be "Not applicable" if none. If you cannot fit a complete response, return a valid partial JSON for the questions you finished (never malformed/truncated JSON). LedgerPeer will prepare a continuation request for missing questions.',
