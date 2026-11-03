@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en" data-lp-page="attempt">
+<head>
+<meta charset="utf-8"><meta name="robots" content="noindex,follow"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Import PDF Attempt · LedgerPeer</title>
+<link rel="icon" href="favicon-32.png"><link rel="stylesheet" href="revision-flow.css"><link rel="stylesheet" href="site-nav.css"><link rel="stylesheet" href="ledgerpeer-theme.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="supabase-config.js"></script><script src="auth.js"></script>
+<script>if(!PersonalHubAuth.guard())throw Error('Locked');</script>
+<script src="subject-catalog.js"></script>
+<script src="official-exam-registry.js?v=20261013-online-format-v1"></script>
+<script src="acca-published-data.js?v=20261013-online-25-syllabi"></script>
+<script src="syllabus-catalog.js?v=20261013-online-25-syllabi"></script>
+<script src="exam-model.js"></script><script src="chapter-analysis.js"></script>
+<script src="revision-flow.js?v=20261103-dual-source"></script>
+<script src="pdf-topic-suggestions.js?v=20261103-related-topics"></script>
+<script src="pdf-answer-markers.js"></script><script src="source-archive.js?v=20261103-dual-source"></script>
+<style>
+ .pdf-layout{max-width:860px;margin:0 auto}
+ .pdf-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+ .pdf-form label{font-weight:800;font-size:13px}
+ .pdf-form select,.pdf-form input{width:100%;min-width:0;border:3px solid #111;padding:12px;margin-top:5px;background:white;font:inherit}
+ .pdf-upload{display:block;margin:22px 0;background:#fff;border:4px solid #111;padding:22px;font-weight:900}
+ .pdf-upload input{display:block;margin-top:12px;width:100%;font:inherit}
+ .pdf-scan-list{max-height:560px;overflow:auto;padding:8px;border:2px solid #111;background:white}
+ .pdf-scan-question{border-bottom:2px solid #111;padding:12px 6px}
+ .pdf-scan-question summary{cursor:pointer;font-weight:900}
+ .pdf-scan-question pre{font:12px/1.5 ui-monospace,Consolas,monospace;white-space:pre-wrap;overflow-wrap:anywhere}
+ .pdf-scan-question textarea,.pdf-scan-question select,.pdf-scan-marks input{display:block;max-width:100%;width:100%;padding:8px;border:2px solid #111;font:inherit}
+ .pdf-scan-question label{display:block;margin:12px 0}
+ .pdf-scan-marks{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+ progress{width:100%;height:14px}
+ [hidden]{display:none!important}
+ @media(max-width:620px){.pdf-form,.pdf-scan-marks{grid-template-columns:1fr}}
+</style>
+</head>
+<body class="flow-page">
+<div class="flow-topbar">LEDGERPEER · DUAL-SOURCE EXAM IMPORT</div>
+<main class="flow-wrap pdf-layout">
+ <header class="flow-hero">
+   <nav class="back-navigation-row" aria-label="Page navigation"><a class="site-back" href="add-exam.html">← HTML IMPORT</a><a class="site-back" href="hub.html">← BACK TO REVISION</a></nav>
+   <h1>Import your completed exam PDF</h1>
+   <p>One PDF upload. LedgerPeer saves the original PDF and creates a readable HTML copy on this device. The original PDF remains the reference for charts and diagrams.</p>
+ </header>
+ <nav class="flow-steps" aria-label="Revision workflow"><span class="current">1 · Import PDF</span><span>2 · Review uncertain extraction</span><span>3 · AI debrief</span><span>4 · Correction</span></nav>
+ <section class="flow-panel">
+   <h2>Attempt details</h2>
+   <div class="pdf-form">
+     <label>FIA / ACCA paper<select id="pdfSubject"><option value="">Choose your paper</option></select></label>
+     <label>Exam type<select id="pdfTestType"><option value="pre" selected>Progress Test</option><option value="mock">Mock Test</option><option value="set">Chapter Set</option></select></label>
+     <label>Test number<input id="pdfTestNumber" inputmode="numeric" type="number" min="1" max="999" value="1"></label>
+     <label id="pdfChapterWrap" hidden>Chapter target<input id="pdfSetChapter" list="pdfTopicOptions" placeholder="Approved syllabus heading"></label>
+   </div>
+   <datalist id="pdfTopicOptions"></datalist><p class="flow-muted" id="pdfFormatReference"></p>
+   <label class="pdf-upload">Choose the finished, marked attempt-review PDF
+     <input type="file" id="pdfFile" accept=".pdf,application/pdf" disabled>
+   </label>
+   <progress id="pdfProgress" max="1" value="0" hidden></progress>
+   <p id="pdfStatus" role="status" aria-live="polite"></p>
+ </section>
+ <section class="flow-panel" id="pdfVerify" hidden></section>
+ <p class="flow-muted">Both source files remain private to this browser unless you explicitly export them. Reconstructed HTML is derived from the PDF, so agreement alone does not prove correct extraction. For missing visual information, consult the original PDF.</p>
+</main>
+<script src="pdf-attempt.js?v=20261103-dual-source"></script>
+<script>PersonalHubAuth.addLockButton();</script>
+</body></html>
