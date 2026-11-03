@@ -137,7 +137,7 @@
       marks:q.original_marks==null?null:q.original_marks,
       max_marks:q.original_max_marks==null?null:q.original_max_marks,
       pdf_page:q.pdf_page||null,
-      visual_review_required:!!q.visual_review_required||/\\b(?:graph|chart|diagram|figure|table)\\b/i.test(plain(q.qtext)),
+      visual_review_required:!!q.visual_review_required||/\b(?:graph|chart|diagram|figure|table)\b/i.test(plain(q.qtext)),
       answer_capture_status:q.answer_capture_status||'not_captured'
     }));
     const responseShape={
@@ -161,7 +161,7 @@
       'Return a single valid JSON object with this schema (substitute real answers and real topics): '+JSON.stringify(responseShape),
       'Do not copy question text or marks into your output. Do not return scores, graphs, Markdown or additional prose.',
       'QUESTIONS: '+JSON.stringify(payload)
-    ].join('\\n');
+    ].join('\n');
   }
   function save(storage,key,value){
     var encoded=JSON.stringify(value);storage.setItem(key,encoded);
