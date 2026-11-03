@@ -10,6 +10,7 @@ on:
       - 'official-exam-registry.js'
       - 'revision-flow.js'
       - 'source-archive.js'
+      - 'source-prompt-injector.js'
       - 'pdf-attempt.js'
       - 'pdf-import.html'
       - 'add-exam.html'
@@ -40,5 +41,7 @@ jobs:
         run: node tests/pdf-parser-regression.js
       - name: Test original PDF plus reconstructed HTML archive and compact prompts
         run: node tests/dual-source-regression.js
+      - name: Test code-aware prompt interpretation and evidence-grounded forecasting
+        run: node tests/prompt-injector-regression.js
       - name: Test email confirmation and callback safety
         run: node tests/email-confirmation-regression.js
