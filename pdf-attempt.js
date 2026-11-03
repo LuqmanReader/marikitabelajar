@@ -183,6 +183,10 @@
   if(!archive||!state.pending||!state.pending.originalFile)
     throw Error('The PDF+HTML source archive is not available. Nothing was saved.');
   const report=archive.audit(questions,pdf.pageTexts||[]);
+  for(const q of questions){
+   const prefix='Q'+q.qno+':';
+   q.source_audit_flags=report.issues.filter(issue=>issue.startsWith(prefix)).slice(0,4);
+  }
   const html=archive.buildHtml(questions,meta,report);
   await archive.put({id,pdf:state.pending.originalFile,html,report});
   try{
