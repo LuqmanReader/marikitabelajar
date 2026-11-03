@@ -9,7 +9,7 @@
   try{
    const [tab]=await chrome.tabs.query({active:true,currentWindow:true});
    const url=new URL(tab?.url||'');
-   if(url.protocol!=='https:'||!['ile.flex.tymbaedu.com','twofive.flex.tymbaedu.com'].includes(url.hostname)
+   if(url.protocol!=='https:'||!['ile.flex.tymbaedu.com','twofive.flex.tymbaedu.com','flex.tymbaedu.com'].includes(url.hostname)
      ||url.pathname!=='/mod/quiz/review.php')
     throw Error('Open a finished ILE or Group B quiz Review page.');
    const r=await chrome.tabs.sendMessage(tab.id,{type:'LP_EXPORT_REVIEW_WITH_IMAGES'});
