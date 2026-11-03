@@ -6,7 +6,7 @@
 (()=>{
  'use strict';
  const HOSTS=new Set(['ile.flex.tymbaedu.com','twofive.flex.tymbaedu.com','flex.tymbaedu.com']);
- const MAX_IMAGE_BYTES=3500000,MAX_TOTAL_BYTES=18000000;
+ const MAX_IMAGE_BYTES=3500000,MAX_TOTAL_BYTES=3000000; // localStorage-friendly across 50-question reviews
  function validSource(){
   return location.protocol==='https:'&&HOSTS.has(location.hostname)&&location.pathname==='/mod/quiz/review.php';
  }
@@ -17,6 +17,23 @@
   });
  }
  function safeMime(type){return /^image\/(?:png|jpeg|gif|webp)$/i.test(type||'');}
+ async function compact(blob){
+  const original=await asDataUrl(blob);
+  if(original.length<=110000)return original;
+  try{
+   const bitmap=await createImageBitmap(blob);
+   const ratio=Math.min(1,1200/bitmap.width,1400/bitmap.height);
+   const canvas=document.createElement('canvas');
+   canvas.width=Math.max(1,Math.round(bitmap.width*ratio));
+   canvas.height=Math.max(1,Math.round(bitmap.height*ratio));
+   canvas.getContext('2d').drawImage(bitmap,0,0,canvas.width,canvas.height);
+   bitmap.close?.();
+   const candidates=[original,canvas.toDataURL('image/png'),canvas.toDataURL('image/webp',.82)]
+     .filter(x=>/^data:image\/(?:png|jpeg|webp);base64,/i.test(x));
+   return candidates.sort((a,b)=>a.length-b.length)[0]||null;
+  }catch{return original.length<180000?original:null;}
+ }
+
  async function encodeImage(original){
   const raw=original.currentSrc||original.getAttribute('src')||original.getAttribute('data-src')||'';
   if(/^data:image\/(?:png|jpeg|gif|webp);base64,/i.test(raw)&&raw.length<MAX_IMAGE_BYTES*1.5)return raw;
@@ -29,7 +46,7 @@
    const response=await fetch(url.href,{credentials:'same-origin',redirect:'follow'});
    if(!response.ok||!safeMime(response.headers.get('content-type')?.split(';')[0]))return null;
    const blob=await response.blob();if(blob.size>MAX_IMAGE_BYTES)return null;
-   return await asDataUrl(blob);
+   return await compact(blob);
   }catch{return null;}
  }
  function encodeCanvas(original){
