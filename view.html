@@ -417,6 +417,7 @@
 <script src="revision-flow.js?v=20261103-image-syllabus-fix"></script>
 <script src="answer-option-match.js?v=20261103-exact-correctness"></script>
 
+<script src="correction-pdf.js?v=20261104-corrected-pdf-v1"></script>
 <script src="debrief-workflow.js?v=20261103-related-topics"></script>
 <link rel="stylesheet" href="site-nav.css?v=20261028-unifiedback">
 <link rel="stylesheet" href="ledgerpeer-theme.css?v=20261011">
@@ -911,6 +912,7 @@
     // Initialize AI FIRST. A failure elsewhere on the review page must not
     // hide the debrief. Keep any error visible to the student, not the console only.
     var aiPanel=document.getElementById('claudeSyncPanel');
+    if(window.LedgerPeerCorrectionPDF)LedgerPeerCorrectionPDF.mount(aiPanel,META,DATA).catch(function(e){console.error('Correction PDF exporter could not open:',e);});
     try {
       if(!window.DebriefWorkflow || typeof window.DebriefWorkflow.mount!=='function') {
         throw new Error('The debrief-workflow.js file did not load. Upload the manual ChatGPT debrief patch into the GitHub repository root and refresh.');
