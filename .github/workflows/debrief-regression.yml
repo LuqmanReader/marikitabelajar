@@ -10,6 +10,7 @@ on:
       - 'official-exam-registry.js'
       - 'revision-flow.js'
       - 'source-archive.js'
+      - 'correction-pdf.js'
       - 'source-prompt-injector.js'
       - 'pdf-attempt.js'
       - 'pdf-layout-evidence.js'
@@ -46,5 +47,9 @@ jobs:
         run: node tests/dual-source-regression.js
       - name: Test code-aware prompt interpretation and evidence-grounded forecasting
         run: node tests/prompt-injector-regression.js
+      - name: Create and inspect real correction PDFs
+        run: |
+          npm install --no-save --package-lock=false --ignore-scripts pdf-lib@1.17.1
+          node tests/correction-pdf-regression.cjs
       - name: Test email confirmation and callback safety
         run: node tests/email-confirmation-regression.js
