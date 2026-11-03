@@ -17,8 +17,8 @@
   ["E3",[/\b(cash budget|budgeted cash|cash receipts? budget|cash payments? budget|closing cash balance|opening cash balance)\b/ig]],
   ["E2",[/\b(cash management|cash surplus|cash deficit|cash float|bank overdraft management|liquidity management|receivables collection period|payables payment period|working capital cycle)\b/ig]],
   ["E4",[/\b(source of finance|financing decision|equity finance|debt finance|loan finance|bank loan|share capital finance|interest on borrowings|investment of surplus funds)\b/ig]],
-  ["E1",[/\b(cash flow statement|operating cash flow|cash inflow|cash outflow|nature of cash|cash versus profit)\b/ig]],
-  ["A5",[/\b(management report|reporting management information|management accounts|presentation of management information|performance report|profit cent(?:re|er)|responsibility cent(?:re|er)|profitability performance)\b/ig]],
+  ["E1",[/\b(cash flow statement|operating cash flow|cash inflow|cash outflow|nature of cash|cash versus profit|cash operating cycle|operating cash cycle|working capital|current ratio)\b/ig]],
+  ["A5",[/\b(management report|reporting management information|management accounts|presentation of management information|performance report|profit cent(?:re|er)|responsibility cent(?:re|er)|profitability performance|(?:component|percentage component|compound|simple) bar chart|type of graph)\b/ig]],
   ["A4",[/\b(comparison of costs|comparative information|high[\s-]?low method|scattergraph|regression analysis|index numbers|cost estimation)\b/ig]],
   ["A2",[/\b(cost accounting system|integrated accounts|interlocking accounts|cost ledger|cost accounts|sequential coding|hierarchical coding|coding system|optical character recognition|\bocr\b|computerised cost|automated information processing)\b/ig]],
   ["A1",[/\b(management information needs|information requirements|planning control information|strategic information|tactical information|operational information|management control system|definition of information|information is data|objective of management)\b/ig]],
@@ -68,5 +68,33 @@
   }
   return assigned;
  }
- root.LedgerTopicSuggest={pick,apply};
+
+ // One-time migration of previously imported MA2 mock debriefs which used
+ // "outside" for related cash/liquidity methods or "unreadable" for graph
+ // questions whose topic is known although their image pixels were lost.
+ // Leave every source answer, mark, and grading decision untouched.
+ function repairLegacyRelated(questions,subject,storage){
+  const code=root.LedgerSyllabus&&root.LedgerSyllabus.code(subject);
+  if(code!=='MA2')return 0;
+  const syllabus=root.LedgerSyllabus.resolve(storage,subject);
+  function topic(prefix){return (syllabus.topics||[]).find(x=>x.startsWith(prefix+' · '))||'';}
+  let repaired=0;
+  for(const q of questions){
+   if(q.chapter||!['outside','unreadable'].includes(q.topic_status))continue;
+   const question=plain(q.qtext),isGraph=/\b(?:what type of graph|type of (?:bar )?chart)\b/i.test(question);
+   const isCash=/\b(?:operating cash cycle|cash operating cycle|working capital cycle)\b/i.test(question)
+     ||(/\bcurrent ratio\b/i.test(question)&&/\bworking capital\b/i.test(question));
+   const target=isGraph?topic('A5'):isCash?topic('E1'):'';
+   if(!target)continue;
+   q.chapter=target;
+   q.topic_status=isGraph?'matched':'related';
+   q.topic_reason=isGraph
+    ?'The question asks to interpret the presentation of management information, the scope of A5. The original chart still needs its source image attached to independently verify the answer.'
+    :'The question applies a cash-flow/liquidity or working-capital technique related to E1. Its numerical formula is not an expressly specified MA2 2026–27 learning outcome, so it is labelled a related extension rather than a directly assessed outcome.';
+   q.topic_origin='legacy-syllabus-repair';
+   repaired++;
+  }
+  return repaired;
+ }
+ root.LedgerTopicSuggest={pick,apply,repairLegacyRelated};
 })(window);
