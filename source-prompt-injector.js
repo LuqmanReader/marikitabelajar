@@ -42,13 +42,18 @@
    math.push(short(m[1],130));if(math.length>=3)break;
   }
   const geometry=[];
-  // Some HTML exports contain genuine SVG chart geometry. These are encoded
-  // coordinates, NOT a rendered-image interpretation and NOT assured bar values.
+  // SVG geometry contains encoded coordinates, not interpreted screenshot pixels.
   function numericAttr(tag,name){
-   const m=tag.match(new RegExp('\\\\b'+name+'\\\\s*=\\\\s*["\\\']?(-?[0-9]+(?:\\\\.[0-9]+)?)','i'));
-   return m&&Number.isFinite(Number(m[1]))?Number(m[1]):null;
+   const re=/\b(?:x|y|width|height)\s*=\s*(?:"(-?\d+(?:\.\d+)?)"|'(-?\d+(?:\.\d+)?)'|(-?\d+(?:\.\d+)?))/gi;
+   let match;
+   while((match=re.exec(tag))){
+    if(match[0].split('=')[0].trim().toLowerCase()!==name)continue;
+    const value=Number(match[1]||match[2]||match[3]);
+    return Number.isFinite(value)?value:null;
+   }
+   return null;
   }
-  for(const rect of markup.matchAll(/<rect\\b[^>]*>/gi)){
+  for(const rect of markup.matchAll(/<rect\b[^>]*>/gi)){
    const tag=rect[0],entry={};
    for(const attr of ['x','y','width','height']){
     const n=numericAttr(tag,attr);if(n!==null)entry[attr]=n;
@@ -56,9 +61,9 @@
    if(Object.keys(entry).length>=3)geometry.push(entry);
    if(geometry.length>=12)break;
   }
-  const hasCanvas=/<canvas\\b/i.test(markup);
-  const hasSvg=/<svg\\b/i.test(markup);
-  const hasFigure=/<img\\b|<svg\\b|<canvas\\b|\\[Image unavailable/i.test(markup);
+  const hasCanvas=/<canvas\b/i.test(markup);
+  const hasSvg=/<svg\b/i.test(markup);
+  const hasFigure=/<img\b|<svg\b|<canvas\b|\[Image unavailable/i.test(markup);
   const textMentionsVisual=/\b(?:chart|graph|diagram|figure|histogram|illustration|see the table|shown below)\b/i.test(plain(markup));
   const parts={};
   if(tables.length)parts.table_cells=tables;
@@ -67,7 +72,7 @@
   if(geometry.length)parts.svg_rect_coordinates=geometry;
   if(math.length)parts.math_tokens=math;
   if(hasCanvas)parts.canvas_pixels_unavailable=true;
-  if(hasSvg&&!svgLabels.length)parts.svg_geometry_not_interpreted=true;
+  if(hasSvg&&!svgLabels.length&&!geometry.length)parts.svg_geometry_not_interpreted=true;
   if(hasFigure||textMentionsVisual)parts.visual_evidence_limit='Only encoded labels and question text are available; chart shapes or values may be absent.';
   return Object.keys(parts).length?parts:null;
  }
