@@ -40,10 +40,9 @@
  }
  function filteredClone(original){
   const clone=original.cloneNode(true);
-  clone.querySelectorAll('script,style,iframe,object,embed,form,button,input[type="hidden"]').forEach(n=>n.remove());
+  clone.querySelectorAll('form').forEach(n=>n.replaceWith(...Array.from(n.childNodes)));
+  clone.querySelectorAll('script,style,iframe,object,embed,button,input[type="hidden"]').forEach(n=>n.remove());
   // Retain only educational content and answer checkbox/radio states.
-  const originals=original.querySelectorAll('input,textarea,select');
-  const copies=clone.querySelectorAll('input,textarea,select');
   // Preserve checked flags on cloned radios/checkboxes.
   clone.querySelectorAll('input').forEach(n=>{
    if(n.checked)n.setAttribute('checked','checked');else n.removeAttribute('checked');
