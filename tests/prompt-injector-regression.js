@@ -77,8 +77,9 @@ const unsupported=flow.review({...response,questions:[{
 }]},[q1,q2,q3],meta);
 assert.strictEqual(unsupported.questions[1].forecast,'Unavailable','Unknown chart geometry cannot produce a claimed forecast');
 assert(unsupported.warnings.some(x=>x.includes('unsupported forecast withheld')));
+const {evidence_status:unusedStatus,...withoutStatus}=response.questions[0];
 const unlabelled=flow.review({...response,questions:[{
- ...response.questions[0],forecast:'2026'
+ ...withoutStatus,forecast:'2026'
 }]},[q1,q2,q3],meta);
 assert.strictEqual(unlabelled.questions[0].evidence_status,'tentative','Unlabelled guesses must not be promoted to supported');
 console.log('PASS: code-aware prompt extraction, forecast integrity, lean requests, source limitations and grade preservation.');
