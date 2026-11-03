@@ -114,7 +114,7 @@ for(const filename of sourceAssets){
  if(!html.includes('src="'+filename+'?v='+expected))
  errors.push('Outdated/missing cache-bust query: '+filename);
 }
-if(!html.includes('href="notes.css?v=20261101typography1"'))errors.push('Stylesheet cache query outdated');
+if(!html.includes('href="notes.css?v=20261101typography2"'))errors.push('Stylesheet cache query outdated');
 if(!read('notes-visual-workbook.js').includes("src+'?v=20261101flowv1'"))
  errors.push('Static illustrations will remain cached in previous currency');
 console.log(JSON.stringify({inspected:files.length,exampleDollarOccurrences:dollars,failures:errors.length},null,2));
