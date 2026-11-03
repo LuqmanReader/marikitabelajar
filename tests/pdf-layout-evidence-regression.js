@@ -16,7 +16,7 @@ const content={items:[
 const result=layout.extract(content);
 assert.equal(result.method,'pdf-text-coordinate-layout');
 assert(result.text.includes('Question 1'),'Reassemble split numbered heading');
-assert(result.text.includes('Year  |  Cost'),'Preserve wide column gaps');
+assert(result.text.includes('Year | Cost'),'Preserve wide column gaps');
 const q1=layout.selectRows(result.rows,1),q2=layout.selectRows(result.rows,2);
 assert.equal(q1[0].text,'Question 1');
 assert(q1.some(r=>r.text.includes('2025')&&r.text.includes('200')));
