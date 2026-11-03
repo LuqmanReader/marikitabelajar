@@ -6,11 +6,12 @@ const fs=require('node:fs');
 const vm=require('node:vm');
 const path=require('node:path');
 const L=require('pdf-lib');
-const world={PDFLib:L,localStorage:{getItem(){return null},setItem(){}},console,Blob,setTimeout};
-world.window=world;world.globalThis=world;
-vm.createContext(world);
-vm.runInContext(fs.readFileSync(path.join(__dirname,'../correction-pdf.js'),'utf8'),world,{filename:'correction-pdf.js'});
-const E=world.LedgerPeerCorrectionPDF;
+// Execute in the same JS realm as pdf-lib: the library validates native
+// Array/Object prototypes, which differ in Node vm.createContext sandboxes.
+globalThis.PDFLib=L;
+globalThis.localStorage={getItem(){return null},setItem(){}};
+vm.runInThisContext(fs.readFileSync(path.join(__dirname,'../correction-pdf.js'),'utf8'),{filename:'correction-pdf.js'});
+const E=globalThis.LedgerPeerCorrectionPDF;
 assert(E,'Correction PDF exporter was not registered');
 const meta={id:'fixture1',subject:'MA2 - Managing Costs and Finance',title:'Progress Test 2',testType:'pre',testNumber:2};
 const questions=[
