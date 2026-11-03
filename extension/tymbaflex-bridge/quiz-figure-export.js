@@ -5,7 +5,7 @@
  */
 (()=>{
  'use strict';
- const HOSTS=new Set(['ile.flex.tymbaedu.com','twofive.flex.tymbaedu.com']);
+ const HOSTS=new Set(['ile.flex.tymbaedu.com','twofive.flex.tymbaedu.com','flex.tymbaedu.com']);
  const MAX_IMAGE_BYTES=3500000,MAX_TOTAL_BYTES=18000000;
  function validSource(){
   return location.protocol==='https:'&&HOSTS.has(location.hostname)&&location.pathname==='/mod/quiz/review.php';
