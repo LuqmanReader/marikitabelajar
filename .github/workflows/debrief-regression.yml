@@ -9,6 +9,10 @@ on:
       - 'syllabus-catalog.js'
       - 'official-exam-registry.js'
       - 'revision-flow.js'
+      - 'source-archive.js'
+      - 'pdf-attempt.js'
+      - 'pdf-import.html'
+      - 'add-exam.html'
       - 'answer-option-match.js'
       - 'pdf-topic-suggestions.js'
       - 'view.html'
@@ -34,5 +38,7 @@ jobs:
         run: node tests/debrief-image-answer-regression.js
       - name: Test FIA/ACCA PDF attempt import formats
         run: node tests/pdf-parser-regression.js
+      - name: Test original PDF plus reconstructed HTML archive and compact prompts
+        run: node tests/dual-source-regression.js
       - name: Test email confirmation and callback safety
         run: node tests/email-confirmation-regression.js
