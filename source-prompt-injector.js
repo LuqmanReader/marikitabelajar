@@ -41,14 +41,30 @@
   for(const m of markup.matchAll(/<math\b[^>]*>([\s\S]*?)<\/math\s*>/gi)){
    math.push(short(m[1],130));if(math.length>=3)break;
   }
-  const hasCanvas=/<canvas\b/i.test(markup);
-  const hasSvg=/<svg\b/i.test(markup);
-  const hasFigure=/<img\b|<svg\b|<canvas\b|\[Image unavailable/i.test(markup);
+  const geometry=[];
+  // Some HTML exports contain genuine SVG chart geometry. These are encoded
+  // coordinates, NOT a rendered-image interpretation and NOT assured bar values.
+  function numericAttr(tag,name){
+   const m=tag.match(new RegExp('\\\\b'+name+'\\\\s*=\\\\s*["\\\']?(-?[0-9]+(?:\\\\.[0-9]+)?)','i'));
+   return m&&Number.isFinite(Number(m[1]))?Number(m[1]):null;
+  }
+  for(const rect of markup.matchAll(/<rect\\b[^>]*>/gi)){
+   const tag=rect[0],entry={};
+   for(const attr of ['x','y','width','height']){
+    const n=numericAttr(tag,attr);if(n!==null)entry[attr]=n;
+   }
+   if(Object.keys(entry).length>=3)geometry.push(entry);
+   if(geometry.length>=12)break;
+  }
+  const hasCanvas=/<canvas\\b/i.test(markup);
+  const hasSvg=/<svg\\b/i.test(markup);
+  const hasFigure=/<img\\b|<svg\\b|<canvas\\b|\\[Image unavailable/i.test(markup);
   const textMentionsVisual=/\b(?:chart|graph|diagram|figure|histogram|illustration|see the table|shown below)\b/i.test(plain(markup));
   const parts={};
   if(tables.length)parts.table_cells=tables;
   if(images.length)parts.image_alt_text=images;
   if(svgLabels.length)parts.svg_text_labels=svgLabels;
+  if(geometry.length)parts.svg_rect_coordinates=geometry;
   if(math.length)parts.math_tokens=math;
   if(hasCanvas)parts.canvas_pixels_unavailable=true;
   if(hasSvg&&!svgLabels.length)parts.svg_geometry_not_interpreted=true;
