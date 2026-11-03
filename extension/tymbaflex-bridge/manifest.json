@@ -53,7 +53,8 @@
     {
       "matches": [
         "https://ile.flex.tymbaedu.com/mod/quiz/review.php*",
-        "https://twofive.flex.tymbaedu.com/mod/quiz/review.php*"
+        "https://twofive.flex.tymbaedu.com/mod/quiz/review.php*",
+        "https://flex.tymbaedu.com/mod/quiz/review.php*"
       ],
       "js": [
         "quiz-review-capture.js",
