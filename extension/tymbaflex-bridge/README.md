@@ -9,7 +9,7 @@ This is an **independent, read-only companion**, not an official TYMBAFlex integ
 5. Visit `https://luqmanreader.github.io/marikitabelajar/tymbaflex-bridge.html`, sign in to LedgerPeer and click **Sync Open Tabs**.
 6. Tick the ownership/permission confirmation. Your TYMBAFlex email may differ from your LedgerPeer email. Click Sync Open Tabs; only your own visible course list and activity links are saved to your private Supabase account.
 
-## Course diagnostic — ILE + Group B (Chrome extension v0.3.0)
+## Course diagnostic — ILE + Group B (Chrome extension v0.5.0)
 
 The same **LedgerPeer TYMBAFlex Bridge** extension now supports all four course pages:
 
@@ -22,7 +22,7 @@ The same **LedgerPeer TYMBAFlex Bridge** extension now supports all four course 
 
 ### Update and run
 1. Download the **latest** extension ZIP under the GitHub Actions workflow's **Artifacts** section. Extract it to a local folder containing `manifest.json`.
-2. If you installed the previous unpacked extension, replace the extension files in that *same local folder*, then open `chrome://extensions` and click **Reload**. Alternatively, remove the previous version and **Load unpacked** from the extracted updated folder. The version displayed should be **0.3.0**.
+2. If you installed the previous unpacked extension, replace the extension files in that *same local folder*, then open `chrome://extensions` and click **Reload**. Alternatively, remove the previous version and **Load unpacked** from the extracted updated folder. The version displayed should be **0.5.0**.
 3. Sign in to TYMBAFlex using your existing browser session; open any of the course URLs above.
 4. Click the Chrome extension icon and **SCAN CURRENT COURSE**. It inspects the *currently active* course tab only, including quiz names, tutorial names, chapter sets, tests, and visible Moodle `Done`, `To do`, or `Unknown` completion indicators.
 5. Choose a category in the dropdown or click **EXPORT JSON** to save a local sanitized report. Repeat on another course tab as needed.
@@ -37,11 +37,11 @@ The diagnostic recognises `Tutorial Chapter` quizzes, `Chapter N set M` quizzes 
 These are historic snapshots, not verified current live counts. A Moodle activity showing `Done` is not necessarily a quiz pass, and `Unknown` does not mean unfinished.
 
 ### Troubleshooting
-- If the popup cannot read the page, refresh the course tab **after** reloading or installing v0.3.0.
+- If the popup cannot read the page, refresh the course tab **after** reloading or installing v0.5.0.
 - Make sure the active tab is `/course/view.php?id=...` on the ILE or TwoFive Moodle host, not a quiz attempt, login, grade or dashboard page.
 - Review `chrome://extensions` for browser installation errors.
 
-This is a read-only in-page diagnostic. It does not request protected endpoints, automate login, capture passwords or tokens, inspect quiz attempts, or retrieve marks.
+This course diagnostic is read-only and does not request protected endpoints, automate login, or capture passwords/tokens. The separate opt-in finished-review exporter below reads only the completed review currently open in the student's browser.
 
 ## Exactly what this reads
 - Portal: account **email only for comparison**, course titles, IDs, course group and LMS domain (never passwords, SSO links, tokens, raw HTML, invoices or grades).
@@ -55,3 +55,16 @@ This is a read-only in-page diagnostic. It does not request protected endpoints,
 - A different portal and LedgerPeer email is allowed only for a user-confirmed, read-only course-data import. This does not link TYMBAFlex credentials or authorize silent account login.
 - The course pages show activity links, but may not show marks or full attempted-question results.
 - No auto-login or password capture. Password autofill is the browser's responsibility.
+
+## Finished review image export (v0.5.0; all FIA/ACCA papers)
+
+Saved HTML reviews often lose question diagrams because their source images remain on Moodle. The exporter embeds available figures into the HTML instead.
+
+1. Reload or install extension version 0.5.0 from the updated repository folder.
+2. Sign into your own TYMBAFlex account and open a completed /mod/quiz/review.php page on flex.tymbaedu.com, ile.flex.tymbaedu.com, or twofive.flex.tymbaedu.com.
+3. Click EXPORT FULL REVIEW WITH IMAGES in the extension popup. It downloads a self-contained HTML file with the completed questions, recorded answer choices and accessible image/canvas figures.
+4. In LedgerPeer, choose Add Attempt → HTML, select the correct FIA/ACCA paper manually, and import the downloaded HTML.
+5. If the exporter reports a missing figure, open the affected question in LedgerPeer and use Original question figure / screenshot to attach the original screenshot.
+6. When using Copy ChatGPT Request, also attach the screenshot or source PDF in ChatGPT; a copied text prompt cannot carry image pixels.
+
+The feature operates only on a completed review visible to the student. It uses same-origin image requests and stores the resulting file locally. It does not capture credentials, silently inspect an active test, or retrieve other students' answers. It does not change original marks or grades.
