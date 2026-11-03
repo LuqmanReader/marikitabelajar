@@ -72,4 +72,13 @@ assert.strictEqual(reviewed.questions[0].correct_answer,'2026');
 assert(flow.feedback(reviewed.questions[0]).includes('Forecast'));
 assert(flow.feedback(reviewed.questions[1]).includes('insufficient'));
 assert.throws(()=>flow.review({...response,questions:[{...response.questions[0],evidence_status:'certain'}]},[q1,q2,q3],meta),/evidence_status/);
+const unsupported=flow.review({...response,questions:[{
+ ...response.questions[1],evidence_status:'insufficient',forecast:'It must be a compound bar chart'
+}]},[q1,q2,q3],meta);
+assert.strictEqual(unsupported.questions[1].forecast,'Unavailable','Unknown chart geometry cannot produce a claimed forecast');
+assert(unsupported.warnings.some(x=>x.includes('unsupported forecast withheld')));
+const unlabelled=flow.review({...response,questions:[{
+ ...response.questions[0],forecast:'2026'
+}]},[q1,q2,q3],meta);
+assert.strictEqual(unlabelled.questions[0].evidence_status,'tentative','Unlabelled guesses must not be promoted to supported');
 console.log('PASS: code-aware prompt extraction, forecast integrity, lean requests, source limitations and grade preservation.');
