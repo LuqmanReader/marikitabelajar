@@ -15,7 +15,7 @@
   ["C1",[/\b(absorption cost(?:ing)?|absorbed overhead|over[\s-]?absorbed|under[\s-]?absorbed|overhead absorption|absorption rate|oar\b|production overhead (?:absorption|rate|recovery)|full (?:production |unit )?cost)\b/ig]],
   ["C2",[/\b(marginal cost(?:ing)?|contribution under marginal|profit under marginal|inventory under marginal|marginal valuation|variable cost(?:ing)? method)\b/ig]],
   ["E3",[/\b(cash budget|budgeted cash|cash receipts? budget|cash payments? budget|closing cash balance|opening cash balance)\b/ig]],
-  ["E2",[/\b(cash management|cash surplus|cash deficit|cash float|bank overdraft management|liquidity management|receivables collection period|payables payment period|working capital cycle)\b/ig]],
+  ["E2",[/\b(cash management|cash surplus|cash deficit|cash float|bank overdraft management|liquidity management|receivables collection period|payables payment period)\b/ig]],
   ["E4",[/\b(source of finance|financing decision|equity finance|debt finance|loan finance|bank loan|share capital finance|interest on borrowings|investment of surplus funds)\b/ig]],
   ["E1",[/\b(cash flow statement|operating cash flow|cash inflow|cash outflow|nature of cash|cash versus profit|cash operating cycle|operating cash cycle|working capital|current ratio)\b/ig]],
   ["A5",[/\b(management report|reporting management information|management accounts|presentation of management information|performance report|profit cent(?:re|er)|responsibility cent(?:re|er)|profitability performance|(?:component|percentage component|compound|simple) bar chart|type of graph)\b/ig]],
