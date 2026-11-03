@@ -99,6 +99,14 @@
           throw new Error('Q'+n+': evidence_status must be supported, tentative or insufficient.');
         item.evidence_status=q.evidence_status;
       }
+      if(own(item,'forecast')&&!own(item,'evidence_status')){
+        item.evidence_status='tentative';
+        warnings.push('Q'+n+': forecast had no evidence label; downgraded to tentative.');
+      }
+      if(item.evidence_status==='insufficient'&&own(item,'forecast')&&item.forecast.toLowerCase()!=='unavailable'){
+        item.forecast='Unavailable';
+        warnings.push('Q'+n+': unsupported forecast withheld because evidence is insufficient.');
+      }
       ['is_correct','qtext','options','your_answer','correct_answer'].forEach(function(k){
         if(own(q,k)&&JSON.stringify(q[k])!==JSON.stringify(original[k]))warnings.push('Q'+n+': a changed answer or mark was ignored.');
       });
