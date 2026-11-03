@@ -394,6 +394,11 @@
     font-size:12px;font-weight:700;color:var(--grey);
     text-transform:uppercase;letter-spacing:.04em;
   }
+  .qtext img,.opts img{max-width:100%;height:auto;display:block;object-fit:contain;margin:12px 0;border:1px solid #999;}
+  .figure-attach{border:2px dashed #171717;padding:10px 12px;margin:12px 0;background:#fffdf5;font-size:12px;}
+  .figure-attach label{display:flex;align-items:center;flex-wrap:wrap;gap:9px;font-weight:700;cursor:pointer;}
+  .figure-attach input{max-width:100%;font:inherit;}
+  .figure-attach small{display:block;font-weight:400;margin-top:7px;line-height:1.5;}
   /* The AI debrief must remain obvious and never be an invisible empty div. */
   #claudeSyncPanel.ai-visible-panel {margin:22px 0 20px; padding:20px;
     border:4px solid #111; background:#fff; box-shadow:7px 7px 0 #111;}
@@ -406,12 +411,13 @@
 <script src="subject-catalog.js"></script><script src="official-exam-registry.js?v=20261013-online-format-v1"></script><script src="acca-published-data.js?v=20261013-online-25-syllabi"></script><script src="syllabus-catalog.js?v=20261013-online-25-syllabi"></script>
 <script src="exam-model.js"></script>
 <script src="topic-taxonomy.js"></script><script src="chapter-analysis.js?v=20261013-online-25-syllabi"></script>
-<script src="pdf-topic-suggestions.js?v=20261014-whole-pdf-3"></script><script src="chapter-ui.js?v=20261014-whole-pdf-3"></script>
+<script src="pdf-topic-suggestions.js?v=20261103-related-topics"></script><script src="chapter-ui.js?v=20261014-whole-pdf-3"></script>
 <link rel="stylesheet" href="chapter-analysis.css">
 <link rel="stylesheet" href="revision-flow.css">
-<script src="revision-flow.js?v=20261014-topic-import-3"></script>
+<script src="revision-flow.js?v=20261103-image-syllabus-fix"></script>
+<script src="answer-option-match.js?v=20261103-exact-correctness"></script>
 
-<script src="debrief-workflow.js?v=20261013-online-25-syllabi"></script>
+<script src="debrief-workflow.js?v=20261103-related-topics"></script>
 <link rel="stylesheet" href="site-nav.css?v=20261028-unifiedback">
 <link rel="stylesheet" href="ledgerpeer-theme.css?v=20261011">
 </head>
@@ -518,6 +524,7 @@
         // Never overwrite a manually assigned topic or a ChatGPT debrief.
         if(window.LedgerTopicSuggest&&Array.isArray(DATA)){
           var suggestedCount=LedgerTopicSuggest.apply(DATA,META.subject,localStorage);
+          if(typeof LedgerTopicSuggest.repairLegacyRelated==='function')suggestedCount+=LedgerTopicSuggest.repairLegacyRelated(DATA,META.subject,localStorage);
           if(suggestedCount){
             localStorage.setItem('tymba_exam_data:'+examId,JSON.stringify(DATA));
           }
@@ -661,27 +668,12 @@
     return 'plain';
   }
 
-  // Determine which unchosen option is "the correct one" by matching text to d.correct_answer
+  // Exact answer-key boundaries prevent false positives on overlapping choices.
   function markOptions(d){
-    var normTarget = stripTags(d.correct_answer).toLowerCase();
     return (d.options||[]).map(function(opt){
-      var normOpt = stripTags(opt.text).toLowerCase();
-      var isTheCorrectOne = !!normOpt && !!normTarget && (normOpt === normTarget || normTarget.indexOf(normOpt) !== -1 || normOpt.indexOf(normTarget) !== -1);
-      var cls;
-      if(opt.checked && d.is_correct){
-        cls = 'chosen-correct';
-      } else if(opt.checked && d.is_correct===false){
-        cls = 'chosen-wrong';
-      } else if(!opt.checked && isTheCorrectOne && d.is_correct===false){
-        cls = 'right-unchosen';
-      } else {
-        cls = 'plain';
-      }
-      var mark = '';
-      if(cls === 'chosen-correct') mark = '&#10003;';
-      else if(cls === 'chosen-wrong') mark = '&#10007;';
-      else if(cls === 'right-unchosen') mark = '&#10003;';
-      return '<div class="opt ' + cls + '"><div class="opt-mark">' + mark + '</div>' + RevisionFlow.sanitize(opt.text) + '</div>';
+      var cls=LedgerAnswerMatch.optionClass(opt,d);
+      var mark=cls==='chosen-correct'||cls==='right-unchosen'?'&#10003;':cls==='chosen-wrong'?'&#10007;':'';
+      return '<div class="opt '+cls+'"><div class="opt-mark">'+mark+'</div>'+RevisionFlow.sanitize(opt.text)+'</div>';
     }).join('');
   }
 
@@ -695,12 +687,18 @@
       '<span class="stamp xp">' + (d.is_correct ? ('+' + XP_PER_Q + ' XP') : (isReviewed ? ('+' + XP_PER_Q + ' XP') : '0 XP')) + '</span>';
     var approvedTopics=window.LedgerSyllabus&&META?LedgerSyllabus.resolve(localStorage,META.subject).topics:[];
     var displayedTopic=approvedTopics.some(function(n){return n.toLowerCase()===String(d.chapter||'').toLowerCase();})?d.chapter:(d.topic_status==='outside'?'Outside this paper syllabus':d.topic_status==='unreadable'?'Unclear source — needs verification':'Topic not classified');
-    tags += '<span class="stamp">' + ChapterUI.escape(displayedTopic) + '</span>';
+    tags += '<span class="stamp">' + ChapterUI.escape(displayedTopic) + (d.topic_status==='related'?' · RELATED TECHNIQUE':'') + '</span>';
     if(isReviewed){
       tags += '<span class="stamp reviewed">Reviewed</span>';
     }
 
     var body = '<div class="qtext">' + RevisionFlow.sanitize(d.qtext) + '</div>';
+    var visualQuestion=/\[Image unavailable|<img\b|(?:type of|following|shown|given).*?(?:graph|chart|diagram|figure)/i.test(String(d.qtext||''));
+    if(visualQuestion){
+      body += '<div class="figure-attach"><label>Original question figure / screenshot (optional replacement)'+
+        '<input type="file" class="source-image-file" data-qno="'+d.qno+'" accept="image/png,image/jpeg,image/webp,image/gif" aria-label="Attach original figure for question '+d.qno+'"></label>'+
+        '<small>TYMBAFlex exports may omit images. Attach the original screenshot here; LedgerPeer stores it with this attempt on this device. Also attach that image to ChatGPT when requesting visual feedback; copied text cannot transfer image pixels.</small></div>';
+    }
     if(d.source_feedback)body+='<details><summary>Original feedback</summary>'+RevisionFlow.sanitize(d.source_feedback)+'</details>';
     body += '<div class="opts">' + markOptions(d) + '</div>';
 
@@ -840,6 +838,38 @@
         showToast('+' + XP_PER_Q + ' XP BANKED — Q' + qno + ' LOCKED IN');
       }
     }
+  });
+
+  // Repair lost diagrams using a local raster screenshot; retain all grading.
+  document.getElementById('qlist').addEventListener('change',function(e){
+    var input=e.target.closest('input.source-image-file');
+    if(!input||!input.files||!input.files[0])return;
+    var qno=String(input.getAttribute('data-qno')),file=input.files[0];
+    if(!/^image\/(?:png|jpeg|webp|gif)$/.test(file.type)||file.size>1200000){
+      showToast('Choose a PNG/JPEG/WEBP/GIF under 1.2 MB');input.value='';return;
+    }
+    var reader=new FileReader();
+    reader.onerror=function(){showToast('Could not read question image');};
+    reader.onload=function(){
+      var data=String(reader.result||'');
+      if(!/^data:image\/(?:png|jpeg|webp|gif);base64,/i.test(data)){showToast('Invalid image');return;}
+      var question=DATA.find(function(d){return String(d.qno)===qno;});
+      if(!question)return;
+      var figure='<img src="'+data+'" alt="Original figure for question '+question.qno+'">';
+      var old=String(question.qtext||'');
+      if(/\[Image unavailable[^\]]*\]/i.test(old))question.qtext=old.replace(/\[Image unavailable[^\]]*\]/i,figure);
+      else if(/<img\b[^>]*>/i.test(old))question.qtext=old.replace(/<img\b[^>]*>/i,figure);
+      else question.qtext=old+'<div>'+figure+'</div>';
+      if(question.topic_status==='unreadable'){
+        question.chapter='';question.topic_status='';question.topic_reason='';
+        ['reasoning','calculation','justification','focus'].forEach(function(k){question[k]='';});
+      }
+      try{
+        RevisionFlow.save(localStorage,'tymba_exam_data:'+examId,DATA);
+        showToast('Figure attached. Reloading review…');location.reload();
+      }catch(err){showToast('Browser storage full. Use a smaller image.');}
+    };
+    reader.readAsDataURL(file);
   });
 
   document.getElementById('filters').addEventListener('click', function(e){
