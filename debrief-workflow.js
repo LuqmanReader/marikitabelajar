@@ -8,7 +8,7 @@
  const escape=F.escape;
  function incomplete(q,meta){
   const allowed=catalog(meta);
-  const matched=allowed.some(t=>t.toLowerCase()===String(q.chapter||'').toLowerCase())&&(q.topic_status==='matched'||!q.topic_status);
+  const matched=allowed.some(t=>t.toLowerCase()===String(q.chapter||'').toLowerCase())&&(q.topic_status==='matched'||q.topic_status==='related'||!q.topic_status);
   const outside=(q.topic_status==='outside'||q.topic_status==='unreadable')&&!String(q.chapter||'').trim();
   return !(matched||outside)||requireFields.some(k=>!String(q[k]||'').trim());
  }
