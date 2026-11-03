@@ -71,15 +71,24 @@
     <details><summary>Advanced · Edit topic names and the topic catalog</summary><div id="chapterEditor"></div></details>`;
   const $=id=>el.querySelector('#'+id);
   function missing(){return data.filter(q=>incomplete(q,meta));}
+  function batch(){
+   const left=missing(),source=left.length?left:data,chosen=[];let chars=0;
+   for(const q of source){
+    const estimate=F.plain(q.qtext).length+F.plain(q.information||'').length+
+      F.plain(q.your_answer||'').length+F.plain(q.correct_answer||'').length+500;
+    if(chosen.length&&(chosen.length>=5||chars+estimate>10000))break;
+    chosen.push(q);chars+=estimate;
+   }
+   return chosen;
+  }
   function updateInfo(){
    const left=missing();const info=M.summary(data,meta.subject);
-   $('debriefProgress').textContent=data.length+' questions saved · '+(data.length-left.length)+' explained and classified · '+left.length+' pending · '+info.coverage.tagged+' approved topic tags for graphs · '+info.coverage.outside+' outside/unreadable.';
+   $('debriefProgress').textContent=data.length+' questions saved · '+(data.length-left.length)+' explained and classified · '+left.length+' pending · '+info.coverage.tagged+' approved topic tags for graphs · '+info.coverage.outside+' outside/unreadable. Requests are limited to 5 questions and about 10k characters of source per batch.';
    $('aiCurrentAnalysis').innerHTML=insights(data,meta.subject)+rankTable(data,meta.subject);
-   $('copyAIRequest').textContent=left.length&&left.length<data.length?'Copy request for '+left.length+' unfinished questions':'Copy complete request';
+   $('copyAIRequest').textContent=left.length?'Copy next '+batch().length+' of '+left.length+' pending questions':'Copy 5-question review batch';
   }
   function makePrompt(){
-    const pending=missing();const selected=pending.length?pending:data;
-    return F.prompt(meta,selected,catalog(meta),data);
+    return F.prompt(meta,batch(),catalog(meta),data);
   }
   function fillPrompt(){
    if(!catalog(meta).length){
