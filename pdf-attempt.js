@@ -174,8 +174,15 @@
     const extracted=pageQuestions||parsePage(txt,i);
     if(layout&&root.LedgerPeerPdfLayout){
      for(const q of extracted){
+      // Keep only compact numerical row evidence for potential visual questions.
+      // This protects mobile browser storage and avoids duplicating whole pages.
+      if(!/\b(?:chart|graph|table|diagram|figure|histogram|illustration|shown below|exhibit)\b/i.test(q.qtext+' '+(q.information||'')))continue;
       const rows=root.LedgerPeerPdfLayout.selectRows(layout.rows,q.qno);
-      if(rows.length)q.pdf_layout_rows=rows;
+      const numbers=rows.filter(r=>r.cells&&r.cells.length>=2&&r.cells.some(c=>/\d/.test(c.text)));
+      if(numbers.length)q.pdf_layout_rows=numbers.slice(0,12).map(row=>({
+       text:row.text.slice(0,200),
+       cells:row.cells.slice(0,8).map(cell=>({text:cell.text.slice(0,65),x:cell.x}))
+      }));
      }
     }
     combined.push(...extracted);
