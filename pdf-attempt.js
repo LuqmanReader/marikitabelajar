@@ -168,19 +168,31 @@
    }
   }finally{if(ocrWorker)await ocrWorker.terminate();}
   if(root.LedgerPeerPdfMarkers)root.LedgerPeerPdfMarkers.attachInformation(combined,pageTexts);
-  return {questions:combined,pages:pdf.numPages};
+  return {questions:combined,pages:pdf.numPages,pageTexts};
  }
  async function save(questions,detected,pdf){
   const graded=questions.filter(x=>typeof x.is_correct==='boolean');
   const correct=graded.filter(x=>x.is_correct).length;
   const id='attempt-'+Date.now()+'-'+Math.random().toString(36).slice(2,9);
-  const meta={id,subject:detected.subject,testType:detected.testType,testNumber:detected.testNumber,setChapter:detected.setChapter||'',setTotal:null,attemptedAt:new Date().toISOString(),createdAt:new Date().toISOString(),sourceFormat:'pdf',total:graded.length,correct,totalQuestions:questions.length,title:(detected.testType==='set'?'Set':detected.testType==='pre'?'Progress Test':'Mock Test')+' '+detected.testNumber,file:'view.html?id='+encodeURIComponent(id),topics:{}};
+  const meta={id,subject:detected.subject,testType:detected.testType,testNumber:detected.testNumber,setChapter:detected.setChapter||'',setTotal:null,attemptedAt:new Date().toISOString(),createdAt:new Date().toISOString(),sourceFormat:'pdf',sourceArchive:'pdf+html',total:graded.length,correct,totalQuestions:questions.length,title:(detected.testType==='set'?'Set':detected.testType==='pre'?'Progress Test':'Mock Test')+' '+detected.testNumber,file:'view.html?id='+encodeURIComponent(id),topics:{}};
   const current=JSON.parse(localStorage.getItem('tymba_custom_exams')||'[]');
   if(!Array.isArray(current))throw Error('Saved attempt list is unavailable.');
   const key='tymba_exam_data:'+id;
-  F.save(localStorage,key,questions);
-  try{F.save(localStorage,'tymba_custom_exams',current.concat([meta]));}
-  catch(e){localStorage.removeItem(key);throw e;}
+  // Preserve BOTH files. HTML is reconstructed from the PDF, not original site markup.
+  const archive=root.LedgerPeerSourceArchive;
+  if(!archive||!state.pending||!state.pending.originalFile)
+    throw Error('The PDF+HTML source archive is not available. Nothing was saved.');
+  const report=archive.audit(questions,pdf.pageTexts||[]);
+  const html=archive.buildHtml(questions,meta,report);
+  await archive.put({id,pdf:state.pending.originalFile,html,report});
+  try{
+   F.save(localStorage,key,questions);
+   F.save(localStorage,'tymba_custom_exams',current.concat([meta]));
+  }catch(e){
+   localStorage.removeItem(key);
+   await archive.remove(id).catch(()=>{});
+   throw e;
+  }
   progress(pdf.pages,pdf.pages,'Saved '+questions.length+' questions. Opening ChatGPT debrief workflow…');
   location.href=meta.file+'#chatgpt-debrief';
  }
@@ -188,6 +200,18 @@
   const host=$('pdfVerify');host.hidden=false;host.replaceChildren();
   const title=document.createElement('h2');title.textContent='Review the PDF scan';host.appendChild(title);
   const explanation=document.createElement('p');explanation.textContent='Selected paper: '+detected.subject+' · '+questions.length+' questions detected. Confirm the marks and questions below. LedgerPeer uses your selected paper, not an automatic guess from the PDF.';host.appendChild(explanation);
+  const report=state.pending&&state.pending.report;
+  if(report){
+   const audit=document.createElement('details');
+   const summary=document.createElement('summary');
+   summary.textContent=report.issues.length+' extraction warnings · '+report.visualQuestions.length+' potential visual questions (open to review)';
+   audit.appendChild(summary);
+   const p=document.createElement('p');p.textContent='The HTML reading copy is derived from this PDF. Compare uncertain wording, answers and charts with the ORIGINAL PDF; this scan does not independently verify visual content.';audit.appendChild(p);
+   const ul=document.createElement('ul');
+   for(const issue of report.issues.slice(0,80)){const li=document.createElement('li');li.textContent=issue;ul.appendChild(li);}
+   for(const qno of report.visualQuestions.slice(0,40)){const li=document.createElement('li');li.textContent='Q'+qno+': possible graph, table or figure; inspect original PDF page.';ul.appendChild(li);}
+   audit.appendChild(ul);host.appendChild(audit);
+  }
   const list=document.createElement('div');list.className='pdf-scan-list';host.appendChild(list);
   for(const q of questions){
    const card=document.createElement('details');card.className='pdf-scan-question';
@@ -285,7 +309,8 @@
     if(check.unreadable.length)details.push('unreadable question text '+check.unreadable.join(', '));
     throw Error('Some pages need a clearer PDF ('+details.join('; ')+'). No incomplete attempt was saved.');
    }
-   state.pending={questions:check.ordered,detected:detected,result:result};
+   const report=root.LedgerPeerSourceArchive?root.LedgerPeerSourceArchive.audit(check.ordered,result.pageTexts||[]):{issues:[],visualQuestions:[]};
+   state.pending={questions:check.ordered,detected:detected,result:result,originalFile:file,report};
    renderVerification(check.ordered,detected);
    note('Extracted '+check.ordered.length+' questions. '+check.ordered.filter(q=>q.your_answer).length+' submitted answers detected; '+autoTopics+' provisional topic suggestions. Check selected answers, grades, and topics. Expand any question to correct OCR mistakes.'+(check.ungraded.length?' Marking needs confirmation for questions '+check.ungraded.join(', ')+'.':'')+(check.unreadable.length?' Some question text is unclear; attach the original PDF in ChatGPT for verification.':''));
   }catch(e){note('Could not import PDF: '+(e&&e.message?e.message:String(e)));}
