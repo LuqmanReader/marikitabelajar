@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="popup.css">
 <script defer src="popup.js"></script>
 <script defer src="review-capture-popup.js"></script>
+<script defer src="review-figure-popup.js"></script>
 </head>
 <body>
 <main>
@@ -25,6 +26,8 @@
   <div class="review-title">QUIZ REVIEW → LEDGERPEER</div>
   <p>Open a <strong>finished quiz's Review</strong> page on ILE or Group B. Capture only the question result labels (correct, wrong, partial, ungraded)—not answers or question text.</p>
   <button id="captureReview" type="button" class="review-button">CAPTURE CURRENT QUIZ REVIEW</button>
+  <button id="exportReviewWithImages" type="button" class="review-button">EXPORT FULL REVIEW WITH IMAGES</button>
+  <p id="figureExportStatus" class="review-status" role="status" aria-live="polite"></p>
   <div class="review-footer"><span id="captureCount" aria-live="polite">No reviews captured yet.</span><button id="clearCaptures" type="button">CLEAR</button></div>
   <p id="captureStatus" class="review-status" role="status" aria-live="polite"></p>
   <a href="https://luqmanreader.github.io/marikitabelajar/tymbaflex-revision.html" target="_blank" rel="noopener noreferrer">SYNC CAPTURES IN LEDGERPEER ↗</a>
