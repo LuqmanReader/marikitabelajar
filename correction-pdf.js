@@ -96,7 +96,7 @@
   const margin=46,top=53,bottom=59,width=A4[0]-margin*2;
   let page,y,section=0;
   function newPage(){
-   page=out.addPage(A4);section++;
+   page=out.addPage();page.setSize(A4[0],A4[1]);section++;
    y=A4[1]-top;
    page.drawText(DOC_TITLE,{x:margin,y:A4[1]-32,size:10,font:bold,color:ink});
    page.drawLine({start:{x:margin,y:A4[1]-38},end:{x:A4[0]-margin,y:A4[1]-38},thickness:0.7,color:grey});
