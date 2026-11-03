@@ -145,8 +145,16 @@
     progress(i-1,pdf.numPages,'Reading PDF page '+i+' of '+pdf.numPages+'…');
     const page=await pdf.getPage(i);
     const layer=await page.getTextContent();
-    let txt=layer.items.map(x=>x.str+(x.hasEOL?'\n':' ')).join('');
-    let pageQuestions=null;
+    const rawText=layer.items.map(x=>x.str+(x.hasEOL?'\n':' ')).join('');
+    const layout=root.LedgerPeerPdfLayout?root.LedgerPeerPdfLayout.extract(layer):null;
+    // Keep whichever extraction identifies more numbered questions. The layout
+    // pass preserves selectable text rows, avoiding accidental word concatenation.
+    const seq=parsePage(rawText,i);
+    const structured=layout?parsePage(layout.text,i):[];
+    const useLayout=structured.length>seq.length||(structured.length===seq.length&&structured.length>0);
+    let txt=useLayout?layout.text:rawText;
+    let pageQuestions=useLayout?structured:seq;
+    let sourceMethod=useLayout?'pdf-text-coordinate-layout':'pdf-sequence';
     if(txt.length<100||!/^\s*Question\s+\d{1,3}\b/im.test(txt)){
      if(!root.Tesseract)await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js');
      if(!ocrWorker){note('Preparing on-device PDF image reader…');ocrWorker=await root.Tesseract.createWorker('eng');}
@@ -157,13 +165,21 @@
      const result=await ocrWorker.recognize(canvas,{}, {text:true,tsv:true});
      txt=result.data.text;
      pageQuestions=parsePage(txt,i);
+     sourceMethod='ocr-fallback';
      if(root.LedgerPeerPdfMarkers&&result.data.tsv){
       root.LedgerPeerPdfMarkers.capture(canvas,result.data.tsv,pageQuestions);
      }
      canvas.width=canvas.height=0;
     }
-    combined.push(...(pageQuestions||parsePage(txt,i)));
-    pageTexts.push({page:i,text:txt});
+    const extracted=pageQuestions||parsePage(txt,i);
+    if(layout&&root.LedgerPeerPdfLayout){
+     for(const q of extracted){
+      const rows=root.LedgerPeerPdfLayout.selectRows(layout.rows,q.qno);
+      if(rows.length)q.pdf_layout_rows=rows;
+     }
+    }
+    combined.push(...extracted);
+    pageTexts.push({page:i,text:txt,sourceMethod});
     progress(i,pdf.numPages,'Read page '+i+'/'+pdf.numPages+' · '+combined.length+' questions detected.');
    }
   }finally{if(ocrWorker)await ocrWorker.terminate();}
