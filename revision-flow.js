@@ -93,6 +93,12 @@
       }
       fields.forEach(function(k){if(own(q,k))item[k]=textField(q[k],k);});
       if(own(q,'debrief'))item.debrief=textField(q.debrief,'debrief');
+      if(own(q,'forecast'))item.forecast=textField(q.forecast,'forecast');
+      if(own(q,'evidence_status')){
+        if(!['supported','tentative','insufficient'].includes(q.evidence_status))
+          throw new Error('Q'+n+': evidence_status must be supported, tentative or insufficient.');
+        item.evidence_status=q.evidence_status;
+      }
       ['is_correct','qtext','options','your_answer','correct_answer'].forEach(function(k){
         if(own(q,k)&&JSON.stringify(q[k])!==JSON.stringify(original[k]))warnings.push('Q'+n+': a changed answer or mark was ignored.');
       });
@@ -102,7 +108,7 @@
     if(!data.exam_id)warnings.push('Legacy response: no attempt ID supplied. Check the question preview before saving.');
     if(incoming.length<questions.length)warnings.push('Partial response: '+incoming.length+' of '+questions.length+' questions supplied. Other questions will keep their saved feedback.');
     var merged=root.ChapterAnalysis.merge(questions,accepted);
-    merged.forEach(function(q){var change=accepted.find(function(p){return String(p.qno)===String(q.qno);});if(change){fields.forEach(function(k){if(own(change,k))q[k]=change[k];});if(own(change,'chapter')&&change.chapter){q.topic_origin='ai-debrief';q.topic_evidence='';}}});
+    merged.forEach(function(q){var change=accepted.find(function(p){return String(p.qno)===String(q.qno);});if(change){fields.forEach(function(k){if(own(change,k))q[k]=change[k];});if(own(change,'forecast'))q.forecast=change.forecast;if(own(change,'evidence_status'))q.evidence_status=change.evidence_status;if(own(change,'chapter')&&change.chapter){q.topic_origin='ai-debrief';q.topic_evidence='';}}});
     var coverage=root.ChapterAnalysis.summary(merged,meta.subject).coverage;
     if(coverage.untagged)warnings.push(coverage.untagged+' scored questions still need a topic tag. They will not count toward topic accuracy.');
     var missing=merged.filter(function(q){return q.is_correct===false&&!hasFeedback(q);}).length;
@@ -112,7 +118,7 @@
   function hasFeedback(q){return fields.slice(0,3).some(function(k){return typeof q[k]==='string'&&q[k].trim();})||!!(q.debrief&&q.debrief.trim());}
   function feedback(q){
     if(fields.slice(0,3).some(function(k){return q[k]&&q[k].trim();})){
-      return (q.topic_reason?'<section class="feedback-part"><h4>Why this ACCA syllabus topic?</h4><div>'+esc(q.topic_reason).replace(/\n/g,'<br>')+'</div></section>':'')+[ ['reasoning','Reasoning'],['calculation','Calculation'],['justification','Justification']].map(function(p){return '<section class="feedback-part"><h4>'+p[1]+'</h4><div>'+esc(q[p[0]]||'Not provided yet.').replace(/\n/g,'<br>')+'</div></section>';}).join('')+(q.focus?'<div class="focus-note"><strong>Practise next:</strong> '+esc(q.focus)+'</div>':'');
+      return (q.topic_reason?'<section class="feedback-part"><h4>Why this ACCA syllabus topic?</h4><div>'+esc(q.topic_reason).replace(/\n/g,'<br>')+'</div></section>':'')+[ ['reasoning','Reasoning'],['calculation','Calculation'],['justification','Justification']].map(function(p){return '<section class="feedback-part"><h4>'+p[1]+'</h4><div>'+esc(q[p[0]]||'Not provided yet.').replace(/\n/g,'<br>')+'</div></section>';}).join('')+(q.forecast?'<section class="feedback-part"><h4>Forecast · '+esc(q.evidence_status||'unverified')+'</h4><div>'+esc(q.forecast).replace(/\n/g,'<br>')+'</div></section>':'')+(q.focus?'<div class="focus-note"><strong>Practise next:</strong> '+esc(q.focus)+'</div>':'');
     }
     return q.debrief?sanitize(q.debrief):'<p>Answer review is ready. Import the AI response to add reasoning, calculation and justification.</p>';
   }
@@ -121,6 +127,8 @@
   // Compact prompt. The caller passes a small batch of questions rather than the full exam.
   // Preserve the complete source wording for each selected question; do not silently truncate.
   function prompt(meta,questions,catalog,signatureSource){
+    if(root.LedgerPeerPromptInjector&&typeof root.LedgerPeerPromptInjector.build==='function')
+      return root.LedgerPeerPromptInjector.build(meta,questions,catalog,signatureSource);
     if(!Array.isArray(catalog)||!catalog.length)throw new Error('Configure the verified syllabus for '+meta.subject+' first.');
     if(!questions.length)throw new Error('No questions selected for the debrief.');
     const source=root.LedgerSyllabus?root.LedgerSyllabus.resolve(localStorage,meta.subject):{};
