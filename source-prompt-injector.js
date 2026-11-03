@@ -15,7 +15,10 @@
  }
  function short(value,max){const text=plain(value);return text.length>max?text.slice(0,max)+' [additional source text omitted]':text;}
  function markupHints(q){
-  const markup=[q.qtext,q.information].concat((q.options||[]).map(o=>o.text)).map(x=>String(x||'')).join('\n');
+  const markup=[q.qtext,q.information].concat((q.options||[]).map(o=>o.text)).map(x=>String(x||'')).join('\n')
+   .replace(/<script\b[^>]*>[\s\S]*?<\/script\s*>/gi,' ')
+   .replace(/<style\b[^>]*>[\s\S]*?<\/style\s*>/gi,' ')
+   .replace(/<!--[\s\S]*?-->/g,' ');
   const tables=[],images=[],svgLabels=[],math=[];
   for(const match of markup.matchAll(/<table\b[^>]*>[\s\S]*?<\/table\s*>/gi)){
    if(tables.length>=2)break;
