@@ -6,7 +6,7 @@
   'use strict';
   const DB='ledgerpeer-attempt-source-archive', STORE='sources', VERSION=1;
   const escape=value=>String(value==null?'':value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const plain=value=>String(value==null?'':value).replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
+  const plain=value=>String(value==null?'':value).replace(/<script\b[^>]*>[\s\S]*?<\/script\s*>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style\s*>/gi,' ').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
   function openDb(){
     if(!root.indexedDB)return Promise.reject(Error('This browser does not support local source archiving.'));
     return new Promise((resolve,reject)=>{
@@ -81,7 +81,12 @@
        '<p><strong>Student answer:</strong> '+escape(plain(q.your_answer)||'[Not captured]')+'</p>'+
        '<p><strong>Recorded answer:</strong> '+escape(plain(q.correct_answer)||'[Not captured]')+'</p>'+
        (q.information?'<p><strong>Shared information:</strong> '+escape(plain(q.information))+'</p>':'')+
-       (q.visual_review_required?'<p class="warning">Potential chart/table/figure: verify against original PDF page.</p>':'')+'</article>';
+       (q.visual_review_required?'<p class="warning">Potential chart/table/figure: verify against original PDF page.</p>':'')+
+       (Array.isArray(q.pdf_layout_rows)&&q.pdf_layout_rows.length?
+        '<details><summary>PDF text-coordinate evidence (not chart pixels)</summary><pre>'+
+        escape(q.pdf_layout_rows.map(row=>row.cells.map(c=>c.text+' @x'+Math.round(c.x)).join('  |  ')).join('\n'))+
+        '</pre><p>Positions are encoded text locations only; they cannot confirm bar heights, chart types or missing images.</p></details>':'')+
+       '</article>';
     }).join('\n');
     const issues=report&&report.issues?report.issues:[];
     return '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+
