@@ -53,7 +53,7 @@
     </label><button type="button" class="flow-button secondary" id="saveAttemptSubject">Save paper change</button></div>
     <p id="debriefProgress" class="flow-muted"></p>
     <section class="flow-path"><h3>Step 1 · Copy the question request</h3>
-      <p>Click Copy Request, open ChatGPT, and paste it. <strong>${isPdf?'Attach the same original PDF in ChatGPT':'Attach the original marked exam PDF if available'}</strong> so figures, tables and answers can be verified against the source rather than unreliable OCR. Ask ChatGPT to return the <strong>complete JSON</strong>.</p>
+      <p>Click Copy Request, open ChatGPT and paste the compact, code-aware request. LedgerPeer includes available HTML structures and text evidence automatically. <strong>No vision analysis is required.</strong> A chart without encoded values must be labelled insufficient rather than guessed. Paste the returned JSON back into LedgerPeer.</p>
       <div class="flow-actions"><button type="button" class="flow-button primary" id="copyAIRequest">Copy complete request</button><a class="flow-button secondary" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT ↗</a><button type="button" class="flow-button secondary" id="downloadAIRequest">Download request .txt</button></div>
       <details><summary>View / manually copy your AI request</summary><textarea id="requestText" rows="7" readonly aria-label="Prepared request"></textarea></details>
     </section>
@@ -71,15 +71,25 @@
     <details><summary>Advanced · Edit topic names and the topic catalog</summary><div id="chapterEditor"></div></details>`;
   const $=id=>el.querySelector('#'+id);
   function missing(){return data.filter(q=>incomplete(q,meta));}
+  function batch(){
+   const left=missing(),source=left.length?left:data,chosen=[];let chars=0;
+   for(const q of source){
+    const estimate=root.LedgerPeerPromptInjector?root.LedgerPeerPromptInjector.estimate(q,meta):
+      F.plain(q.qtext).length+F.plain(q.information||'').length+
+      F.plain(q.your_answer||'').length+F.plain(q.correct_answer||'').length+500;
+    if(chosen.length&&(chosen.length>=5||chars+estimate>10000))break;
+    chosen.push(q);chars+=estimate;
+   }
+   return chosen;
+  }
   function updateInfo(){
    const left=missing();const info=M.summary(data,meta.subject);
-   $('debriefProgress').textContent=data.length+' questions saved · '+(data.length-left.length)+' explained and classified · '+left.length+' pending · '+info.coverage.tagged+' approved topic tags for graphs · '+info.coverage.outside+' outside/unreadable.';
+   $('debriefProgress').textContent=data.length+' questions saved · '+(data.length-left.length)+' explained and classified · '+left.length+' pending · '+info.coverage.tagged+' approved topic tags for graphs · '+info.coverage.outside+' outside/unreadable. The code-aware injector prepares up to 5 questions per request, with about 10k source characters per batch.';
    $('aiCurrentAnalysis').innerHTML=insights(data,meta.subject)+rankTable(data,meta.subject);
-   $('copyAIRequest').textContent=left.length&&left.length<data.length?'Copy request for '+left.length+' unfinished questions':'Copy complete request';
+   $('copyAIRequest').textContent=left.length?'Copy next '+batch().length+' of '+left.length+' pending questions':'Copy 5-question review batch';
   }
   function makePrompt(){
-    const pending=missing();const selected=pending.length?pending:data;
-    return F.prompt(meta,selected,catalog(meta),data);
+    return F.prompt(meta,batch(),catalog(meta),data);
   }
   function fillPrompt(){
    if(!catalog(meta).length){

@@ -9,6 +9,13 @@ on:
       - 'syllabus-catalog.js'
       - 'official-exam-registry.js'
       - 'revision-flow.js'
+      - 'source-archive.js'
+      - 'correction-pdf.js'
+      - 'source-prompt-injector.js'
+      - 'pdf-attempt.js'
+      - 'pdf-layout-evidence.js'
+      - 'pdf-import.html'
+      - 'add-exam.html'
       - 'answer-option-match.js'
       - 'pdf-topic-suggestions.js'
       - 'view.html'
@@ -34,5 +41,15 @@ jobs:
         run: node tests/debrief-image-answer-regression.js
       - name: Test FIA/ACCA PDF attempt import formats
         run: node tests/pdf-parser-regression.js
+      - name: Check coordinate-preserving PDF text evidence
+        run: node tests/pdf-layout-evidence-regression.js
+      - name: Test original PDF plus reconstructed HTML archive and compact prompts
+        run: node tests/dual-source-regression.js
+      - name: Test code-aware prompt interpretation and evidence-grounded forecasting
+        run: node tests/prompt-injector-regression.js
+      - name: Create and inspect real correction PDFs
+        run: |
+          npm install --no-save --package-lock=false --ignore-scripts pdf-lib@1.17.1
+          node tests/correction-pdf-regression.cjs
       - name: Test email confirmation and callback safety
         run: node tests/email-confirmation-regression.js

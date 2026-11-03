@@ -93,6 +93,20 @@
       }
       fields.forEach(function(k){if(own(q,k))item[k]=textField(q[k],k);});
       if(own(q,'debrief'))item.debrief=textField(q.debrief,'debrief');
+      if(own(q,'forecast'))item.forecast=textField(q.forecast,'forecast');
+      if(own(q,'evidence_status')){
+        if(!['supported','tentative','insufficient'].includes(q.evidence_status))
+          throw new Error('Q'+n+': evidence_status must be supported, tentative or insufficient.');
+        item.evidence_status=q.evidence_status;
+      }
+      if(own(item,'forecast')&&!own(item,'evidence_status')){
+        item.evidence_status='tentative';
+        warnings.push('Q'+n+': forecast had no evidence label; downgraded to tentative.');
+      }
+      if(item.evidence_status==='insufficient'&&own(item,'forecast')&&item.forecast.toLowerCase()!=='unavailable'){
+        item.forecast='Unavailable';
+        warnings.push('Q'+n+': unsupported forecast withheld because evidence is insufficient.');
+      }
       ['is_correct','qtext','options','your_answer','correct_answer'].forEach(function(k){
         if(own(q,k)&&JSON.stringify(q[k])!==JSON.stringify(original[k]))warnings.push('Q'+n+': a changed answer or mark was ignored.');
       });
@@ -102,7 +116,7 @@
     if(!data.exam_id)warnings.push('Legacy response: no attempt ID supplied. Check the question preview before saving.');
     if(incoming.length<questions.length)warnings.push('Partial response: '+incoming.length+' of '+questions.length+' questions supplied. Other questions will keep their saved feedback.');
     var merged=root.ChapterAnalysis.merge(questions,accepted);
-    merged.forEach(function(q){var change=accepted.find(function(p){return String(p.qno)===String(q.qno);});if(change){fields.forEach(function(k){if(own(change,k))q[k]=change[k];});if(own(change,'chapter')&&change.chapter){q.topic_origin='ai-debrief';q.topic_evidence='';}}});
+    merged.forEach(function(q){var change=accepted.find(function(p){return String(p.qno)===String(q.qno);});if(change){fields.forEach(function(k){if(own(change,k))q[k]=change[k];});if(own(change,'forecast'))q.forecast=change.forecast;if(own(change,'evidence_status'))q.evidence_status=change.evidence_status;if(own(change,'chapter')&&change.chapter){q.topic_origin='ai-debrief';q.topic_evidence='';}}});
     var coverage=root.ChapterAnalysis.summary(merged,meta.subject).coverage;
     if(coverage.untagged)warnings.push(coverage.untagged+' scored questions still need a topic tag. They will not count toward topic accuracy.');
     var missing=merged.filter(function(q){return q.is_correct===false&&!hasFeedback(q);}).length;
@@ -112,85 +126,58 @@
   function hasFeedback(q){return fields.slice(0,3).some(function(k){return typeof q[k]==='string'&&q[k].trim();})||!!(q.debrief&&q.debrief.trim());}
   function feedback(q){
     if(fields.slice(0,3).some(function(k){return q[k]&&q[k].trim();})){
-      return (q.topic_reason?'<section class="feedback-part"><h4>Why this ACCA syllabus topic?</h4><div>'+esc(q.topic_reason).replace(/\n/g,'<br>')+'</div></section>':'')+[ ['reasoning','Reasoning'],['calculation','Calculation'],['justification','Justification']].map(function(p){return '<section class="feedback-part"><h4>'+p[1]+'</h4><div>'+esc(q[p[0]]||'Not provided yet.').replace(/\n/g,'<br>')+'</div></section>';}).join('')+(q.focus?'<div class="focus-note"><strong>Practise next:</strong> '+esc(q.focus)+'</div>':'');
+      return (q.topic_reason?'<section class="feedback-part"><h4>Why this ACCA syllabus topic?</h4><div>'+esc(q.topic_reason).replace(/\n/g,'<br>')+'</div></section>':'')+[ ['reasoning','Reasoning'],['calculation','Calculation'],['justification','Justification']].map(function(p){return '<section class="feedback-part"><h4>'+p[1]+'</h4><div>'+esc(q[p[0]]||'Not provided yet.').replace(/\n/g,'<br>')+'</div></section>';}).join('')+(q.forecast?'<section class="feedback-part"><h4>Forecast · '+esc(q.evidence_status||'unverified')+'</h4><div>'+esc(q.forecast).replace(/\n/g,'<br>')+'</div></section>':'')+(q.focus?'<div class="focus-note"><strong>Practise next:</strong> '+esc(q.focus)+'</div>':'');
     }
     return q.debrief?sanitize(q.debrief):'<p>Answer review is ready. Import the AI response to add reasoning, calculation and justification.</p>';
   }
   // One request = topic classification and tutor feedback. Graphs, rankings, and
   // strengths/weaknesses are derived from the ORIGINAL marked answers in LedgerPeer.
+  // Compact prompt. The caller passes a small batch of questions rather than the full exam.
+  // Preserve the complete source wording for each selected question; do not silently truncate.
   function prompt(meta,questions,catalog,signatureSource){
-    var type=meta.testType==='set'?'Chapter Set':meta.testType==='pre'?'Progress Test':'Mock Test';
-    var fullFormat=root.LedgerOfficialExamRegistry&&root.LedgerOfficialExamRegistry.get(meta.subject);
-    if(!Array.isArray(catalog)||!catalog.length)throw new Error('Configure the approved ACCA syllabus for '+meta.subject+' before generating this request.');
-    var example={
-      schema:'personal-hub-debrief-v2',
-      exam_id:meta.id,
-      paper:meta.subject,
-      paper_code:root.LedgerSyllabus?root.LedgerSyllabus.code(meta.subject):'',
+    if(root.LedgerPeerPromptInjector&&typeof root.LedgerPeerPromptInjector.build==='function')
+      return root.LedgerPeerPromptInjector.build(meta,questions,catalog,signatureSource);
+    if(!Array.isArray(catalog)||!catalog.length)throw new Error('Configure the verified syllabus for '+meta.subject+' first.');
+    if(!questions.length)throw new Error('No questions selected for the debrief.');
+    const source=root.LedgerSyllabus?root.LedgerSyllabus.resolve(localStorage,meta.subject):{};
+    const reference=root.LedgerOfficialExamRegistry&&root.LedgerOfficialExamRegistry.get(meta.subject);
+    const code=root.LedgerSyllabus?root.LedgerSyllabus.code(meta.subject):'';
+    const payload=questions.map(q=>({
+      qno:q.qno,
+      question:plain(q.qtext),
+      information:plain(q.information||'')||undefined,
+      options:(q.options||[]).map(o=>({text:plain(o.text),chosen:!!o.checked})),
+      student_answer:plain(q.your_answer||'')||null,
+      recorded_answer:plain(q.correct_answer||'')||null,
+      original_grade:q.source_result||(q.is_correct===true?'correct':q.is_correct===false?'incorrect':'unverified'),
+      marks:q.original_marks==null?null:q.original_marks,
+      max_marks:q.original_max_marks==null?null:q.original_max_marks,
+      pdf_page:q.pdf_page||null,
+      visual_review_required:!!q.visual_review_required||/<img\b|\[Image unavailable/i.test(q.qtext||'')||/\b(?:graph|chart|diagram|figure|table)\b/i.test(plain(q.qtext)),
+      answer_capture_status:q.answer_capture_status||'not_captured'
+    }));
+    const responseShape={
+      schema:'personal-hub-debrief-v2',exam_id:meta.id,paper:meta.subject,paper_code:code,
       attempt_signature:signature(signatureSource||questions),
-      questions:[{
-        qno:questions[0].qno,
-        chapter:catalog.length?catalog[0]:'Primary topic name',
-        reasoning:'Explain the concept and how to solve the question.',
-        calculation:'Show working and formulas, or Not applicable.',
-        justification:'Why the recorded correct answer is supported; identify the mistake if wrong.',
-        focus:'One specific thing to practise next.',
-        topic_reason:'Explain how this question matches this official syllabus heading, or why it is outside the selected syllabus.',
-        topic_status:'matched'
-      }]
+      questions:[{qno:questions[0].qno,chapter:'EXACT approved syllabus label or empty',
+        topic_status:'matched',topic_reason:'Short evidence for mapping',
+        reasoning:'Explain concept and approach',calculation:'Steps and formula or Not applicable',
+        justification:'Why answer works; explain the error or uncertainty',focus:'One practice priority'}]
     };
-    var payload=questions.map(function(q){
-      var item={
-        qno:q.qno,
-        result:q.is_correct===true?'correct':q.is_correct===false?'incorrect':'unscored',
-        chapter:q.chapter||'',
-        question:plain(q.qtext),
-        options:(q.options||[]).map(function(o){return {text:plain(o.text),chosen:!!o.checked};}),
-        my_answer:plain(q.your_answer||''),
-        correct_answer:plain(q.correct_answer||''),
-        original_marks:q.original_marks==null?null:q.original_marks,
-        original_max_marks:q.original_max_marks==null?null:q.original_max_marks,
-        pdf_page:q.pdf_page||null,
-        context_information:plain(q.information||''),
-        answer_capture_status:q.answer_capture_status||'not_captured'
-      };
-      if(q.source_feedback){var sourceNote=plain(q.source_feedback);if(sourceNote&&sourceNote!==item.question)item.source_feedback=sourceNote.slice(0,800);}
-      if(q.source_result)item.source_grade=String(q.source_result);
-      if(/<img\b/i.test(q.qtext||'')||(q.options||[]).some(function(o){return /<img\b/i.test(o.text||'');})||/\[Image unavailable/i.test(q.qtext||''))item.image_not_in_text_export=true;
-      return item;
-    });
-    var instruction=[
-      'PAPER SELECTED BY STUDENT (AUTHORITATIVE): '+meta.subject+'. DO NOT deduce, replace or rename the paper from question content or the HTML attempt review.',
-      'ATTEMPT TYPE: '+type+'; number '+meta.testNumber+'.',
-      'OFFICIAL FULL EXAM FORMAT (REFERENCE ONLY; chapter sets and progress tests may be shorter): '+(fullFormat?JSON.stringify(fullFormat.format):'Not yet verified'),
-      'SYLLABUS JURISDICTION / VARIANT REFERENCE: '+(fullFormat?fullFormat.variant:'Not specified')+'. Do not silently substitute another jurisdiction (especially for law or taxation).',
-      'OFFICIAL ACCA EXAM FORMAT REFERENCE: '+(fullFormat?fullFormat.formatSource:'Not available'),
-      'Act as my FIA/ACCA exam debrief tutor and ACCA syllabus topic classifier.',
-      'For EVERY numbered question: (1) choose one specific primary topic, (2) explain the reasoning, (3) show calculations or say Not applicable, (4) justify the recorded answer and explain my mistake if relevant, (5) suggest one practice focus.',
-       'OFFICIAL ACCA SYLLABUS CLASSIFICATION: Use ONLY one exact subtopic label from the official syllabus list for the paper manually chosen by the student. Never invent a chapter, and never force a question under a loosely related topic. For a directly assessed official topic use topic_status "matched". If a question applies an extension or technique not explicitly assessed but is clearly connected to an official topic, use that exact official chapter with topic_status "related" and clearly explain the limit in topic_reason. Only use chapter "" and topic_status "outside" when there is genuinely no defensible syllabus relationship. For illegible source use chapter "" and topic_status "unreadable". Outside/unreadable questions are excluded from topic graphs; original marks never change.',
-       'For EVERY question, explain WHY this official topic is the primary syllabus match in topic_reason. The topic_reason is separate from the working and justification. Questions sharing the same syllabus learning outcome MUST share the same official label.',
-       'Do NOT use examples from another paper as topic labels. The exact allowed syllabus labels below are the single source of truth; choose the same heading for every question testing the same learning outcome.',
-      'The question data comes from the saved HTML attempt-review page. Treat its recorded questions, selected answers, correct answers, marks and grading as the source of truth. A question can be assigned to a topic if its topic is clear from the text even when a figure is missing; indicate the missing visual evidence instead of declaring the entire item unreadable. Never invent figures or re-grade answers.',
-       'IMAGE EVIDENCE: Copying this prompt transfers text, NOT image pixels. For items flagged image_not_in_text_export, inspect the original image file attached alongside this request, or explicitly say the figure is unavailable and request the screenshot. Never claim to have seen a missing image.',
-      'Respect all recorded marks and grading. Never alter question number, score, original recorded correct answer or the marking decision. If a learner-selected choice was not captured from the HTML, never invent it or diagnose its specific mistake.',
-      'Explain EVERY question, including correct ones, in full teaching detail. Give concept, calculations with steps where applicable, justification of the answer, and a specific practice focus. For uncertain source content, state the limitation in the relevant explanation instead of guessing.',
-      'Return ONLY one COMPLETE valid JSON object with every requested question exactly once. No Markdown fences or extra prose. All feedback fields must be strings; calculation must be "Not applicable" if none. If you cannot fit a complete response, return a valid partial JSON for the questions you finished (never malformed/truncated JSON). LedgerPeer will prepare a continuation request for missing questions.',
-      'Do not calculate scores, topic percentages, strengths, weaknesses or graphs. LedgerPeer calculates those from the ORIGINAL marks.',
-      '',
-      'RESPONSE SHAPE (illustrative example first item only; use the ACTUAL matching topic for each question rather than repeating its example topic):',
-      JSON.stringify(example,null,2),
-      '',
-      'ATTEMPT: '+meta.title,
-      'STUDENT-SELECTED PAPER CODE: '+(root.LedgerSyllabus?root.LedgerSyllabus.code(meta.subject):'unknown'),
-      'APPROVED SYLLABUS SOURCE: '+(root.LedgerSyllabus?root.LedgerSyllabus.resolve(localStorage,meta.subject).source:'Not configured'),
-      'APPROVED SYLLABUS EDITION: '+(root.LedgerSyllabus?root.LedgerSyllabus.resolve(localStorage,meta.subject).version:'Not configured'),
-      'SET TARGET SYLLABUS TOPIC: '+(meta.testType==='set'?(catalog.some(function(topic){return topic.toLowerCase()===String(meta.setChapter||'').toLowerCase();})?meta.setChapter:'Not selected or not verified against this paper syllabus'):'Not applicable'),
-      'For a Chapter Set, use the selected target topic as context, not as a blind override: check each actual question before assigning it. For Progress/Mock, use the full paper syllabus below.',
-      'APPROVED ACCA SYLLABUS FOR '+meta.subject+': '+(catalog.length?JSON.stringify(catalog):'NO APPROVED SYLLABUS LIST; DO NOT GENERATE TOPIC LABELS'),
-      'QUESTION DATA:',
-      JSON.stringify(payload)
-    ];
-    return instruction.join('\n');
+    return [
+      'LEDGERPEER · FIA/ACCA EXAM DEBRIEF (small batch; return JSON only)',
+      'Paper: '+meta.subject+' ('+code+'). Exam: '+(meta.testType==='set'?'Chapter Set':meta.testType==='pre'?'Progress Test':'Mock Test')+' '+meta.testNumber+'.',
+      'Syllabus edition: '+(source.version||'not specified')+'. Variant: '+(reference&&reference.variant||'not specified')+'.',
+      'Allowed topic headings (use EXACT label only): '+JSON.stringify(catalog),
+      'Task: For each of the '+questions.length+' questions, give concise but complete reasoning, full numbered workings for calculations, justification, one revision focus, and brief topic evidence.',
+      'Topic status: matched or related with an exact listed chapter; outside or unreadable with chapter "". Never force a topic or invent a chapter.',
+      'Treat the ORIGINAL marks, student answers and recorded answer key as source records, not as AI-generated grading. If the key seems wrong, flag the dispute in justification with workings; never silently alter the original marks.',
+      'PDF and reconstructed HTML refer to the SAME original file: agreement is not independent verification. HTML may omit figures. For any visual question, check the attached ORIGINAL PDF page if provided; otherwise explicitly state that visual evidence is missing and do not guess.',
+      'Never invent a missing learner-selected answer, figure, chart value or explanation. Keep explanations proportionate to question complexity.',
+      'Return a single valid JSON object with this schema (substitute real answers and real topics): '+JSON.stringify(responseShape),
+      'Do not copy question text or marks into your output. Do not return scores, graphs, Markdown or additional prose.',
+      'QUESTIONS: '+JSON.stringify(payload)
+    ].join('\n');
   }
   function save(storage,key,value){
     var encoded=JSON.stringify(value);storage.setItem(key,encoded);
