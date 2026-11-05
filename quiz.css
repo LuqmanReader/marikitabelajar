@@ -65,3 +65,27 @@ button.primary{background:var(--yellow)}.buttons button:hover,.buttons a:hover,.
 .choices{grid-template-columns:1fr 1fr}
 .choice{align-items:flex-start;line-height:1.5}
 @media(max-width:800px){.choices{grid-template-columns:1fr}}
+
+/* Chapter practice: readable difficulty settings, assessed-outcome gap reports,
+   and a single-question workspace with accessible question navigation. */
+.fields{grid-template-columns:repeat(3,minmax(0,1fr))}
+.fields select{min-height:48px}
+.chapter-coverage{padding:16px 18px;margin:17px 0 19px;background:#f7f7f2;border:2px solid #2c2c2c}
+.chapter-coverage h3{font:900 15px/1.4 Arial,Helvetica,sans-serif;margin:0 0 9px}
+.chapter-coverage h4{font:800 13px/1.4 Arial,Helvetica,sans-serif;margin:15px 0 5px}
+.chapter-coverage p{font:500 12px/1.65 Arial,Helvetica,sans-serif;margin:5px 0}
+.question-navigator{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0 9px}
+.question-jump{border:2px solid #222;background:#fff;padding:0;min-width:38px;height:38px;font-size:12px;font-weight:800}
+.question-jump.answered{background:#deded7}
+.question-jump.flagged{box-shadow:inset 0 0 0 3px #df9a21}
+.question-jump.current{background:#1d3fa0;color:white;border-color:#1d3fa0;outline:2px solid #111;outline-offset:2px}
+.question-jump.marked-correct{border-color:#197344}
+.question-jump.marked-wrong{border-color:#b33127}
+.question-jump:focus-visible,.pager button:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+.pager{display:flex;justify-content:space-between}
+.pager button:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
+.question[hidden]{display:none!important}
+#questionState{margin:7px 0 0}
+#questions .question{border-top:0}
+@media(max-width:900px){.fields{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.fields{grid-template-columns:1fr}.question-jump{min-width:33px;height:33px}.pager{gap:8px}.pager button{flex:1;padding:9px 7px}}
