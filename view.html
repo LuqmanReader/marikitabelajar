@@ -736,6 +736,9 @@
     }
 
     var body = '<div class="qtext">' + RevisionFlow.sanitize(d.qtext) + '</div>';
+    if(d.ocr_extracted){
+      body += '<p role="note" style="padding:8px 10px;border:2px solid #a16207;background:#fff3ca;font-size:11px;font-weight:800">Image-only PDF · OCR transcription. Question text, answer choices and any graph/table need comparison with the original page. Exam marks were separately reconciled.</p>';
+    }
     if(Array.isArray(d.source_pdf_pages)&&d.source_pdf_pages.length){
       body += '<button type="button" class="source-page-open" data-source-page="'+Number(d.source_pdf_pages[0])+'">Open source page '+Number(d.source_pdf_pages[0])+'</button>';
       body += '<p style="font-size:11px;font-weight:700">PDF text and marks may not preserve answer selection, tables or diagrams. Check the original before using this result.</p>';
@@ -752,7 +755,7 @@
     if(d.is_correct===false){
       body += '<div class="compare">' +
         '<div class="box wrong"><div class="box-lbl">Your Answer</div><p>' + RevisionFlow.sanitize(d.your_answer||'Not captured') + '</p></div>' +
-        '<div class="box right"><div class="box-lbl">Correct Answer</div><p>' + RevisionFlow.escape(d.correct_answer) + '</p></div>' +
+        '<div class="box right"><div class="box-lbl">' + (d.ocr_extracted?'OCR ANSWER TEXT · VERIFY SOURCE':'Correct Answer') + '</div><p>' + (d.ocr_extracted&&!d.correct_answer?'Not reliably extracted — check the original PDF':RevisionFlow.escape(d.correct_answer)) + '</p></div>' +
       '</div>';
 
       body += '<div class="debrief"><div class="debrief-head"><span class="pin"></span>Debrief &amp; Working</div>' +
@@ -844,7 +847,7 @@
     var sourceInfo=document.getElementById('markSourceSummary');
     if(sourceInfo){
       if(META&&Number.isFinite(META.originalEarnedMarks)&&Number.isFinite(META.originalPossibleMarks)&&META.originalPossibleMarks>0){
-        sourceInfo.textContent='Original source marks: '+META.originalEarnedMarks+' / '+META.originalPossibleMarks+
+        sourceInfo.textContent=(META.ocrUsed?'OCR-RECONCILED · ':'')+'Original source marks: '+META.originalEarnedMarks+' / '+META.originalPossibleMarks+
           ' (including partial credit). The score card above shows fully correct questions, not weighted exam marks.';
       }else if(META&&Number.isFinite(META.markCoverage)&&META.markCoverage>0){
         sourceInfo.textContent='Original marks identified on '+META.markCoverage+' / '+DATA.length+
