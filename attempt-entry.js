@@ -166,11 +166,22 @@
         }
       }
       if(versionAtStart!==inputVersion||readerMode()!==selectedMode)throw new Error('Inputs changed while extraction was running. Choose Extract answer review again.');
+      if(meta.sourceType==='pdf-html'&&result&&!result.reconciliation){
+        // Conversion succeeds even if no exam-grade format can be recognized.
+        // Keep visual evidence and extracted text; never invent score records.
+        $('entryPreview').innerHTML='<p><strong>HTML conversion is ready for download.</strong> '+result.pageCount+
+          ' PDF pages preserved with searchable text where available. '+(result.questions||[]).length+
+          ' potential question blocks detected. No verified assessment grade was found, so exam saving remains disabled.</p>'+
+          '<p>Review the converted HTML alongside the original PDF. This document can be converted independently of its institution or assessment format.</p>';
+        $('saveAttempt').disabled=true;
+        message('PDF → HTML complete. Download the report above. No verified exam grade was detected; nothing was invented.');
+        return;
+      }
       qs=validateQuestions(qs,meta);
       var suggestions=window.LedgerTopicSuggest?LedgerTopicSuggest.apply(qs,meta.subject,localStorage):0;
       var graded=qs.filter(function(q){return typeof q.is_correct==='boolean';});
       var correct=graded.filter(function(q){return q.is_correct;}).length;
-      if(meta.sourceType!=='html'&&!graded.length)throw new Error('No verifiable marked results in this PDF. Import the marked attempt HTML instead; no marks have been invented.');
+      if(meta.sourceType!=='html'&&!graded.length)throw new Error('This document has no confirmed marked exam results. Select PDF → HTML to convert every page without requiring a score; no marks will be invented.');
       meta.correct=correct;meta.total=graded.length;meta.totalQuestions=qs.length;
       var sourceMarks=qs.filter(function(q){
         return Number.isFinite(q.original_marks)&&Number.isFinite(q.original_max_marks)&&q.original_max_marks>0&&q.original_marks>=0&&q.original_marks<=q.original_max_marks;
