@@ -376,7 +376,10 @@
   sourceLabel.appendChild(file);panel.appendChild(sourceLabel);
   const sourceStatus=document.createElement('p');sourceStatus.className='flow-muted';sourceStatus.textContent='Checking for an archived PDF on this device…';panel.appendChild(sourceStatus);
   let archivedPdf=null;
-  if(root.LedgerPeerSourceArchive){
+  if(root.LedgerPeerPdfProof&&typeof root.LedgerPeerPdfProof.get==='function'){
+   try{archivedPdf=await root.LedgerPeerPdfProof.get(meta.id);}
+   catch(e){sourceStatus.textContent='Could not read the local original PDF: '+e.message;}
+  }else if(root.LedgerPeerSourceArchive){
    try{const record=await root.LedgerPeerSourceArchive.get(meta.id);if(record&&record.pdf)archivedPdf=record.pdf;}
    catch(e){sourceStatus.textContent='Unable to access the original-PDF archive: '+e.message;}
   }
