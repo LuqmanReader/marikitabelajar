@@ -116,6 +116,19 @@ async function repairLegacyOcr(id,meta,list){
   saved[pos]=nextMeta;
   RevisionFlow.save(localStorage,'tymba_exam_data:'+id,combined);
   RevisionFlow.save(localStorage,'tymba_custom_exams',saved);
+  var auth=root.PersonalHubAuth;
+  if(auth&&typeof auth.sync==='function'){
+    try{
+      var synced=await auth.sync(true);
+      if(synced===false){
+        update('Recovered '+graded+' question grades locally, but cloud backup is pending. Use Resume once your connection is restored.',true);
+        return true;
+      }
+    }catch(syncError){
+      update('OCR repair saved locally, but cloud backup is unavailable: '+String(syncError.message||syncError),true);
+      return true;
+    }
+  }
   update('Recovered '+graded+'/'+combined.length+' question grades from the original PDF evidence. Opening the corrected debrief…',false);
   location.replace('view.html?id='+encodeURIComponent(id)+'&autodebrief=1&ocrrepaired=1');
   return true;
