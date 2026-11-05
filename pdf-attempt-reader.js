@@ -124,8 +124,10 @@ async function read(source,onProgress){
     for(var i=1;i<=pdf.numPages;i++){
       if(onProgress)onProgress('Inspecting page '+i+' / '+pdf.numPages);
       var page=await pdf.getPage(i),content=await page.getTextContent();
-      var lines=linesOf(content.items),confidence=null,requiresOcr=!lines.length||
-        (!lines.some(function(t){return /\bquestion\b|\bmark\b/i.test(t);})&&lines.length<8);
+      var lines=linesOf(content.items),confidence=null;
+      // OCR selection is based on text-layer presence, not exam vocabulary.
+      // Ordinary reports and documents must not require "Question" or "Mark".
+      var requiresOcr=!lines.length||lines.join(' ').length<18;
       if(requiresOcr){
         if(!worker){
           if(onProgress)onProgress('This PDF has image-only pages. Loading local-browser OCR engine…');
