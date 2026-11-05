@@ -2,13 +2,13 @@
   'use strict';
   var $=function(id){return document.getElementById(id);}, F=RevisionFlow;
   SubjectCatalog.fill($('subjectSelect'));
-  var staged=null,source='',sourceFile=null,originalPdf=null,conversionUrl=null,fileVersion=0,reading=false;
+  var staged=null,source='',sourceFile=null,originalPdf=null,convertedHtml=null,conversionUrl=null,fileVersion=0,reading=false;
   var localNow=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,16);
   $('attemptDate').value=localNow;
   function message(text){$('entryMessage').textContent=text;}
   function readerMode(){return document.querySelector('input[name="readerMode"]:checked').value;}
   function invalidate(){
-    staged=null;$('saveAttempt').disabled=true;$('entryPreview').innerHTML='';
+    staged=null;convertedHtml=null;$('saveAttempt').disabled=true;$('entryPreview').innerHTML='';
     $('pdfReviewGate').hidden=true;$('acknowledgePdf').checked=false;
     $('conversionResult').hidden=true;
     if(conversionUrl){URL.revokeObjectURL(conversionUrl);conversionUrl=null;}
@@ -139,7 +139,7 @@
       if(readerMode()==='html'){
         pdfRecord=window.LedgerPeerPdfReader&&LedgerPeerPdfReader.parseConvertedHtml(source);
         qs=pdfRecord?pdfRecord.questions:parseHtml(source);
-        if(pdfRecord){meta.sourceType='pdf-html';warnings=pdfRecord.warnings.concat(['Converted HTML was imported without its original PDF. Keep the source PDF for evidence.']);}
+        if(pdfRecord){meta.sourceType='pdf-html';convertedHtml=sourceFile;warnings=pdfRecord.warnings.concat(['Converted HTML was imported without its original PDF. Keep the source PDF for evidence.']);}
       }else{
         if(!originalPdf)throw new Error('Select the original PDF first.');
         await ensurePdfJs();
@@ -147,6 +147,7 @@
         qs=result.questions;warnings=result.warnings.slice();
         if(readerMode()==='pdf-html'){
           var html=await LedgerPeerPdfReader.convertToHTML(result,message);
+          convertedHtml=html;
           conversionUrl=URL.createObjectURL(html);
           var link=$('downloadConvertedHtml');
           link.href=conversionUrl;link.download='ledgerpeer-'+originalPdf.name.replace(/\.pdf$/i,'')+'-converted.html';
@@ -205,6 +206,10 @@
         if(originalPdf){
           if(!window.LedgerPeerPdfProof)throw new Error('PDF evidence storage was not loaded.');
           await LedgerPeerPdfProof.put(id,originalPdf);
+        }
+        if(meta.sourceType==='pdf-html'){
+          if(!convertedHtml)throw new Error('Converted HTML evidence is missing. Re-run the conversion.');
+          await LedgerPeerPdfProof.putHtml(id,convertedHtml);
         }
       }
       F.save(localStorage,key,staged.questions);
