@@ -159,10 +159,19 @@
       var correct=graded.filter(function(q){return q.is_correct;}).length;
       if(meta.sourceType!=='html'&&!graded.length)throw new Error('No verifiable marked results in this PDF. Import the marked attempt HTML instead; no marks have been invented.');
       meta.correct=correct;meta.total=graded.length;meta.totalQuestions=qs.length;
+      var sourceMarks=qs.filter(function(q){
+        return Number.isFinite(q.original_marks)&&Number.isFinite(q.original_max_marks)&&q.original_max_marks>0&&q.original_marks>=0&&q.original_marks<=q.original_max_marks;
+      });
+      meta.markCoverage=sourceMarks.length;
+      if(sourceMarks.length===qs.length){
+        meta.originalEarnedMarks=Math.round(sourceMarks.reduce(function(sum,q){return sum+q.original_marks;},0)*100)/100;
+        meta.originalPossibleMarks=Math.round(sourceMarks.reduce(function(sum,q){return sum+q.original_max_marks;},0)*100)/100;
+      }
       meta.title=$('titleInput').value.trim()||ExamModel.label(meta)+(meta.setChapter?' · '+meta.setChapter:'');
       staged={meta:meta,questions:qs,warnings:warnings};
       var captured=qs.filter(function(q){return q.answer_capture_status==='captured';}).length;
-      $('entryPreview').innerHTML='<div class="flow-score"><strong>'+(graded.length?Math.round(correct/graded.length*100)+'%':'Unscored')+'</strong><span>'+correct+'/'+graded.length+' fully correct · '+qs.length+' questions</span></div>'+
+      $('entryPreview').innerHTML='<div class="flow-score"><strong>'+(graded.length?Math.round(correct/graded.length*100)+'%':'Unscored')+'</strong><span>Full-correct rate · '+correct+'/'+graded.length+' questions · '+qs.length+' total</span></div>'+
+        (meta.originalPossibleMarks?'<p><strong>Original graded marks: '+meta.originalEarnedMarks+' / '+meta.originalPossibleMarks+'</strong> (source marking, including partial credit).</p>':'<p>Original marks verified for '+sourceMarks.length+'/'+qs.length+' questions; a weighted original score cannot be confirmed.</p>')+
         (qs.length!==graded.length?'<p class="capture-warning">'+(qs.length-graded.length)+' questions are unscored and excluded from accuracy.</p>':'')+
         '<p><strong class="capture-ok">'+captured+' learner answers captured</strong> · '+suggestions+' provisional topic suggestions. The AI debrief will classify questions against the approved syllabus.</p>'+
         '<div class="question-preview">'+qs.map(function(q){return '<article><strong>Q'+q.qno+' · '+(q.is_correct===true?'Correct':q.is_correct===false?'Incorrect':'Unscored')+'</strong>'+
