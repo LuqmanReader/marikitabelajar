@@ -536,7 +536,7 @@
     }
   }
 
-  if(META){var subtitle=document.querySelector('.subtitle');if(subtitle)subtitle.textContent=ExamModel.label(META)+' · '+META.subject;}
+  if(META){var subtitle=document.querySelector('.subtitle');if(subtitle){var label=ExamModel.label(META),customTitle=String(META.title||'').trim();subtitle.textContent=(customTitle&&customTitle!==label?customTitle+' · ':'')+label+' · '+META.subject;}}
 
   var STORAGE_KEY = 'view_' + (examId || 'unknown') + '_debrief_progress_v1';
   var reviewed = {}; // qno -> true
