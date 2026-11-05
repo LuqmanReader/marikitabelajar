@@ -4,6 +4,8 @@ on:
     paths:
       - 'tests/**'
       - 'auth.js'
+      - 'exam-model.js'
+      - 'hub.html'
       - 'index.html'
       - 'subject-catalog.js'
       - 'syllabus-catalog.js'
@@ -29,6 +31,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Validate saved exam title and classification editing
+        run: node tests/exam-metadata-regression.cjs
       - name: Run 25-paper debrief regression
         run: node tests/debrief-regression.js
       - name: Test image export and exact answer highlighting
