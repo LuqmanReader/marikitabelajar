@@ -2,12 +2,13 @@
   'use strict';
   var $=function(id){return document.getElementById(id);}, F=RevisionFlow;
   SubjectCatalog.fill($('subjectSelect'));
-  var staged=null,source='',sourceFile=null,originalPdf=null,pdfBytes=null,convertedHtml=null,conversionUrl=null,fileVersion=0,reading=false;
+  var staged=null,source='',sourceFile=null,originalPdf=null,pdfBytes=null,convertedHtml=null,conversionUrl=null,fileVersion=0,inputVersion=0,reading=false;
   var localNow=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,16);
   $('attemptDate').value=localNow;
   function message(text){$('entryMessage').textContent=text;}
   function readerMode(){return document.querySelector('input[name="readerMode"]:checked').value;}
   function invalidate(){
+    inputVersion++;
     staged=null;convertedHtml=null;$('saveAttempt').disabled=true;$('entryPreview').innerHTML='';
     $('pdfReviewGate').hidden=true;$('acknowledgePdf').checked=false;
     $('conversionResult').hidden=true;
@@ -140,6 +141,7 @@
   $('parseAttempt').addEventListener('click',async function(){
     if(reading)return;
     invalidate();reading=true;$('parseAttempt').disabled=true;
+    var versionAtStart=inputVersion,selectedMode=readerMode();
     try{
       var meta=fields(),result,qs,warnings=[],pdfRecord=null;
       if(readerMode()==='html'){
@@ -163,6 +165,7 @@
           $('conversionResult').hidden=false;
         }
       }
+      if(versionAtStart!==inputVersion||readerMode()!==selectedMode)throw new Error('Inputs changed while extraction was running. Choose Extract answer review again.');
       qs=validateQuestions(qs,meta);
       var suggestions=window.LedgerTopicSuggest?LedgerTopicSuggest.apply(qs,meta.subject,localStorage):0;
       var graded=qs.filter(function(q){return typeof q.is_correct==='boolean';});
@@ -199,7 +202,7 @@
       message('Extraction ready. Review the questions and source warnings before saving.');
     }catch(e){
       staged=null;$('saveAttempt').disabled=true;
-      message('Extraction stopped: '+e.message);
+      message('Extraction stopped: '+(e&&e.name==='NotReadableError'?'This browser no longer has permission to read the selected PDF. Save a local copy and reselect it.':e.message));
     }finally{
       reading=false;$('parseAttempt').disabled=!sourceFile;
     }
