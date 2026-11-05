@@ -221,7 +221,15 @@
       F.save(localStorage,key,questions);
       try{F.save(localStorage,'tymba_custom_exams',exams.concat([meta]));}catch(e){localStorage.removeItem(key);throw e;}
       this.disabled=true;
-      message('Attempt saved. Opening automatic debrief…');
+      message('Attempt saved locally. Syncing securely for automatic debrief…');
+      try{
+        if(window.PersonalHubAuth&&typeof PersonalHubAuth.sync==='function'){
+          var synced=await PersonalHubAuth.sync(true);
+          if(synced===false)message('Attempt saved locally. Cloud sync is pending; automatic debrief will resume when available.');
+        }
+      }catch(syncError){
+        message('Attempt saved locally. Cloud sync is pending; automatic debrief may need a retry.');
+      }
       location.href=meta.file;
     }catch(e){message('Could not save: '+e.message);}
   });
