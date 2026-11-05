@@ -417,7 +417,7 @@
 <script src="revision-flow.js?v=20261103-image-syllabus-fix"></script>
 <script src="answer-option-match.js?v=20261103-exact-correctness"></script>
 
-<script src="correction-pdf.js?v=20261105-cover-grade-v3"></script>
+<script src="correction-pdf.js?v=20261105-pdfarchive2"></script>
 <script src="debrief-workflow.js?v=20261103-related-topics"></script>
 <link rel="stylesheet" href="site-nav.css?v=20261028-unifiedback">
 <link rel="stylesheet" href="ledgerpeer-theme.css?v=20261011">
@@ -838,17 +838,21 @@
     var bonusXP = reviewedCount * XP_PER_Q;
     var totalXP = examXP + bonusXP;
     var scored=correctCount+incorrectCount;
-    var pct = scored ? Math.round(correctCount/scored*100) : null;
+    var sourceVerified=META&&Number.isFinite(META.originalEarnedMarks)&&Number.isFinite(META.originalPossibleMarks)&&META.originalPossibleMarks>0;
+    var pct = sourceVerified?Math.round(META.originalEarnedMarks/META.originalPossibleMarks*100):
+      scored?Math.round(correctCount/scored*100):null;
 
     document.getElementById('statCorrect').textContent = correctCount;
     document.getElementById('statIncorrect').textContent = incorrectCount;
     document.getElementById('statPct').textContent = pct===null ? 'Unscored' : pct + '%';
+    var scoreLabel=document.getElementById('statPct')?.parentElement?.querySelector('.lbl');
+    if(scoreLabel)scoreLabel.textContent=sourceVerified?'Original exam score':'Full-correct rate';
     document.getElementById('statXP').textContent = totalXP;
     var sourceInfo=document.getElementById('markSourceSummary');
     if(sourceInfo){
       if(META&&Number.isFinite(META.originalEarnedMarks)&&Number.isFinite(META.originalPossibleMarks)&&META.originalPossibleMarks>0){
         sourceInfo.textContent=(META.ocrUsed?'OCR-RECONCILED · ':'')+'Original source marks: '+META.originalEarnedMarks+' / '+META.originalPossibleMarks+
-          ' (including partial credit). The score card above shows fully correct questions, not weighted exam marks.';
+          ' (including partial credit). The percentage above uses the verified source-mark total.';
       }else if(META&&Number.isFinite(META.markCoverage)&&META.markCoverage>0){
         sourceInfo.textContent='Original marks identified on '+META.markCoverage+' / '+DATA.length+
           ' questions. Weighted source marks are incomplete; the percentage above is the full-correct question rate.';
@@ -1059,6 +1063,6 @@
   window.addEventListener('pagehide',function(){if(pdfUrl)URL.revokeObjectURL(pdfUrl);if(htmlUrl)URL.revokeObjectURL(htmlUrl);});
 })();
 </script>
-<script src="auto-debrief.js?v=20261105-ocrrepair3"></script>
+<script src="auto-debrief.js?v=20261105-vision4"></script>
 <script>PersonalHubAuth.addLockButton();</script></body>
 </html>
