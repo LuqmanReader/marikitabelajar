@@ -101,6 +101,32 @@ async function repairLegacyOcr(id,meta,list){
   location.replace('view.html?id='+encodeURIComponent(id)+'&autodebrief=1&ocrrepaired=1');
   return true;
 }
+async function originalVisualPages(id){
+  // Visual snapshots stay device-local until a logged-in student requests AI
+  // analysis. Only PDF pages relevant to the current question batch are sent.
+  if(!root.LedgerPeerPdfProof||!root.LedgerPeerPdfProof.getHtml)return new Map();
+  var blob=await root.LedgerPeerPdfProof.getHtml(id).catch(function(){return null;});
+  if(!blob)return new Map();
+  var html=await blob.text(),doc=new DOMParser().parseFromString(html,'text/html'),map=new Map();
+  Array.from(doc.querySelectorAll('section.page')).forEach(function(section){
+    var n=Number((section.id||'').replace(/^page-/,'')),img=section.querySelector('img[src^="data:image/"]');
+    if(!n||!img)return;
+    var src=img.getAttribute('src')||'',m=src.match(/^data:(image\/(?:jpeg|png|webp));base64,([A-Za-z0-9+/=]+)$/);
+    if(m&&m[2].length<=850000)map.set(n,{page:n,mime_type:m[1],data:m[2]});
+  });
+  return map;
+}
+function batchPages(qs,source){
+  var ids=new Set();
+  qs.forEach(function(q){(q.source_pdf_pages||[]).forEach(function(n){if(Number.isInteger(n))ids.add(n);});});
+  var count=0,output=[];
+  Array.from(ids).sort(function(a,b){return a-b;}).forEach(function(id){
+    var item=source.get(id);
+    if(!item||output.length>=5||count+item.data.length>1300000)return;
+    output.push(item);count+=item.data.length;
+  });
+  return output;
+}
 async function start(manual){
   if(running)return;
   var params=new URLSearchParams(location.search),id=params.get('id');
@@ -137,7 +163,7 @@ async function start(manual){
     var signature=RevisionFlow.signature(list);
     // Small sequential batches avoid exhausting model output limits. Never
     // retry a failed AI batch automatically (especially on quota errors).
-    var groups=[];
+    var groups=[],visuals=await originalVisualPages(id);
     for(var i=0;i<pending.length;i+=8)groups.push(pending.slice(i,i+8));
     for(var n=0;n<groups.length;n++){
       update('Generating explanations: batch '+(n+1)+' of '+groups.length+' · '+completed+'/'+pending.length+' questions completed.',false);
@@ -145,7 +171,8 @@ async function start(manual){
         exam_id:id,attempt_signature:signature,
         qnos:groups[n].map(function(q){return q.qno;}),
         subject:meta.subject,set_chapter:meta.testType==='set'?meta.setChapter||'':'',
-        topic_catalog:catalog
+        topic_catalog:catalog,
+        visual_pages:batchPages(groups[n],visuals)
       };
       var answer=await client.functions.invoke('analyze-attempt',{body:payload});
       if(answer.error){
