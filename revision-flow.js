@@ -144,7 +144,11 @@
         qno:q.qno,
         result:q.is_correct===true?'correct':q.is_correct===false?'incorrect':'unscored',
         chapter:q.chapter||'',
-        question:plain(q.qtext),
+        question:(function(){
+          var text=plain(q.qtext),pdf=Array.isArray(q.source_pdf_pages)&&q.source_pdf_pages.length;
+          if(pdf&&text.length>11000)return text.slice(0,8000)+' [LONG PDF TEXT OMITTED FOR PROMPT SIZE: see original pages] '+text.slice(-2500);
+          return text;
+        })(),
         options:(q.options||[]).map(function(o){return {text:plain(o.text),chosen:!!o.checked};}),
         my_answer:plain(q.your_answer||''),
         correct_answer:plain(q.correct_answer||''),
@@ -157,7 +161,11 @@
       };
       if(q.source_feedback){var sourceNote=plain(q.source_feedback);if(sourceNote&&sourceNote!==item.question)item.source_feedback=sourceNote.slice(0,800);}
       if(q.source_result)item.source_grade=String(q.source_result);
-      if(q.visual_verification_required||(Array.isArray(q.source_pdf_pages)&&q.source_pdf_pages.length))item.image_not_in_text_export=true;
+      if(Array.isArray(q.source_pdf_pages)&&q.source_pdf_pages.length){
+        item.pdf_source_needs_crosscheck=true;
+        if(plain(q.qtext).length>11000)item.prompt_text_truncated=true;
+        if(/\b(?:chart|diagram|figure|graph|table|illustration|picture|image|shown below)\b/i.test(item.question))item.image_not_in_text_export=true;
+      }
       if(/<img\b/i.test(q.qtext||'')||(q.options||[]).some(function(o){return /<img\b/i.test(o.text||'');})||/\[Image unavailable/i.test(q.qtext||''))item.image_not_in_text_export=true;
       return item;
     });
