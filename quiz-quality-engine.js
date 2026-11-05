@@ -9,7 +9,27 @@ const engine=root.LedgerQuizEngine;
 const bank=root.LedgerExamScenarios;
 if(!engine||!bank)return;
 const allowedPapers=new Set(['FA1','MA1','FA2','MA2']);
-const MAX_VARIANTS_PER_SKILL=1; // One reasoning family per sitting, even with changed numbers.
+const MAX_VARIANTS_PER_SKILL=1; // Do not repeat a reasoning family in the same sitting.
+const LEVELS=['easy','moderate','hard'];
+const LEVEL_RANK={easy:0,moderate:1,hard:2};
+/* Estimated practice difficulty; not externally calibrated or ACCA-certified. */
+function estimateLevel(q){
+ if(LEVELS.includes(q.difficulty))return q.difficulty;
+ const family=String(q.group||'').replace(/^skill-/,'');
+ if(/multi|reconciliation-combined|after-disposal|allowance-adjustment|writeoff-net|cash-budget-lagged|accrual-and-prepayment|contribution-absorption|variance|investment-risk/.test(family))return 'hard';
+ if(q.type==='numeric'){
+  if(/accounting-equation|basic-wage|trial-balance|simple-interest|contribution-unit|overhead-rate|gross-profit/.test(family))return 'easy';
+  return q.prompt.length>=205?'hard':'moderate';
+ }
+ if(/accounting-equation|basic-wage|trial-balance/.test(family))return 'easy';
+ if(q.prompt.length>=210)return 'hard';
+ return q.prompt.length>=110?'moderate':'easy';
+}
+function skillLabel(q){
+ if(String(q.group||'').startsWith('skill-'))
+  return q.group.slice(6).replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+ return 'Applied knowledge · '+String(q.group||'').replace(/[^0-9]+/g,'').slice(0,3);
+}
 const number=x=>Number(x).toLocaleString('en-GB',{maximumFractionDigits:2});
 const shuffle=(input,rng)=>{
  const a=input.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;
@@ -57,12 +77,18 @@ function valid(q){
    new Set(q.choices.map(o=>String(o.label).trim())).size===4&&
    q.choices.filter(o=>o.value===q.correctValue).length===1);
 }
-function generate({paper,topics,count=20,mode='topic',recentIds=[],recentGroups=[],lessons={},syllabus={},rng=Math.random}){
+function generate({paper,topics,count=20,mode='topic',difficulty='mixed',order='progressive',recentIds=[],recentGroups=[],lessons={},syllabus={},rng=Math.random}){
  const mock=mode==='mock',qty=mock?50:Math.max(1,Math.min(20,Math.floor(Number(count)||20)));
+ const selectedDifficulty=mock?'mixed':LEVELS.includes(difficulty)?difficulty:'mixed';
+ const questionOrder=order==='random'?'random':'progressive';
  const mixed=paper==='FA2'||paper==='MA2';
  const required={mcq:qty-(mixed?(mock?15:Math.floor(qty/2)):0),numeric:mixed?(mock?15:Math.floor(qty/2)):0};
  const result={questions:[],available:0,requested:qty,paper,mode:mock?'mock':'topic',topicsCovered:0,
     targetMix:required,actualMix:{mcq:0,numeric:0},complete:false,quality:'original-exam-style',
+    difficulty:selectedDifficulty,order:questionOrder,
+    levelMix:{easy:0,moderate:0,hard:0},availableLevelMix:{easy:0,moderate:0,hard:0},
+    skillCoverage:{tested:0,available:0,uncovered:[],type:'authored question families, not verified syllabus outcomes'},
+    syllabusCoverageVerified:false,
     reason:'Not enough distinct authored questions; fillers have been disabled.'};
  if(!allowedPapers.has(paper)){
    result.reason='This paper needs an independently authored question bank and its correct official exam format.';
@@ -82,6 +108,8 @@ function generate({paper,topics,count=20,mode='topic',recentIds=[],recentGroups=
    if(!valid(q)||seen.has(q.type+'|'+q.prompt))return;
    seen.add(q.type+'|'+q.prompt);
    q.id=hashId(key,q);q.key=key;
+   q.difficulty=estimateLevel(q);
+   q.skillLabel=skillLabel(q);
    pool.push(q);
   }
   for(let i=0;i<24;i++){
@@ -98,37 +126,52 @@ function generate({paper,topics,count=20,mode='topic',recentIds=[],recentGroups=
    push(numeric?calculatedNumeric(key,scenario):calculatedMCQ(key,scenario,rng));
   }
  }
+ const eligible=pool.filter(q=>selectedDifficulty==='mixed'||q.difficulty===selectedDifficulty);
+ const availableAreas=new Map();
+ for(const q of eligible){const area=q.key+'|'+q.group;if(!availableAreas.has(area))availableAreas.set(area,q.skillLabel);}
+ for(const q of eligible)result.availableLevelMix[q.difficulty]++;
  const used=new Map(),prompts=new Set(),picked=[],rngScores=new Map();
+ const targetLevels={easy:Math.round(qty*.3),moderate:Math.round(qty*.4),hard:0};
+ targetLevels.hard=qty-targetLevels.easy-targetLevels.moderate;
+ const levelsUsed={easy:0,moderate:0,hard:0};
  const familyKey=q=>q.key+'|'+q.group;
  const familyExposure=q=>exposure.get(familyKey(q))||0;
  function count(key,group){return used.get(key+'|'+group)||0}
  function take(type,n){
   for(let j=0;j<n;j++){
    let best=null,bestScore=Infinity;
-   for(const q of pool){
+   for(const q of eligible){
     if(q.type!==type||prompts.has(q.prompt)||count(q.key,q.group)>=MAX_VARIANTS_PER_SKILL)continue;
     let priorTopic=0;
     for(const p of picked)if(p.key===q.key)priorTopic++;
+    const overLevel=selectedDifficulty==='mixed'&&levelsUsed[q.difficulty]>=targetLevels[q.difficulty]?25:0;
     const score=priorTopic*9+count(q.key,q.group)*110+
-      familyExposure(q)*70+(recent.has(q.id)?120:0)+(rngScores.get(q.id)??rng());
+      familyExposure(q)*70+(recent.has(q.id)?120:0)+overLevel+(rngScores.get(q.id)??rng());
     rngScores.set(q.id,score%1);
     if(score<bestScore){bestScore=score;best=q;}
    }
    if(!best)break;
-   picked.push(best);prompts.add(best.prompt);
+   picked.push(best);prompts.add(best.prompt);levelsUsed[best.difficulty]++;
    const id=best.key+'|'+best.group;
    used.set(id,(used.get(id)||0)+1);
   }
  }
  take('mcq',required.mcq);take('numeric',required.numeric);
- const questions=shuffle(picked,rng);
+ const questions=questionOrder==='progressive'&&!mock?
+   [...picked].sort((a,b)=>LEVEL_RANK[a.difficulty]-LEVEL_RANK[b.difficulty]):shuffle(picked,rng);
  result.questions=questions;result.available=questions.length;
  result.actualMix={mcq:questions.filter(q=>q.type==='mcq').length,numeric:questions.filter(q=>q.type==='numeric').length};
  result.topicsCovered=new Set(questions.map(q=>q.key)).size;
  result.familiesCovered=new Set(questions.map(familyKey)).size;
  result.repeatFamilyExposure=questions.filter(q=>familyExposure(q)>0).length;
+ for(const q of questions)result.levelMix[q.difficulty]++;
+ const tested=new Set(questions.map(familyKey));
+ result.skillCoverage={tested:tested.size,available:availableAreas.size,
+   uncovered:[...availableAreas].filter(([key])=>!tested.has(key)).map(([key,label])=>({key,label})),
+   type:'authored question families, not verified syllabus outcomes'};
  result.complete=questions.length===qty&&result.actualMix.mcq===required.mcq&&result.actualMix.numeric===required.numeric;
  if(result.complete)result.reason='';
+ else if(selectedDifficulty!=='mixed')result.reason='Insufficient distinct '+selectedDifficulty+' questions in this chapter; no filler has been invented.';
  return result;
 }
 engine.generate=generate;
