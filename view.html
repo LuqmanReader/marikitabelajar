@@ -414,7 +414,7 @@
 <script src="pdf-topic-suggestions.js?v=20261103-related-topics"></script><script src="chapter-ui.js?v=20261014-whole-pdf-3"></script>
 <link rel="stylesheet" href="chapter-analysis.css">
 <link rel="stylesheet" href="revision-flow.css">
-<script src="revision-flow.js?v=20261103-image-syllabus-fix"></script>
+<script src="revision-flow.js?v=20261105-visual1"></script>
 <script src="answer-option-match.js?v=20261103-exact-correctness"></script>
 
 <script src="correction-pdf.js?v=20261105-pdfarchive2"></script>
@@ -737,7 +737,7 @@
 
     var body = '<div class="qtext">' + RevisionFlow.sanitize(d.qtext) + '</div>';
     if(d.ocr_extracted){
-      body += '<p role="note" style="padding:8px 10px;border:2px solid #a16207;background:#fff3ca;font-size:11px;font-weight:800">Image-only PDF · OCR transcription. Question text, answer choices and any graph/table need comparison with the original page. Exam marks were separately reconciled.</p>';
+      body += '<p role="note" style="padding:8px 10px;border:2px solid #a16207;background:#fff3ca;font-size:11px;font-weight:800">Image-based PDF OCR. Figures and selections may require visual confirmation. '+(META&&Number.isFinite(META.originalPossibleMarks)?'Source marks were reconciled.':'Total source marks are not yet fully reconciled.')+'</p>';
     }
     if(Array.isArray(d.source_pdf_pages)&&d.source_pdf_pages.length){
       body += '<button type="button" class="source-page-open" data-source-page="'+Number(d.source_pdf_pages[0])+'">Open source page '+Number(d.source_pdf_pages[0])+'</button>';
@@ -754,8 +754,8 @@
 
     if(d.is_correct===false){
       body += '<div class="compare">' +
-        '<div class="box wrong"><div class="box-lbl">Your Answer</div><p>' + RevisionFlow.sanitize(d.your_answer||'Not captured') + '</p></div>' +
-        '<div class="box right"><div class="box-lbl">' + (d.ocr_extracted?'OCR ANSWER TEXT · VERIFY SOURCE':'Correct Answer') + '</div><p>' + (d.ocr_extracted&&!d.correct_answer?'Not reliably extracted — check the original PDF':RevisionFlow.escape(d.correct_answer)) + '</p></div>' +
+        '<div class="box wrong"><div class="box-lbl">Your Answer</div><p>' + (d.your_answer?RevisionFlow.sanitize(d.your_answer):d.visual_observed_selection?RevisionFlow.escape(d.visual_observed_selection)+' <small>(AI visual reading — verify)</small>':'Not reliably captured') + '</p></div>' +
+        '<div class="box right"><div class="box-lbl">' + (d.ocr_extracted?'OCR ANSWER TEXT · VERIFY SOURCE':'Correct Answer') + '</div><p>' + (d.ocr_extracted&&!d.correct_answer?(d.visual_observed_correct_answer?RevisionFlow.escape(d.visual_observed_correct_answer)+' (AI visual reading — verify)':'Not reliably extracted — check the original PDF'):RevisionFlow.escape(d.correct_answer)) + '</p></div>' +
       '</div>';
 
       body += '<div class="debrief"><div class="debrief-head"><span class="pin"></span>Debrief &amp; Working</div>' +
