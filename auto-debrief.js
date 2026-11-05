@@ -12,14 +12,14 @@ function complete(q){return !!(q&&q.chapter&&typeof q.reasoning==='string'&&q.re
 function panel(){
   var el=$id('autoDebriefStatus');
   if(el)return el;
-  var host=$id('claudeSyncPanel'),parent=host&&host.parentElement;
+  var host=$id('chatgpt-debrief')||$id('claudeSyncPanel'),parent=host&&host.parentElement;
   if(!host||!parent)return null;
   el=document.createElement('section');el.id='autoDebriefStatus';el.className='flow-panel';
   el.style.cssText='padding:12px 14px;margin:0 0 15px;border:3px solid #111;background:#fff4d2;';
   var strong=document.createElement('strong');strong.textContent='Automatic question debrief';strong.style.display='block';
   var status=document.createElement('p');status.id='autoDebriefMessage';status.setAttribute('role','status');
   status.style.cssText='font-size:12px;line-height:1.55;margin:8px 0;';
-  var btn=document.createElement('button');btn.type='button';btn.id='autoDebriefRetry';btn.className='flow-button secondary';btn.textContent='Resume incomplete debrief';btn.hidden=true;
+  var btn=document.createElement('button');btn.type='button';btn.id='autoDebriefRetry';btn.className='flow-button secondary';btn.textContent='Generate / resume AI debrief';btn.hidden=true;
   el.append(strong,status,btn);parent.insertBefore(el,host);
   btn.addEventListener('click',function(){start(true);});
   return el;
