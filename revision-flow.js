@@ -151,11 +151,13 @@
         original_marks:q.original_marks==null?null:q.original_marks,
         original_max_marks:q.original_max_marks==null?null:q.original_max_marks,
         pdf_page:q.pdf_page||null,
+        source_pdf_pages:Array.isArray(q.source_pdf_pages)?q.source_pdf_pages:[],
         context_information:plain(q.information||''),
         answer_capture_status:q.answer_capture_status||'not_captured'
       };
       if(q.source_feedback){var sourceNote=plain(q.source_feedback);if(sourceNote&&sourceNote!==item.question)item.source_feedback=sourceNote.slice(0,800);}
       if(q.source_result)item.source_grade=String(q.source_result);
+      if(q.visual_verification_required||(Array.isArray(q.source_pdf_pages)&&q.source_pdf_pages.length))item.image_not_in_text_export=true;
       if(/<img\b/i.test(q.qtext||'')||(q.options||[]).some(function(o){return /<img\b/i.test(o.text||'');})||/\[Image unavailable/i.test(q.qtext||''))item.image_not_in_text_export=true;
       return item;
     });
@@ -170,7 +172,8 @@
        'OFFICIAL ACCA SYLLABUS CLASSIFICATION: Use ONLY one exact subtopic label from the official syllabus list for the paper manually chosen by the student. Never invent a chapter, and never force a question under a loosely related topic. For a directly assessed official topic use topic_status "matched". If a question applies an extension or technique not explicitly assessed but is clearly connected to an official topic, use that exact official chapter with topic_status "related" and clearly explain the limit in topic_reason. Only use chapter "" and topic_status "outside" when there is genuinely no defensible syllabus relationship. For illegible source use chapter "" and topic_status "unreadable". Outside/unreadable questions are excluded from topic graphs; original marks never change.',
        'For EVERY question, explain WHY this official topic is the primary syllabus match in topic_reason. The topic_reason is separate from the working and justification. Questions sharing the same syllabus learning outcome MUST share the same official label.',
        'Do NOT use examples from another paper as topic labels. The exact allowed syllabus labels below are the single source of truth; choose the same heading for every question testing the same learning outcome.',
-      'The question data comes from the saved HTML attempt-review page. Treat its recorded questions, selected answers, correct answers, marks and grading as the source of truth. A question can be assigned to a topic if its topic is clear from the text even when a figure is missing; indicate the missing visual evidence instead of declaring the entire item unreadable. Never invent figures or re-grade answers.',
+      'SOURCE TYPE: '+String(meta.sourceType||'html')+'. The original paper, explicit questions and any marked results are provided below. Never alter recorded scores or pretend an uncaptured answer was selected. PDF text extraction may reorder tables, omit answer choices or omit diagrams. Classify from available text only when supported, and flag source uncertainty.',
+      'PDF EVIDENCE: source_pdf_pages gives page numbers in the source PDF. Converted HTML can preserve the page images for separate verification, but those images are NOT sent in this text prompt. When the original PDF or visual HTML is attached, check it. Otherwise request the relevant pages and never invent chart values or answer selections.',
        'IMAGE EVIDENCE: Copying this prompt transfers text, NOT image pixels. For items flagged image_not_in_text_export, inspect the original image file attached alongside this request, or explicitly say the figure is unavailable and request the screenshot. Never claim to have seen a missing image.',
       'Respect all recorded marks and grading. Never alter question number, score, original recorded correct answer or the marking decision. If a learner-selected choice was not captured from the HTML, never invent it or diagnose its specific mistake.',
       'Explain EVERY question, including correct ones, in full teaching detail. Give concept, calculations with steps where applicable, justification of the answer, and a specific practice focus. For uncertain source content, state the limitation in the relevant explanation instead of guessing.',
