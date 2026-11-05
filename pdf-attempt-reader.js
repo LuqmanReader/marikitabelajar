@@ -140,11 +140,38 @@ async function read(source,onProgress){
       page.cleanup();
     }
   }finally{if(worker)await worker.terminate();}
-  var parsed=anyOcr?root.LedgerPeerOcrParser&&root.LedgerPeerOcrParser.parse(pages):parseBlocks(pages);
-  if(!parsed)throw new Error('OCR analysis tools are missing. Reload LedgerPeer and retry.');
-  return {document:pdf,pages:pages,questions:parsed.questions,warnings:parsed.warnings,
-    reconciliation:parsed.reconciliation||null,ocrUsed:anyOcr,pageCount:pdf.numPages,
-    originalName:source&&source.name||'Original exam PDF'};
+  // Conversion is universal; assessment-grading readers are optional adapters.
+  // Unfamiliar layouts must still yield a visual + text HTML document.
+  var parseFailures=[],parsed=null,engine='universal-document';
+  if(anyOcr&&root.LedgerPeerOcrParser){
+    try{parsed=root.LedgerPeerOcrParser.parse(pages);engine='marked-review-ocr';}
+    catch(e){parseFailures.push('Marked-exam OCR rules did not match this layout: '+String(e.message||e));}
+  }
+  if(!parsed&&!anyOcr){
+    try{parsed=parseBlocks(pages);engine='marked-review-text';}
+    catch(e){parseFailures.push('Marked-exam text rules did not match this layout: '+String(e.message||e));}
+  }
+  if(!parsed||!parsed.reconciliation){
+    if(!root.LedgerPeerUniversalDocument)throw new Error('Universal PDF document reader did not load. Refresh and try again.');
+    var generic=root.LedgerPeerUniversalDocument.parse(pages);
+    if(generic.reconciliation||!parsed){
+      parsed=generic;engine='universal-document';
+    }else{
+      // When a detailed review adapter has partial information but not full score
+      // reconciliation, do not treat its assumptions as verified grades.
+      parsed=generic.questions.length?generic:{
+        questions:parsed.questions.map(function(q){
+          return Object.assign({},q,{is_correct:null,original_marks:null,original_max_marks:null,source_result:'unverified'});
+        }),
+        warnings:generic.warnings.concat(parsed.warnings||[]),reconciliation:null
+      };
+      engine='universal-document';
+    }
+  }
+  var warnings=(parsed.warnings||[]).slice().concat(parseFailures);
+  return {document:pdf,pages:pages,questions:parsed.questions||[],warnings:warnings,
+    reconciliation:parsed.reconciliation||null,ocrUsed:anyOcr,readerEngine:engine,
+    pageCount:pdf.numPages,originalName:source&&source.name||'Original exam PDF'};
 }
 async function convertToHTML(result,onProgress){
   if(!result||!result.document||!result.pages)throw new Error('Read a PDF first.');
@@ -161,11 +188,11 @@ async function convertToHTML(result,onProgress){
     visuals.push(canvas.toDataURL('image/jpeg',0.62));
     canvas.width=0;canvas.height=0;page.cleanup();
   }
-  var json=JSON.stringify({format:'ledgerpeer-pdf-conversion-v1',originalName:result.originalName,pages:result.pageCount,questions:result.questions,warnings:result.warnings}).replace(/</g,'\\u003c');
+  var json=JSON.stringify({format:'ledgerpeer-pdf-conversion-v1',originalName:result.originalName,pages:result.pageCount,readerEngine:result.readerEngine||'unknown',questions:result.questions,warnings:result.warnings}).replace(/</g,'\\u003c');
   var body=result.pages.map(function(page,i){
-    return '<section class="page" id="page-'+page.number+'"><h2>Page '+page.number+'</h2><img alt="Visual snapshot of original PDF page '+page.number+'" src="'+visuals[i]+'"><details><summary>Selectable text extracted from page '+page.number+'</summary><pre>'+esc(page.lines.join('\n'))+'</pre></details></section>';
+    return '<section class="page" id="page-'+page.number+'"><h2>Page '+page.number+'</h2><img alt="Visual snapshot of original PDF page '+page.number+'" src="'+visuals[i]+'"><div class="page-text" aria-label="Reconstructed searchable text from page '+page.number+'"><h3>Recognized text</h3>'+ (page.lines.length?page.lines.map(function(line){return '<p>'+esc(line)+'</p>';}).join(''):'<p>No readable text detected; consult the original page image.</p>') + '</div></section>';
   }).join('\n');
-  var html='<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+headingText+' · PDF to HTML</title><style>body{background:#f6f3ec;color:#171717;font:15px system-ui;margin:0;padding:20px}main{max-width:1050px;margin:auto}h1{font-size:26px}.notice,.page{background:white;border:2px solid #111;padding:18px;margin:18px 0}.notice{background:#fff0c8}.page img{display:block;max-width:100%;height:auto;margin:auto;border:1px solid #bbb}summary{cursor:pointer;font-weight:bold;margin:12px 0}pre{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5}</style></head><body><main><h1>PDF → HTML · '+headingText+'</h1><div class="notice">Visual page snapshots preserve charts and diagrams. Text extraction may reorder tables and cannot prove which answer was selected. Check the original PDF before trusting marks. This standalone HTML may be re-imported into LedgerPeer.</div>'+body+'</main><script type="application/json" id="ledgerpeer-pdf-record">'+json+'</script></body></html>';
+  var html='<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+headingText+' · PDF to HTML</title><style>body{background:#f6f3ec;color:#171717;font:15px system-ui;margin:0;padding:20px}main{max-width:1050px;margin:auto}h1{font-size:26px}.notice,.page{background:white;border:2px solid #111;padding:18px;margin:18px 0}.notice{background:#fff0c8}.page img{display:block;max-width:100%;height:auto;margin:auto;border:1px solid #bbb}.page-text{padding:14px;margin:16px 0;background:#f6f7f7;border:1px solid #bbb}.page-text p{margin:.3em 0;line-height:1.55;overflow-wrap:anywhere}.page-text h3{font-size:15px}pre{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5}</style></head><body><main><h1>PDF → HTML · '+headingText+'</h1><div class="notice">Visual page snapshots preserve charts and diagrams. Text extraction may reorder tables and cannot prove which answer was selected. Check the original PDF before trusting marks. This standalone HTML may be re-imported into LedgerPeer.</div>'+body+'</main><script type="application/json" id="ledgerpeer-pdf-record">'+json+'</script></body></html>';
   return new Blob([html],{type:'text/html'});
 }
 function parseConvertedHtml(raw){
