@@ -492,6 +492,7 @@
   </div>
 
 
+          <p id="markSourceSummary" class="review-panel-subtext" role="status"></p>
           <div class="review-pdf-proof" id="pdfProof" hidden>
             <h3 class="review-panel-title">Original PDF evidence</h3>
             <p id="pdfProofStatus">Checking original PDF saved on this device…</p>
@@ -836,6 +837,19 @@
     document.getElementById('statIncorrect').textContent = incorrectCount;
     document.getElementById('statPct').textContent = pct===null ? 'Unscored' : pct + '%';
     document.getElementById('statXP').textContent = totalXP;
+    var sourceInfo=document.getElementById('markSourceSummary');
+    if(sourceInfo){
+      if(META&&Number.isFinite(META.originalEarnedMarks)&&Number.isFinite(META.originalPossibleMarks)&&META.originalPossibleMarks>0){
+        sourceInfo.textContent='Original source marks: '+META.originalEarnedMarks+' / '+META.originalPossibleMarks+
+          ' (including partial credit). The score card above shows fully correct questions, not weighted exam marks.';
+      }else if(META&&Number.isFinite(META.markCoverage)&&META.markCoverage>0){
+        sourceInfo.textContent='Original marks identified on '+META.markCoverage+' / '+DATA.length+
+          ' questions. Weighted source marks are incomplete; the percentage above is the full-correct question rate.';
+      }else{
+        sourceInfo.textContent='Score percentage is based on fully correct graded questions; no complete source-mark total was verified.';
+      }
+    }
+
 
     document.getElementById('examScoreLabel').textContent = examXP + ' / ' + examMaxXP + ' XP';
     document.getElementById('examFill').style.width = (examMaxXP?examXP / examMaxXP * 100:0) + '%';
@@ -998,6 +1012,13 @@
   });
   select('overview');
   var params=new URLSearchParams(location.search),id=params.get('id'),meta=null;
+  try{
+    var currentQuestions=JSON.parse(localStorage.getItem('tymba_exam_data:'+id)||'[]');
+    if(Array.isArray(currentQuestions)&&currentQuestions.length&&!currentQuestions.some(function(q){return typeof q.debrief==='string'&&q.debrief.trim();})){
+      select('debrief');
+    }
+  }catch(e){}
+
   try{meta=JSON.parse(localStorage.getItem('tymba_custom_exams')||'[]').find(function(e){return e.id===id;});}catch(e){}
   if(!meta||!/^pdf/.test(meta.sourceType||''))return;
   var section=document.getElementById('pdfProof'),status=document.getElementById('pdfProofStatus'),open=document.getElementById('pdfProofOpen'),blobUrl=null;
