@@ -108,7 +108,7 @@ async function start(manual){
   var meta=exams().find(function(x){return x.id===id;});
   var list=source(id);
   if(!meta||!list.length)return;
-  if(!manual&&params.get('autodebrief')!=='1')return;
+  if(!manual&&params.get('autodebrief')!=='1'&&!meta.autoDebriefRequested&&!/autodebrief=1/.test(meta.file||''))return;
   if(!meta.subject){update('Select a paper before generating explanations.',false);return;}
   var approved=root.LedgerSyllabus&&root.LedgerSyllabus.resolve(localStorage,meta.subject);
   var catalog=approved&&approved.topics||[];
