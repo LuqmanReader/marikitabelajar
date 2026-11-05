@@ -45,6 +45,7 @@
     var type=$('testType').value, n=Number($('testNumber').value), chapter=ChapterAnalysis.label($('setChapter').value), total=$('setTotal').value.trim()?Number($('setTotal').value):null;
     var subject=$('subjectSelect').value,approved=syllabus().topics;
     if(!subject)throw new Error('Choose the FIA / ACCA paper for this attempt.');
+    if(!['set','pre','mock'].includes(type))throw new Error('Choose the assessment type: Chapter Set, Progress Test or Mock Test.');
     if(!Number.isSafeInteger(n)||n<1)throw new Error('Use a whole set or test number of 1 or higher.');
     if(type==='set'&&!chapter)throw new Error('Enter the chapter this set belongs to.');
     if(type==='set'&&approved.length&&!approved.includes(chapter))throw new Error('Choose the Chapter Set target from the approved syllabus topic list.');
@@ -158,7 +159,7 @@
       var correct=graded.filter(function(q){return q.is_correct;}).length;
       if(meta.sourceType!=='html'&&!graded.length)throw new Error('No verifiable marked results in this PDF. Import the marked attempt HTML instead; no marks have been invented.');
       meta.correct=correct;meta.total=graded.length;meta.totalQuestions=qs.length;
-      meta.title=ExamModel.label(meta)+(meta.setChapter?' · '+meta.setChapter:'')+($('titleInput').value.trim()?' — '+$('titleInput').value.trim():'');
+      meta.title=$('titleInput').value.trim()||ExamModel.label(meta)+(meta.setChapter?' · '+meta.setChapter:'');
       staged={meta:meta,questions:qs,warnings:warnings};
       var captured=qs.filter(function(q){return q.answer_capture_status==='captured';}).length;
       $('entryPreview').innerHTML='<div class="flow-score"><strong>'+(graded.length?Math.round(correct/graded.length*100)+'%':'Unscored')+'</strong><span>'+correct+'/'+graded.length+' fully correct · '+qs.length+' questions</span></div>'+
