@@ -1,0 +1,60 @@
+/* LedgerPeer debrief split workspace, 2026-11-05.
+   Keep the original card markup/IDs so stored attempts and AI merging still work. */
+.review-workspace{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(340px,1fr);gap:20px;align-items:start;margin:20px auto 0}
+body[data-lp-page="review"] .wrap{max-width:1450px}
+.review-primary,.review-side{min-width:0}
+.review-primary{background:#fff;border:4px solid #111;box-shadow:7px 7px 0 #111;padding:12px}
+.review-primary-title{font-family:"Arial Black","Helvetica Neue",Impact,sans-serif;font-size:19px;text-transform:uppercase;line-height:1.2;margin:4px 4px 10px}
+.review-primary-hint{font-size:11px;font-weight:700;color:#555;margin:0 4px 10px;line-height:1.5}
+.review-question-scroll{overflow:auto;overscroll-behavior:contain;max-height:calc(100dvh - 154px);min-height:420px;padding:0 9px 10px 0;scrollbar-gutter:stable}
+.review-primary .filters{position:sticky;top:0;z-index:2;background:#fff;padding:10px 4px 13px;margin:0;gap:7px;border-bottom:2px solid #111}
+.review-primary .filter-btn{font-size:10px;padding:7px 8px;box-shadow:2px 2px 0 #111;white-space:nowrap}
+.review-primary .qlist{margin:14px 0 6px;gap:11px}
+.review-primary .qhead{padding:10px 12px}
+.review-primary .qbody{padding:0 12px 13px}
+.review-primary .qno-badge{width:33px;height:33px;font-size:13px}
+.review-primary .qhead-snippet{font-size:11.5px}
+.review-primary .stamp{font-size:8.5px}
+.review-save-controls{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:9px;padding:11px 4px 3px}
+.review-save-controls button{font:800 10px ui-monospace,monospace;background:white;border:2px solid #777;color:#555;padding:6px 9px;cursor:pointer}
+.review-save-controls-note{font-size:10px;font-weight:750;color:#555}
+.review-side{position:sticky;top:12px;background:white;border:4px solid #111;box-shadow:7px 7px 0 #111}
+.review-side-tabs{display:flex;border-bottom:4px solid #111;background:#f8f4e9}
+.review-side-tab{flex:1;min-width:0;cursor:pointer;border:0;border-right:2px solid #111;padding:13px 8px;font:900 11px "Arial Black","Helvetica Neue",Impact,sans-serif;background:transparent;color:#111;text-transform:uppercase}
+.review-side-tab:last-child{border-right:0}
+.review-side-tab[aria-selected="true"]{background:#ffcf24}
+.review-side-tab:focus-visible{outline:3px solid #2956ff;outline-offset:-3px}
+.review-side-scroll{max-height:calc(100dvh - 93px);min-height:390px;overflow:auto;overscroll-behavior:contain;padding:16px 17px 22px}
+.review-side-scroll [hidden]{display:none!important}
+.review-side .review-panel .dash{margin-top:0;grid-template-columns:repeat(2,minmax(0,1fr));box-shadow:none}
+.review-side .review-panel .dash .stat{border-bottom:3px solid #111}
+.review-side .review-panel .dash .stat:nth-child(even){border-right:0}
+.review-side .review-panel .dash .stat:nth-child(n+3){border-bottom:0}
+.review-side .review-panel .dash .num{font-size:28px}
+.review-side .progress-block{box-shadow:none;margin-top:15px!important}
+.review-side #claudeSyncPanel.ai-visible-panel{margin:0!important;padding:0!important;border:0!important;box-shadow:none!important}
+.review-side #claudeSyncPanel.ai-visible-panel h2{font-size:20px!important}
+.review-side #learningTools{margin:0;box-shadow:none;max-width:none}
+.review-side #learningTools button{max-width:100%}
+.review-panel-title{font:900 16px "Arial Black","Helvetica Neue",Impact,sans-serif;text-transform:uppercase;margin:0 0 10px}
+.review-panel-subtext{font-size:11px;line-height:1.6;margin:4px 0 13px;color:#444;font-weight:700}
+.review-pdf-proof{border:3px solid #111;padding:12px;margin-top:15px;background:#fff9e8}
+.review-pdf-proof button{border:3px solid #111;cursor:pointer;background:#ffcf24;padding:9px;font-weight:900;font-family:inherit}
+.review-pdf-proof p{font-size:11px;line-height:1.5}
+.review-primary .source-page-open{display:inline-block;border:2px solid #111;background:#ffefbd;padding:7px 9px;margin:8px 0;font:800 11px ui-monospace,monospace;cursor:pointer}
+@media(max-width:960px){
+  .review-workspace{grid-template-columns:minmax(0,1fr)}
+  .review-side{grid-row:1;position:static}
+  .review-side-scroll{max-height:600px;min-height:0}
+  .review-question-scroll{max-height:none;min-height:0;overflow:visible}
+  .review-primary .filters{position:static}
+}
+@media(max-width:550px){
+  .review-workspace{gap:13px}
+  .review-primary{padding:8px;box-shadow:4px 4px 0 #111}
+  .review-side{box-shadow:4px 4px 0 #111}
+  .review-side-tab{font-size:9px;padding:11px 4px}
+  .review-side-scroll{padding:12px 10px 16px}
+  .review-primary .filters{gap:5px}
+  .review-primary .filter-btn{font-size:9px;padding:6px}
+}
