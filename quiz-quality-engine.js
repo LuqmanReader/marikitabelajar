@@ -89,6 +89,7 @@ function generate({paper,topics,count=20,mode='topic',difficulty='mixed',order='
     levelMix:{easy:0,moderate:0,hard:0},availableLevelMix:{easy:0,moderate:0,hard:0},
     skillCoverage:{tested:0,available:0,uncovered:[],type:'authored question families, not verified syllabus outcomes'},
     syllabusCoverageVerified:false,
+    outcomeCoverage:[],
     reason:'Not enough distinct authored questions; fillers have been disabled.'};
  if(!allowedPapers.has(paper)){
    result.reason='This paper needs an independently authored question bank and its correct official exam format.';
@@ -110,6 +111,9 @@ function generate({paper,topics,count=20,mode='topic',difficulty='mixed',order='
    q.id=hashId(key,q);q.key=key;
    q.difficulty=estimateLevel(q);
    q.skillLabel=skillLabel(q);
+   const authoredMap=root.LedgerQuizOutcomeMap?.[key]||{};
+   const documented=root.LedgerOutcomeLessons?.[key]?.outcomes||{};
+   q.outcomeCodes=(authoredMap[q.group]||[]).filter(code=>Boolean(documented[code]));
    pool.push(q);
   }
   for(let i=0;i<24;i++){
@@ -169,6 +173,16 @@ function generate({paper,topics,count=20,mode='topic',difficulty='mixed',order='
  result.skillCoverage={tested:tested.size,available:availableAreas.size,
    uncovered:[...availableAreas].filter(([key])=>!tested.has(key)).map(([key,label])=>({key,label})),
    type:'authored question families, not verified syllabus outcomes'};
+ result.outcomeCoverage=keys.filter(key=>root.LedgerOutcomeLessons?.[key]?.outcomes).map(key=>{
+   const documented=root.LedgerOutcomeLessons[key].outcomes;
+   const testedCodes=new Set(questions.filter(q=>q.key===key).flatMap(q=>q.outcomeCodes||[]));
+   const entries=Object.entries(documented);
+   return {key,total:entries.length,tested:entries.filter(([code])=>testedCodes.has(code)).length,
+    untested:entries.filter(([code])=>!testedCodes.has(code)).map(([code,o])=>({
+       code,title:o.title,level:o.level
+    })),edition:root.LedgerOutcomeLessons[key].edition||'Not independently verified',
+    mappedBy:'partial manual editorial question-family mapping'};
+ });
  result.complete=questions.length===qty&&result.actualMix.mcq===required.mcq&&result.actualMix.numeric===required.numeric;
  if(result.complete)result.reason='';
  else if(selectedDifficulty!=='mixed')result.reason='Insufficient distinct '+selectedDifficulty+' questions in this chapter; no filler has been invented.';
