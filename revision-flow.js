@@ -1,7 +1,7 @@
 (function(root){
   'use strict';
   var own=function(o,k){return Object.prototype.hasOwnProperty.call(o,k);};
-  var fields=['reasoning','calculation','justification','focus','topic_reason','topic_status'];
+  var fields=['reasoning','calculation','justification','focus','topic_reason','topic_status','visual_observed_selection','visual_observed_correct_answer'];
   function esc(value){return String(value==null?'':value).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
   function plain(html){
     if(typeof document!=='undefined'){
