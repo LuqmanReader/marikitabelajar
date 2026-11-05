@@ -174,15 +174,9 @@ function renderQuestions(){
 }
 function reviewQuiz(){
  if(phase!=='answering')return;
- const unanswered=active.questions.find(q=>q.type==='numeric'?
-    engine.parseNumber(answers[q.id])===null:
-    answers[q.id]===undefined||answers[q.id]==='');
- if(unanswered){
-  setMessage('Complete every multiple-choice or numerical answer before submitting. Numerical answers may contain commas and $.');
-  const index=active.questions.indexOf(unanswered);
-  $('practice-'+index).scrollIntoView({block:'center',behavior:'smooth'});
-  return;
- }
+ const countAnswered=active.questions.filter(answered).length;
+ const unansweredCount=active.questions.length-countAnswered;
+ if(unansweredCount>0&&!root.confirm('Submit with '+unansweredCount+' unanswered question(s)? Unanswered questions will be marked incorrect.'))return;
  phase='review';$('review').hidden=true;
  active.questions.forEach((q,i)=>{
   const card=$('practice-'+i),box=card.querySelector('.feedback'),answer=answers[q.id];
@@ -194,22 +188,26 @@ function reviewQuiz(){
   const expected=q.type==='numeric'?answerLabel(q,q.correctValue):answerLabel(q,q.correctValue);
   box.append(element('p',null,'Your answer: '+answerLabel(q,answer)+'\nExpected answer: '+expected+'\n\n'+q.explanation));
  });
- $('results').hidden=false;updateResult();$('results').scrollIntoView({block:'start',behavior:'smooth'});
+ $('results').hidden=false;updateResult();showQuestion(0);$('results').scrollIntoView({block:'start',behavior:'smooth'});
 }
 function updateResult(){
  const s=engine.score(active.questions,answers),remaining=s.total-s.marked;
  $('score').replaceChildren();
  $('score').append(element('strong',null,s.correct+' / '+s.total));
- $('score').append(element('p',null,s.percent+'% of '+s.marked+' marked answers correct · '+s.automatic+' automatically marked'+(remaining?' · '+remaining+' unanswered':'')));
- $('save').disabled=remaining>0||saved;
+ $('score').append(element('p',null,s.percent+'% of '+s.total+' questions correct · '+s.automatic+' attempted answers marked'+(remaining?' · '+remaining+' unanswered counted incorrect':'')));
+ $('save').disabled=saved;
 }
 function saveQuiz(){
  if(!active||phase!=='review'||saved)return;
  const outcome=engine.score(active.questions,answers);
- if(outcome.marked!==outcome.total)return;
  const record={id:new Date().toISOString()+'-'+Math.floor(Math.random()*100000),at:new Date().toISOString(),
    paper:active.paper,topic:active.selectedTopic,mode:active.mode,correct:outcome.correct,total:outcome.total,percent:outcome.percent,
-   automatic:outcome.automatic,selfMarked:outcome.selfMarked,items:outcome.items.map((item,i)=>({...item,group:active.questions[i].group})),
+   automatic:outcome.automatic,selfMarked:outcome.selfMarked,unanswered:outcome.total-outcome.marked,
+    difficulty:active.difficulty,levelMix:active.levelMix,
+    skillCoverage:{tested:active.skillCoverage.tested,available:active.skillCoverage.available},
+    flagged:[...flagged].sort((a,b)=>a-b),
+    items:outcome.items.map((item,i)=>({...item,group:active.questions[i].group,
+      difficulty:active.questions[i].difficulty,outcomeCodes:active.questions[i].outcomeCodes||[]})),
    edition:syllabi[active.paper]?.edition||null};
  try{
    engine.saveHistory(root.localStorage,record);
@@ -228,7 +226,7 @@ function renderHistory(){
  for(const r of entries.slice(0,8)){
    const row=element('div','history-row'),left=element('div');
    left.append(element('b',null,r.paper+' / '+(r.mode==='mock'?'50-QUESTION MOCK':r.topic==='all'?'MIXED TOPICS':r.topic||'MIXED')));
-   left.append(element('small',null,new Date(r.at).toLocaleString('en-MY')+' · '+r.automatic+' automatically graded'));
+   left.append(element('small',null,new Date(r.at).toLocaleString('en-MY')+' · '+r.automatic+' attempted answers graded'+(r.difficulty?' · '+r.difficulty+' level':'')));
    row.append(left,element('b',null,r.correct+' / '+r.total));wrap.append(row);
  }
  list.append(wrap);
@@ -242,6 +240,12 @@ async function init(){
   $('topicMode').addEventListener('click',()=>setMode('topic'));
   $('mockMode').addEventListener('click',()=>setMode('mock'));
   $('count').addEventListener('change',()=>setMode(mode));
+  $('previousQuestion').addEventListener('click',()=>showQuestion(cursor-1));
+  $('nextQuestion').addEventListener('click',()=>showQuestion(cursor+1));
+  $('flagQuestion').addEventListener('click',()=>{
+    if(flagged.has(cursor))flagged.delete(cursor);else flagged.add(cursor);
+    showQuestion(cursor);
+  });
   $('paper').addEventListener('change',()=>{fillTopics();setMode(mode);});
   $('topic').addEventListener('change',updateReadLink);
   $('generate').addEventListener('click',makeQuiz);
