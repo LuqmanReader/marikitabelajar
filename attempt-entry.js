@@ -106,7 +106,12 @@
   }
   function parseHtml(text){
     var doc=new DOMParser().parseFromString(text,'text/html'), els=Array.from(doc.querySelectorAll('div.que'));
-    if(!els.length)throw new Error('This is not a marked attempt-review page. Export the page that shows each question and its result.');
+    if(!els.length){
+      if(!window.LedgerPeerUniversalHtml)throw new Error('Generic HTML reader was not loaded. Refresh and try again.');
+      var generic=LedgerPeerUniversalHtml.parse(text);
+      if(!generic.questions.length)throw new Error('This HTML contains no recognizable assessment questions. Use a marked review export for Debrief; the original HTML is still readable as a document.');
+      return generic.questions;
+    }
     var questions=[],sharedHtml='',sharedPlain='',sharedRemaining=0,numberWords={one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10};
     els.forEach(function(el){
       var no=el.querySelector('h3.no .qno');
@@ -184,7 +189,7 @@
       var suggestions=window.LedgerTopicSuggest?LedgerTopicSuggest.apply(qs,meta.subject,localStorage):0;
       var graded=qs.filter(function(q){return typeof q.is_correct==='boolean';});
       var correct=graded.filter(function(q){return q.is_correct;}).length;
-      if(meta.sourceType!=='html'&&!graded.length)throw new Error('This document has no confirmed marked exam results. Select PDF → HTML to convert every page without requiring a score; no marks will be invented.');
+      if(!graded.length)throw new Error(meta.sourceType==='html'?'No verifiable marked scores were found in this HTML. A question-only document cannot be saved as a graded exam.':'This document has no confirmed marked exam results. Select PDF → HTML to convert every page without requiring a score; no marks will be invented.');
       meta.correct=correct;meta.total=graded.length;meta.totalQuestions=qs.length;
       var sourceMarks=qs.filter(function(q){
         return Number.isFinite(q.original_marks)&&Number.isFinite(q.original_max_marks)&&q.original_max_marks>0&&q.original_marks>=0&&q.original_marks<=q.original_max_marks;
