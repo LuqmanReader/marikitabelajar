@@ -180,7 +180,7 @@
       $('entryPreview').innerHTML='<div class="flow-score"><strong>'+(graded.length?Math.round(correct/graded.length*100)+'%':'Unscored')+'</strong><span>Full-correct rate · '+correct+'/'+graded.length+' questions · '+qs.length+' total</span></div>'+
         (meta.originalPossibleMarks?'<p><strong>Original graded marks: '+meta.originalEarnedMarks+' / '+meta.originalPossibleMarks+'</strong> (source marking, including partial credit).</p>':'<p>Original marks verified for '+sourceMarks.length+'/'+qs.length+' questions; a weighted original score cannot be confirmed.</p>')+
         (qs.length!==graded.length?'<p class="capture-warning">'+(qs.length-graded.length)+' questions are unscored and excluded from accuracy.</p>':'')+
-        '<p><strong class="capture-ok">'+captured+' learner answers captured</strong> · '+suggestions+' provisional topic suggestions. The AI debrief will classify questions against the approved syllabus.</p>'+
+        '<p><strong class="capture-ok">'+captured+' learner answers captured</strong> · '+suggestions+' provisional topic suggestions. The returned JSON can classify questions against the approved syllabus.</p>'+
         '<div class="question-preview">'+qs.map(function(q){return '<article><strong>Q'+q.qno+' · '+(q.is_correct===true?'Correct':q.is_correct===false?'Incorrect':'Unscored')+'</strong>'+
           (q.source_pdf_pages?'<p>Original PDF page(s): '+q.source_pdf_pages.join(', ')+'</p>':'')+
           '<p>'+F.escape(F.plain(q.qtext).slice(0,220)||'Question text missing')+'</p><p class="'+(q.answer_capture_status==='captured'?'capture-ok':'capture-warning')+'">'+
@@ -193,7 +193,7 @@
           (warnings.length>12?'<p>And '+(warnings.length-12)+' more; consult every question before relying on the result.</p>':'');
         $('saveAttempt').disabled=false;
       }else $('saveAttempt').disabled=false;
-      message('Extraction finished. Confirm the paper and assessment type, then save to start debrief.');
+      message('Extraction finished. Confirm the paper and assessment type, then save to open the manual JSON debrief.');
     }catch(e){
       staged=null;$('saveAttempt').disabled=true;
       message('Extraction stopped: '+(e&&e.name==='NotReadableError'?'This browser no longer has permission to read the selected PDF. Save a local copy and reselect it.':e.message));
@@ -207,7 +207,7 @@
     try{
       meta=Object.assign({},staged.meta,fields());
       meta.title=$('titleInput').value.trim()||ExamModel.label(meta)+(meta.setChapter?' · '+meta.setChapter:'');
-      meta.id=id;meta.createdAt=new Date().toISOString();meta.file='view.html?id='+encodeURIComponent(id)+'&autodebrief=1';meta.autoDebriefRequested=true;meta.topics={};
+      meta.id=id;meta.createdAt=new Date().toISOString();meta.file='view.html?id='+encodeURIComponent(id);meta.autoDebriefRequested=false;meta.topics={};
       var questions=staged.questions.map(function(q){return Object.assign({},q);});
       if(window.LedgerTopicSuggest)LedgerTopicSuggest.apply(questions,meta.subject,localStorage);
       var exams=JSON.parse(localStorage.getItem('tymba_custom_exams')||'[]');if(!Array.isArray(exams))throw new Error('Saved attempts could not be read.');
@@ -221,15 +221,7 @@
       F.save(localStorage,key,questions);
       try{F.save(localStorage,'tymba_custom_exams',exams.concat([meta]));}catch(e){localStorage.removeItem(key);throw e;}
       this.disabled=true;
-      message('Attempt saved locally. Syncing securely for automatic debrief…');
-      try{
-        if(window.PersonalHubAuth&&typeof PersonalHubAuth.sync==='function'){
-          var synced=await PersonalHubAuth.sync(true);
-          if(synced===false)message('Attempt saved locally. Cloud sync is pending; automatic debrief will resume when available.');
-        }
-      }catch(syncError){
-        message('Attempt saved locally. Cloud sync is pending; automatic debrief may need a retry.');
-      }
+      message('Attempt saved. Opening the manual JSON debrief page…');
       location.href=meta.file;
     }catch(e){message('Could not save: '+e.message);}
   });
