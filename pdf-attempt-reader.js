@@ -153,7 +153,12 @@ async function read(source,onProgress){
     try{parsed=parseBlocks(pages);engine='marked-review-text';}
     catch(e){parseFailures.push('Marked-exam text rules did not match this layout: '+String(e.message||e));}
   }
-  if(!parsed||!parsed.reconciliation){
+  // Strong question-header + status evidence must not be discarded merely
+  // because a few OCR decimals or the overall-grade header are unreadable.
+  var evidence=parsed&&parsed.extractionConfidence;
+  var credibleOcr=!!(parsed&&parsed.partialGrading&&evidence&&
+    evidence.questionCount>=2&&evidence.statusCount>=Math.ceil(evidence.questionCount*0.6));
+  if(!parsed||(!parsed.reconciliation&&!credibleOcr)){
     if(!root.LedgerPeerUniversalDocument)throw new Error('Universal PDF document reader did not load. Refresh and try again.');
     var generic=root.LedgerPeerUniversalDocument.parse(pages);
     if(generic.reconciliation||!parsed){
@@ -173,6 +178,7 @@ async function read(source,onProgress){
   var warnings=(parsed.warnings||[]).slice().concat(parseFailures);
   return {document:pdf,pages:pages,questions:parsed.questions||[],warnings:warnings,
     reconciliation:parsed.reconciliation||null,ocrUsed:anyOcr,readerEngine:engine,
+    extractionConfidence:parsed.extractionConfidence||null,
     pageCount:pdf.numPages,originalName:source&&source.name||'Original exam PDF'};
 }
 async function convertToHTML(result,onProgress){
