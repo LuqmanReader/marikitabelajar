@@ -30,6 +30,77 @@ function update(text,action){
   if(btn)btn.hidden=!action;
   if(el)el.hidden=false;
 }
+function scriptOnce(src,globalKey){
+  if(root[globalKey])return Promise.resolve();
+  if(root.__lpScriptLoads&&root.__lpScriptLoads[src])return root.__lpScriptLoads[src];
+  root.__lpScriptLoads=root.__lpScriptLoads||{};
+  return root.__lpScriptLoads[src]=new Promise(function(resolve,reject){
+    var script=document.createElement('script');script.src=src;
+    script.onload=function(){root[globalKey]?resolve():reject(new Error('Reader did not initialize'));};
+    script.onerror=function(){reject(new Error('Unable to load extraction repair script.'));};
+    document.head.appendChild(script);
+  });
+}
+function pageTextFromHtml(html){
+  var doc=new DOMParser().parseFromString(html,'text/html'),nodes=Array.from(doc.querySelectorAll('section.page'));
+  return nodes.map(function(section,index){
+    var region=section.querySelector('.page-text'),lines=region?
+      Array.from(region.querySelectorAll('p')).map(function(el){return el.textContent.trim();}).filter(Boolean):[];
+    if(!lines.length){
+      var legacy=section.querySelector('details pre');
+      if(legacy)lines=(legacy.textContent||'').split(/\r?\n/).map(function(s){return s.trim();}).filter(Boolean);
+    }
+    return {number:Number((section.id||'').replace('page-',''))||index+1,lines:lines,ocrConfidence:null};
+  }).filter(function(p){return p.lines.length;});
+}
+async function repairLegacyOcr(id,meta,list){
+  // Only repair known-broken OCR attempts. Never overwrite a learner's reviewed
+  // corrections or rerun the full OCR whenever an old attempt is opened.
+  if(!/^pdf/.test(meta.sourceType||'')||!list.length)return false;
+  var originalGraded=list.filter(function(q){return typeof q.is_correct==='boolean';}).length;
+  if(originalGraded>=Math.ceil(list.length*0.8))return false;
+  var seenMarker='lp_ocr_repair_checked_'+id+'_v2';
+  if(root.sessionStorage&&sessionStorage.getItem(seenMarker))return false;
+  if(root.sessionStorage)sessionStorage.setItem(seenMarker,'1');
+  if(!root.LedgerPeerPdfProof||typeof root.LedgerPeerPdfProof.getHtml!=='function')return false;
+  update('Checking the original saved document to repair the inaccurate OCR grading…',false);
+  var archived=await root.LedgerPeerPdfProof.getHtml(id).catch(function(){return null;});
+  if(!archived)return false;
+  var report=pageTextFromHtml(await archived.text());
+  if(!report.length)return false;
+  await scriptOnce('pdf-ocr-parser.js?v=20261105-repair2','LedgerPeerOcrParser');
+  var repaired;
+  try{repaired=root.LedgerPeerOcrParser.parse(report);}catch(e){return false;}
+  var fixed=repaired.questions||[], graded=fixed.filter(function(q){return typeof q.is_correct==='boolean';}).length;
+  if(fixed.length!==list.length||graded<=originalGraded||
+    graded<Math.ceil(list.length*.65))return false;
+  var known=new Map(list.map(function(q){return [q.qno,q];}));
+  var combined=fixed.map(function(q){
+    var old=known.get(q.qno)||{},next=Object.assign({},old,q);
+    // Keep feedback and verified student annotations, but replace unreliable OCR
+    // question text, answers and grade values with better source extraction.
+    ['reasoning','calculation','justification','focus','topic_reason','topic_status','debrief'].forEach(function(k){
+      if(old[k])next[k]=old[k];
+    });
+    if(old.chapter&&old.topic_origin==='manual')next.chapter=old.chapter;
+    return next;
+  });
+  var saved=exams(),pos=saved.findIndex(function(e){return e.id===id;});
+  if(pos<0)return false;
+  var nextMeta=Object.assign({},saved[pos],{correct:combined.filter(function(q){return q.is_correct===true;}).length,
+    total:graded,totalQuestions:combined.length,markCoverage:combined.filter(function(q){return q.original_marks!==null;}).length,
+    ocrReconciliation:repaired.reconciliation||null,ocrRepairVersion:2});
+  if(repaired.reconciliation){
+    nextMeta.originalEarnedMarks=repaired.reconciliation.originalEarned;
+    nextMeta.originalPossibleMarks=repaired.reconciliation.originalPossible;
+  }else{delete nextMeta.originalEarnedMarks;delete nextMeta.originalPossibleMarks;}
+  saved[pos]=nextMeta;
+  RevisionFlow.save(localStorage,'tymba_exam_data:'+id,combined);
+  RevisionFlow.save(localStorage,'tymba_custom_exams',saved);
+  update('Recovered '+graded+'/'+combined.length+' question grades from the original PDF evidence. Opening the corrected debrief…',false);
+  location.replace('view.html?id='+encodeURIComponent(id)+'&autodebrief=1&ocrrepaired=1');
+  return true;
+}
 async function start(manual){
   if(running)return;
   var params=new URLSearchParams(location.search),id=params.get('id');
@@ -44,6 +115,10 @@ async function start(manual){
   if(!catalog.length){update('No verified topic catalog for '+meta.subject+'. Configure the paper syllabus before analysing.',true);return;}
   var pending=list.filter(function(q){return !complete(q);});
   if(!pending.length){update('Debrief complete. All '+list.length+' questions have saved explanations.',false);return;}
+  if(!manual){
+    try{if(await repairLegacyOcr(id,meta,list))return;}
+    catch(e){update('Source repair was unavailable: '+String(e.message||e)+'. The saved attempt is unchanged.',true);}
+  }
   var auth=root.PersonalHubAuth;
   if(!auth||typeof auth.sync!=='function'){update('Automatic analysis requires a signed-in LedgerPeer session.',true);return;}
   running=true;
@@ -117,9 +192,16 @@ function concealManualHandoff(){
   container.appendChild(details);
 }
 function init(){
-  if(new URLSearchParams(location.search).get('autodebrief')==='1'){
-    panel();concealManualHandoff();start(false);
-  }
+  var query=new URLSearchParams(location.search),id=query.get('id'),
+      meta=id&&exams().find(function(e){return e.id===id;});
+  var requested=query.get('autodebrief')==='1'||!!(meta&&(meta.autoDebriefRequested||/autodebrief=1/.test(meta.file||'')));
+  if(!meta)return;
+  // A single action always exists for older attempts; no JSON handoff needed.
+  panel();concealManualHandoff();
+  var btn=$id('autoDebriefRetry');
+  if(btn){btn.hidden=false;btn.textContent='Generate / resume AI debrief';}
+  update('This attempt is ready for automatic question analysis. Original scores will not be changed by AI.',true);
+  if(requested)start(false);
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
 else init();
