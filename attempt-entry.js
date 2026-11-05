@@ -207,7 +207,7 @@
     try{
       meta=Object.assign({},staged.meta,fields());
       meta.title=$('titleInput').value.trim()||ExamModel.label(meta)+(meta.setChapter?' · '+meta.setChapter:'');
-      meta.id=id;meta.createdAt=new Date().toISOString();meta.file='view.html?id='+encodeURIComponent(id)+'&autodebrief=1';meta.topics={};
+      meta.id=id;meta.createdAt=new Date().toISOString();meta.file='view.html?id='+encodeURIComponent(id)+'&autodebrief=1';meta.autoDebriefRequested=true;meta.topics={};
       var questions=staged.questions.map(function(q){return Object.assign({},q);});
       if(window.LedgerTopicSuggest)LedgerTopicSuggest.apply(questions,meta.subject,localStorage);
       var exams=JSON.parse(localStorage.getItem('tymba_custom_exams')||'[]');if(!Array.isArray(exams))throw new Error('Saved attempts could not be read.');
