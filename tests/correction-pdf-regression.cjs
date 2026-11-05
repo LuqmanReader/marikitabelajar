@@ -13,7 +13,13 @@ globalThis.localStorage={getItem(){return null},setItem(){}};
 vm.runInThisContext(fs.readFileSync(path.join(__dirname,'../correction-pdf.js'),'utf8'),{filename:'correction-pdf.js'});
 const E=globalThis.LedgerPeerCorrectionPDF;
 assert(E,'Correction PDF exporter was not registered');
-const meta={id:'fixture1',subject:'MA2 - Managing Costs and Finance',title:'Progress Test 2',testType:'pre',testNumber:2};
+assert.equal(E.overallScore({correct:29,total:50}).percentage,58,'Overall score uses all originally graded questions');
+assert.equal(E.overallScore({correct:29,total:50}).tier,'mid','58% is amber');
+assert.equal(E.overallScore({correct:22,total:50}).tier,'low','44% is red');
+assert.equal(E.overallScore({correct:40,total:50}).tier,'high','80% is green');
+assert.equal(E.overallScore({correct:null,total:50}),null,'Unknown marks must not be fabricated');
+assert.equal(E.overallScore({correct:61,total:50}),null,'Invalid marks must not be displayed');
+const meta={id:'fixture1',subject:'MA2 - Managing Costs and Finance',title:'Progress Test 2',testType:'pre',testNumber:2,correct:29,total:50};
 const questions=[
  {qno:1,qtext:'Calculate the material variance where cost is $600 and budget is $500. The company planned output of 100 units.',
   your_answer:'$500',correct_answer:'$100 adverse',is_correct:false,original_marks:0,original_max_marks:2,
