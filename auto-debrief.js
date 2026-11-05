@@ -34,7 +34,9 @@ function showSavedJson(){
   if(!id||!pre||!details)return;
   var items=source(id).filter(function(q){return complete(q);}).map(function(q){
     return {qno:q.qno,chapter:q.chapter,reasoning:q.reasoning,
-      calculation:q.calculation||'Not applicable',justification:q.justification,focus:q.focus||''};
+      calculation:q.calculation||'Not applicable',justification:q.justification,focus:q.focus||'',
+      visual_observed_selection:q.visual_observed_selection||'',
+      visual_observed_correct_answer:q.visual_observed_correct_answer||''};
   });
   details.hidden=!items.length;
   if(items.length)pre.textContent=JSON.stringify({schema:'personal-hub-debrief-v2',exam_id:id,
