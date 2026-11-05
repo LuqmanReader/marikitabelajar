@@ -43,12 +43,17 @@ assert(E.pdfSafe('Profit £200 − 100 × 2 = 0').includes('GBP 200 - 100 x 2'))
 const long=Array(130).fill('Long financial accounting paragraph with $ and percentages.').join(' ');
 const longQuestion=[{...questions[0],qtext:long,calculation:long,reasoning:long}];
 (async()=>{
- const simple=E.compose(meta,longQuestion,{},'all',false);
+ const simple=E.compose(meta,[questions[0]],{},'all',false);
  const generated=await E.generate(simple,null);
  assert.equal(Buffer.from(generated).subarray(0,5).toString(),'%PDF-');
  const pdf=await L.PDFDocument.load(generated);
- assert(pdf.getPageCount()>=3,'Long correction must paginate cleanly');
+ assert.equal(pdf.getPageCount(),2,'One correction must occupy exactly one A4 page after the cover');
  assert(pdf.getTitle().includes('Progress Test 2'));
+ assert.equal(pdf.getPages()[1].getWidth(),595.28,'Correction sheet must be A4');
+ assert.equal(pdf.getPages()[1].getHeight(),841.89,'Correction sheet must be A4');
+ // A genuinely oversized correction must be rejected, never silently truncated or split.
+ const oversized=E.compose(meta,longQuestion,{},'all',false);
+ await assert.rejects(()=>E.generate(oversized,null),/Question 1 is too long to fit legibly on one A4 page/);
  // Preserve every original page as an exact source appendix.
  const original=await L.PDFDocument.create();
  const fig=original.addPage([420,610]);
@@ -60,10 +65,12 @@ const longQuestion=[{...questions[0],qtext:long,calculation:long,reasoning:long}
  const withoutSource=await E.generate(E.compose(meta,questions,manual,'incorrect',false),null);
  const noSourcePdf=await L.PDFDocument.load(withoutSource);
  assert.equal(sourcePdf.getPageCount(),noSourcePdf.getPageCount()+1,'Original PDF should be appended after corrections');
+ assert.equal(noSourcePdf.getPageCount(),3,'Two corrections must use two pages plus one cover');
+ assert.equal(sourcePdf.getPageCount(),4,'Appending a one-page source PDF must not change correction pagination');
  const last=sourcePdf.getPages().at(-1);
  assert.equal(last.getWidth(),420,'Original page width must be retained');
  assert.equal(last.getHeight(),610,'Original page height must be retained');
  const bytes=await E.generate(draft,null);
  assert((await L.PDFDocument.load(bytes)).getPageCount()>=3,'Draft corrections must still produce a clearly marked PDF');
- console.log('PASS: actual PDF generation, pagination, editable correction content, draft labeling, and lossless original PDF appendix');
+ console.log('PASS: exactly one A4 sheet per correction, no silent truncation, editable content, draft labeling, and unchanged source PDF appendix');
 })().catch(e=>{console.error(e);process.exitCode=1;});
