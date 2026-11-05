@@ -51,9 +51,20 @@ const longQuestion=[{...questions[0],qtext:long,calculation:long,reasoning:long}
  assert(pdf.getTitle().includes('Progress Test 2'));
  assert.equal(pdf.getPages()[1].getWidth(),595.28,'Correction sheet must be A4');
  assert.equal(pdf.getPages()[1].getHeight(),841.89,'Correction sheet must be A4');
- // A genuinely oversized correction must be rejected, never silently truncated or split.
+ // A genuinely oversized correction must automatically continue, never block export.
  const oversized=E.compose(meta,longQuestion,{},'all',false);
- await assert.rejects(()=>E.generate(oversized,null),/Question 1 is too long to fit legibly on one A4 page/);
+ const longBytes=await E.generate(oversized,null);
+ const expanded=await L.PDFDocument.load(longBytes);
+ assert(expanded.getPageCount()>2,'Long correction must use one or more continuation pages');
+ expanded.getPages().forEach(p=>{
+  assert.equal(p.getWidth(),595.28,'All generated sheets must remain A4');
+  assert.equal(p.getHeight(),841.89,'All generated sheets must remain A4');
+ });
+ // A lengthy question must never be blended with the next question's sheet.
+ const mixed=E.compose(meta,[longQuestion[0],questions[1]],manual,'all',false);
+ const mixedPdf=await L.PDFDocument.load(await E.generate(mixed,null));
+ assert.equal(mixedPdf.getPageCount(),expanded.getPageCount()+1,
+  'Second short question gets its own page after the long question continuation');
  // Preserve every original page as an exact source appendix.
  const original=await L.PDFDocument.create();
  const fig=original.addPage([420,610]);
@@ -72,5 +83,5 @@ const longQuestion=[{...questions[0],qtext:long,calculation:long,reasoning:long}
  assert.equal(last.getHeight(),610,'Original page height must be retained');
  const bytes=await E.generate(draft,null);
  assert((await L.PDFDocument.load(bytes)).getPageCount()>=3,'Draft corrections must still produce a clearly marked PDF');
- console.log('PASS: exactly one A4 sheet per correction, no silent truncation, editable content, draft labeling, and unchanged source PDF appendix');
+ console.log('PASS: one-sheet normal corrections, automatic long-question continuation, no content rejection, draft labeling and original PDF appendix');
 })().catch(e=>{console.error(e);process.exitCode=1;});
