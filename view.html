@@ -421,6 +421,8 @@
 <script src="debrief-workflow.js?v=20261103-related-topics"></script>
 <link rel="stylesheet" href="site-nav.css?v=20261028-unifiedback">
 <link rel="stylesheet" href="ledgerpeer-theme.css?v=20261011">
+<link rel="stylesheet" href="debrief-layout.css?v=20261105-split1">
+<script src="pdf-proof-store.js?v=1"></script>
 </head>
 <body>
 
@@ -439,6 +441,38 @@
     <div class="subtitle" id="pageSubtitle"></div>
   </header>
 
+  <div class="review-workspace">
+    <section class="review-primary" aria-labelledby="questionsHeading">
+      <h2 class="review-primary-title" id="questionsHeading">Question review</h2>
+      <p class="review-primary-hint">Use the filters, open any question and review its working. The question list scrolls independently on desktop.</p>
+      <div class="review-question-scroll" id="reviewQuestionScroll">
+  <div class="filters" id="filters">
+    <button class="filter-btn active" data-filter="all">All <span class="count" id="cAll"></span></button>
+    <button class="filter-btn" data-filter="incorrect">Needs Debrief <span class="count" id="cIncorrect"></span></button>
+    <button class="filter-btn" data-filter="correct">Correct <span class="count" id="cCorrect"></span></button>
+    <button class="filter-btn" data-filter="unreviewed">Not Yet Reviewed <span class="count" id="cUnreviewed"></span></button>
+  </div>
+  <div class="review-save-controls">
+    <div style="font-size:9.5px;font-weight:800;color:var(--grey);text-transform:uppercase;letter-spacing:.05em;">&#128190; Progress saves automatically to this browser</div>
+    <button id="resetProgress" style="font-family:ui-monospace,monospace;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;background:none;border:2px solid var(--grey);color:var(--grey);padding:4px 9px;cursor:pointer;">Reset Progress</button>
+  </div>
+
+  <div class="qlist" id="qlist"></div>
+  <div class="empty-state" id="emptyState" style="display:none;">No questions match this filter.</div>
+
+
+      </div>
+    </section>
+    <aside class="review-side" aria-label="Attempt dashboard and debrief tools">
+      <div class="review-side-tabs" role="tablist" aria-label="Review tools">
+        <button type="button" class="review-side-tab" role="tab" id="tabOverview" data-review-tab="overview" aria-controls="panelOverview" aria-selected="true">Overview</button>
+        <button type="button" class="review-side-tab" role="tab" id="tabDebrief" data-review-tab="debrief" aria-controls="panelDebrief" aria-selected="false">AI Debrief</button>
+        <button type="button" class="review-side-tab" role="tab" id="tabPractice" data-review-tab="practice" aria-controls="panelPractice" aria-selected="false">Retry &amp; Confidence</button>
+      </div>
+      <div class="review-side-scroll">
+        <section class="review-panel" id="panelOverview" role="tabpanel" aria-labelledby="tabOverview">
+          <h2 class="review-panel-title">Attempt summary</h2>
+          <p class="review-panel-subtext">Score and debrief progress stay visible without pushing questions down the page.</p>
   <div class="dash panel">
     <div class="stat correct"><div class="num" id="statCorrect">0</div><div class="lbl">Correct</div></div>
     <div class="stat incorrect"><div class="num" id="statIncorrect">0</div><div class="lbl">Incorrect</div></div>
@@ -457,6 +491,14 @@
     </div>
   </div>
 
+
+          <div class="review-pdf-proof" id="pdfProof" hidden>
+            <h3 class="review-panel-title">Original PDF evidence</h3>
+            <p id="pdfProofStatus">Checking original PDF saved on this device…</p>
+            <button type="button" id="pdfProofOpen" disabled>Open original PDF</button>
+          </div>
+        </section>
+        <section class="review-panel" id="panelDebrief" role="tabpanel" aria-labelledby="tabDebrief" hidden>
   <!-- AI section appears BEFORE optional confidence calibration. Visible static
        fallback prevents a missing script from silently hiding Gemini. -->
   <div id="claudeSyncPanel" class="flow-panel ai-visible-panel" role="region" aria-label="AI analysis and topic classification">
@@ -464,6 +506,9 @@
     <p id="aiBootMessage" role="status">Loading your topic classification tools…</p>
   </div>
 
+
+        </section>
+        <section class="review-panel" id="panelPractice" role="tabpanel" aria-labelledby="tabPractice" hidden>
   <div class="learning-panel" id="learningTools">
     <div class="learning-title">Learning Calibration</div>
     <div style="font-size:11.5px;line-height:1.55;margin-bottom:10px;">How confident were you in this paper <strong>before seeing the result?</strong> Save a 1–10 rating and the hub will compare perception with performance.</div>
@@ -483,20 +528,12 @@
   </div>
 
 
-  <div class="filters" id="filters">
-    <button class="filter-btn active" data-filter="all">All <span class="count" id="cAll"></span></button>
-    <button class="filter-btn" data-filter="incorrect">Needs Debrief <span class="count" id="cIncorrect"></span></button>
-    <button class="filter-btn" data-filter="correct">Correct <span class="count" id="cCorrect"></span></button>
-    <button class="filter-btn" data-filter="unreviewed">Not Yet Reviewed <span class="count" id="cUnreviewed"></span></button>
-  </div>
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;flex-wrap:wrap;gap:8px;">
-    <div style="font-size:9.5px;font-weight:800;color:var(--grey);text-transform:uppercase;letter-spacing:.05em;">&#128190; Progress saves automatically to this browser</div>
-    <button id="resetProgress" style="font-family:ui-monospace,monospace;font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;background:none;border:2px solid var(--grey);color:var(--grey);padding:4px 9px;cursor:pointer;">Reset Progress</button>
-  </div>
 
-  <div class="qlist" id="qlist"></div>
-  <div class="empty-state" id="emptyState" style="display:none;">No questions match this filter.</div>
-
+        </section>
+      </div>
+    </aside>
+  </div>
+  
   <footer>LedgerPeer &middot; Corrections Engine &middot; Keep grinding, the exam doesn't grade effort but your memory does.</footer>
 </div>
 
@@ -694,8 +731,12 @@
     }
 
     var body = '<div class="qtext">' + RevisionFlow.sanitize(d.qtext) + '</div>';
+    if(Array.isArray(d.source_pdf_pages)&&d.source_pdf_pages.length){
+      body += '<button type="button" class="source-page-open" data-source-page="'+Number(d.source_pdf_pages[0])+'">Open original PDF · page '+Number(d.source_pdf_pages[0])+'</button>';
+      body += '<p style="font-size:11px;font-weight:700">PDF text and marks may not preserve answer selection, tables or diagrams. Check the original before using this result.</p>';
+    }
     var visualQuestion=/\[Image unavailable|<img\b|(?:type of|following|shown|given).*?(?:graph|chart|diagram|figure)/i.test(String(d.qtext||''));
-    if(visualQuestion){
+    if(visualQuestion&&!(Array.isArray(d.source_pdf_pages)&&d.source_pdf_pages.length)){
       body += '<div class="figure-attach"><label>Original question figure / screenshot (optional replacement)'+
         '<input type="file" class="source-image-file" data-qno="'+d.qno+'" accept="image/png,image/jpeg,image/webp,image/gif" aria-label="Attach original figure for question '+d.qno+'"></label>'+
         '<small>TYMBAFlex exports may omit images. Attach the original screenshot here; LedgerPeer stores it with this attempt on this device. Also attach that image to ChatGPT when requesting visual feedback; copied text cannot transfer image pixels.</small></div>';
@@ -936,6 +977,41 @@
     document.getElementById('submitRetryBtn').addEventListener('click', submitRetry);
 
   }
+})();
+</script>
+
+<script>
+(function(){
+  'use strict';
+  var tabs=Array.from(document.querySelectorAll('[data-review-tab]'));
+  var panels={overview:document.getElementById('panelOverview'),debrief:document.getElementById('panelDebrief'),practice:document.getElementById('panelPractice')};
+  function select(name){
+    tabs.forEach(function(b){b.setAttribute('aria-selected',String(b.dataset.reviewTab===name));b.tabIndex=b.dataset.reviewTab===name?0:-1;});
+    Object.keys(panels).forEach(function(k){panels[k].hidden=k!==name;});
+  }
+  tabs.forEach(function(b){
+    b.addEventListener('click',function(){select(b.dataset.reviewTab);});
+    b.addEventListener('keydown',function(e){
+      if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight')return;
+      e.preventDefault();var current=tabs.indexOf(b),next=(current+(e.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;select(tabs[next].dataset.reviewTab);tabs[next].focus();
+    });
+  });
+  select('overview');
+  var params=new URLSearchParams(location.search),id=params.get('id'),meta=null;
+  try{meta=JSON.parse(localStorage.getItem('tymba_custom_exams')||'[]').find(function(e){return e.id===id;});}catch(e){}
+  if(!meta||!/^pdf/.test(meta.sourceType||''))return;
+  var section=document.getElementById('pdfProof'),status=document.getElementById('pdfProofStatus'),open=document.getElementById('pdfProofOpen'),blobUrl=null;
+  section.hidden=false;
+  if(!window.LedgerPeerPdfProof){status.textContent='Local PDF viewer is unavailable. Keep the original PDF file for verification.';return;}
+  LedgerPeerPdfProof.get(id).then(function(blob){
+    if(!blob){status.textContent='Original PDF not stored on this browser. Re-import the original PDF if you need the source evidence.';return;}
+    blobUrl=URL.createObjectURL(blob);open.disabled=false;
+    status.textContent='Original PDF saved locally in this browser. Use it to verify figures, diagrams, selected answers and ambiguous grading.';
+  }).catch(function(){status.textContent='Unable to retrieve PDF evidence from this browser.';});
+  function viewPage(page){if(blobUrl)window.open(blobUrl+'#page='+Math.max(1,Number(page)||1),'_blank','noopener');}
+  open.addEventListener('click',function(){viewPage(1);});
+  document.addEventListener('click',function(e){var b=e.target.closest('[data-source-page]');if(b)viewPage(b.dataset.sourcePage);});
+  window.addEventListener('pagehide',function(){if(blobUrl)URL.revokeObjectURL(blobUrl);});
 })();
 </script>
 <script>PersonalHubAuth.addLockButton();</script></body>
