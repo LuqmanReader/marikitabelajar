@@ -4,6 +4,7 @@ const $=id=>document.getElementById(id),engine=root.LedgerQuizEngine;
 const papers=root.SubjectCatalog?.papers||[],syllabi=root.LedgerNotesSyllabi?.papers||{},lessons=root.LedgerFiaNotes||{};
 const params=new URLSearchParams(root.location.search);
 let active=null,answers={},phase='setup',saved=false,mode='topic',recentlyGenerated=[];
+let cursor=0,flagged=new Set();
 const element=(tag,className,value)=>{const n=document.createElement(tag);if(className)n.className=className;if(value!==undefined)n.textContent=value;return n;};
 const getTopics=paper=>(syllabi[paper]?.topics||[]).map(engine.topicCode).filter(Boolean);
 function setMessage(message){$('coverage').textContent=message;}
@@ -48,6 +49,8 @@ function setMode(next){
  $('mockMode').setAttribute('aria-pressed',String(isMock));
  $('topicField').hidden=isMock;
  $('countField').hidden=isMock;
+ $('difficultyField').hidden=isMock;
+ $('orderField').hidden=isMock;
  $('readTopic').hidden=isMock;
  $('modeDescription').textContent=isMock
   ?(['FA2','MA2'].includes($('paper').value)?'50-question foundation-style practice: 35 MCQ and 15 numerical entries; this does not replicate all official CBE question types.':'50-question foundation-style practice with MCQs; not an official ACCA examination.')
@@ -58,13 +61,15 @@ function setMode(next){
 function qTitle(q){const t=getTopics(active.paper).find(x=>x.code===q.key.split(':')[1]);return t?.title||q.key;}
 function makeQuiz(){
  const paper=$('paper').value,topics=mode==='mock'?null:getSelection(),count=mode==='mock'?50:Number($('count').value);
+ const difficulty=mode==='mock'?'mixed':$('difficulty').value;
+ const order=mode==='mock'?'random':$('order').value;
  const records=engine.readHistory(root.localStorage).filter(r=>r.paper===paper).slice(0,100);
  const recentIds=records.flatMap(r=>(r.items||[]).map(q=>q.id)).concat(recentlyGenerated);
  const recentGroups=records.flatMap(r=>(r.items||[]).map(q=>q.key&&q.group?q.key+'|'+q.group:null).filter(Boolean));
- active=engine.generate({paper,topics,count,mode,recentIds,recentGroups,lessons,syllabus:syllabi});
+ active=engine.generate({paper,topics,count,mode,difficulty,order,recentIds,recentGroups,lessons,syllabus:syllabi});
  active.selectedTopic=mode==='mock'?'all':$('topic').value;
  recentlyGenerated=recentlyGenerated.concat(active.questions.map(q=>q.id)).slice(-400);
- answers={};phase='answering';saved=false;
+ answers={};phase='answering';saved=false;cursor=0;flagged=new Set();
  if(!active.questions.length){
    $('quizSection').hidden=true;
    setMessage(active.reason||'No original questions for this topic; try another topic.');
@@ -73,28 +78,84 @@ function makeQuiz(){
  $('quizSection').hidden=false;$('results').hidden=true;$('saveStatus').textContent='';$('save').disabled=false;
  const narrow=mode==='mock'?' / PAPER-WIDE MOCK PRACTICE':topics?' / '+topics.join(', '):' / MIXED TOPICS';
  $('quizTitle').textContent=mode==='mock'?'50-QUESTION MOCK PRACTICE':'TOPIC PRACTICE SET';
- $('quizSummary').textContent=paper+narrow+' · '+active.available+' original questions · '+active.actualMix.mcq+' MCQ / '+active.actualMix.numeric+' numerical · '+active.topicsCovered+' topics / '+active.familiesCovered+' distinct reasoning families'+(!active.complete?' · LIMITED: '+active.available+' of '+active.requested+' requested; no repeated-skill filler.':'')+' · Not official ACCA/Kaplan.';
+ $('quizSummary').textContent=paper+narrow+' · '+active.available+' original questions · '+active.actualMix.mcq+' MCQ / '+active.actualMix.numeric+' numerical · '+active.topicsCovered+' topics / '+active.familiesCovered+' distinct reasoning families · '+(active.difficulty||'mixed').toUpperCase()+' difficulty · '+active.levelMix.easy+' easy / '+active.levelMix.moderate+' moderate / '+active.levelMix.hard+' hard'+(!active.complete?' · LIMITED: '+active.available+' of '+active.requested+' requested; no invented fillers.':'')+' · Not official ACCA/Kaplan.';
  if(!active.complete)setMessage('QUESTION BANK SHORTAGE · '+active.reason+' Try mixed-topic practice for more distinct questions.');
  $('review').hidden=false;
+ renderCoverage();
  renderQuestions();$('quizSection').scrollIntoView({block:'start',behavior:'smooth'});
 }
 function answerLabel(q,value){
+ if(value===undefined||value===null||value==='')return 'Not answered';
  if(q.type==='numeric')return String(value)+' '+(q.unit||'');
  return q.choices.find(o=>o.value===value)?.label||'Not answered';
+}
+function renderCoverage(){
+ const box=$('chapterCoverage');box.replaceChildren();
+ const coverage=active.skillCoverage||{tested:0,available:0,uncovered:[]};
+ box.append(element('h3',null,'CURRENT QUESTION BANK · '+coverage.tested+' / '+coverage.available+' DISTINCT SKILLS TESTED'));
+ box.append(element('p',null,'This is question-bank skill coverage, not certification that every syllabus learning outcome has been tested.'));
+ if(coverage.uncovered.length){
+  const missing=coverage.uncovered.slice(0,12).map(x=>x.label).join(' · ');
+  box.append(element('p',null,'Not selected from available skills: '+missing+(coverage.uncovered.length>12?' …':'')+'.'));
+ }
+ const outcomes=active.outcomeCoverage||[];
+ if(!outcomes.length){
+  box.append(element('p',null,'Detailed outcome-to-question mapping is not yet available for this selection. Complete chapter coverage CANNOT be claimed.'));
+ }else{
+  for(const o of outcomes){
+   box.append(element('h4',null,o.key+' · '+o.tested+' / '+o.total+' documented outcomes tested'));
+   box.append(element('p',null,o.edition+' · Partial editorial mapping; not independent examination certification.'));
+   if(o.untested.length)box.append(element('p',null,
+     'Untested or not yet linked: '+o.untested.slice(0,20).map(x=>x.code+'. '+x.title).join('; ')+(o.untested.length>20?'; …':'')));
+  }
+ }
+}
+function answered(q){
+ const value=answers[q.id];
+ return q.type==='numeric'?engine.parseNumber(value)!==null:value!==undefined&&value!=='';
+}
+function showQuestion(index){
+ if(!active?.questions?.length)return;
+ cursor=Math.max(0,Math.min(active.questions.length-1,index));
+ active.questions.forEach((q,i)=>{const card=$('practice-'+i);if(card)card.hidden=i!==cursor;});
+ const nav=$('questionNavigator');nav.replaceChildren();
+ active.questions.forEach((q,i)=>{
+  const button=element('button','question-jump',String(i+1));button.type='button';
+  button.classList.toggle('answered',answered(q));
+  button.classList.toggle('flagged',flagged.has(i));
+  button.classList.toggle('current',i===cursor);
+  if(phase==='review'){
+   const value=answers[q.id];
+   const correct=answered(q)&&(q.type==='numeric'?
+      engine.isNumericCorrect(value,q.correctValue):value===q.correctValue);
+   button.classList.add(correct?'marked-correct':'marked-wrong');
+  }
+  button.setAttribute('aria-label','Question '+(i+1)+(answered(q)?', answered':', unanswered')+(flagged.has(i)?', flagged':''));
+  if(i===cursor)button.setAttribute('aria-current','step');
+  button.addEventListener('click',()=>showQuestion(i));nav.append(button);
+ });
+ $('previousQuestion').disabled=cursor===0;
+ $('nextQuestion').disabled=cursor===active.questions.length-1;
+ $('flagQuestion').setAttribute('aria-pressed',String(flagged.has(cursor)));
+ $('flagQuestion').textContent=flagged.has(cursor)?'REMOVE FLAG':'FLAG FOR REVIEW';
+ $('questionState').textContent='Question '+(cursor+1)+' of '+active.questions.length+
+  ' · '+active.questions[cursor].difficulty.toUpperCase()+' · '+(active.questions[cursor].skillLabel||'Original question')+
+  ' · '+active.questions.filter(answered).length+' answered'+
+  (phase==='review'?' · MARKED':'');
 }
 function renderQuestions(){
  const list=$('questions');list.replaceChildren();
  active.questions.forEach((q,i)=>{
   const card=element('article','question');card.id='practice-'+i;
   const type=q.type==='mcq'?'MULTIPLE CHOICE':'NUMERICAL ENTRY';
-  card.append(element('div','meta',String(i+1).padStart(2,'0')+' / '+q.key+' / '+type+' / AUTO MARKED'));
+  card.append(element('div','meta',String(i+1).padStart(2,'0')+' / '+q.key+' / '+type+' / '+(q.difficulty||'unrated').toUpperCase()+' / '+(q.skillLabel||'Original question')));
   card.append(element('h3',null,q.prompt));
   if(q.type==='mcq'){
     const choices=element('div','choices');
     q.choices.forEach((choice,index)=>{
       const label=element('label','choice'),input=element('input');
       input.type='radio';input.name='quiz-'+i;input.value=String(index);
-      input.addEventListener('change',()=>{answers[q.id]=choice.value;});
+      input.addEventListener('change',()=>{answers[q.id]=choice.value;showQuestion(cursor);});
       label.append(input,element('span',null,choice.label));choices.append(label);
     });
     card.append(choices);
@@ -104,11 +165,12 @@ function renderQuestions(){
     input.type='text';input.inputMode='decimal';input.autocomplete='off';
     input.placeholder='Enter a number, e.g. 2500 or 2,500';
     input.setAttribute('aria-label','Numerical answer for question '+(i+1));
-    input.addEventListener('input',()=>{answers[q.id]=input.value;});
+    input.addEventListener('input',()=>{answers[q.id]=input.value;showQuestion(cursor);});
     field.append(input);card.append(field);
   }
   const box=element('div','feedback');box.hidden=true;card.append(box);list.append(card);
  });
+ showQuestion(0);
 }
 function reviewQuiz(){
  if(phase!=='answering')return;
