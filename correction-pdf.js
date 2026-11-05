@@ -88,89 +88,147 @@
  async function generate(plan,originalPdf){
   const L=await lib(),out=await L.PDFDocument.create();
   out.setTitle('Exam corrections - '+pdfSafe(plan.meta.title||'Attempt').slice(0,120));
-  out.setAuthor('LedgerPeer - learner-generated corrections');
-  out.setSubject('Student corrections from a saved exam attempt; original marking retained');
-  const roman=await out.embedFont(L.StandardFonts.Helvetica);
+  out.setAuthor('LedgerPeer - student correction worksheet');
+  out.setSubject('One A4 page per question; recorded marks and keys unchanged');
+  const normal=await out.embedFont(L.StandardFonts.Helvetica);
   const bold=await out.embedFont(L.StandardFonts.HelveticaBold);
-  const ink=L.rgb(0.09,0.09,0.09),grey=L.rgb(0.39,0.39,0.39),red=L.rgb(0.65,0.15,0.12);
-  const margin=46,top=53,bottom=59,width=A4[0]-margin*2;
-  let page,y,section=0;
-  function newPage(){
-   page=out.addPage();page.setSize(A4[0],A4[1]);section++;
-   y=A4[1]-top;
-   page.drawText(DOC_TITLE,{x:margin,y:A4[1]-32,size:10,font:bold,color:ink});
-   page.drawLine({start:{x:margin,y:A4[1]-38},end:{x:A4[0]-margin,y:A4[1]-38},thickness:0.7,color:grey});
+  const ink=L.rgb(.10,.12,.16),muted=L.rgb(.37,.40,.45),blue=L.rgb(.17,.31,.80);
+  const border=L.rgb(.84,.86,.90),pale=L.rgb(.97,.98,1),warning=L.rgb(.67,.17,.14);
+  const redBg=L.rgb(1,.96,.95),white=L.rgb(1,1,1);
+  const M=44,W=A4[0]-2*M,TOP=706,BOTTOM=65,generatedPages=plan.rows.length+1;
+  function makePage(){
+   const p=out.addPage(A4);
+   p.drawText(DOC_TITLE,{x:M,y:807,size:10,font:bold,color:ink});
+   p.drawLine({start:{x:M,y:795},end:{x:A4[0]-M,y:795},thickness:.8,color:border});
+   return p;
   }
-  function need(space){if(y-space<bottom)newPage();}
-  function lines(text,size=10,font=roman,color=ink,lineHeight=15){
-   const blocks=wrap(text,font,size,width);
-   for(const l of blocks){
-    need(lineHeight);
-    if(l)page.drawText(l,{x:margin,y,size,font,color});
-    y-=lineHeight;
+  function singleLine(value,font,size,width){
+   let s=pdfSafe(value).replace(/\s+/g,' ').trim();
+   if(font.widthOfTextAtSize(s,size)<=width)return s;
+   while(s.length&&font.widthOfTextAtSize(s+'...',size)>width)s=s.slice(0,-1);
+   return s+'...';
+  }
+  function footer(p,pageNumber,detail){
+   p.drawLine({start:{x:M,y:46},end:{x:A4[0]-M,y:46},thickness:.65,color:border});
+   p.drawText(singleLine(detail,normal,8,W-104),{x:M,y:30,size:8,font:normal,color:muted});
+   p.drawText('PAGE '+pageNumber+' / '+generatedPages,{x:A4[0]-M-95,y:30,size:8,font:bold,color:muted});
+  }
+  function paragraph(p,value,x,y,width,size,font=normal,color=ink,leading=size*1.4){
+   for(const line of wrap(value,font,size,width)){
+    if(line)p.drawText(line,{x,y,size,font,color});
+    y-=leading;
    }
+   return y;
   }
-  function heading(label){
-   need(33);y-=6;lines(label.toUpperCase(),10.6,bold,ink,18);
+  const cover=makePage();
+  cover.drawText('EXAM CORRECTIONS',{x:M,y:716,size:25,font:bold,color:ink});
+  cover.drawRectangle({x:M,y:698,width:56,height:4,color:blue});
+  let y=675;
+  y=paragraph(cover,plan.meta.title||'Saved attempt',M,y,W,15,bold,ink,21)-12;
+  for(const entry of [
+   'PAPER  '+(plan.meta.subject||'Not recorded'),
+   'ASSESSMENT  '+(plan.meta.testType||'Exam')+' '+(plan.meta.testNumber||''),
+   'EXPORTED  '+new Date().toISOString().slice(0,10),
+   'QUESTIONS  '+plan.rows.length+'   |   INCOMPLETE  '+plan.missing.length]){
+   y=paragraph(cover,entry,M,y,W,10,normal,ink,15)-9;
   }
-  function field(label,value){
-   heading(label);lines(value||'Not provided.',10,roman,ink,15);y-=5;
-  }
-  newPage();
-  need(140);
-  lines(pdfSafe(plan.meta.title||'Saved attempt'),19,bold,ink,28);
-  lines('Paper: '+pdfSafe(plan.meta.subject||'Not recorded'),11,bold,ink,17);
-  lines('Test: '+pdfSafe(plan.meta.testType||'exam')+' '+pdfSafe(plan.meta.testNumber||''),10,roman,ink,16);
-  lines('Exported: '+new Date().toISOString().slice(0,10),10,roman,grey,16);
-  lines('Items: '+plan.rows.length+' | Corrections awaiting completion: '+plan.missing.length,10,bold,plan.draft?red:ink,18);
-  if(plan.draft){
-   lines('DRAFT - NOT READY FOR LECTURER SUBMISSION. Unfinished questions: '+plan.missing.join(', ')+'.',10,bold,red,17);
-  }
-  lines('Original lecturer marks and answer keys remain unchanged. Any proposed correction is shown separately.',9,roman,grey,14);
-  lines(plan.includeOriginal&&originalPdf?'The original marked attempt is appended after the corrections.':'Only extracted text is included. Embedded/external figures may be missing; consult the original exam for charts.',9,roman,grey,15);
-  y-=15;
-  if(!plan.rows.length){heading('No questions to correct');lines('This attempt does not contain any incorrect or partially credited questions for the selected filter.');}
-  for(const item of plan.rows){
-   const q=item.source;
-   newPage();
-   lines('QUESTION '+q.qno+(q.is_correct===true?' - REVIEW':' - CORRECTION'),15,bold,ink,24);
-   lines('Original grading: '+(q.original_marks==null?'Unverified':q.original_marks)+' / '+(q.original_max_marks==null?'?':q.original_max_marks)+' marks'
-    +(q.pdf_page?' | Original PDF page '+q.pdf_page:''),9,roman,grey,17);
-   field('Original question',q.qtext||'Text could not be extracted. Refer to original PDF.');
-   if(q.information)field('Shared question information',q.information);
-   const choices=(q.options||[]).map(o=>(o.checked?'[Selected] ':'[ ] ')+clean(o.text)).filter(Boolean);
-   if(choices.length)field('Answer options',choices.join('\n'));
-   field('Student submitted answer',q.your_answer||'Not captured from the uploaded file.');
-   field('Recorded answer key',q.correct_answer||'Not captured from the uploaded file.');
-   if(item.proposedAnswer)field('Proposed corrected answer (student-editable)',item.proposedAnswer);
-   field('Correct method and calculations',item.workings||'Correction workings not yet supplied.');
-   field('Explanation',item.explanation||q.debrief||'Explanation not yet supplied.');
-   if(item.justification)field('Justification / identified mistake',item.justification);
-   if(q.topic_reason)field('Syllabus classification evidence',q.topic_reason);
-   if(item.notes)field('Student notes',item.notes);
-   if(q.focus)field('Practise next',q.focus);
-   if(q.forecast)field('AI forecast - '+(q.evidence_status||'unverified'),q.forecast);
-   if(/<img\b|<svg\b|<canvas\b|\[Image unavailable/i.test(q.qtext||'')||q.visual_review_required){
-     lines('VISUAL EVIDENCE: Check the original PDF; a reconstructed HTML text extract cannot confirm missing chart or diagram values.',9,bold,red,15);
+  cover.drawRectangle({x:M,y:y-100,width:W,height:100,
+   color:plan.draft?redBg:pale,borderColor:border,borderWidth:.75});
+  cover.drawText(plan.draft?'DRAFT - REVIEW REQUIRED':'ONE QUESTION PER A4 PAGE',
+   {x:M+14,y:y-20,size:10,font:bold,color:plan.draft?warning:blue});
+  paragraph(cover,plan.draft?'Some corrections still need workings or explanations. Review them before sharing.'
+   :'Each corrected question has a separate, cleanly formatted page.',M+14,y-44,W-28,9.2,normal,ink,13.5);
+  paragraph(cover,'Recorded lecturer marks and answer keys are not changed. Original figures may need source verification.',
+   M+14,y-76,W-28,8.5,normal,muted,12);
+  paragraph(cover,plan.includeOriginal&&originalPdf?'The original marked PDF follows as an unchanged appendix.'
+   :'This export includes text-based corrections; consult the source exam for figures.',M,y-127,W,9,normal,muted,13);
+  if(!plan.rows.length)paragraph(cover,'No questions matched this export filter.',M,y-160,W,10,bold);
+  footer(cover,1,'LEDGERPEER  |  STUDENT-PREPARED CORRECTIONS');
+
+  function blocks(item){
+   const q=item.source,result=[];
+   function add(label,value,tone='normal'){
+    if(value!=null&&String(value).trim())result.push({label,value:String(value),tone});
    }
+   add('ORIGINAL QUESTION',q.qtext||'Text not extracted. Consult original PDF.');
+   if(q.information)add('QUESTION INFORMATION',q.information);
+   const choices=(q.options||[]).map(o=>(o.checked?'[SELECTED] ':'[ ] ')+clean(o.text)).filter(Boolean);
+   if(choices.length)add('ANSWER OPTIONS',choices.join('\n'));
+   result.push({type:'pair',left:'STUDENT ANSWER',leftValue:q.your_answer||'Not captured',
+    right:'RECORDED ANSWER KEY',rightValue:q.correct_answer||'Not captured'});
+   if(item.proposedAnswer)add('PROPOSED CORRECTED ANSWER',item.proposedAnswer,'accent');
+   add('CORRECT METHOD AND CALCULATIONS',item.workings||'Workings not yet supplied.');
+   add('EXPLANATION / IDENTIFIED MISTAKE',item.explanation||q.debrief||'Explanation not yet supplied.');
+   if(item.justification)add('ADDITIONAL JUSTIFICATION',item.justification);
+   if(item.notes)add('STUDENT NOTES',item.notes);
+   if(q.focus)add('PRACTISE NEXT',q.focus);
+   if(/<img\b|<svg\b|<canvas\b|\[Image unavailable/i.test(q.qtext||'')||q.visual_review_required)
+    add('CHECK VISUAL EVIDENCE','Verify any chart or figure against the original marked PDF. A text extract cannot establish its values.','warning');
+   return result;
   }
-  // Append the exact original PDF instead of pretending a text/HTML reconstruction
-  // preserves diagrams. This is the student's optional evidence appendix.
+  function layoutFor(item){
+   const parts=blocks(item);
+   for(const [size,density] of [[10.2,1],[9.7,1],[9.2,.94],[8.7,.88],[8.2,.82]]){
+    const pad=8.5*density,lead=size*1.34,labelSize=Math.max(7.8,size-1.2);
+    const gap=7*density,labelGap=6*density;
+    const full=W-2*pad,half=(full-17)/2;
+    const measured=parts.map(part=>{
+     if(part.type==='pair'){
+      const leftLines=wrap(part.leftValue,normal,size,half);
+      const rightLines=wrap(part.rightValue,normal,size,half);
+      return {...part,leftLines,rightLines,height:pad*2+labelSize+labelGap+
+       Math.max(leftLines.length,rightLines.length)*lead};
+     }
+     const lines=wrap(part.value,normal,size,full);
+     return {...part,lines,height:pad*2+labelSize+labelGap+lines.length*lead};
+    });
+    const total=measured.reduce((n,part)=>n+part.height+gap,0)-gap;
+    if(total<=TOP-BOTTOM)return {measured,size,pad,lead,labelSize,labelGap,gap};
+   }
+   // Never silently truncate or flow a question into the next correction sheet.
+   throw Error('Question '+item.qno+' is too long to fit legibly on one A4 page. Shorten its question notes, calculations or explanation in the editor and retry. No text was discarded.');
+  }
+  function drawBlock(p,part,top,layout){
+   const {pad,lead,size,labelSize,labelGap,gap}=layout;
+   const bottom=top-part.height;
+   p.drawRectangle({x:M,y:bottom,width:W,height:part.height,
+    color:part.tone==='warning'?redBg:part.tone==='accent'?pale:white,
+    borderColor:border,borderWidth:.65});
+   p.drawRectangle({x:M,y:bottom,width:3,height:part.height,color:part.tone==='warning'?warning:blue});
+   const labelY=top-pad-labelSize,textY=labelY-labelGap-lead*.80;
+   if(part.type==='pair'){
+    const half=(W-2*pad-17)/2,x1=M+pad,x2=x1+half+17;
+    p.drawText(part.left,{x:x1,y:labelY,size:labelSize,font:bold,color:muted});
+    p.drawText(part.right,{x:x2,y:labelY,size:labelSize,font:bold,color:muted});
+    p.drawLine({start:{x:x2-8,y:bottom+pad},end:{x:x2-8,y:top-pad},thickness:.65,color:border});
+    part.leftLines.forEach((s,i)=>{if(s)p.drawText(s,{x:x1,y:textY-i*lead,size,font:normal,color:ink});});
+    part.rightLines.forEach((s,i)=>{if(s)p.drawText(s,{x:x2,y:textY-i*lead,size,font:normal,color:ink});});
+   }else{
+    p.drawText(part.label,{x:M+pad,y:labelY,size:labelSize,font:bold,color:part.tone==='warning'?warning:muted});
+    part.lines.forEach((s,i)=>{if(s)p.drawText(s,{x:M+pad,y:textY-i*lead,size,font:normal,color:ink});});
+   }
+   return bottom-gap;
+  }
+  for(let i=0;i<plan.rows.length;i++){
+   const item=plan.rows[i],q=item.source,layout=layoutFor(item),p=makePage();
+   p.drawText('QUESTION '+pdfSafe(item.qno),{x:M,y:767,size:19,font:bold,color:ink});
+   p.drawText('CORRECTION '+(i+1)+' / '+plan.rows.length,
+    {x:A4[0]-M-153,y:770,size:9,font:bold,color:blue});
+   const marks='ORIGINAL MARKS: '+(q.original_marks==null?'UNVERIFIED':q.original_marks)
+    +' / '+(q.original_max_marks==null?'?':q.original_max_marks)
+    +(q.pdf_page?'  |  SOURCE PAGE '+q.pdf_page:'');
+   p.drawText(singleLine(marks,normal,9,W),{x:M,y:741,size:9,font:normal,color:muted});
+   p.drawLine({start:{x:M,y:728},end:{x:A4[0]-M,y:728},thickness:.8,color:border});
+   let cursor=TOP;
+   for(const part of layout.measured)cursor=drawBlock(p,part,cursor,layout);
+   footer(p,i+2,'QUESTION '+item.qno+'  |  '+(item.complete?'STUDENT CORRECTION':'INCOMPLETE DRAFT'));
+  }
+  // The separate source appendix is copied without altering source content or dimensions.
   if(plan.includeOriginal&&originalPdf){
    let original;
    try{original=await L.PDFDocument.load(await originalPdf.arrayBuffer(),{ignoreEncryption:false});}
-   catch(e){throw Error('Could not append the original PDF: '+(e.message||e));}
-   const sourcePages=await out.copyPages(original,original.getPageIndices());
-   for(const copied of sourcePages)out.addPage(copied);
-  }
-  // Footer on the generated correction section only; source PDF stays untouched.
-  const all=out.getPages();
-  const total=all.length;
-  for(let i=0;i<section;i++){
-   const p=all[i];
-   p.drawLine({start:{x:margin,y:41},end:{x:A4[0]-margin,y:41},thickness:0.5,color:grey});
-   p.drawText('Learner correction | '+(plan.draft?'DRAFT':'Reviewed')+' | Page '+(i+1)+' of '+total,
-    {x:margin,y:28,size:8,font:roman,color:grey});
+   catch(e){throw Error('Could not append original PDF: '+(e.message||e));}
+   for(const p of await out.copyPages(original,original.getPageIndices()))out.addPage(p);
   }
   return out.save();
  }
@@ -203,7 +261,7 @@
   panel.style.cssText='margin:20px 0;padding:20px;border:4px solid #111;background:#fff;box-shadow:7px 7px 0 #111';
   const h=document.createElement('h2');h.textContent='Download your corrected exam PDF';panel.appendChild(h);
   const p=document.createElement('p');
-  p.textContent='Create one correction PDF from your saved HTML or PDF attempt. Add or edit workings before export; the original marks and recorded answer key will not change.';
+  p.textContent='Each question gets exactly one tidy A4 page, plus a cover sheet. Long corrections must fit legibly or you will be asked to shorten them. Original marks and answer keys stay unchanged.';
   panel.appendChild(p);
   const controls=document.createElement('div');controls.style.cssText='display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0';
   panel.appendChild(controls);
