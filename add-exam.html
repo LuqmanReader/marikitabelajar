@@ -13,13 +13,17 @@
 <section class="flow-panel"><h2>Attempt details</h2><p>Choose the paper yourself. LedgerPeer will use that paper's approved ACCA syllabus for topic sorting.</p>
 <div class="html-meta-grid">
  <label for="subjectSelect">FIA / ACCA paper<select id="subjectSelect" required><option value="">Choose your paper</option></select></label>
- <label for="testType">Attempt type<select id="testType" required><option value="set">Chapter Set</option><option value="pre">Progress Test</option><option value="mock">Mock Test</option></select></label>
- <label><span id="numberLabel">Set number</span><input type="number" id="testNumber" min="1" max="999" step="1" value="1" required></label>
- <label for="attemptDate">Attempt date &amp; time<input id="attemptDate" type="datetime-local" required></label>
- <label id="setFields">Chapter Set target (approved syllabus topic)<input id="setChapter" list="setChapterNames" placeholder="Choose an approved topic" maxlength="420"><datalist id="setChapterNames"></datalist></label>
- <label id="setTotalWrap">Total sets in this topic (optional)<input id="setTotal" type="number" min="1" step="1" placeholder="e.g. 8"></label>
+ <label for="testType">Attempt type<select id="testType" required><option value="" disabled selected>Choose a test type</option><option value="set">Chapter Set</option><option value="pre">Progress Test</option><option value="mock">Mock Test</option></select></label>
+ <label><span id="numberLabel">Test / Set number</span><input type="number" id="testNumber" min="1" max="999" step="1" value="1" required></label>
+ <label id="setFields" hidden>Chapter Set target (approved syllabus topic)<input id="setChapter" list="setChapterNames" placeholder="Choose an approved topic" maxlength="420"><datalist id="setChapterNames"></datalist></label>
 </div>
-<label class="flow-field">Attempt label (optional)<input id="titleInput" maxlength="180" placeholder="e.g. Progress Test 1"></label>
+<details class="html-help" style="margin:10px 0 14px"><summary>More attempt details · optional</summary>
+ <div class="html-meta-grid">
+  <label for="attemptDate">Attempt date &amp; time (prefilled)<input id="attemptDate" type="datetime-local" required></label>
+  <label id="setTotalWrap" hidden>Total sets in this topic (optional)<input id="setTotal" type="number" min="1" step="1" placeholder="e.g. 8"></label>
+ </div>
+ <label class="flow-field">Custom exam name (optional)<input id="titleInput" maxlength="180" placeholder="e.g. FA2 Progress Test 2"></label>
+</details>
 <p id="formatReference" class="flow-muted" role="status">Select a paper to load its official syllabus topics.</p>
 <fieldset class="reader-options" aria-label="Select a file reader" style="border:0;padding:0">
  <legend style="font:900 15px 'Arial Black',Impact,sans-serif;text-transform:uppercase;margin-bottom:10px">Choose your input reader</legend>
