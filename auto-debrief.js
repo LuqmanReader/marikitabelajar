@@ -177,6 +177,11 @@ async function start(manual){
     try{if(await repairLegacyOcr(id,meta,list))return;}
     catch(e){update('Source repair was unavailable: '+String(e.message||e)+'. The saved attempt is unchanged.',true);}
   }
+  if(meta.ocrUsed&&list.every(function(q){return q.is_correct===null;})&&
+    list.some(function(q){return /\bmark\s*200\s*out\s*of\s*200\b/i.test(String(q.qtext||''));})){
+    update('This imported attempt contains the old corrupted OCR results. Automatic AI analysis is blocked to avoid inventing answers. LedgerPeer needs to recover the saved source before debriefing.',true);
+    return;
+  }
   var auth=root.PersonalHubAuth;
   if(!auth||typeof auth.sync!=='function'){update('Automatic analysis requires a signed-in LedgerPeer session.',true);return;}
   running=true;
