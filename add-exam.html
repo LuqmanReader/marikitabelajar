@@ -28,8 +28,8 @@
 <fieldset class="reader-options" aria-label="Select a file reader" style="border:0;padding:0">
  <legend style="font:900 15px 'Arial Black',Impact,sans-serif;text-transform:uppercase;margin-bottom:10px">Choose your input reader</legend>
  <label class="reader-option"><input type="radio" name="readerMode" value="html" checked><strong>01 · HTML reader</strong><small>Best for marked TYMBAFlex/Moodle attempts. Captures structured answers and marks directly.</small></label>
- <label class="reader-option"><input type="radio" name="readerMode" value="pdf"><strong>02 · PDF reader</strong><small>Extract selectable text and explicit grades; consult original PDF for diagrams and any unclear answers.</small></label>
- <label class="reader-option"><input type="radio" name="readerMode" value="pdf-html"><strong>03 · PDF → HTML</strong><small>Convert PDF into reusable searchable HTML with page snapshots and extract attempt data conservatively.</small></label>
+ <label class="reader-option"><input type="radio" name="readerMode" value="pdf"><strong>02 · PDF reader · Beta</strong><small>Extract selectable text and explicit grades; consult original PDF for diagrams and any unclear answers.</small></label>
+ <label class="reader-option"><input type="radio" name="readerMode" value="pdf-html"><strong>03 · PDF → HTML · Beta</strong><small>Convert PDF into reusable searchable HTML with page snapshots and extract attempt data conservatively.</small></label>
 </fieldset>
 <label class="html-drop"><strong id="uploadLabel">Choose saved attempt-review HTML</strong><input id="sourceFile" type="file" accept=".html,.htm,text/html" aria-describedby="htmlDescription"><small id="htmlDescription">On the marked TYMBAFlex attempt review, choose Save Page As → Webpage, HTML only. A converted LedgerPeer HTML report also works here.</small></label>
 <button id="parseAttempt" class="flow-button" disabled>Extract answer review</button><p id="entryMessage" role="status" aria-live="polite">Choose a saved marked attempt-review HTML file.</p>
