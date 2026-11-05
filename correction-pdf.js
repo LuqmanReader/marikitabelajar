@@ -95,7 +95,8 @@
   const ink=L.rgb(.10,.12,.16),muted=L.rgb(.37,.40,.45),blue=L.rgb(.17,.31,.80);
   const border=L.rgb(.84,.86,.90),pale=L.rgb(.97,.98,1),warning=L.rgb(.67,.17,.14);
   const redBg=L.rgb(1,.96,.95),white=L.rgb(1,1,1);
-  const M=44,W=A4[0]-2*M,TOP=706,BOTTOM=65,generatedPages=plan.rows.length+1;
+  const M=44,W=A4[0]-2*M,TOP=706,BOTTOM=65;
+  const footerQueue=[];
   function makePage(){
    const p=out.addPage(A4);
    p.drawText(DOC_TITLE,{x:M,y:807,size:10,font:bold,color:ink});
@@ -109,9 +110,16 @@
    return s+'...';
   }
   function footer(p,pageNumber,detail){
-   p.drawLine({start:{x:M,y:46},end:{x:A4[0]-M,y:46},thickness:.65,color:border});
-   p.drawText(singleLine(detail,normal,8,W-104),{x:M,y:30,size:8,font:normal,color:muted});
-   p.drawText('PAGE '+pageNumber+' / '+generatedPages,{x:A4[0]-M-95,y:30,size:8,font:bold,color:muted});
+   // Page count is unknown until all continuation sheets have been laid out.
+   footerQueue.push({p,detail});
+  }
+  function renderFooters(){
+   const total=footerQueue.length;
+   footerQueue.forEach(({p,detail},i)=>{
+    p.drawLine({start:{x:M,y:46},end:{x:A4[0]-M,y:46},thickness:.65,color:border});
+    p.drawText(singleLine(detail,normal,8,W-104),{x:M,y:30,size:8,font:normal,color:muted});
+    p.drawText('PAGE '+(i+1)+' / '+total,{x:A4[0]-M-95,y:30,size:8,font:bold,color:muted});
+   });
   }
   function paragraph(p,value,x,y,width,size,font=normal,color=ink,leading=size*1.4){
    for(const line of wrap(value,font,size,width)){
@@ -134,10 +142,10 @@
   }
   cover.drawRectangle({x:M,y:y-100,width:W,height:100,
    color:plan.draft?redBg:pale,borderColor:border,borderWidth:.75});
-  cover.drawText(plan.draft?'DRAFT - REVIEW REQUIRED':'ONE QUESTION PER A4 PAGE',
+  cover.drawText(plan.draft?'DRAFT - REVIEW REQUIRED':'ONE QUESTION AT A TIME',
    {x:M+14,y:y-20,size:10,font:bold,color:plan.draft?warning:blue});
   paragraph(cover,plan.draft?'Some corrections still need workings or explanations. Review them before sharing.'
-   :'Each corrected question has a separate, cleanly formatted page.',M+14,y-44,W-28,9.2,normal,ink,13.5);
+   :'Each question starts on its own A4 sheet. Longer corrections continue neatly on a labelled page.',M+14,y-44,W-28,9.2,normal,ink,13.5);
   paragraph(cover,'Recorded lecturer marks and answer keys are not changed. Original figures may need source verification.',
    M+14,y-76,W-28,8.5,normal,muted,12);
   paragraph(cover,plan.includeOriginal&&originalPdf?'The original marked PDF follows as an unchanged appendix.'
@@ -168,6 +176,7 @@
   }
   function layoutFor(item){
    const parts=blocks(item);
+   let fallback;
    for(const [size,density] of [[10.2,1],[9.7,1],[9.2,.94],[8.7,.88],[8.2,.82]]){
     const pad=8.5*density,lead=size*1.34,labelSize=Math.max(7.8,size-1.2);
     const gap=7*density,labelGap=6*density;
@@ -183,10 +192,28 @@
      return {...part,lines,height:pad*2+labelSize+labelGap+lines.length*lead};
     });
     const total=measured.reduce((n,part)=>n+part.height+gap,0)-gap;
-    if(total<=TOP-BOTTOM)return {measured,size,pad,lead,labelSize,labelGap,gap};
+    const result={measured,size,pad,lead,labelSize,labelGap,gap};
+    if(size===9.2)fallback=result;
+    if(total<=TOP-BOTTOM)return result;
    }
-   // Never silently truncate or flow a question into the next correction sheet.
-   throw Error('Question '+item.qno+' is too long to fit legibly on one A4 page. Shorten its question notes, calculations or explanation in the editor and retry. No text was discarded.');
+   // Keep the print comfortably readable instead of shrinking indefinitely.
+   // Overflow is laid out onto question-specific continuation sheets below.
+   return fallback;
+  }
+  function sliceBlock(part,count,layout,continued){
+   const p={...part};
+   if(part.type==='pair'){
+    p.left=part.left+(continued?' (CONT.)':'');
+    p.right=part.right+(continued?' (CONT.)':'');
+    p.leftLines=part.leftLines.slice(0,count);
+    p.rightLines=part.rightLines.slice(0,count);
+   }else{
+    p.label=part.label+(continued?' (CONT.)':'');
+    p.lines=part.lines.slice(0,count);
+   }
+   p.height=2*layout.pad+layout.labelSize+layout.labelGap+
+     Math.max(1,p.type==='pair'?Math.max(p.leftLines.length,p.rightLines.length):p.lines.length)*layout.lead;
+   return p;
   }
   function drawBlock(p,part,top,layout){
    const {pad,lead,size,labelSize,labelGap,gap}=layout;
@@ -209,20 +236,52 @@
    }
    return bottom-gap;
   }
-  for(let i=0;i<plan.rows.length;i++){
-   const item=plan.rows[i],q=item.source,layout=layoutFor(item),p=makePage();
-   p.drawText('QUESTION '+pdfSafe(item.qno),{x:M,y:767,size:19,font:bold,color:ink});
-   p.drawText('CORRECTION '+(i+1)+' / '+plan.rows.length,
+  function questionPage(item,index,continued){
+   const p=makePage();
+   const title='QUESTION '+pdfSafe(item.qno)+(continued?'  |  CONTINUED':'');
+   p.drawText(title,{x:M,y:767,size:continued?15:19,font:bold,color:ink});
+   p.drawText('CORRECTION '+(index+1)+' / '+plan.rows.length,
     {x:A4[0]-M-153,y:770,size:9,font:bold,color:blue});
+   const q=item.source;
    const marks='ORIGINAL MARKS: '+(q.original_marks==null?'UNVERIFIED':q.original_marks)
     +' / '+(q.original_max_marks==null?'?':q.original_max_marks)
     +(q.pdf_page?'  |  SOURCE PAGE '+q.pdf_page:'');
    p.drawText(singleLine(marks,normal,9,W),{x:M,y:741,size:9,font:normal,color:muted});
    p.drawLine({start:{x:M,y:728},end:{x:A4[0]-M,y:728},thickness:.8,color:border});
-   let cursor=TOP;
-   for(const part of layout.measured)cursor=drawBlock(p,part,cursor,layout);
-   footer(p,i+2,'QUESTION '+item.qno+'  |  '+(item.complete?'STUDENT CORRECTION':'INCOMPLETE DRAFT'));
+   footer(p,0,'QUESTION '+item.qno+'  |  '+(continued?'CONTINUED':item.complete?'STUDENT CORRECTION':'INCOMPLETE DRAFT'));
+   return p;
   }
+  for(let i=0;i<plan.rows.length;i++){
+   const item=plan.rows[i],layout=layoutFor(item);
+   let p=questionPage(item,i,false),cursor=TOP;
+   for(const original of layout.measured){
+    let remaining=original,continued=false;
+    while(remaining){
+     // Leave enough room for a section heading and readable text.
+     const available=cursor-BOTTOM,overhead=2*layout.pad+layout.labelSize+layout.labelGap;
+     const lineCount=remaining.type==='pair'
+       ?Math.max(remaining.leftLines.length,remaining.rightLines.length)
+       :remaining.lines.length;
+     const count=Math.floor((available-overhead)/layout.lead);
+     if(count<1){
+      p=questionPage(item,i,true);cursor=TOP;continue;
+     }
+     const chunk=sliceBlock(remaining,Math.min(count,lineCount),layout,continued);
+     cursor=drawBlock(p,chunk,cursor,layout);
+     if(count>=lineCount){remaining=null;break;}
+     // Long sections continue under the same heading; not a single word is dropped.
+     const next={...remaining};
+     if(next.type==='pair'){
+      next.leftLines=remaining.leftLines.slice(count);
+      next.rightLines=remaining.rightLines.slice(count);
+     }else next.lines=remaining.lines.slice(count);
+     remaining=next;
+     continued=true;
+     p=questionPage(item,i,true);cursor=TOP;
+    }
+   }
+  }
+  renderFooters();
   // The separate source appendix is copied without altering source content or dimensions.
   if(plan.includeOriginal&&originalPdf){
    let original;
@@ -261,7 +320,7 @@
   panel.style.cssText='margin:20px 0;padding:20px;border:4px solid #111;background:#fff;box-shadow:7px 7px 0 #111';
   const h=document.createElement('h2');h.textContent='Download your corrected exam PDF';panel.appendChild(h);
   const p=document.createElement('p');
-  p.textContent='Each question gets exactly one tidy A4 page, plus a cover sheet. Long corrections must fit legibly or you will be asked to shorten them. Original marks and answer keys stay unchanged.';
+  p.textContent='Each question starts on its own tidy A4 page. Long corrections are automatically fitted or continued on clearly labelled pages with no missing text. Original marks and answer keys stay unchanged.';
   panel.appendChild(p);
   const controls=document.createElement('div');controls.style.cssText='display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0';
   panel.appendChild(controls);
