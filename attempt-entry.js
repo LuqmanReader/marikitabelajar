@@ -52,7 +52,7 @@
     if(type==='set'&&approved.length&&!approved.includes(chapter))throw new Error('Choose the Chapter Set target from the approved syllabus topic list.');
     if(type==='set'&&total!==null&&(!Number.isSafeInteger(total)||total<n))throw new Error('The number of available sets must be a whole number at least as high as this set number.');
     var date=new Date($('attemptDate').value);if(!Number.isFinite(date.getTime()))throw new Error('Choose the date and time of the attempt.');
-    return {subject:subject,testType:type,testNumber:n,setChapter:type==='set'?chapter:'',setTotal:type==='set'?total:null,attemptedAt:date.toISOString(),sourceType:readerMode()};
+    return {subject:subject,testType:type,testNumber:n,setChapter:type==='set'?chapter:'',setTotal:type==='set'?total:null,attemptedAt:date.toISOString(),sourceType:readerMode(),sourceFormat:readerMode()==='html'?'html':'pdf'};
   }
   function names(){
     var selected=syllabus(),topics=selected.topics.length?selected.topics:ChapterAnalysis.catalog(localStorage,$('subjectSelect').value);
@@ -147,7 +147,7 @@
       if(readerMode()==='html'){
         pdfRecord=window.LedgerPeerPdfReader&&LedgerPeerPdfReader.parseConvertedHtml(source);
         qs=pdfRecord?pdfRecord.questions:parseHtml(source);
-        if(pdfRecord){meta.sourceType='pdf-html';convertedHtml=new Blob([source],{type:'text/html'});warnings=pdfRecord.warnings.concat(['Converted HTML was imported without its original PDF. Keep the source PDF for evidence.']);}
+        if(pdfRecord){meta.sourceType='pdf-html';meta.sourceFormat='pdf';convertedHtml=new Blob([source],{type:'text/html'});warnings=pdfRecord.warnings.concat(['Converted HTML was imported without its original PDF. Keep the source PDF for evidence.']);}
       }else{
         if(!originalPdf)throw new Error('Select the original PDF first.');
         await ensurePdfJs();
