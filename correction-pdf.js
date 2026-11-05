@@ -85,6 +85,15 @@
   if(!root.PDFLib)throw Error('PDF generation library did not initialise.');
   return root.PDFLib;
  }
+ function overallScore(meta){
+  // Some attempts contain ungraded/partially credited items: display only the
+  // original saved result. Never recalculate marks from the correction filter.
+  if(!meta||meta.correct==null||meta.total==null)return null;
+  const correct=Number(meta.correct),total=Number(meta.total);
+  if(!Number.isFinite(correct)||!Number.isFinite(total)||total<=0||correct<0||correct>total)return null;
+  const percentage=Math.round(100*correct/total);
+  return {correct,total,percentage,tier:percentage>=75?'high':percentage>=50?'mid':'low'};
+ }
  async function generate(plan,originalPdf){
   const L=await lib(),out=await L.PDFDocument.create();
   out.setTitle('Exam corrections - '+pdfSafe(plan.meta.title||'Attempt').slice(0,120));
@@ -135,11 +144,39 @@
   y=paragraph(cover,plan.meta.title||'Saved attempt',M,y,W,15,bold,ink,21)-12;
   for(const entry of [
    'PAPER  '+(plan.meta.subject||'Not recorded'),
-   'ASSESSMENT  '+(plan.meta.testType||'Exam')+' '+(plan.meta.testNumber||''),
+   'ASSESSMENT  '+(plan.meta.testType==='pre'?'Progress Test':plan.meta.testType==='mock'?'Mock Test':plan.meta.testType==='set'?'Chapter Set':plan.meta.testType||'Exam')+' '+(plan.meta.testNumber||''),
    'EXPORTED  '+new Date().toISOString().slice(0,10),
    'QUESTIONS  '+plan.rows.length+'   |   INCOMPLETE  '+plan.missing.length]){
    y=paragraph(cover,entry,M,y,W,10,normal,ink,15)-9;
   }
+  // Full-width cover scorecard replaces the unused whitespace. This is the
+  // ORIGINAL result (all graded questions), not a count of correction pages.
+  const grade=overallScore(plan.meta);
+  const gradeColor=grade?(grade.tier==='high'?L.rgb(.12,.44,.26):grade.tier==='mid'?L.rgb(.62,.39,.025):L.rgb(.80,.20,.17)):muted;
+  const gradeBg=grade?(grade.tier==='high'?L.rgb(.93,.98,.94):grade.tier==='mid'?L.rgb(1,.979,.89):redBg):pale;
+  const gradeY=y-128;
+  cover.drawRectangle({x:M,y:gradeY,width:W,height:116,
+   color:gradeBg,borderColor:border,borderWidth:.85});
+  cover.drawRectangle({x:M,y:gradeY,width:6,height:116,color:gradeColor});
+  cover.drawText('OVERALL EXAM SCORE',{x:M+21,y:gradeY+91,size:10,font:bold,color:muted});
+  if(grade){
+   const mark=grade.percentage+'%';
+   cover.drawText(mark,{x:M+19,y:gradeY+40,size:38,font:bold,color:gradeColor});
+   cover.drawText(grade.correct+' / '+grade.total,{x:M+187,y:gradeY+57,size:18,font:bold,color:ink});
+   cover.drawText('CORRECT / GRADED QUESTIONS',{x:M+187,y:gradeY+39,size:8,font:normal,color:muted});
+   const indicator=grade.tier==='high'?'STRONG':grade.tier==='mid'?'AVERAGE':'NEEDS WORK';
+   const labelWidth=104,tagX=M+W-119;
+   cover.drawRectangle({x:tagX,y:gradeY+75,width:labelWidth,height:24,
+    color:white,borderColor:gradeColor,borderWidth:1});
+   const tagWidth=bold.widthOfTextAtSize(indicator,9);
+   cover.drawText(indicator,{x:tagX+(labelWidth-tagWidth)/2,y:gradeY+83,size:9,font:bold,color:gradeColor});
+   cover.drawRectangle({x:M+20,y:gradeY+17,width:W-40,height:6,color:border});
+   if(grade.percentage>0)cover.drawRectangle({x:M+20,y:gradeY+17,width:(W-40)*grade.percentage/100,height:6,color:gradeColor});
+  }else{
+   cover.drawText('SCORE NOT AVAILABLE',{x:M+21,y:gradeY+49,size:20,font:bold,color:muted});
+   cover.drawText('The original grading data was not captured.',{x:M+21,y:gradeY+26,size:9,font:normal,color:muted});
+  }
+  y-=149;
   cover.drawRectangle({x:M,y:y-100,width:W,height:100,
    color:plan.draft?redBg:pale,borderColor:border,borderWidth:.75});
   cover.drawText(plan.draft?'DRAFT - REVIEW REQUIRED':'ONE QUESTION AT A TIME',
@@ -402,6 +439,6 @@
   });
   anchor.parentNode.insertBefore(panel,anchor);
  }
- root.LedgerPeerCorrectionPDF={clean,pdfSafe,eligible,questionsFor,correction,compose,wrap,generate,mount};
+ root.LedgerPeerCorrectionPDF={clean,pdfSafe,eligible,questionsFor,correction,compose,wrap,overallScore,generate,mount};
  if(typeof module!=='undefined'&&module.exports)module.exports=root.LedgerPeerCorrectionPDF;
 })(typeof window!=='undefined'?window:globalThis);
