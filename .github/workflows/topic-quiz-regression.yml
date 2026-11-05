@@ -12,6 +12,7 @@ on:
       - 'notes-uk-syllabi.js'
       - 'tests/quiz-generator-regression.js'
       - 'tests/quiz-casebank-content-regression.cjs'
+      - 'tests/quiz-difficulty-coverage-regression.cjs'
       - 'tests/quiz-million-simulation.cjs'
       - '.github/workflows/topic-quiz-regression.yml'
   pull_request:
@@ -44,11 +45,14 @@ jobs:
           node --check quiz-casebank-knowledge.js
           node --check quiz-casebank-ledger.js
           node --check quiz-engine.js
+          node --check quiz-outcome-map.js
           node --check quiz-quality-engine.js
           node --check quiz-page.js
           node --check quiz-dashboard.js
       - name: Verify topic coverage, scoring and persistence
         run: node tests/quiz-generator-regression.js
+      - name: Verify chapter difficulty, outcome gaps and navigator
+        run: node tests/quiz-difficulty-coverage-regression.cjs
       - name: Check case quality and answer-key reasoning
         run: node tests/quiz-casebank-content-regression.cjs
       - name: Run 1,000,000 real answer-marking simulations
