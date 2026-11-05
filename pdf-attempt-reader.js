@@ -57,10 +57,10 @@ function parseBlocks(pages){
     if(seen.has(b.qno))throw new Error('Duplicate question number '+b.qno+' in the PDF. Use the original HTML export for reliable grading.');
     seen.add(b.qno);
     var lines=b.lines.map(function(it){return it.text;});
-    var max=null,marks=null,state=null,yourAnswer='',rightAnswer='';
+    var max=null,marks=null,state=null,sourceStatus='',yourAnswer='',rightAnswer='';
     lines.slice(0,18).forEach(function(line){
       var status=line.match(/^(correct|incorrect|partially correct|not answered|unanswered)$/i);
-      if(status){var st=status[1].toLowerCase();state=st==='correct'?true:false;}
+      if(status){var st=status[1].toLowerCase();state=st==='correct'?true:false;sourceStatus=st.replace(/\s+/g,'_');}
       var grade=line.match(/(?:^|\b)(?:mark(?:ed|s)?|grade)\s*:?\s*(-?\d+(?:\.\d+)?)\s*(?:out of|\/)\s*(\d+(?:\.\d+)?)/i);
       if(grade){marks=Number(grade[1]);max=Number(grade[2]);}
     });
@@ -83,7 +83,7 @@ function parseBlocks(pages){
       qno:b.qno,is_correct:verified,
       qtext:'<p>'+esc(questionText).replace(/\n/g,'</p><p>')+'</p>',
       options:[],your_answer:yourAnswer?esc(yourAnswer):null,
-      correct_answer:rightAnswer,debrief:'',source_result:state===true?'correct':state===false?'incorrect':'unverified',
+      correct_answer:rightAnswer,debrief:'',source_result:conflict?'conflicting_source_grades':sourceStatus||(marks!==null&&max!==null&&marks>0&&marks<max?'partially_correct':verified===true?'correct':verified===false?'incorrect':'unverified'),
       original_marks:conflict?null:marks,original_max_marks:conflict?null:max,
       answer_capture_status:yourAnswer?'captured':'not_captured',
       source_pdf_pages:pageNumbers,visual_verification_required:true,source_format:'pdf',fb_is_custom:false
