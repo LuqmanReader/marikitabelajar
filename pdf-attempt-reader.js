@@ -8,13 +8,15 @@ function assertPdf(file){
   if(!file||!(file.type==='application/pdf'||/\.pdf$/i.test(file.name||'')))throw new Error('Select a PDF file (.pdf).');
   if(file.size>35*1024*1024)throw new Error('PDF is over 35 MB. Reduce its size or use the HTML review export.');
 }
-async function open(file){
-  assertPdf(file);
+async function open(source){
+  if(!(source instanceof Uint8Array))assertPdf(source);
   if(!root.pdfjsLib||!root.pdfjsLib.getDocument)throw new Error('PDF reader library did not load. Check your connection or use HTML import.');
   root.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
-  var bytes=new Uint8Array(await file.arrayBuffer());
-  if(String.fromCharCode.apply(null,bytes.slice(0,5))!=='%PDF-')throw new Error('The file does not start with a valid PDF header.');
-  var document=await root.pdfjsLib.getDocument({data:bytes}).promise;
+  // PDF.js can transfer its supplied buffer to a Worker. Copy once so evidence
+  // remains available without re-reading a potentially expired File handle.
+  var bytes=source instanceof Uint8Array?source:new Uint8Array(await source.arrayBuffer());
+  if(bytes.length<5||String.fromCharCode.apply(null,bytes.slice(0,5))!=='%PDF-')throw new Error('The file does not start with a valid PDF header.');
+  var document=await root.pdfjsLib.getDocument({data:bytes.slice()}).promise;
   if(!document.numPages||document.numPages>120)throw new Error('This PDF has more than 120 pages. Please split it into smaller attempt reviews.');
   return document;
 }
@@ -91,16 +93,58 @@ function parseBlocks(pages){
   });
   return {questions:questions,warnings:notes};
 }
-async function read(file,onProgress){
-  var pdf=await open(file),pages=[];
-  for(var i=1;i<=pdf.numPages;i++){
-    if(onProgress)onProgress('Reading PDF page '+i+' / '+pdf.numPages);
-    var page=await pdf.getPage(i),content=await page.getTextContent();
-    pages.push({number:i,lines:linesOf(content.items)});
-    page.cleanup();
-  }
-  var parsed=parseBlocks(pages);
-  return {document:pdf,pages:pages,questions:parsed.questions,warnings:parsed.warnings,pageCount:pdf.numPages,originalName:file.name};
+function ensureTesseract(){
+  if(root.Tesseract&&typeof root.Tesseract.createWorker==='function')return Promise.resolve();
+  if(root.__ledgerpeerTesseractLoading)return root.__ledgerpeerTesseractLoading;
+  root.__ledgerpeerTesseractLoading=new Promise(function(resolve,reject){
+    var tag=document.createElement('script');
+    tag.src='https://cdn.jsdelivr.net/npm/tesseract.js@7.0.0/dist/tesseract.min.js';
+    tag.onload=function(){root.Tesseract&&root.Tesseract.createWorker?resolve():reject(new Error('OCR engine could not initialize.'));};
+    tag.onerror=function(){reject(new Error('OCR engine could not download. Check your connection and try again.'));};
+    document.head.appendChild(tag);
+  }).catch(function(err){root.__ledgerpeerTesseractLoading=null;throw err;});
+  return root.__ledgerpeerTesseractLoading;
+}
+async function recognizePdfPage(page,worker){
+  var size=page.getViewport({scale:1.7}),canvas=document.createElement('canvas');
+  canvas.width=Math.ceil(size.width);canvas.height=Math.ceil(size.height);
+  try{
+    var context=canvas.getContext('2d',{alpha:false});
+    if(!context)throw new Error('Canvas rendering is not available in this browser.');
+    await page.render({canvasContext:context,viewport:size}).promise;
+    var image=canvas.toDataURL('image/png');
+    var reading=await worker.recognize(image);
+    return {lines:String(reading&&reading.data&&reading.data.text||'').split(/\r?\n/).map(clean).filter(Boolean),
+      confidence:reading&&reading.data&&Number.isFinite(reading.data.confidence)?reading.data.confidence:null};
+  }finally{canvas.width=0;canvas.height=0;}
+}
+async function read(source,onProgress){
+  var pdf=await open(source),pages=[],anyOcr=false,worker=null;
+  try{
+    for(var i=1;i<=pdf.numPages;i++){
+      if(onProgress)onProgress('Inspecting page '+i+' / '+pdf.numPages);
+      var page=await pdf.getPage(i),content=await page.getTextContent();
+      var lines=linesOf(content.items),confidence=null,requiresOcr=!lines.length||
+        (!lines.some(function(t){return /\bquestion\b|\bmark\b/i.test(t);})&&lines.length<8);
+      if(requiresOcr){
+        if(!worker){
+          if(onProgress)onProgress('This PDF has image-only pages. Loading local-browser OCR engine…');
+          await ensureTesseract();
+          worker=await root.Tesseract.createWorker('eng');
+        }
+        if(onProgress)onProgress('Reading image-based page '+i+' / '+pdf.numPages+' (OCR)');
+        var recognized=await recognizePdfPage(page,worker);
+        lines=recognized.lines;confidence=recognized.confidence;anyOcr=true;
+      }
+      pages.push({number:i,lines:lines,ocrConfidence:confidence});
+      page.cleanup();
+    }
+  }finally{if(worker)await worker.terminate();}
+  var parsed=anyOcr?root.LedgerPeerOcrParser&&root.LedgerPeerOcrParser.parse(pages):parseBlocks(pages);
+  if(!parsed)throw new Error('OCR analysis tools are missing. Reload LedgerPeer and retry.');
+  return {document:pdf,pages:pages,questions:parsed.questions,warnings:parsed.warnings,
+    reconciliation:parsed.reconciliation||null,ocrUsed:anyOcr,pageCount:pdf.numPages,
+    originalName:source&&source.name||'Original exam PDF'};
 }
 async function convertToHTML(result,onProgress){
   if(!result||!result.document||!result.pages)throw new Error('Read a PDF first.');
