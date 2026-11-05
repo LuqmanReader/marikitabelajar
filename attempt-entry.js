@@ -29,12 +29,13 @@
   function changeReader(){
     invalidate();source='';sourceFile=null;originalPdf=null;pdfBytes=null;fileVersion++;$('sourceFile').value='';$('parseAttempt').disabled=true;
     var mode=readerMode(),isHtml=mode==='html';
+    $('parseAttempt').textContent=mode==='pdf-html'?'Convert PDF to HTML':'Extract answer review';
     $('sourceFile').accept=isHtml?'.html,.htm,text/html':'.pdf,application/pdf';
     $('uploadLabel').textContent=isHtml?'Choose saved marked-review HTML':'Choose original marked-review PDF';
     $('htmlDescription').textContent=isHtml?'Best fidelity: save the completed attempt review as Webpage, HTML only. Converted LedgerPeer HTML also works.':
       mode==='pdf'?'Structured PDF text or image-only exam printouts (OCR fallback). The original is kept locally for verification.':
       'PDF → HTML supports image-only printouts using OCR and preserves each page visually for checking.';
-    message(isHtml?'Choose a marked attempt-review HTML file.':'Choose the original marked attempt PDF; image-only pages will use browser OCR, with strict grade checks.');
+    message(mode==='pdf-html'?'Select any PDF. Paper/test fields are OPTIONAL for conversion; grades are not required.':isHtml?'Choose a marked attempt-review HTML file.':'Choose the original marked attempt PDF; image-only pages will use browser OCR, with strict grade checks.');
   }
   document.querySelectorAll('input[name="readerMode"]').forEach(function(input){input.addEventListener('change',changeReader);});
   $('acknowledgePdf').addEventListener('change',function(){if(staged&&staged.meta.sourceType!=='html')$('saveAttempt').disabled=!this.checked;});
@@ -143,7 +144,9 @@
     invalidate();reading=true;$('parseAttempt').disabled=true;
     var versionAtStart=inputVersion,selectedMode=readerMode();
     try{
-      var meta=fields(),result,qs,warnings=[],pdfRecord=null;
+      var wantsGradedImport=readerMode()!=='pdf-html'||(!!$('subjectSelect').value&&['set','pre','mock'].includes($('testType').value));
+      var meta=wantsGradedImport?fields():{sourceType:'pdf-html',sourceFormat:'pdf'};
+      var result,qs,warnings=[],pdfRecord=null;
       if(readerMode()==='html'){
         pdfRecord=window.LedgerPeerPdfReader&&LedgerPeerPdfReader.parseConvertedHtml(source);
         qs=pdfRecord?pdfRecord.questions:parseHtml(source);
@@ -166,7 +169,7 @@
         }
       }
       if(versionAtStart!==inputVersion||readerMode()!==selectedMode)throw new Error('Inputs changed while extraction was running. Choose Extract answer review again.');
-      if(meta.sourceType==='pdf-html'&&result&&!result.reconciliation){
+      if(meta.sourceType==='pdf-html'&&result&&(!wantsGradedImport||!result.reconciliation)){
         // Conversion succeeds even if no exam-grade format can be recognized.
         // Keep visual evidence and extracted text; never invent score records.
         $('entryPreview').innerHTML='<p><strong>HTML conversion is ready for download.</strong> '+result.pageCount+
