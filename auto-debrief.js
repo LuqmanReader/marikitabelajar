@@ -100,9 +100,25 @@ async function start(manual){
     update((completed?completed+' explanations saved. ':'')+'Automatic analysis paused: '+String(e.message||e)+'. Your attempt is safe; resume when ready.',true);
   }finally{running=false;}
 }
+function concealManualHandoff(){
+  var container=$id('chatgpt-debrief');
+  if(!container||$id('manualDebriefFallback'))return;
+  var sections=Array.from(container.querySelectorAll(':scope > section.flow-path'))
+    .filter(function(section){return /Copy the question request|Bring the JSON back/i.test(section.textContent||'');});
+  if(!sections.length)return;
+  var details=document.createElement('details');
+  details.id='manualDebriefFallback';
+  details.className='html-help';
+  details.style.marginTop='12px';
+  var summary=document.createElement('summary');
+  summary.textContent='Advanced · Manual analysis backup (only if automatic analysis is unavailable)';
+  details.appendChild(summary);
+  sections.forEach(function(section){details.appendChild(section);});
+  container.appendChild(details);
+}
 function init(){
   if(new URLSearchParams(location.search).get('autodebrief')==='1'){
-    panel();start(false);
+    panel();concealManualHandoff();start(false);
   }
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
