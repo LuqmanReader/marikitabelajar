@@ -1153,29 +1153,66 @@
   renderDash();
   renderSections();
 
-  // Delegated handlers for the per-card "..." menu (delete)
-  document.getElementById('sections').addEventListener('click', function(e){
-    var toggleBtn = e.target.closest('[data-menu-toggle]');
-    var deleteBtn = e.target.closest('[data-delete-id]');
-    var classifyBtn=e.target.closest('[data-classify-id]');
-    if(classifyBtn){
+  // Editing only the saved metadata preserves the attempt's ID, marks and debrief.
+  var editDialog=document.getElementById('editAttemptDialog');
+  var editForm=document.getElementById('editAttemptForm');
+  var editTitle=document.getElementById('editAttemptTitle');
+  var editType=document.getElementById('editAttemptType');
+  var editNumber=document.getElementById('editAttemptNumber');
+  var editChapter=document.getElementById('editAttemptChapter');
+  var editChapterWrap=document.getElementById('editAttemptChapterWrap');
+  var editError=document.getElementById('editAttemptError');
+  var editingAttemptId=null,manualTitle=false;
+
+  function showEditError(message){editError.textContent=message||'';editError.hidden=!message;}
+  function showChapterField(){
+    var visible=editType.value==='set';
+    editChapterWrap.hidden=!visible;
+    editChapter.required=visible;
+  }
+  function fillSuggestedTitle(){
+    if(manualTitle||!editingAttemptId)return;
+    var original=EXAMS.find(function(e){return e.id===editingAttemptId;});
+    if(original)editTitle.value=ExamModel.suggestTitle(original.title,editType.value,editNumber.value||original.testNumber);
+  }
+  editTitle.addEventListener('input',function(){manualTitle=true;showEditError('');});
+  editType.addEventListener('change',function(){showChapterField();fillSuggestedTitle();showEditError('');});
+  editNumber.addEventListener('input',function(){fillSuggestedTitle();showEditError('');});
+  document.getElementById('editAttemptCancel').addEventListener('click',function(){editDialog.close();});
+  editDialog.addEventListener('close',function(){editingAttemptId=null;showEditError('');});
+  editForm.addEventListener('submit',function(e){
+    e.preventDefault();
+    if(!editingAttemptId)return;
+    try{
+      ExamModel.updateSavedAttempt(localStorage,editingAttemptId,{
+        title:editTitle.value,testType:editType.value,testNumber:editNumber.value,
+        setChapter:editChapter.value
+      });
+      editDialog.close();
+      location.reload();
+    }catch(err){showEditError('Could not save: '+(err.message||err));}
+  });
+
+  // Delegated handlers for the per-card options menu.
+  document.getElementById('sections').addEventListener('click',function(e){
+    var toggleBtn=e.target.closest('[data-menu-toggle]');
+    var deleteBtn=e.target.closest('[data-delete-id]');
+    var editBtn=e.target.closest('[data-edit-attempt-id]');
+    if(editBtn){
       e.preventDefault();e.stopPropagation();
-      var target=EXAMS.find(function(x){return x.id===classifyBtn.getAttribute('data-classify-id');});
-      var type=prompt('Enter set, progress, or mock:',target.testType==='pre'?'progress':target.testType);
-      if(type===null)return;type=type.trim().toLowerCase();if(type==='progress')type='pre';
-      if(type!=='pre'&&type!=='mock'&&type!=='set'){alert('Enter set, progress or mock.');return;}
-      var rawNumber=prompt('Test number (1–10 or higher):',target.testNumber);
-      if(rawNumber===null)return;var number=Number(rawNumber);
-      if(!Number.isSafeInteger(number)||number<1){alert('Enter a whole test number of 1 or higher.');return;}
-      var setChapter=target.setChapter||'';
-      if(type==='set'){setChapter=prompt('Chapter for this set:',setChapter);if(setChapter===null)return;setChapter=setChapter.trim();if(!setChapter||setChapter.length>120){alert('Enter a chapter name of 1–120 characters.');return;}}
-      try{
-        var custom=JSON.parse(localStorage.getItem('tymba_custom_exams')||'[]');
-        var found=custom.some(function(x){return x.id===target.id;});
-        if(!found){alert('This attempt is registered in hub.html. Change its testType and testNumber in that file.');return;}
-        custom.forEach(function(x){if(x.id===target.id){x.testType=type;x.testNumber=number;x.setChapter=type==='set'?setChapter:'';if(type!=='set'||number>x.setTotal)x.setTotal=null;}});
-        localStorage.setItem('tymba_custom_exams',JSON.stringify(custom));location.reload();
-      }catch(err){alert('Could not change test classification: '+err.message);}
+      editingAttemptId=editBtn.getAttribute('data-edit-attempt-id');
+      var target=EXAMS.find(function(x){return x.id===editingAttemptId;});
+      if(!target){editingAttemptId=null;alert('Saved attempt not found. Refresh the dashboard.');return;}
+      manualTitle=false;
+      editTitle.value=ExamModel.suggestTitle(target.title,target.testType,target.testNumber);
+      editType.value=target.testType;
+      editNumber.value=target.testNumber;
+      editChapter.value=target.setChapter||'';
+      document.getElementById('editAttemptPaper').textContent='PAPER: '+target.subject;
+      showChapterField();showEditError('');
+      document.querySelectorAll('.menu-dropdown.show').forEach(function(el){el.classList.remove('show');});
+      editDialog.showModal();
+      editTitle.focus();
       return;
     }
 
