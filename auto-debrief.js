@@ -20,15 +20,32 @@ function panel(){
   var status=document.createElement('p');status.id='autoDebriefMessage';status.setAttribute('role','status');
   status.style.cssText='font-size:12px;line-height:1.55;margin:8px 0;';
   var btn=document.createElement('button');btn.type='button';btn.id='autoDebriefRetry';btn.className='flow-button secondary';btn.textContent='Generate / resume AI debrief';btn.hidden=true;
-  el.append(strong,status,btn);parent.insertBefore(el,host);
+  var details=document.createElement('details');details.id='autoDebriefJsonDetails';details.style.cssText='margin-top:10px;font-size:11px';
+  var summary=document.createElement('summary');summary.textContent='Advanced · View generated debrief JSON';
+  var pre=document.createElement('pre');pre.id='autoDebriefJson';
+  pre.style.cssText='max-height:280px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;border:2px solid #111;background:#fff;padding:10px;font-size:10px';
+  details.append(summary,pre);
+  el.append(strong,status,btn,details);parent.insertBefore(el,host);
   btn.addEventListener('click',function(){start(true);});
   return el;
+}
+function showSavedJson(){
+  var params=new URLSearchParams(location.search),id=params.get('id'),pre=$id('autoDebriefJson'),details=$id('autoDebriefJsonDetails');
+  if(!id||!pre||!details)return;
+  var items=source(id).filter(function(q){return complete(q);}).map(function(q){
+    return {qno:q.qno,chapter:q.chapter,reasoning:q.reasoning,
+      calculation:q.calculation||'Not applicable',justification:q.justification,focus:q.focus||''};
+  });
+  details.hidden=!items.length;
+  if(items.length)pre.textContent=JSON.stringify({schema:'personal-hub-debrief-v2',exam_id:id,
+    questions:items,generated_from:'saved_question_feedback'},null,2);
 }
 function update(text,action){
   var el=panel(),node=$id('autoDebriefMessage'),btn=$id('autoDebriefRetry');
   if(node)node.textContent=text;
   if(btn)btn.hidden=!action;
   if(el)el.hidden=false;
+  showSavedJson();
 }
 function scriptOnce(src,globalKey){
   if(root[globalKey])return Promise.resolve();
