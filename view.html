@@ -751,6 +751,9 @@
     }
     if(d.source_feedback)body+='<details><summary>Original feedback</summary>'+RevisionFlow.sanitize(d.source_feedback)+'</details>';
     body += '<div class="opts">' + markOptions(d) + '</div>';
+    if(d.visual_observed_selection&&!d.your_answer){
+      body += '<p style="border:2px solid #a16207;background:#fff3ca;padding:8px 10px;font-size:11px"><strong>AI visual reading of selected answer (unverified):</strong> '+RevisionFlow.escape(d.visual_observed_selection)+'</p>';
+    }
 
     if(d.is_correct===false){
       body += '<div class="compare">' +
@@ -1063,6 +1066,6 @@
   window.addEventListener('pagehide',function(){if(pdfUrl)URL.revokeObjectURL(pdfUrl);if(htmlUrl)URL.revokeObjectURL(htmlUrl);});
 })();
 </script>
-<script src="auto-debrief.js?v=20261105-vision-json5"></script>
+<script src="auto-debrief.js?v=20261105-vision-json6"></script>
 <script>PersonalHubAuth.addLockButton();</script></body>
 </html>
