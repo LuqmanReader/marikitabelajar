@@ -2,7 +2,7 @@
   'use strict';
   var $=function(id){return document.getElementById(id);}, F=RevisionFlow;
   SubjectCatalog.fill($('subjectSelect'));
-  var staged=null,source='',sourceFile=null,originalPdf=null,convertedHtml=null,conversionUrl=null,fileVersion=0,reading=false;
+  var staged=null,source='',sourceFile=null,originalPdf=null,pdfBytes=null,convertedHtml=null,conversionUrl=null,fileVersion=0,reading=false;
   var localNow=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,16);
   $('attemptDate').value=localNow;
   function message(text){$('entryMessage').textContent=text;}
@@ -26,14 +26,14 @@
     return window.__ledgerpeerPdfJsLoading;
   }
   function changeReader(){
-    invalidate();source='';sourceFile=null;$('sourceFile').value='';$('parseAttempt').disabled=true;
+    invalidate();source='';sourceFile=null;originalPdf=null;pdfBytes=null;fileVersion++;$('sourceFile').value='';$('parseAttempt').disabled=true;
     var mode=readerMode(),isHtml=mode==='html';
     $('sourceFile').accept=isHtml?'.html,.htm,text/html':'.pdf,application/pdf';
     $('uploadLabel').textContent=isHtml?'Choose saved marked-review HTML':'Choose original marked-review PDF';
     $('htmlDescription').textContent=isHtml?'Best fidelity: save the completed attempt review as Webpage, HTML only. Converted LedgerPeer HTML also works.':
-      mode==='pdf'?'PDF with selectable text. The original PDF is stored locally for visual cross-checking.':
-      'PDF with selectable text. LedgerPeer will also create a standalone HTML report with visual page snapshots.';
-    message(isHtml?'Choose a marked attempt-review HTML file.':'Choose the original marked attempt PDF. No image-only OCR or invented marks.');
+      mode==='pdf'?'Structured PDF text or image-only exam printouts (OCR fallback). The original is kept locally for verification.':
+      'PDF → HTML supports image-only printouts using OCR and preserves each page visually for checking.';
+    message(isHtml?'Choose a marked attempt-review HTML file.':'Choose the original marked attempt PDF; image-only pages will use browser OCR, with strict grade checks.');
   }
   document.querySelectorAll('input[name="readerMode"]').forEach(function(input){input.addEventListener('change',changeReader);});
   $('acknowledgePdf').addEventListener('change',function(){if(staged&&staged.meta.sourceType!=='html')$('saveAttempt').disabled=!this.checked;});
@@ -63,7 +63,7 @@
   $('testType').addEventListener('change',mode);$('subjectSelect').addEventListener('change',names);
   ['subjectSelect','testNumber','setChapter','setTotal','attemptDate','titleInput'].forEach(function(id){$(id).addEventListener('input',invalidate);});
   $('sourceFile').addEventListener('change',async function(){
-    invalidate();source='';originalPdf=null;
+    invalidate();source='';originalPdf=null;pdfBytes=null;
     var version=++fileVersion,file=this.files[0];sourceFile=file||null;$('parseAttempt').disabled=true;
     if(!file)return;
     var isHtml=readerMode()==='html';
@@ -75,14 +75,20 @@
         if(!/<(?:!doctype\s+html|html|div)\b/i.test(text))throw new Error('This file does not contain an HTML page.');
         source=text;
       }else{
-        var head=new Uint8Array(await file.slice(0,5).arrayBuffer());
-        if(version!==fileVersion)return;
-        if(String.fromCharCode.apply(null,head)!=='%PDF-')throw new Error('This file has no valid PDF header.');
         if(file.size>35*1024*1024)throw new Error('PDF over 35 MB; reduce its size or use the HTML export.');
-        originalPdf=file;
+        // Read only once while permission from the file picker is fresh.
+        // Never depend on the original File reference after this point.
+        var bytes=new Uint8Array(await file.arrayBuffer());
+        if(version!==fileVersion)return;
+        if(bytes.length<5||String.fromCharCode.apply(null,bytes.subarray(0,5))!=='%PDF-')throw new Error('This file has no valid PDF header.');
+        pdfBytes=bytes;
+        originalPdf=new File([bytes],file.name,{type:'application/pdf'});
       }
       $('parseAttempt').disabled=false;message(file.name+' is ready to extract.');
-    }catch(e){message('Could not read this file: '+e.message);}
+    }catch(e){
+      sourceFile=null;pdfBytes=null;originalPdf=null;$('parseAttempt').disabled=true;
+      message(e&&e.name==='NotReadableError'?'Browser cannot read the selected file. Save the PDF into Downloads, choose the new copy and try again. Original: '+e.message:'Could not read this file: '+e.message);
+    }
   });
   function validateQuestions(qs,meta){
     if(!Array.isArray(qs)||!qs.length)throw new Error('No questions found. Use a marked attempt-review export.');
@@ -139,11 +145,14 @@
       if(readerMode()==='html'){
         pdfRecord=window.LedgerPeerPdfReader&&LedgerPeerPdfReader.parseConvertedHtml(source);
         qs=pdfRecord?pdfRecord.questions:parseHtml(source);
-        if(pdfRecord){meta.sourceType='pdf-html';convertedHtml=sourceFile;warnings=pdfRecord.warnings.concat(['Converted HTML was imported without its original PDF. Keep the source PDF for evidence.']);}
+        if(pdfRecord){meta.sourceType='pdf-html';convertedHtml=new Blob([source],{type:'text/html'});warnings=pdfRecord.warnings.concat(['Converted HTML was imported without its original PDF. Keep the source PDF for evidence.']);}
       }else{
         if(!originalPdf)throw new Error('Select the original PDF first.');
         await ensurePdfJs();
-        result=await LedgerPeerPdfReader.read(originalPdf,message);
+        result=await LedgerPeerPdfReader.read(pdfBytes,message);
+        result.originalName=originalPdf.name;
+        if(result.reconciliation)meta.ocrReconciliation=result.reconciliation;
+        if(result.ocrUsed)meta.ocrUsed=true;
         qs=result.questions;warnings=result.warnings.slice();
         if(readerMode()==='pdf-html'){
           var html=await LedgerPeerPdfReader.convertToHTML(result,message);
