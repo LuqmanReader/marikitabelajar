@@ -34,9 +34,9 @@
   const isPdf=meta.sourceFormat==='pdf';
   el.className='flow-panel';el.id='chatgpt-debrief';
   el.innerHTML=`
-    <div class="flow-steps"><span>1 · PDF saved</span><span class="current">2 · Ask ChatGPT</span><span>3 · Update graphs</span></div>
-    <h2>AI Question Analysis · ChatGPT JSON</h2>
-    <p>Your marks stay unchanged. Each question must match an official ACCA syllabus topic for your selected paper or stay untagged when outside the syllabus.</p>
+    <div class="flow-steps"><span>1 · Attempt saved</span><span class="current">2 · Copy request</span><span>3 · Import JSON</span></div>
+    <h2>Manual AI Debrief · JSON</h2>
+    <p>LedgerPeer prepares the request but does not run an internal AI. Copy the question JSON and instructions, ask an AI of your choice for the completed JSON, then paste the result here. Original marks stay unchanged; syllabus topics must match your selected paper.</p>
     <p id="syllabusNotice" class="flow-muted"></p><div class="flow-actions" id="repairSyllabusActions"></div>
     <section id="syllabusSetup" class="flow-path" hidden>
       <h3>One-time ACCA syllabus setup for this paper</h3>
@@ -52,14 +52,14 @@
       <select id="correctAttemptSubject" aria-label="Correct the FIA or ACCA paper for this saved attempt"></select>
     </label><button type="button" class="flow-button secondary" id="saveAttemptSubject">Save paper change</button></div>
     <p id="debriefProgress" class="flow-muted"></p>
-    <section class="flow-path"><h3>Step 1 · Copy the question request</h3>
-      <p>Click Copy Request, open ChatGPT, and paste it. <strong>${isPdf?'Attach the same original PDF in ChatGPT':'Attach the original marked exam PDF if available'}</strong> so figures, tables and answers can be verified against the source rather than unreliable OCR. Ask ChatGPT to return the <strong>complete JSON</strong>.</p>
-      <div class="flow-actions"><button type="button" class="flow-button primary" id="copyAIRequest">Copy complete request</button><a class="flow-button secondary" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT ↗</a><button type="button" class="flow-button secondary" id="downloadAIRequest">Download request .txt</button></div>
+    <section class="flow-path"><h3>Step 1 · Copy the question JSON request</h3>
+      <p>Click Copy Request, open your preferred AI, and paste it. <strong>${isPdf?'Attach the same original PDF in ChatGPT':'Attach the original marked exam PDF if available'}</strong> so figures, tables and answers can be verified against the source rather than unreliable OCR. Ask ChatGPT to return the <strong>complete JSON</strong>.</p>
+      <div class="flow-actions"><button type="button" class="flow-button primary" id="copyAIRequest">Copy questions + JSON instructions</button><a class="flow-button secondary" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT ↗</a><button type="button" class="flow-button secondary" id="downloadAIRequest">Download request .txt</button></div>
       <details><summary>View / manually copy your AI request</summary><textarea id="requestText" rows="7" readonly aria-label="Prepared request"></textarea></details>
     </section>
-    <section class="flow-path"><h3>Step 2 · Bring the JSON back to LedgerPeer</h3>
-      <p>Paste ChatGPT's JSON below, or upload its saved <code>.json</code> / <code>.txt</code>. LedgerPeer checks the question IDs, original marks and topic labels before saving anything.</p>
-      <label class="flow-field">ChatGPT JSON response<textarea id="aiResponse" class="flow-response" rows="9" placeholder='Paste the complete JSON response here, starting with {'></textarea></label>
+    <section class="flow-path"><h3>Step 2 · Paste the completed JSON into LedgerPeer</h3>
+      <p>Paste the completed AI JSON below, or upload its saved <code>.json</code> / <code>.txt</code>. LedgerPeer checks the question IDs, original marks and topic labels before saving anything.</p>
+      <label class="flow-field">AI JSON response<textarea id="aiResponse" class="flow-response" rows="9" placeholder='Paste the complete JSON response here, starting with {'></textarea></label>
       <label class="flow-field">Or select the response file<input type="file" id="aiResponseFile" accept=".json,.txt,application/json,text/plain"></label>
       <div class="flow-actions"><button type="button" class="flow-button secondary" id="previewAIResponse">Preview classification</button><button type="button" class="flow-button primary" id="applyAIResponse">Apply JSON &amp; update graphs</button></div>
       <p role="status" aria-live="polite" id="aiResponseMessage"></p><div id="aiResponsePreview" class="flow-preview" hidden></div>
@@ -75,7 +75,7 @@
    const left=missing();const info=M.summary(data,meta.subject);
    $('debriefProgress').textContent=data.length+' questions saved · '+(data.length-left.length)+' explained and classified · '+left.length+' pending · '+info.coverage.tagged+' approved topic tags for graphs · '+info.coverage.outside+' outside/unreadable.';
    $('aiCurrentAnalysis').innerHTML=insights(data,meta.subject)+rankTable(data,meta.subject);
-   $('copyAIRequest').textContent=left.length&&left.length<data.length?'Copy request for '+left.length+' unfinished questions':'Copy complete request';
+   $('copyAIRequest').textContent=left.length&&left.length<data.length?'Copy request for '+left.length+' unfinished questions':'Copy questions + JSON instructions';
   }
   function makePrompt(){
     const pending=missing();const selected=pending.length?pending:data;
@@ -189,7 +189,7 @@
    $('applyAIResponse').disabled=true;
   }
   $('copyAIRequest').addEventListener('click',async()=>{
-   try{await navigator.clipboard.writeText(fillPrompt());message('Request copied. Attach the PDF to ChatGPT, paste the request and ask for the JSON.');}
+   try{await navigator.clipboard.writeText(fillPrompt());message('Request copied. Paste it into your preferred AI; attach the original PDF there if source visuals need checking. Return the JSON here.');}
    catch(e){fillPrompt();$('requestText').parentElement.open=true;$('requestText').focus();$('requestText').select();message('Clipboard unavailable; the request is selected. Press Ctrl+C.');}
   });
   $('downloadAIRequest').addEventListener('click',()=>F.download('ledgerpeer-chatgpt-request-'+meta.id+'.txt',fillPrompt(),'text/plain'));
@@ -210,7 +210,7 @@
     staged=F.review($('aiResponse').value,data,meta);
     preview(staged);
     const left=staged.questions.filter(q=>incomplete(q,meta));
-    if(left.length&&!confirm('ChatGPT returned an incomplete debrief: '+left.length+' question(s) still need topics or explanations. Save valid parts now? LedgerPeer will prepare a continuation prompt for the missing parts.'))return;
+    if(left.length&&!confirm('The AI returned an incomplete debrief: '+left.length+' question(s) still need topics or explanations. Save valid parts now? LedgerPeer will prepare a continuation prompt for the missing parts.'))return;
     if(localStorage.getItem('tymba_exam_data:'+meta.id)!==expected)throw Error('The saved attempt changed in another tab. Reload before importing so you do not overwrite newer work.');
     const updated=staged.questions.map(q=>Object.assign({},q,{debrief:typeof q.debrief==='string'?F.sanitize(q.debrief):q.debrief}));
     F.save(localStorage,'tymba_exam_data:'+meta.id,updated);
