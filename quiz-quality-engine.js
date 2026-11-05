@@ -138,6 +138,7 @@ function generate({paper,topics,count=20,mode='topic',difficulty='mixed',order='
  const targetLevels={easy:Math.round(qty*.3),moderate:Math.round(qty*.4),hard:0};
  targetLevels.hard=qty-targetLevels.easy-targetLevels.moderate;
  const levelsUsed={easy:0,moderate:0,hard:0};
+ const assessedOutcomes=new Set();
  const familyKey=q=>q.key+'|'+q.group;
  const familyExposure=q=>exposure.get(familyKey(q))||0;
  function count(key,group){return used.get(key+'|'+group)||0}
@@ -149,13 +150,17 @@ function generate({paper,topics,count=20,mode='topic',difficulty='mixed',order='
     let priorTopic=0;
     for(const p of picked)if(p.key===q.key)priorTopic++;
     const overLevel=selectedDifficulty==='mixed'&&levelsUsed[q.difficulty]>=targetLevels[q.difficulty]?25:0;
+    const mappedChapter=Boolean(root.LedgerQuizOutcomeMap?.[q.key]);
+    const freshOutcome=(q.outcomeCodes||[]).some(code=>!assessedOutcomes.has(q.key+'|'+code));
+    const outcomePenalty=mappedChapter?(freshOutcome?-30:q.outcomeCodes?.length?8:12):0;
     const score=priorTopic*9+count(q.key,q.group)*110+
-      familyExposure(q)*70+(recent.has(q.id)?120:0)+overLevel+(rngScores.get(q.id)??rng());
+      familyExposure(q)*70+(recent.has(q.id)?120:0)+overLevel+outcomePenalty+(rngScores.get(q.id)??rng());
     rngScores.set(q.id,score%1);
     if(score<bestScore){bestScore=score;best=q;}
    }
    if(!best)break;
    picked.push(best);prompts.add(best.prompt);levelsUsed[best.difficulty]++;
+   for(const code of best.outcomeCodes||[])assessedOutcomes.add(best.key+'|'+code);
    const id=best.key+'|'+best.group;
    used.set(id,(used.get(id)||0)+1);
   }
