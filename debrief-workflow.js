@@ -123,13 +123,14 @@
   }
   try{
     const saved=JSON.parse(sessionStorage.getItem(draftKey)||'null');
-    if(saved&&saved.signature===draftSignature&&typeof saved.value==='string'&&saved.value.trim()){
+    const recovered=!!(saved&&saved.signature===draftSignature&&typeof saved.value==='string'&&saved.value.trim());
+    if(recovered){
       $('aiResponse').value=saved.value;
       draftStatus('Unsaved JSON draft restored for this attempt.');
       activeStage='response';
     }
     const chosen=sessionStorage.getItem(stageKey);
-    if(stageNames.includes(chosen))activeStage=chosen;
+    if(!recovered&&stageNames.includes(chosen))activeStage=chosen;
   }catch(e){}
   setStage(activeStage);
   root.addEventListener('pagehide',writeDraft);
