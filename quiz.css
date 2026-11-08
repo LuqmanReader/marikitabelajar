@@ -47,14 +47,16 @@ button.primary{background:var(--yellow)}.buttons button:hover,.buttons a:hover,.
 @media(max-width:720px){.fields{grid-template-columns:1fr}.choices{grid-template-columns:1fr}.panel{padding:16px;box-shadow:5px 5px 0 var(--ink)}.intro{margin-top:25px}.lp-header{align-items:flex-start}.intro h1{font-size:clamp(44px,11vw,72px)}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 /* Quiz Centre mode selection, condensed long-session layout. */
-.mode-tabs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+.mode-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:20px}
 .mode-tab{display:flex;flex-direction:column;align-items:flex-start;gap:7px;text-align:left;padding:16px;background:#fff;border:3px solid var(--ink);box-shadow:3px 3px 0 var(--ink)}
 .mode-tab strong{font:900 clamp(14px,2vw,19px) Arial Black,Impact,sans-serif;letter-spacing:-.02em}
 .mode-tab span{font-size:11px;font-weight:800;letter-spacing:.3px}
 .mode-tab.active{background:var(--yellow)}
+.mode-tab:disabled{opacity:.48;cursor:not-allowed;background:#eee;box-shadow:none}
+.mode-tab:focus-visible{outline:3px solid var(--blue);outline-offset:4px}
 .mode-tab:not(.active):hover{background:#fdf2cf}
 .fields label[hidden],.buttons a[hidden]{display:none!important}
-@media(max-width:520px){.mode-tabs{grid-template-columns:1fr}.mode-tab{padding:13px}}
+@media(max-width:850px){.mode-tabs{grid-template-columns:1fr}.mode-tab{padding:13px}}
 
 /* Objective numerical answers replace free-response essays. */
 .numeric-label{display:flex;flex-direction:column;gap:8px;margin-top:12px;max-width:520px;font-size:11px;font-weight:900;letter-spacing:.05em}
