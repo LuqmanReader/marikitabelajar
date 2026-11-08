@@ -20,7 +20,7 @@ for(const [paper,config] of Object.entries(syllabus)){
  for(const heading of config.topics){
   const code=engine.topicCode(heading).code,key=paper+':'+code;
   assert.ok(lessons[key],'Missing study source '+key);
-  const set=engine.generate({paper,topics:[code],count:20,lessons,syllabus,rng});
+  const set=engine.generate({paper,topics:[code],count:20,chapterOnly:true,lessons,syllabus,rng});
   assert(set.available<=20);
   assert.equal(set.available,set.questions.length);
   assert.equal(set.actualMix.mcq+set.actualMix.numeric,set.available);
