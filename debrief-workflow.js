@@ -32,9 +32,14 @@
   if(!el||!F||!M)return;
   let data=initial,expected=localStorage.getItem('tymba_exam_data:'+meta.id),staged=null;
   const isPdf=meta.sourceFormat==='pdf';
+  // Drafts persist only in the current browser tab, never as saved grades.
+  const draftKey='ledgerpeer_debrief_draft_v1:'+meta.id;
+  const stageKey='ledgerpeer_debrief_stage_v1:'+meta.id;
+  const draftSignature=F.signature(data);
+  let draftTimer=null,activeStage='copy';
   el.className='flow-panel';el.id='chatgpt-debrief';
   el.innerHTML=`
-    <div class="flow-steps"><span>1 · Attempt saved</span><span class="current">2 · Copy request</span><span>3 · Import JSON</span></div>
+    <div class="flow-steps"><span>1 · Attempt saved</span><span class="current">2 · Classify + debrief</span><span>3 · Review results</span></div>
     <h2>Manual AI Debrief · JSON</h2>
     <p>LedgerPeer prepares the request but does not run an internal AI. Copy the question JSON and instructions, ask an AI of your choice for the completed JSON, then paste the result here. Original marks stay unchanged; syllabus topics must match your selected paper.</p>
     <p id="syllabusNotice" class="flow-muted"></p><div class="flow-actions" id="repairSyllabusActions"></div>
@@ -51,25 +56,87 @@
     <div class="flow-controls"><label>Change paper for this saved attempt
       <select id="correctAttemptSubject" aria-label="Correct the FIA or ACCA paper for this saved attempt"></select>
     </label><button type="button" class="flow-button secondary" id="saveAttemptSubject">Save paper change</button></div>
-    <p id="debriefProgress" class="flow-muted"></p>
-    <section class="flow-path"><h3>Step 1 · Copy the question JSON request</h3>
+    <p id="debriefProgress" class="flow-muted" role="status"></p>
+     <nav class="flow-stage-nav" id="flowStageNav" aria-label="Debrief steps">
+       <button type="button" data-flow-step="copy" aria-pressed="true">1 · Request</button>
+       <button type="button" data-flow-step="response" aria-pressed="false">2 · Import JSON</button>
+       <button type="button" data-flow-step="results" aria-pressed="false">3 · Results</button>
+     </nav>
+    <section class="flow-path flow-stage" data-flow-stage="copy"><h3>Step 1 · Copy the question JSON request</h3>
       <p>Click Copy Request, open your preferred AI, and paste it. <strong>${isPdf?'Attach the same original PDF in ChatGPT':'Attach the original marked exam PDF if available'}</strong> so figures, tables and answers can be verified against the source rather than unreliable OCR. Ask ChatGPT to return the <strong>complete JSON</strong>.</p>
       <div class="flow-actions"><button type="button" class="flow-button primary" id="copyAIRequest">Copy questions + JSON instructions</button><a class="flow-button secondary" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT ↗</a><button type="button" class="flow-button secondary" id="downloadAIRequest">Download request .txt</button></div>
       <details><summary>View / manually copy your AI request</summary><textarea id="requestText" rows="7" readonly aria-label="Prepared request"></textarea></details>
     </section>
-    <section class="flow-path"><h3>Step 2 · Paste the completed JSON into LedgerPeer</h3>
+    <section class="flow-path flow-stage" data-flow-stage="response"><h3>Step 2 · Paste the completed JSON into LedgerPeer</h3>
       <p>Paste the completed AI JSON below, or upload its saved <code>.json</code> / <code>.txt</code>. LedgerPeer checks the question IDs, original marks and topic labels before saving anything.</p>
-      <label class="flow-field">AI JSON response<textarea id="aiResponse" class="flow-response" rows="9" placeholder='Paste the complete JSON response here, starting with {'></textarea></label>
-      <label class="flow-field">Or select the response file<input type="file" id="aiResponseFile" accept=".json,.txt,application/json,text/plain"></label>
+      <div class="flow-actions"><a class="flow-button secondary" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT ↗</a><button type="button" class="flow-button secondary" data-flow-return="copy">Back to request</button></div>
+      <label class="flow-field">AI JSON response<textarea id="aiResponse" class="flow-response" rows="9" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder='Paste the complete JSON response here, starting with {'></textarea></label>
+      <div class="flow-actions"><button type="button" class="flow-button secondary" id="pasteAIResponse">Paste from clipboard</button><button type="button" class="flow-button secondary" id="clearAIResponse">Clear draft</button></div>
+       <p id="aiDraftStatus" role="status" class="flow-muted">Unsaved JSON drafts stay in this browser tab until applied or cleared.</p>
+       <label class="flow-field">Or select the response file<input type="file" id="aiResponseFile" accept=".json,.txt,application/json,text/plain"></label>
       <div class="flow-actions"><button type="button" class="flow-button secondary" id="previewAIResponse">Preview classification</button><button type="button" class="flow-button primary" id="applyAIResponse">Apply JSON &amp; update graphs</button></div>
       <p role="status" aria-live="polite" id="aiResponseMessage"></p><div id="aiResponsePreview" class="flow-preview" hidden></div>
     </section>
-    <section class="flow-path"><h3>Step 3 · Your topic analysis</h3><div id="aiCurrentAnalysis"></div>
+    <section class="flow-path flow-stage" data-flow-stage="results"><h3>Step 3 · Your topic analysis</h3><div id="aiCurrentAnalysis"></div>
       <div class="flow-actions"><a class="flow-button secondary" href="hub.html#analysis">View dashboard graphs →</a><button type="button" class="flow-button secondary" id="downloadAttemptData">Download attempt backup</button></div>
       <p class="flow-muted">Partial-credit questions retain their awarded marks. The existing correct/incorrect graph counts only fully correct answers as correct.</p>
     </section>
     <details><summary>Advanced · Edit topic names and the topic catalog</summary><div id="chapterEditor"></div></details>`;
   const $=id=>el.querySelector('#'+id);
+
+  const compactView=root.matchMedia?root.matchMedia('(max-width:1130px)'):null;
+  const stageNames=['copy','response','results'];
+  function setStage(name,scroll=false){
+   activeStage=stageNames.includes(name)?name:'copy';
+   const compact=!!(compactView&&compactView.matches);
+   el.querySelectorAll('[data-flow-stage]').forEach(section=>{section.hidden=compact&&section.dataset.flowStage!==activeStage;});
+   el.querySelectorAll('[data-flow-step]').forEach(button=>{
+     const current=button.dataset.flowStep===activeStage;
+     button.setAttribute('aria-pressed',String(current));
+     if(current)button.setAttribute('aria-current','step');else button.removeAttribute('aria-current');
+   });
+   try{sessionStorage.setItem(stageKey,activeStage);}catch(e){}
+   if(scroll&&compact){
+     const target=el.querySelector('[data-flow-stage="'+activeStage+'"]');
+     if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
+   }
+  }
+  el.querySelectorAll('[data-flow-step]').forEach(button=>button.addEventListener('click',()=>setStage(button.dataset.flowStep,true)));
+  el.querySelectorAll('[data-flow-return]').forEach(button=>button.addEventListener('click',()=>setStage(button.dataset.flowReturn,true)));
+  if(compactView){
+   if(compactView.addEventListener)compactView.addEventListener('change',()=>setStage(activeStage));
+   else if(compactView.addListener)compactView.addListener(()=>setStage(activeStage));
+  }
+  function draftStatus(value){$('aiDraftStatus').textContent=value;}
+  function writeDraft(){
+   if(draftTimer){clearTimeout(draftTimer);draftTimer=null;}
+   const value=$('aiResponse').value;
+   try{
+     if(value.trim())sessionStorage.setItem(draftKey,JSON.stringify({signature:draftSignature,paper:meta.subject,value}));
+     else sessionStorage.removeItem(draftKey);
+     draftStatus(value.trim()?'Draft preserved in this browser tab. Apply JSON to save it to your attempt.':'No unsaved JSON response in this tab.');
+   }catch(e){draftStatus('Browser storage could not retain this draft. Copy your response before leaving this tab.');}
+  }
+  function scheduleDraft(){
+   staged=null;$('aiResponsePreview').hidden=true;
+   draftStatus('Saving draft in this tab…');
+   if(draftTimer)clearTimeout(draftTimer);
+   draftTimer=setTimeout(writeDraft,300);
+  }
+  try{
+    const saved=JSON.parse(sessionStorage.getItem(draftKey)||'null');
+    const recovered=!!(saved&&saved.signature===draftSignature&&saved.paper===meta.subject&&typeof saved.value==='string'&&saved.value.trim());
+    if(recovered){
+      $('aiResponse').value=saved.value;
+      draftStatus('Unsaved JSON draft restored for this attempt.');
+      activeStage='response';
+    }
+    const chosen=sessionStorage.getItem(stageKey);
+    if(!recovered&&stageNames.includes(chosen))activeStage=chosen;
+  }catch(e){}
+  setStage(activeStage);
+  root.addEventListener('pagehide',writeDraft);
+
   function missing(){return data.filter(q=>incomplete(q,meta));}
   function updateInfo(){
    const left=missing();const info=M.summary(data,meta.subject);
@@ -93,7 +160,8 @@
    const coverage=M.summary(result.questions,meta.subject).coverage;
    const next=result.questions.filter(q=>incomplete(q,meta));
    $('aiResponsePreview').hidden=false;
-   $('aiResponsePreview').innerHTML='<h3>Import preview</h3><p>'+result.count+' question updates included · '+coverage.tagged+' topics assigned · '+next.length+' questions still need full feedback.</p>'+result.warnings.map(x=>'<p class="flow-notice">'+escape(x)+'</p>').join('')+insights(result.questions,meta.subject)+rankTable(result.questions,meta.subject)+'<details><summary>Preview explanations and classifications</summary>'+result.changed.map(change=>{const q=result.questions.find(x=>String(x.qno)===String(change.qno));return '<section class="flow-preview"><strong>Q'+escape(q.qno)+' · '+escape(q.chapter||'Topic not assigned')+'</strong><p>'+escape(F.plain(q.qtext).slice(0,160))+'</p>'+F.feedback(q)+'</section>';}).join('')+'</details>';
+   const uncertain=result.questions.filter(q=>q.topic_status==='needs_review').length;
+   $('aiResponsePreview').innerHTML='<h3>Import preview</h3><p>'+result.count+' updates included · '+coverage.tagged+' approved topic tags · '+uncertain+' uncertain matches · '+next.length+' questions needing more feedback.</p>'+result.warnings.map(x=>'<p class="flow-notice">'+escape(x)+'</p>').join('')+insights(result.questions,meta.subject)+rankTable(result.questions,meta.subject)+'<details><summary>Preview explanations and classifications</summary>'+result.changed.map(change=>{const q=result.questions.find(x=>String(x.qno)===String(change.qno));return '<section class="flow-preview"><strong>Q'+escape(q.qno)+' · '+escape(q.chapter||'Topic not assigned')+'</strong><p>'+escape(F.plain(q.qtext).slice(0,160))+'</p>'+F.feedback(q)+'</section>';}).join('')+'</details>';
   }
   if(root.SubjectCatalog){
    const paper=$('correctAttemptSubject');
@@ -188,23 +256,55 @@
    $('previewAIResponse').disabled=true;
    $('applyAIResponse').disabled=true;
   }
+
   $('copyAIRequest').addEventListener('click',async()=>{
-   try{await navigator.clipboard.writeText(fillPrompt());message('Request copied. Paste it into your preferred AI; attach the original PDF there if source visuals need checking. Return the JSON here.');}
-   catch(e){fillPrompt();$('requestText').parentElement.open=true;$('requestText').focus();$('requestText').select();message('Clipboard unavailable; the request is selected. Press Ctrl+C.');}
+   try{
+    if(!navigator.clipboard||!navigator.clipboard.writeText)throw Error('Clipboard unavailable');
+    await navigator.clipboard.writeText(fillPrompt());
+    message('Request copied. Paste it into your preferred AI, attach the original PDF if needed, then return to Step 2.');
+    setStage('response',true);
+   }catch(e){
+    fillPrompt();$('requestText').parentElement.open=true;$('requestText').focus();$('requestText').select();
+    message('Clipboard access unavailable. The request is selected. On tablets, use the text-selection menu to Copy, or download the request .txt.',true);
+   }
   });
   $('downloadAIRequest').addEventListener('click',()=>F.download('ledgerpeer-chatgpt-request-'+meta.id+'.txt',fillPrompt(),'text/plain'));
   $('downloadAttemptData').addEventListener('click',()=>F.download('ledgerpeer-attempt-backup-'+meta.id+'.json',JSON.stringify({meta,questions:data},null,2)));
+  $('pasteAIResponse').addEventListener('click',async()=>{
+   try{
+    if(!navigator.clipboard||!navigator.clipboard.readText)throw Error('Clipboard reading is unavailable');
+    const value=await navigator.clipboard.readText();
+    if(!value.trim())throw Error('Clipboard is empty');
+    if($('aiResponse').value.trim()&&!confirm('Replace the existing unsaved JSON draft with the clipboard contents?'))return;
+    $('aiResponse').value=value;scheduleDraft();writeDraft();
+    message('JSON pasted from clipboard. Preview the classification before applying.');
+   }catch(e){
+    $('aiResponse').focus();
+    message('Clipboard reading unavailable ('+(e.message||'permission denied')+'). On tablets, tap and hold the response field and choose Paste, or select a .json/.txt file.',true);
+   }
+  });
+  $('clearAIResponse').addEventListener('click',()=>{
+   if($('aiResponse').value.trim()&&!confirm('Clear the unsaved JSON draft for this attempt?'))return;
+   $('aiResponse').value='';$('aiResponseFile').value='';scheduleDraft();writeDraft();
+   message('Unsaved draft cleared. Original questions, answers and marks were not changed.');
+  });
   $('aiResponseFile').addEventListener('change',async function(){
    const file=this.files[0];if(!file)return;
-   try{$('aiResponse').value=await file.text();$('aiResponsePreview').hidden=true;message('JSON file loaded. Preview or click Apply.');}
-   catch(e){message('Could not read the response file.',true);}
+   try{
+    const contents=await file.text();
+    if($('aiResponse').value.trim()&&!confirm('Replace the existing unsaved response with this file?')){this.value='';return;}
+    $('aiResponse').value=contents;scheduleDraft();writeDraft();
+    message('JSON file loaded. Preview or Apply to save your debrief.');
+   }catch(e){message('Could not read the response file.',true);}
   });
-  $('aiResponse').addEventListener('input',()=>{$('aiResponsePreview').hidden=true;staged=null;});
+  $('aiResponse').addEventListener('input',scheduleDraft);
   $('previewAIResponse').addEventListener('click',()=>{
+   writeDraft();
    try{staged=F.review($('aiResponse').value,data,meta);preview(staged);message('Preview ready. Check topics and explanations before applying.');}
    catch(e){staged=null;message('Invalid AI response: '+e.message,true);}
   });
   $('applyAIResponse').addEventListener('click',()=>{
+   writeDraft();
    const btn=$('applyAIResponse');btn.disabled=true;
    try{
     staged=F.review($('aiResponse').value,data,meta);
@@ -214,7 +314,13 @@
     if(localStorage.getItem('tymba_exam_data:'+meta.id)!==expected)throw Error('The saved attempt changed in another tab. Reload before importing so you do not overwrite newer work.');
     const updated=staged.questions.map(q=>Object.assign({},q,{debrief:typeof q.debrief==='string'?F.sanitize(q.debrief):q.debrief}));
     F.save(localStorage,'tymba_exam_data:'+meta.id,updated);
-    try{sessionStorage.setItem('personal_hub_ai_saved:'+meta.id,'1');}catch(e){}
+    try{
+      sessionStorage.removeItem(draftKey);
+      $('aiResponse').value='';
+      sessionStorage.setItem(stageKey,'results');
+      sessionStorage.setItem('personal_hub_ai_saved:'+meta.id,'1');
+    }catch(e){}
+    setStage('results');
     data=updated;expected=localStorage.getItem('tymba_exam_data:'+meta.id);
     updateInfo();fillPrompt();refreshInvalidTags();
     message('Saved '+staged.count+' question updates. Refreshing questions and topic graphs…');

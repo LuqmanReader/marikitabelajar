@@ -418,10 +418,10 @@
 <script src="answer-option-match.js?v=20261103-exact-correctness"></script>
 
 <script src="correction-pdf.js?v=20261105-pdfarchive2"></script>
-<script src="debrief-workflow.js?v=20261103-related-topics"></script>
+<script src="debrief-workflow.js?v=20261108-responsive3"></script>
 <link rel="stylesheet" href="site-nav.css?v=20261028-unifiedback">
 <link rel="stylesheet" href="ledgerpeer-theme.css?v=20261011">
-<link rel="stylesheet" href="debrief-layout.css?v=20261105-wide2">
+<link rel="stylesheet" href="debrief-layout.css?v=20261108-responsive3">
 <script src="pdf-proof-store.js?v=1"></script>
 </head>
 <body>
@@ -441,6 +441,10 @@
     <div class="subtitle" id="pageSubtitle"></div>
   </header>
 
+  <nav class="review-jump-nav" aria-label="Quick review navigation">
+    <button type="button" data-review-jump="debrief">Open AI debrief</button>
+    <button type="button" data-review-jump="questions">Review questions</button>
+  </nav>
   <div class="review-workspace">
     <section class="review-primary" aria-labelledby="questionsHeading">
       <h2 class="review-primary-title" id="questionsHeading">Question review</h2>
@@ -783,15 +787,15 @@
 
     return (
       '<div class="qcard ' + stateClass + '" data-qno="' + d.qno + '" id="q-' + d.qno + '">' +
-        '<div class="qhead" data-action="toggle" data-qno="' + d.qno + '">' +
+        '<button type="button" class="qhead" data-action="toggle" data-qno="' + RevisionFlow.escape(d.qno) + '" aria-expanded="false" aria-controls="questionbody-' + RevisionFlow.escape(d.qno) + '" aria-label="Toggle question '+RevisionFlow.escape(d.qno)+'">' +
           '<div class="qno-badge">' + d.qno + '</div>' +
           '<div class="qhead-mid">' +
             '<div class="qhead-snippet">' + RevisionFlow.escape(snippet) + (stripTags(d.qtext).length > 90 ? '…' : '') + '</div>' +
             '<div class="qhead-tags">' + tags + '</div>' +
           '</div>' +
-          '<div class="chevron">+</div>' +
-        '</div>' +
-        '<div class="qbody">' + body + '</div>' +
+          '<div class="chevron" aria-hidden="true">+</div>' +
+        '</button>' +
+        '<div class="qbody" id="questionbody-' + RevisionFlow.escape(d.qno) + '">' + body + '</div>' +
       '</div>'
     );
   }
@@ -889,6 +893,7 @@
     if(toggleEl){
       var card = toggleEl.closest('.qcard');
       card.classList.toggle('open');
+      toggleEl.setAttribute('aria-expanded',String(card.classList.contains('open')));
       return;
     }
     var reviewBtn = e.target.closest('[data-action="review"]');
@@ -903,7 +908,7 @@
         // restore open state
         openCards.forEach(function(qn){
           var el = document.getElementById('q-' + qn);
-          if(el) el.classList.add('open');
+          if(el){el.classList.add('open');var head=el.querySelector('.qhead');if(head)head.setAttribute('aria-expanded','true');}
         });
         showToast('+' + XP_PER_Q + ' XP BANKED — Q' + qno + ' LOCKED IN');
       }
@@ -1032,6 +1037,14 @@
     });
   });
   select('overview');
+  document.querySelectorAll('[data-review-jump]').forEach(function(button){
+    button.addEventListener('click',function(){
+      var destination=button.dataset.reviewJump;
+      if(destination==='debrief')select('debrief');
+      var node=destination==='debrief'?document.querySelector('.review-side'):document.querySelector('.review-primary');
+      if(node)node.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+  });
   var params=new URLSearchParams(location.search),id=params.get('id'),meta=null;
   try{
     var currentQuestions=JSON.parse(localStorage.getItem('tymba_exam_data:'+id)||'[]');
