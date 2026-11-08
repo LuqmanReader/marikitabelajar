@@ -9,6 +9,7 @@ const engine=require('../quiz-engine.js'),bank=require('../quiz-exam-bank.js');
 globalThis.LedgerQuizEngine=engine;globalThis.LedgerExamScenarios=bank;
 for(const name of ['quiz-casebank-knowledge.js','quiz-casebank-ledger.js','quiz-diversity-bank.js','quiz-integrated-cases.js'])
  vm.runInThisContext(read(name),{filename:name});
+vm.runInThisContext(read('quiz-quality-engine.js'),{filename:'quiz-quality-engine.js'});
 const source=vm.createContext({window:{}});
 for(const name of ['subject-catalog.js','acca-published-data.js','notes-data.js','notes-uk-syllabi.js','notes-expanded-data.js'])
  vm.runInContext(read(name),source,{filename:name,timeout:12000});
