@@ -8,7 +8,7 @@ const dir=path.resolve(__dirname,'..');
 const read=name=>fs.readFileSync(path.join(dir,name),'utf8');
 const bank=require('../quiz-exam-bank.js'),engine=require('../quiz-engine.js');
 globalThis.LedgerExamScenarios=bank;globalThis.LedgerQuizEngine=engine;
-for(const file of ['quiz-casebank-knowledge.js','quiz-casebank-ledger.js','quiz-diversity-bank.js'])
+for(const file of ['quiz-casebank-knowledge.js','quiz-casebank-ledger.js','quiz-diversity-bank.js','quiz-integrated-cases.js'])
  vm.runInThisContext(read(file),{filename:file});
 const expected={
  'FA2:D4':[['reducing-balance-year-two',9386.3],['capitalised-cost-versus-training',38000],['part-year-depreciation',3250],['disposal-proceeds-from-gain',27000]],
