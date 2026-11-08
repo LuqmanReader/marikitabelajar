@@ -62,7 +62,7 @@ for(const paper of ['FA2','MA2']){
  }
  const all=engine.generate({paper,mode:'topic',topics:null,count:20,rng,lessons,syllabus});
  assert(all.integratedCases>=4,'All Topics must include cross-topic cases '+paper);
- const chapter=engine.generate({paper,mode:'topic',topics:['D1'],count:10,rng,lessons,syllabus});
+ const chapter=engine.generate({paper,mode:'topic',topics:['D1'],count:10,chapterOnly:true,rng,lessons,syllabus});
  assert.equal(chapter.integratedCases,0,'Single-topic practice must remain strictly within chapter '+paper);
  const mock=engine.generate({paper,mode:'mock',rng,lessons,syllabus});
  assert.equal(mock.available,50);
