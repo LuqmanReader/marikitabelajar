@@ -68,7 +68,7 @@ function setMode(next){
  $('modeDescription').textContent=isMock
   ?(['FA2','MA2'].includes($('paper').value)?'50-question foundation-style practice: 35 MCQ and 15 numerical entries, including connected-topic cases. This does not replicate all CBE formats.':'50-question foundation-style practice with MCQs, not an official ACCA examination.')
   :isIntegrated?'Integrated Mix deliberately combines two or three FA2/MA2 chapters inside one scenario, alongside standalone problems from across the paper. Original practice, not an ACCA or Kaplan question bank.'
-  :(['FA2','MA2'].includes($('paper').value)?'Up to 20 original questions; choose ALL TOPICS to mix standalone chapter skills with integrated cross-topic scenarios.':'Original multiple-choice practice. Question count depends on available independent skills.');
+  :(['FA2','MA2'].includes($('paper').value)?'Choose 5, 10 or 20. A selected chapter is your focus; LedgerPeer draws additional distinct questions from other chapters to complete the set. Use Chapter only to restrict the scope.':'Original multiple-choice practice. Question count depends on available independent skills.');
  $('generate').textContent=isMock?'GENERATE 50-QUESTION MOCK →':isIntegrated?'GENERATE '+$('count').value+' INTEGRATED QUESTIONS →':'GENERATE '+$('count').value+' QUESTIONS →';
 }
 
@@ -83,9 +83,6 @@ function makeQuiz(){
  const recentGroups=records.flatMap(r=>(r.items||[]).map(q=>q.key&&q.group?q.key+'|'+q.group:null).filter(Boolean)).concat(recentlyGeneratedGroups);
  active=engine.generate({paper,topics,count,mode,difficulty,order,recentIds,recentGroups,lessons,syllabus:syllabi,chapterOnly});
  active.selectedTopic=mode==='mock'||mode==='integrated'?'all':$('topic').value;
- recentlyGenerated=recentlyGenerated.concat(active.questions.map(q=>q.id)).slice(-400);
- recentlyGeneratedGroups=recentlyGeneratedGroups.concat(active.questions.map(q=>q.key+'|'+q.group)).slice(-400);
- answers={};phase='answering';saved=false;cursor=0;flagged=new Set();
  // Never present a 3-question quiz as the 20-question set the student ordered.
  // Show a clear capacity error rather than silently starting a partial assessment.
  if(!active.complete){
@@ -94,6 +91,10 @@ function makeQuiz(){
    setMessage('CANNOT BUILD '+active.requested+' DISTINCT QUESTIONS · Found '+active.available+'. '+(active.reason||'The verified authored question bank is insufficient.')+advice+' No repeated reasoning was inserted to pad the count.');
    return;
  }
+ // Count only questions that were actually presented to the student.
+ recentlyGenerated=recentlyGenerated.concat(active.questions.map(q=>q.id)).slice(-400);
+ recentlyGeneratedGroups=recentlyGeneratedGroups.concat(active.questions.map(q=>q.key+'|'+q.group)).slice(-400);
+ answers={};phase='answering';saved=false;cursor=0;flagged=new Set();
  $('quizSection').hidden=false;$('results').hidden=true;$('saveStatus').textContent='';$('save').disabled=false;
  const narrow=mode==='mock'?' / PAPER-WIDE MOCK PRACTICE':mode==='integrated'?' / INTEGRATED MULTI-TOPIC CASES':topics?' / '+topics.join(', '):' / MIXED TOPICS';
  $('quizTitle').textContent=mode==='mock'?'50-QUESTION MOCK PRACTICE':mode==='integrated'?'INTEGRATED CASE PRACTICE':'TOPIC PRACTICE SET';
