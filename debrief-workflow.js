@@ -82,6 +82,58 @@
     </section>
     <details><summary>Advanced · Edit topic names and the topic catalog</summary><div id="chapterEditor"></div></details>`;
   const $=id=>el.querySelector('#'+id);
+
+  const compactView=root.matchMedia?root.matchMedia('(max-width:1130px)'):null;
+  const stageNames=['copy','response','results'];
+  function setStage(name,scroll=false){
+   activeStage=stageNames.includes(name)?name:'copy';
+   const compact=!!(compactView&&compactView.matches);
+   el.querySelectorAll('[data-flow-stage]').forEach(section=>{section.hidden=compact&&section.dataset.flowStage!==activeStage;});
+   el.querySelectorAll('[data-flow-step]').forEach(button=>{
+     const current=button.dataset.flowStep===activeStage;
+     button.setAttribute('aria-pressed',String(current));
+     if(current)button.setAttribute('aria-current','step');else button.removeAttribute('aria-current');
+   });
+   try{sessionStorage.setItem(stageKey,activeStage);}catch(e){}
+   if(scroll&&compact){
+     const target=el.querySelector('[data-flow-stage="'+activeStage+'"]');
+     if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
+   }
+  }
+  el.querySelectorAll('[data-flow-step]').forEach(button=>button.addEventListener('click',()=>setStage(button.dataset.flowStep,true)));
+  if(compactView){
+   if(compactView.addEventListener)compactView.addEventListener('change',()=>setStage(activeStage));
+   else if(compactView.addListener)compactView.addListener(()=>setStage(activeStage));
+  }
+  function draftStatus(value){$('aiDraftStatus').textContent=value;}
+  function writeDraft(){
+   if(draftTimer){clearTimeout(draftTimer);draftTimer=null;}
+   const value=$('aiResponse').value;
+   try{
+     if(value.trim())sessionStorage.setItem(draftKey,JSON.stringify({signature:draftSignature,value}));
+     else sessionStorage.removeItem(draftKey);
+     draftStatus(value.trim()?'Draft preserved in this browser tab. Apply JSON to save it to your attempt.':'No unsaved JSON response in this tab.');
+   }catch(e){draftStatus('Browser storage could not retain this draft. Copy your response before leaving this tab.');}
+  }
+  function scheduleDraft(){
+   staged=null;$('aiResponsePreview').hidden=true;
+   draftStatus('Saving draft in this tab…');
+   if(draftTimer)clearTimeout(draftTimer);
+   draftTimer=setTimeout(writeDraft,300);
+  }
+  try{
+    const saved=JSON.parse(sessionStorage.getItem(draftKey)||'null');
+    if(saved&&saved.signature===draftSignature&&typeof saved.value==='string'&&saved.value.trim()){
+      $('aiResponse').value=saved.value;
+      draftStatus('Unsaved JSON draft restored for this attempt.');
+      activeStage='response';
+    }
+    const chosen=sessionStorage.getItem(stageKey);
+    if(stageNames.includes(chosen))activeStage=chosen;
+  }catch(e){}
+  setStage(activeStage);
+  root.addEventListener('pagehide',writeDraft);
+
   function missing(){return data.filter(q=>incomplete(q,meta));}
   function updateInfo(){
    const left=missing();const info=M.summary(data,meta.subject);
