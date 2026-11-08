@@ -6,7 +6,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const bank=require('../quiz-exam-bank.js'),original=bank.concept.bind(bank);
 const ctx={LedgerExamScenarios:bank};ctx.window=ctx;ctx.globalThis=ctx;vm.createContext(ctx);
-for(const file of ['quiz-casebank-knowledge.js','quiz-casebank-ledger.js'])
+for(const file of ['quiz-casebank-knowledge.js','quiz-casebank-ledger.js','quiz-diversity-bank.js'])
  vm.runInContext(fs.readFileSync(file,'utf8'),ctx,{filename:file});
 const knowledge='A1 A2 B1 B2 C1 C2 D1 D2 D3 D4 E1 E2 E3'.split(' ').map(k=>'MA1:'+k);
 const ledger='A1 A2 A3 B1 B2 B3 C1 C2 D1 E1 F1 F2 G1 H1 I1 I2 I3 J1 J2'.split(' ').map(k=>'FA1:'+k);
