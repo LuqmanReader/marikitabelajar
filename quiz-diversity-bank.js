@@ -74,7 +74,7 @@ const authors={
  'MA2:B1':[
   r=>{const oldUnits=R(r,2,6)*100,oldCost=R(r,4,9),newUnits=R(r,3,7)*100,newCost=oldCost+R(r,2,6),issue=oldUnits+R(r,1,newUnits/100)*100,cost=oldUnits*oldCost+(issue-oldUnits)*newCost;
    return Q('fifo-two-batches-issue-value','Opening inventory consists of '+oldUnits+' units at $'+oldCost+' each. A new purchase brings '+newUnits+' units at $'+newCost+' each. A subsequent issue to production is '+issue+' units. Under FIFO, what is the COST of the issue?',cost,
-    'FIFO issues oldest stock first: '+oldUnits+' × $'+oldCost+' + '+(issue-oldUnits)+' × $'+newCost+' = '+money(cost)+'.');},
+    'Under FIFO, issue the oldest purchase costs before charging the next inventory batch. FIFO issue cost = '+oldUnits+' × $'+oldCost+' + '+(issue-oldUnits)+' × $'+newCost+' = '+money(cost)+'.');},
   r=>{const u1=R(r,2,6)*100,p1=R(r,4,9),u2=R(r,2,5)*100,p2=p1+R(r,1,5),avg=round((u1*p1+u2*p2)/(u1+u2));
    return Q('weighted-average-inventory-unit-cost','Inventory has '+u1+' units costing $'+p1+' each and another '+u2+' units costing $'+p2+' each. Using the periodic weighted-average method, what is average cost PER UNIT to two decimal places?',avg,
     'Weighted-average cost per unit = ('+u1+' × $'+p1+' + '+u2+' × $'+p2+') / '+(u1+u2)+' = $'+avg+' per unit.','$/unit');}
@@ -85,7 +85,7 @@ const authors={
     'Average workforce = ('+staffStart+' + '+staffEnd+') / 2 = '+(staffStart+staffEnd)/2+'. Labour turnover = '+leavers+' leavers / average workforce × 100 = '+rate+'%.','%');},
   r=>{const regular=R(r,32,40),overtime=R(r,3,10),rate=R(r,8,16),factor=1.5,gross=regular*rate+overtime*rate*factor;
    return Q('overtime-premium-gross-pay','An employee works '+regular+' ordinary hours at $'+rate+' per hour and '+overtime+' overtime hours at TIME-AND-A-HALF. What gross pay should be recorded before deductions?',gross,
-    'Ordinary pay = '+regular+' × $'+rate+'. Overtime pay = '+overtime+' × $'+rate+' × 1.5. Total = '+money(gross)+'.');}
+    'The overtime premium applies only to overtime hours; payroll deductions do not change gross pay. Ordinary pay = '+regular+' × $'+rate+'. Overtime pay = '+overtime+' × $'+rate+' × 1.5. Total = '+money(gross)+'.');}
  ],
  'MA2:B3':[
   r=>{const actual=R(r,28,52)*1000,rate=R(r,5,15),hours=R(r,2,5)*1000,absorbed=rate*hours,variance=round(actual-absorbed);
@@ -127,7 +127,7 @@ const authors={
  'MA2:D3':[
   r=>{const invest=R(r,8,20)*1000,one=R(r,8,18)*1000,two=R(r,5,15)*1000,df1=0.9,df2=0.8,npv=one*df1+two*df2-invest;
    return Q('two-period-npv-with-factors','An investment costs '+money(invest)+' now. It produces net cash inflows of '+money(one)+' at the end of Year 1 and '+money(two)+' at the end of Year 2. Use PRESENT VALUE FACTORS 0.90 and 0.80 respectively. What is its net present value?',npv,
-    'NPV = ('+money(one)+' × 0.90) + ('+money(two)+' × 0.80) − '+money(invest)+' = '+money(npv)+'.','$', 'hard');}
+    'Discount future net cash flows with the given factors and deduct the initial investment paid today. NPV = ('+money(one)+' × 0.90) + ('+money(two)+' × 0.80) − '+money(invest)+' = '+money(npv)+'.','$', 'hard');}
  ],
  'MA2:E3':[
   r=>{const nov=R(r,20,50)*1000,dec=R(r,30,60)*1000,pct=R(r,3,6)*10,receipts=round(nov*(1-pct/100)+dec*pct/100);
