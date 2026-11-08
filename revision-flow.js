@@ -115,7 +115,7 @@
   function hasFeedback(q){return fields.slice(0,3).some(function(k){return typeof q[k]==='string'&&q[k].trim();})||!!(q.debrief&&q.debrief.trim());}
   function feedback(q){
     if(fields.slice(0,3).some(function(k){return q[k]&&q[k].trim();})){
-      return (q.topic_reason?'<section class="feedback-part"><h4>Why this ACCA syllabus topic?</h4><div>'+esc(q.topic_reason).replace(/\n/g,'<br>')+'</div></section>':'')+[ ['reasoning','Reasoning'],['calculation','Calculation'],['justification','Justification']].map(function(p){return '<section class="feedback-part"><h4>'+p[1]+'</h4><div>'+esc(q[p[0]]||'Not provided yet.').replace(/\n/g,'<br>')+'</div></section>';}).join('')+(q.focus?'<div class="focus-note"><strong>Practise next:</strong> '+esc(q.focus)+'</div>':'');
+      return (q.topic_confidence?'<section class="feedback-part"><h4>AI topic confidence (not independently verified)</h4><div>'+esc(q.topic_confidence)+'</div></section>':'')+(q.topic_evidence?'<section class="feedback-part"><h4>Question evidence</h4><div>'+esc(q.topic_evidence).replace(/\n/g,'<br>')+'</div></section>':'')+(q.topic_reason?'<section class="feedback-part"><h4>Why this ACCA syllabus topic?</h4><div>'+esc(q.topic_reason).replace(/\n/g,'<br>')+'</div></section>':'')+[ ['reasoning','Reasoning'],['calculation','Calculation'],['justification','Justification']].map(function(p){return '<section class="feedback-part"><h4>'+p[1]+'</h4><div>'+esc(q[p[0]]||'Not provided yet.').replace(/\n/g,'<br>')+'</div></section>';}).join('')+(q.focus?'<div class="focus-note"><strong>Practise next:</strong> '+esc(q.focus)+'</div>':'');
     }
     return q.debrief?sanitize(q.debrief):'<p>Answer review is ready. Import the AI response to add reasoning, calculation and justification.</p>';
   }
