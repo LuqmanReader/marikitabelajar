@@ -4,7 +4,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('nod
 const root=path.resolve(__dirname,'..'),read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const engine=require('../quiz-engine.js'),bank=require('../quiz-exam-bank.js');
 globalThis.LedgerQuizEngine=engine;globalThis.LedgerExamScenarios=bank;
-for(const name of ['quiz-casebank-knowledge.js','quiz-casebank-ledger.js','quiz-diversity-bank.js'])
+for(const name of ['quiz-casebank-knowledge.js','quiz-casebank-ledger.js','quiz-diversity-bank.js','quiz-integrated-cases.js'])
  vm.runInThisContext(read(name),{filename:name});
 const notes={window:{}};
 vm.runInNewContext(read('notes-outcome-lessons.js'),notes,{filename:'notes-outcome-lessons.js'});
