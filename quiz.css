@@ -91,3 +91,9 @@ button.primary{background:var(--yellow)}.buttons button:hover,.buttons a:hover,.
 #questions .question{border-top:0}
 @media(max-width:900px){.fields{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){.fields{grid-template-columns:1fr}.question-jump{min-width:33px;height:33px}.pager{gap:8px}.pager button{flex:1;padding:9px 7px}}
+
+/* Clear optional chapter-only restriction, default off to honour requested count. */
+.quiz-chapter-option{display:flex;align-items:center;gap:12px;padding:13px 16px;margin:10px 0 4px;border:2px solid #111;background:#fff;font-size:13px;font-weight:700;line-height:1.5}
+.quiz-chapter-option[hidden]{display:none!important}
+.quiz-chapter-option input{width:21px;height:21px;flex-shrink:0;accent-color:#1f6b39}
+.quiz-chapter-option:focus-within{outline:3px solid var(--blue);outline-offset:2px}
