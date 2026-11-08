@@ -81,4 +81,46 @@ assert.notStrictEqual(registry.get('LW').variant,'UK');
 assert.strictEqual(registry.get('TX').variant,'MYS');
 assert.strictEqual(registry.get('AAA').variant,'INT');
 assert.strictEqual(registry.get('FTX').variant,'UK');
+// Topic sorter v3: unverified heuristics must NOT contribute to mastery.
+{
+ const subject=subjects.papers.find(x=>x.code==='MA2').label,topic=syllabus.resolve(storage,subject).topics[0];
+ const provisional={...q(1),chapter:topic,topic_status:'matched',topic_origin:'rule-suggestion'};
+ const legacy={...q(2),chapter:topic,topic_status:'related',topic_origin:'legacy-syllabus-repair'};
+ const coverage=chapters.summary([provisional,legacy],subject,storage).coverage;
+ assert.strictEqual(coverage.tagged,0,'Unverified suggestions cannot count as mastery');
+ assert.strictEqual(coverage.untagged,2,'Provisional suggestions must remain pending');
+ const longTail='END_OF_QUESTION_MUST_SURVIVE_84731';
+ const question={...q(7),
+   qtext:'<p>Assess the relevant operation.</p><table><tr><td>Raw material</td><td>$25</td></tr></table><img src="data:image/png;base64,AAAA">'+(' Additional facts. '.repeat(900))+longTail,
+   source_feedback:'Correction evidence: '+('supporting detail '.repeat(80)),
+   source_pdf_pages:[2,3],information:'A shared scenario with fixed costs.',
+   answer_capture_status:'not_captured',ocr_confidence:59,ocr_extracted:true,
+   chapter:topic,topic_origin:'rule-suggestion',topic_evidence:'Keyword heuristic'
+ };
+ const meta={id:'sorter-proof',subject,testType:'mock',testNumber:1,title:'Mock Test 1',sourceType:'pdf-html',sourceFormat:'pdf'};
+ const request=debrief.prompt(meta,[question],syllabus.resolve(storage,subject).topics,[question]);
+ assert(request.includes(longTail),'Long question text must not be truncated');
+ assert(request.includes('"question_html"'),'Structured original question must be available');
+ assert(request.includes('"context_information_html"'),'Full case context must be available');
+ assert(request.includes('"source_feedback_html"'),'Source feedback must not be cropped to 800 characters');
+ assert(request.includes('"source_ocr_confidence":59'),'OCR uncertainty metadata must be carried');
+ assert(request.includes('"existing_topic_origin":"rule-suggestion"'),'Provisional labels must be clearly identified');
+ assert(request.includes('[FIGURE PRESENT: attach original PDF or screenshot]'),'Missing visual evidence must be explicit');
+ assert(!request.includes('data:image/png;base64,AAAA'),'Binary pixels must not be inserted into clipboard prompts');
+ assert(request.includes('PASS 3:')===false||request.includes('CHALLENGE — PASS 3:'),'Three-pass verifier must be included');
+ assert(request.includes('topic_status "needs_review"'),'Unresolved match behavior must be provided');
+ const shared={schema:'personal-hub-debrief-v2',exam_id:meta.id,paper:subject,paper_code:'MA2',
+   attempt_signature:debrief.signature([question])};
+ const common={qno:7,reasoning:'Reason',calculation:'Not applicable',justification:'Justification',focus:'Focus',
+   topic_reason:'Two alternative syllabus headings remain plausible',topic_evidence:'Assess the relevant operation'};
+ const unresolved=debrief.review({...shared,questions:[{...common,chapter:'',topic_status:'needs_review',topic_confidence:'low'}]},[question],meta);
+ assert.strictEqual(unresolved.questions[0].chapter,'','Uncertain matching may not force a heading');
+ assert.strictEqual(unresolved.questions[0].topic_confidence,'low');
+ assert.strictEqual(unresolved.coverage.tagged,0);
+ expectFailure(()=>debrief.review({...shared,questions:[{...common,chapter:topic,topic_status:'matched',topic_confidence:'low'}]},[question],meta),'low-confidence topic matches');
+ const verified=debrief.review({...shared,questions:[{...common,chapter:topic,topic_status:'matched',topic_confidence:'high'}]},[question],meta);
+ assert.strictEqual(verified.questions[0].topic_evidence,common.topic_evidence);
+ assert.strictEqual(verified.questions[0].original_marks,question.original_marks);
+ assert.strictEqual(verified.coverage.tagged,1);
+}
 console.log(JSON.stringify({result:'PASS',papers:papers.length,formatsVerified:trace.filter(x=>x.formatVerified).length,debriefCasesPerPaper:10,tests:'real 2026/27 syllabus papers, paper context, proper topics, wrong paper, wrong attempt, signature, duplicate, invented topic, outside, existing bogus, unchanged marks',perPaper:trace},null,2));
