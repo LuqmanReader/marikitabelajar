@@ -102,7 +102,7 @@ const authors={
  ],
  'MA2:C4':[
   r=>{const input=R(r,8,20)*100,normal=R(r,4,12),actualLoss=R(r,3,13)*10,expected=Math.round(input*normal/100),actualOutput=input-actualLoss,abnormal=actualOutput-(input-expected);
-   return Q('process-abnormal-gain-or-loss','A production process has '+input+' input units and normal loss of '+normal+'%. Actual loss is '+actualLoss+' units. What is the ABNORMAL GAIN in units? Enter a negative amount if there is an abnormal LOSS.',abnormal,
+   return Q('process-abnormal-gain-or-loss','A production process has '+input+' input units and normal loss of '+normal+'%. Actual loss is '+actualLoss+' units. What is the abnormal gain in units? Enter a negative amount if there is an abnormal loss.',abnormal,
     'Expected good output = '+input+' − '+expected+' = '+(input-expected)+' units. Actual good output = '+input+' − '+actualLoss+' = '+actualOutput+' units. Actual minus expected = '+abnormal+' units.');}
  ],
  'MA2:D1':[
