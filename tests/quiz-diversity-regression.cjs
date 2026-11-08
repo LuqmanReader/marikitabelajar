@@ -67,11 +67,19 @@ const next=engine.generate({paper:'MA2',topics:['D1'],count:5,mode:'topic',diffi
  recentGroups:[...from],recentIds:topic.questions.map(q=>q.id)});
 assert.equal(next.questions.length,topic.questions.length,'Rotation unexpectedly changed available set length');
 const availableFresh=next.questions.filter(q=>!from.has(q.key+'|'+q.group));
-console.log('REUSE AUDIT',JSON.stringify({first:topic.questions.map(q=>[q.type,q.group]),next:next.questions.map(q=>[q.type,q.group]),families:next.skillCoverage.available,fresh:next.freshFamilies,reused:next.repeatFamilyExposure}));
+
 assert(availableFresh.length>=2,'New questions should favor unused reasoning families');
 assert.equal(next.repeatFamilyExposure,next.questions.length-availableFresh.length);
 assert.equal(next.freshFamilies,availableFresh.length);
 for(const q of next.questions)assert(['easy','moderate','hard'].includes(q.difficulty));
+for(const paper of ['FA2','MA2']){
+ for(const questionCount of [5,10,20]){
+  const drill=engine.generate({paper,mode:'topic',count:questionCount,rng,lessons,syllabus});
+  assert.equal(drill.requested,questionCount,'Generator ignored requested length '+paper+'/'+questionCount);
+  assert.equal(drill.available,questionCount,'Mixed-paper drill should fulfil '+questionCount+' questions for '+paper);
+  assert.equal(drill.targetMix.mcq+drill.targetMix.numeric,questionCount);
+ }
+}
 const all=engine.generate({paper:'FA2',mode:'mock',rng,lessons,syllabus});
 assert.equal(all.questions.length,50,'Mock lost the required 50 practice questions');
 assert.equal(all.actualMix.mcq,35);assert.equal(all.actualMix.numeric,15);
