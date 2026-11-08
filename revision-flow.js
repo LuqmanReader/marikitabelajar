@@ -89,11 +89,12 @@
       if(own(q,'topic_status')){
         if(!['matched','related','outside','unreadable','needs_review'].includes(q.topic_status))throw new Error('Q'+n+': topic_status must be matched, related, outside, unreadable, or needs_review.');
         if((q.topic_status==='matched'||q.topic_status==='related')&&!item.chapter)throw new Error('Q'+n+': matched/related questions need an official syllabus label.');
+        if(['outside','unreadable','needs_review'].includes(q.topic_status)&&!own(q,'chapter')&&!own(q,'topic'))throw new Error('Q'+n+': unresolved topic status requires explicit chapter "" to clear earlier suggestions.');
         if((q.topic_status==='outside'||q.topic_status==='unreadable'||q.topic_status==='needs_review')&&item.chapter)throw new Error('Q'+n+': outside/unreadable/needs_review questions must have chapter "".');
       }
       fields.forEach(function(k){if(own(q,k))item[k]=textField(q[k],k);});
        if(own(item,'topic_confidence')&&!['high','medium','low'].includes(item.topic_confidence))throw new Error('Q'+n+': topic_confidence must be high, medium, or low.');
-       if(item.topic_confidence==='low'&&(item.topic_status==='matched'||item.topic_status==='related'))throw new Error('Q'+n+': low-confidence topic matches require topic_status "needs_review" and chapter "". Do not force a syllabus label.');
+       if(item.topic_confidence==='low'&&(item.chapter||!['needs_review','outside','unreadable'].includes(item.topic_status)))throw new Error('Q'+n+': low-confidence topic matches require topic_status "needs_review" and chapter "". Do not force a syllabus label.');
       if(own(q,'debrief'))item.debrief=textField(q.debrief,'debrief');
       ['is_correct','qtext','options','your_answer','correct_answer'].forEach(function(k){
         if(own(q,k)&&JSON.stringify(q[k])!==JSON.stringify(original[k]))warnings.push('Q'+n+': a changed answer or mark was ignored.');
