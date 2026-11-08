@@ -59,8 +59,8 @@ const authors={
   r=>{const cash=R(r,10,30)*1000,charge=R(r,1,8)*100,interest=R(r,1,5)*100,standing=R(r,2,9)*100,revised=cash-charge+interest-standing;
    return Q('cash-book-three-unrecorded-items','Before reconciliation, the cash book shows a DEBIT bank balance of '+money(cash)+'. The bank statement shows unrecorded bank charges '+money(charge)+', bank interest received '+money(interest)+' and a standing order payment '+money(standing)+'. What is the corrected cash book balance?',revised,
     'Correct cash book = '+money(cash)+' − bank charges '+money(charge)+' + bank interest '+money(interest)+' − standing order '+money(standing)+' = '+money(revised)+'.');},
-  r=>{const corrected=R(r,12,30)*1000,outstanding=R(r,1,7)*500,statement=R(r,11,32)*1000,deposit=corrected+outstanding-statement;
-   return Q('deposit-in-transit-reconciliation','The corrected cash book has a DEBIT balance of '+money(corrected)+'. Unpresented cheques total '+money(outstanding)+'. The bank statement balance is '+money(statement)+'. What amount of deposits not yet credited by the bank reconciles the balances? Enter a negative value if the premises imply a net difference in the opposite direction.',deposit,
+  r=>{const corrected=R(r,12,30)*1000,outstanding=R(r,1,7)*500,deposit=R(r,2,8)*500,statement=corrected+outstanding-deposit;
+   return Q('deposit-in-transit-reconciliation','The corrected cash book has a DEBIT balance of '+money(corrected)+'. Unpresented cheques total '+money(outstanding)+'. The bank statement balance is '+money(statement)+'. What amount of deposits not yet credited by the bank reconciles the balances?',deposit,
     'Bank statement = cash book + unpresented cheques − deposits in transit. Rearrange to deposits = '+money(corrected)+' + '+money(outstanding)+' − '+money(statement)+' = '+money(deposit)+'.');}
  ],
  'FA2:G1':[
