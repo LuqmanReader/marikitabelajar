@@ -25,7 +25,7 @@ function check(result,{paper,topic,difficulty,count,mode}){
  assert.equal(new Set(familyKeys).size,familyKeys.length,'Repeated reasoning families within '+identity);
  assert.equal(new Set(result.questions.map(q=>q.id)).size,result.questions.length,'Duplicate question IDs '+identity);
  assert.equal(result.actualMix.mcq+result.actualMix.numeric,result.available);
- assert(result.questions.every(q=>q.explanation&&q.prompt&&Number.isInteger(q.key.indexOf(':'))===false),identity+' malformed question');
+ assert(result.questions.every(q=>q.explanation&&q.prompt&&q.key.includes(':')),identity+' malformed question');
  if(result.supplementedQuestions)assert(result.topicsCovered>1,'Supplement must include distinct syllabus topic');
  if(result.difficultyBackfill)assert(result.questions.some(q=>q.difficulty!==difficulty),'Difficulty adjustment missing evidence');
  if(samples.length<15&&result.supplementedQuestions)samples.push({identity,available:result.available,supplemented:result.supplementedQuestions,difficultyBackfill:result.difficultyBackfill,mixAdjusted:result.mixAdjusted,topicsCovered:result.topicsCovered});
