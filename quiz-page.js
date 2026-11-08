@@ -60,6 +60,7 @@ function setMode(next){
  $('integratedMode').setAttribute('aria-pressed',String(isIntegrated));
  $('mockMode').setAttribute('aria-pressed',String(isMock));
  $('topicField').hidden=isMock||isIntegrated;
+ $('chapterOnlyWrap').hidden=isMock||isIntegrated||$('topic').value==='all';
  $('countField').hidden=isMock;
  $('difficultyField').hidden=isMock;
  $('orderField').hidden=isMock;
@@ -280,7 +281,7 @@ async function init(){
     showQuestion(cursor);
   });
   $('paper').addEventListener('change',()=>{fillTopics();setMode(mode);});
-  $('topic').addEventListener('change',updateReadLink);
+  $('topic').addEventListener('change',()=>{updateReadLink();setMode(mode);});
   $('generate').addEventListener('click',makeQuiz);
   $('regenerate').addEventListener('click',makeQuiz);
   $('review').addEventListener('click',reviewQuiz);
