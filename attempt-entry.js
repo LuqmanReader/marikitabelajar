@@ -10,7 +10,7 @@
   function invalidate(){
     inputVersion++;
     staged=null;convertedHtml=null;$('saveAttempt').disabled=true;$('entryPreview').innerHTML='';
-    $('pdfReviewGate').hidden=true;$('acknowledgePdf').checked=false;
+    $('pdfReviewGate').hidden=true; // The old acknowledgement checkbox was retired from the import page.
     $('conversionResult').hidden=true;
     // Converted HTML is attached internally as a Blob.
   }

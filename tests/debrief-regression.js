@@ -124,4 +124,12 @@ assert.strictEqual(registry.get('FTX').variant,'UK');
  assert.strictEqual(verified.questions[0].original_marks,question.original_marks);
  assert.strictEqual(verified.coverage.tagged,1);
 }
+// All DOM ids queried by the active importer must actually exist in its HTML.
+{
+ const entryJs=fs.readFileSync(path.join(dir,'attempt-entry.js'),'utf8');
+ const entryHtml=fs.readFileSync(path.join(dir,'add-exam.html'),'utf8');
+ const ids=Array.from(new Set(Array.from(entryJs.matchAll(/\$\(['"]([^'"]+)['"]\)/g),m=>m[1])));
+ const missing=ids.filter(id=>!entryHtml.includes('id="'+id+'"')&&!entryHtml.includes("id='"+id+"'"));
+ assert.deepStrictEqual(missing,[],'Import screen queries non-existent elements');
+}
 console.log(JSON.stringify({result:'PASS',papers:papers.length,formatsVerified:trace.filter(x=>x.formatVerified).length,debriefCasesPerPaper:10,tests:'real 2026/27 syllabus papers, paper context, proper topics, wrong paper, wrong attempt, signature, duplicate, invented topic, outside, existing bogus, unchanged marks',perPaper:trace},null,2));
