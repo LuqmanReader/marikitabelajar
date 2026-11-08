@@ -726,8 +726,8 @@
     var tags = '<span class="stamp ' + stateClass + '">' + stateLabel + '</span>' +
       '<span class="stamp xp">' + (d.is_correct ? ('+' + XP_PER_Q + ' XP') : (isReviewed ? ('+' + XP_PER_Q + ' XP') : '0 XP')) + '</span>';
     var approvedTopics=window.LedgerSyllabus&&META?LedgerSyllabus.resolve(localStorage,META.subject).topics:[];
-    var displayedTopic=approvedTopics.some(function(n){return n.toLowerCase()===String(d.chapter||'').toLowerCase();})?d.chapter:(d.topic_status==='outside'?'Outside this paper syllabus':d.topic_status==='unreadable'?'Unclear source — needs verification':'Topic not classified');
-    tags += '<span class="stamp">' + ChapterUI.escape(displayedTopic) + (d.topic_status==='related'?' · RELATED TECHNIQUE':'') + '</span>';
+    var displayedTopic=approvedTopics.some(function(n){return n.toLowerCase()===String(d.chapter||'').toLowerCase();})?d.chapter:(d.topic_status==='outside'?'Outside this paper syllabus':d.topic_status==='unreadable'?'Unclear source — needs verification':d.topic_status==='needs_review'?'Ambiguous topic — needs review':'Topic not classified');
+    tags += '<span class="stamp">' + ChapterUI.escape(displayedTopic) + (d.topic_status==='related'?' · RELATED TECHNIQUE':'') + (d.topic_origin==='rule-suggestion'||d.topic_origin==='legacy-syllabus-repair'?' · PROVISIONAL — NOT VERIFIED':'') + '</span>';
     if(Number.isFinite(d.original_marks)&&Number.isFinite(d.original_max_marks)&&d.original_marks>0&&d.original_marks<d.original_max_marks){
       tags += '<span class="stamp" style="background:#fff0bd;border-color:#a16207;color:#713f12">Partial credit · '+RevisionFlow.escape(String(d.original_marks))+'/'+RevisionFlow.escape(String(d.original_max_marks))+'</span>';
     }
