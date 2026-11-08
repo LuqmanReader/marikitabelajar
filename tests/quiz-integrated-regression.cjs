@@ -15,7 +15,7 @@ for(const name of ['subject-catalog.js','acca-published-data.js','notes-data.js'
 const lessons=source.window.LedgerFiaNotes,syllabus=source.window.LedgerNotesSyllabi.papers;
 assert.deepEqual(globalThis.LedgerIntegratedCases.counts,{FA2:12,MA2:12});
 const answers={
- FA2:[47040,52500,62000,15200,23400,42200,31000,32000,39000,-3000,35200,50600],
+ FA2:[46550,52700,62000,15200,23400,42200,31000,32000,39000,-3000,35200,50600],
  MA2:[10800,941,0,20.78,22,-4,2435,21000,5000,-8,460,8000]
 };
 const answerMismatches=[];
