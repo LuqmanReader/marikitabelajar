@@ -32,9 +32,14 @@
   if(!el||!F||!M)return;
   let data=initial,expected=localStorage.getItem('tymba_exam_data:'+meta.id),staged=null;
   const isPdf=meta.sourceFormat==='pdf';
+  // Drafts persist only in the current browser tab, never as saved grades.
+  const draftKey='ledgerpeer_debrief_draft_v1:'+meta.id;
+  const stageKey='ledgerpeer_debrief_stage_v1:'+meta.id;
+  const draftSignature=F.signature(data);
+  let draftTimer=null,activeStage='copy';
   el.className='flow-panel';el.id='chatgpt-debrief';
   el.innerHTML=`
-    <div class="flow-steps"><span>1 · Attempt saved</span><span class="current">2 · Copy request</span><span>3 · Import JSON</span></div>
+    <div class="flow-steps"><span>1 · Attempt saved</span><span class="current">2 · Classify + debrief</span><span>3 · Review results</span></div>
     <h2>Manual AI Debrief · JSON</h2>
     <p>LedgerPeer prepares the request but does not run an internal AI. Copy the question JSON and instructions, ask an AI of your choice for the completed JSON, then paste the result here. Original marks stay unchanged; syllabus topics must match your selected paper.</p>
     <p id="syllabusNotice" class="flow-muted"></p><div class="flow-actions" id="repairSyllabusActions"></div>
@@ -51,20 +56,27 @@
     <div class="flow-controls"><label>Change paper for this saved attempt
       <select id="correctAttemptSubject" aria-label="Correct the FIA or ACCA paper for this saved attempt"></select>
     </label><button type="button" class="flow-button secondary" id="saveAttemptSubject">Save paper change</button></div>
-    <p id="debriefProgress" class="flow-muted"></p>
-    <section class="flow-path"><h3>Step 1 · Copy the question JSON request</h3>
+    <p id="debriefProgress" class="flow-muted" role="status"></p>
+     <nav class="flow-stage-nav" id="flowStageNav" aria-label="Debrief steps">
+       <button type="button" data-flow-step="copy" aria-pressed="true">1 · Request</button>
+       <button type="button" data-flow-step="response" aria-pressed="false">2 · Import JSON</button>
+       <button type="button" data-flow-step="results" aria-pressed="false">3 · Results</button>
+     </nav>
+    <section class="flow-path flow-stage" data-flow-stage="copy"><h3>Step 1 · Copy the question JSON request</h3>
       <p>Click Copy Request, open your preferred AI, and paste it. <strong>${isPdf?'Attach the same original PDF in ChatGPT':'Attach the original marked exam PDF if available'}</strong> so figures, tables and answers can be verified against the source rather than unreliable OCR. Ask ChatGPT to return the <strong>complete JSON</strong>.</p>
       <div class="flow-actions"><button type="button" class="flow-button primary" id="copyAIRequest">Copy questions + JSON instructions</button><a class="flow-button secondary" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT ↗</a><button type="button" class="flow-button secondary" id="downloadAIRequest">Download request .txt</button></div>
       <details><summary>View / manually copy your AI request</summary><textarea id="requestText" rows="7" readonly aria-label="Prepared request"></textarea></details>
     </section>
-    <section class="flow-path"><h3>Step 2 · Paste the completed JSON into LedgerPeer</h3>
+    <section class="flow-path flow-stage" data-flow-stage="response"><h3>Step 2 · Paste the completed JSON into LedgerPeer</h3>
       <p>Paste the completed AI JSON below, or upload its saved <code>.json</code> / <code>.txt</code>. LedgerPeer checks the question IDs, original marks and topic labels before saving anything.</p>
-      <label class="flow-field">AI JSON response<textarea id="aiResponse" class="flow-response" rows="9" placeholder='Paste the complete JSON response here, starting with {'></textarea></label>
-      <label class="flow-field">Or select the response file<input type="file" id="aiResponseFile" accept=".json,.txt,application/json,text/plain"></label>
+      <label class="flow-field">AI JSON response<textarea id="aiResponse" class="flow-response" rows="9" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder='Paste the complete JSON response here, starting with {'></textarea></label>
+      <div class="flow-actions"><button type="button" class="flow-button secondary" id="pasteAIResponse">Paste from clipboard</button><button type="button" class="flow-button secondary" id="clearAIResponse">Clear draft</button></div>
+       <p id="aiDraftStatus" role="status" class="flow-muted">Unsaved JSON drafts stay in this browser tab until applied or cleared.</p>
+       <label class="flow-field">Or select the response file<input type="file" id="aiResponseFile" accept=".json,.txt,application/json,text/plain"></label>
       <div class="flow-actions"><button type="button" class="flow-button secondary" id="previewAIResponse">Preview classification</button><button type="button" class="flow-button primary" id="applyAIResponse">Apply JSON &amp; update graphs</button></div>
       <p role="status" aria-live="polite" id="aiResponseMessage"></p><div id="aiResponsePreview" class="flow-preview" hidden></div>
     </section>
-    <section class="flow-path"><h3>Step 3 · Your topic analysis</h3><div id="aiCurrentAnalysis"></div>
+    <section class="flow-path flow-stage" data-flow-stage="results"><h3>Step 3 · Your topic analysis</h3><div id="aiCurrentAnalysis"></div>
       <div class="flow-actions"><a class="flow-button secondary" href="hub.html#analysis">View dashboard graphs →</a><button type="button" class="flow-button secondary" id="downloadAttemptData">Download attempt backup</button></div>
       <p class="flow-muted">Partial-credit questions retain their awarded marks. The existing correct/incorrect graph counts only fully correct answers as correct.</p>
     </section>
