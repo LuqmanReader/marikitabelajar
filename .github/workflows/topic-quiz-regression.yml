@@ -5,6 +5,7 @@ on:
       - 'quiz*.js'
       - 'tests/quiz-diversity-regression.cjs'
       - 'tests/quiz-integrated-regression.cjs'
+      - 'tests/quiz-complete-count-regression.cjs'
       - 'quiz*.html'
       - 'quiz*.css'
       - 'notes-page.js'
@@ -32,6 +33,7 @@ on:
       - 'tests/quiz-million-simulation.cjs'
       - 'tests/quiz-diversity-regression.cjs'
       - 'tests/quiz-integrated-regression.cjs'
+      - 'tests/quiz-complete-count-regression.cjs'
   workflow_dispatch:
 permissions:
   contents: read
@@ -65,5 +67,7 @@ jobs:
         run: node tests/quiz-diversity-regression.cjs
       - name: Verify integrated multi-topic case answers and quiz distribution
         run: node tests/quiz-integrated-regression.cjs
+      - name: Verify full-length practice for every paper chapter and difficulty
+        run: node tests/quiz-complete-count-regression.cjs
       - name: Run 1,000,000 real answer-marking simulations
         run: node tests/quiz-million-simulation.cjs
