@@ -35,6 +35,10 @@ jobs:
         run: node tests/exam-metadata-regression.cjs
       - name: Run 25-paper debrief regression
         run: node tests/debrief-regression.js
+      - name: Test responsive debrief with real DOM and clipboard interactions
+        run: |
+          npm install --no-save --package-lock=false --ignore-scripts jsdom@26
+          node tests/debrief-ux-regression.cjs
       - name: Test image export and exact answer highlighting
         run: node tests/debrief-image-answer-regression.js
       - name: Test FIA/ACCA PDF attempt import formats
