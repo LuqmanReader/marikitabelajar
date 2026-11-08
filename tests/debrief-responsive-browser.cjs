@@ -45,7 +45,7 @@ async function main(){
       jump:getComputedStyle(q('.review-jump-nav')).display!=='none',
       steps:getComputedStyle(q('.flow-stage-nav')).display!=='none',
       controls:[...document.querySelectorAll('.review-side-tab,.review-jump-nav button,.flow-stage-nav button,.flow-actions button')]
-       .filter(x=>getComputedStyle(x).display!=='none').map(x=>({name:x.textContent.trim(),height:x.getBoundingClientRect().height}))};
+       .filter(x=>x.getClientRects().length>0).map(x=>({name:x.textContent.trim(),height:x.getBoundingClientRect().height}))};
    });
    assert(m.bodyWidth<=width+3,'Horizontal overflow at '+width+'px: '+JSON.stringify(m));
    const tablet=width<=1130;
