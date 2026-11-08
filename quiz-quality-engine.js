@@ -179,9 +179,10 @@ function generate({paper,topics,count=20,mode='topic',difficulty='mixed',order='
  // All-topics and mock modes blend them with standalone skills; single-topic drills do not.
  function targetIntegrated(type,n){
   if(!canIntegrate)return 0;
-  if(integratedMode)return Math.ceil(n*.6);
+  // Preserve a reserve of unseen integrated families for later sessions.
+  if(integratedMode)return Math.max(1,Math.ceil(n*.4));
   if(mock)return Math.max(1,Math.round(n*.2));
-  return Math.max(1,Math.round(n*.4));
+  return Math.max(1,Math.round(n*.25));
  }
  function take(type,n){
   const integrationQuota=targetIntegrated(type,n);
