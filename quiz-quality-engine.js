@@ -77,17 +77,18 @@ function valid(q){
    new Set(q.choices.map(o=>String(o.label).trim())).size===4&&
    q.choices.filter(o=>o.value===q.correctValue).length===1);
 }
-function generate({paper,topics,count=20,mode='topic',difficulty='mixed',order='progressive',recentIds=[],recentGroups=[],lessons={},syllabus={},rng=Math.random}){
+function generate({paper,topics,count=20,mode='topic',difficulty='mixed',order='progressive',recentIds=[],recentGroups=[],lessons={},syllabus={},rng=Math.random,chapterOnly=false}){
  const mock=mode==='mock',integratedMode=mode==='integrated',qty=mock?50:Math.max(1,Math.min(20,Math.floor(Number(count)||20)));
  const selectedDifficulty=mock?'mixed':LEVELS.includes(difficulty)?difficulty:'mixed';
  const questionOrder=order==='random'?'random':'progressive';
  const mixed=paper==='FA2'||paper==='MA2';
- const crossTopic=(mock||integratedMode||!Array.isArray(topics)||topics.length!==1)&&mixed;
  const integrator=root.LedgerIntegratedCases;
- const canIntegrate=crossTopic&&integrator&&typeof integrator.get==='function';
+ const canIntegrateAll=mixed&&integrator&&typeof integrator.get==='function';
  const required={mcq:qty-(mixed?(mock?15:Math.floor(qty/2)):0),numeric:mixed?(mock?15:Math.floor(qty/2)):0};
  const result={questions:[],available:0,requested:qty,paper,mode:mock?'mock':integratedMode?'integrated':'topic',topicsCovered:0,
     integratedCases:0,integratedTopicLinks:0,topicDistribution:{},
+    supplementedQuestions:0,requestedTopicKeys:[],difficultyBackfill:0,mixAdjusted:false,
+    chapterOnly:!!chapterOnly,
     targetMix:required,actualMix:{mcq:0,numeric:0},complete:false,quality:'original-exam-style',
     difficulty:selectedDifficulty,order:questionOrder,
     levelMix:{easy:0,moderate:0,hard:0},availableLevelMix:{easy:0,moderate:0,hard:0},
@@ -106,7 +107,16 @@ function generate({paper,topics,count=20,mode='topic',difficulty='mixed',order='
  const headings=syllabus[paper]?.topics||[];
  const available=new Set(headings.map(x=>engine.topicCode(x)?.code).filter(Boolean));
  const wanted=mock||integratedMode||!topics?.length?[...available]:topics.filter(x=>available.has(x));
- const keys=shuffle([...new Set(wanted)].map(code=>paper+':'+code),rng);
+ const focusCodes=!mock&&!integratedMode&&topics?.length?[...new Set(wanted)]:[];
+ const fillAcrossPaper=!mock&&!integratedMode&&focusCodes.length>0&&!chapterOnly;
+ const canIntegrate=canIntegrateAll&&(mock||integratedMode||!topics?.length||fillAcrossPaper||topics.length!==1);
+ // The requested chapter is a PRIORITY in normal practice, not a 3-question ceiling.
+ // "Chapter only" can explicitly opt out of paper-wide supplementation.
+ const studyCodes=fillAcrossPaper?[...available]:wanted;
+ const keys=shuffle([...new Set(studyCodes)].map(code=>paper+':'+code),rng);
+ const focusKeys=new Set(focusCodes.map(code=>paper+':'+code));
+ result.requestedTopicKeys=[...focusKeys];
+ result.chapterOnly=!!chapterOnly;
  const recent=new Set(recentIds||[]),exposure=new Map();
  for(const g of recentGroups||[]){if(typeof g==='string')exposure.set(g,(exposure.get(g)||0)+1);}
  const pool=[];
@@ -160,7 +170,11 @@ function generate({paper,topics,count=20,mode='topic',difficulty='mixed',order='
    }
   }
  }
- const eligible=pool.filter(q=>selectedDifficulty==='mixed'||q.difficulty===selectedDifficulty);
+ // Difficulty is a preferred level, not a silent reason to return 3 of 20.
+ // The next pass includes other authored levels only when necessary.
+ const preferred=pool.filter(q=>selectedDifficulty==='mixed'||q.difficulty===selectedDifficulty);
+ const backup=selectedDifficulty==='mixed'?[]:pool.filter(q=>q.difficulty!==selectedDifficulty);
+ const eligible=preferred.concat(backup);
  const availableAreas=new Map();
  for(const q of eligible){const area=q.key+'|'+q.group;if(!availableAreas.has(area))availableAreas.set(area,q.skillLabel);}
  for(const q of eligible)result.availableLevelMix[q.difficulty]++;
@@ -175,6 +189,7 @@ function generate({paper,topics,count=20,mode='topic',difficulty='mixed',order='
  function usedCount(key,group){return used.get(key+'|'+group)||0}
  const byType={mcq:{integrated:[],standard:[]},numeric:{integrated:[],standard:[]}};
  for(const q of eligible)byType[q.type][q.integrated?'integrated':'standard'].push(q);
+ const isPreferred=q=>selectedDifficulty==='mixed'||q.difficulty===selectedDifficulty;
  // Integrated mode deliberately gives cross-topic cases the majority of each sitting.
  // All-topics and mock modes blend them with standalone skills; single-topic drills do not.
  function targetIntegrated(type,n){
@@ -191,19 +206,25 @@ function generate({paper,topics,count=20,mode='topic',difficulty='mixed',order='
    const primary=byType[type][preferIntegrated?'integrated':'standard'];
    const fallback=byType[type][preferIntegrated?'standard':'integrated'];
    let best=null,bestScore=Infinity;
-   for(const candidates of [primary,fallback]){
+   // Priority order: requested difficulty + preferred structure,
+   // then requested difficulty + other structure, then other difficulty.
+   // We never copy a previously chosen family into the same session.
+   for(const [index,candidates] of [primary,fallback,primary,fallback].entries()){
+    const preferredLevel=index<2;
     for(const q of candidates){
+     if(preferredLevel!==isPreferred(q))continue;
      if(prompts.has(q.prompt)||usedCount(q.key,q.group)>=MAX_VARIANTS_PER_SKILL)continue;
      const keysForQuestion=topicKeys(q);
      const priorTopic=keysForQuestion.reduce((sum,key)=>sum+(topicCounts.get(key)||0),0)/keysForQuestion.length;
      const newTopic=keysForQuestion.some(key=>!topicCounts.has(key));
+     const focusBonus=focusKeys.size&&keysForQuestion.some(key=>focusKeys.has(key))?-23:0;
      const overLevel=selectedDifficulty==='mixed'&&levelsUsed[q.difficulty]>=targetLevels[q.difficulty]?25:0;
      const mappedChapter=Boolean(root.LedgerQuizOutcomeMap?.[q.key]);
      const freshOutcome=(q.outcomeCodes||[]).some(code=>!assessedOutcomes.has(q.key+'|'+code));
      const outcomePenalty=!q.integrated&&mappedChapter?(freshOutcome?-30:q.outcomeCodes?.length?8:12):0;
      const last=picked[picked.length-1];
      const adjacent=last&&topicKeys(last).some(key=>keysForQuestion.includes(key))?10:0;
-     const score=priorTopic*18+(newTopic?-15:0)+adjacent+
+     const score=priorTopic*18+(newTopic?-15:0)+adjacent+focusBonus+
        familyExposure(q)*85+(recent.has(q.id)?140:0)+overLevel+outcomePenalty+(rngScores.get(q.id)??rng());
      rngScores.set(q.id,score%1);
      if(score<bestScore){bestScore=score;best=q;}
@@ -212,16 +233,29 @@ function generate({paper,topics,count=20,mode='topic',difficulty='mixed',order='
    }
    if(!best)break;
    picked.push(best);prompts.add(best.prompt);levelsUsed[best.difficulty]++;
+   if(selectedDifficulty!=='mixed'&&best.difficulty!==selectedDifficulty)result.difficultyBackfill++;
+   if(focusKeys.size&&!topicKeys(best).some(key=>focusKeys.has(key)))result.supplementedQuestions++;
    for(const key of topicKeys(best))topicCounts.set(key,(topicCounts.get(key)||0)+1);
    for(const code of best.outcomeCodes||[])assessedOutcomes.add(best.key+'|'+code);
    const id=familyKey(best);used.set(id,(used.get(id)||0)+1);
   }
  }
  take('mcq',required.mcq);take('numeric',required.numeric);
+ // A 50:50 objective-type target is not permission to discard valid authored
+ // questions. For topic/integrated practice, backfill with the other format
+ // when a type runs short; retain strict official-style mix for mock sessions.
+ if(!mock&&picked.length<qty){
+   const remaining=qty-picked.length;
+   const before=picked.length;
+   take(required.mcq>required.numeric?'mcq':'numeric',remaining);
+   if(picked.length<qty)take(required.mcq>required.numeric?'numeric':'mcq',qty-picked.length);
+   result.mixAdjusted=picked.length>before;
+ }
  const questions=questionOrder==='progressive'&&!mock?
    [...picked].sort((a,b)=>LEVEL_RANK[a.difficulty]-LEVEL_RANK[b.difficulty]):shuffle(picked,rng);
  result.questions=questions;result.available=questions.length;
  result.actualMix={mcq:questions.filter(q=>q.type==='mcq').length,numeric:questions.filter(q=>q.type==='numeric').length};
+ result.mixAdjusted=result.mixAdjusted||result.actualMix.mcq!==required.mcq||result.actualMix.numeric!==required.numeric;
  result.topicsCovered=new Set(questions.flatMap(topicKeys)).size;
  result.integratedCases=questions.filter(q=>q.integrated).length;
  result.integratedTopicLinks=new Set(questions.filter(q=>q.integrated).flatMap(topicKeys)).size;
@@ -246,11 +280,13 @@ function generate({paper,topics,count=20,mode='topic',difficulty='mixed',order='
     })),edition:root.LedgerOutcomeLessons[key].edition||'Not independently verified',
     mappedBy:'partial manual editorial question-family mapping'};
  });
- result.complete=questions.length===qty&&result.actualMix.mcq===required.mcq&&result.actualMix.numeric===required.numeric
+ result.complete=questions.length===qty&&
+   (mock?(result.actualMix.mcq===required.mcq&&result.actualMix.numeric===required.numeric):true)
    &&(!integratedMode||result.integratedCases>0);
  if(result.complete)result.reason='';
  else if(integratedMode&&!result.integratedCases)result.reason='No authored integrated cases are available for this selection; the syllabus cannot be called fully covered.';
- else if(selectedDifficulty!=='mixed')result.reason='Insufficient distinct '+selectedDifficulty+' questions in this chapter; no filler has been invented.';
+ else if(chapterOnly&&focusKeys.size)result.reason='Chapter-only has fewer than '+qty+' distinct approved question families. Turn off Chapter only to fill from other syllabus topics.';
+ else result.reason='Only '+result.available+' distinct authored questions available for this selection; no duplicate skill families were inserted.';
  return result;
 }
 engine.generate=generate;
