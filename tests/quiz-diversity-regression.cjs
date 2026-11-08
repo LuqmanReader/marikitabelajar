@@ -67,6 +67,7 @@ const next=engine.generate({paper:'MA2',topics:['D1'],count:5,mode:'topic',diffi
  recentGroups:[...from],recentIds:topic.questions.map(q=>q.id)});
 assert.equal(next.questions.length,topic.questions.length,'Rotation unexpectedly changed available set length');
 const availableFresh=next.questions.filter(q=>!from.has(q.key+'|'+q.group));
+console.log('REUSE AUDIT',JSON.stringify({first:topic.questions.map(q=>[q.type,q.group]),next:next.questions.map(q=>[q.type,q.group]),families:next.skillCoverage.available,fresh:next.freshFamilies,reused:next.repeatFamilyExposure}));
 assert(availableFresh.length>=2,'New questions should favor unused reasoning families');
 assert.equal(next.repeatFamilyExposure,next.questions.length-availableFresh.length);
 assert.equal(next.freshFamilies,availableFresh.length);
