@@ -48,6 +48,7 @@ function next(){return new Promise(resolve=>setImmediate(resolve));}
  assert(copied.includes('QUESTION DATA:'),'Request copied to clipboard');
  assert.equal(stage(one,'response').hidden,false,'Copy advances to the response stage');
  assert.equal(stage(one,'copy').hidden,true);
+ assert(stage(one,'response').querySelector('a[href="https://chatgpt.com/"]'),'Students must still be able to launch ChatGPT after the request is copied');
 
  const draftKey='ledgerpeer_debrief_draft_v1:'+meta.id;
  const responseBox=pick(one,'aiResponse');
