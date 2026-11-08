@@ -113,6 +113,7 @@ assert.strictEqual(registry.get('FTX').variant,'UK');
    attempt_signature:debrief.signature([question])};
  const common={qno:7,reasoning:'Reason',calculation:'Not applicable',justification:'Justification',focus:'Focus',
    topic_reason:'Two alternative syllabus headings remain plausible',topic_evidence:'Assess the relevant operation'};
+ expectFailure(()=>debrief.review({...shared,questions:[{...common,topic_status:'needs_review',topic_confidence:'low'}]},[question],meta),'requires explicit chapter');
  const unresolved=debrief.review({...shared,questions:[{...common,chapter:'',topic_status:'needs_review',topic_confidence:'low'}]},[question],meta);
  assert.strictEqual(unresolved.questions[0].chapter,'','Uncertain matching may not force a heading');
  assert.strictEqual(unresolved.questions[0].topic_confidence,'low');
