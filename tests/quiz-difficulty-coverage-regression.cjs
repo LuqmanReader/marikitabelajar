@@ -20,14 +20,14 @@ const rank={easy:0,moderate:1,hard:2};
 for(const key of ['FA2:D4','FA2:D5','FA2:D6','MA2:A4','MA2:B2','MA2:C1','MA2:C2','MA2:D1','FA1:B1','MA1:C1']){
  const [paper,code]=key.split(':');
  for(const difficulty of ['easy','moderate','hard','mixed']){
-  const quiz=engine.generate({paper,topics:[code],count:20,mode:'topic',difficulty,order:'progressive',lessons,syllabus,rng});
+  const quiz=engine.generate({paper,topics:[code],count:20,mode:'topic',chapterOnly:true,difficulty,order:'progressive',lessons,syllabus,rng});
   assert.equal(quiz.difficulty,difficulty);
   assert(quiz.available<=quiz.requested);
   assert.equal(quiz.available,quiz.questions.length);
   assert.equal(quiz.actualMix.mcq+quiz.actualMix.numeric,quiz.available);
   assert.equal(quiz.levelMix.easy+quiz.levelMix.moderate+quiz.levelMix.hard,quiz.available);
   assert(quiz.questions.every(q=>['easy','moderate','hard'].includes(q.difficulty)&&q.skillLabel));
-  if(difficulty!=='mixed')assert(quiz.questions.every(q=>q.difficulty===difficulty),key+' wrong difficulty');
+  if(difficulty!=='mixed')assert.equal(quiz.difficultyBackfill,quiz.questions.filter(q=>q.difficulty!==difficulty).length,key+' undisclosed difficulty fallback');
   assert(quiz.questions.every((q,i,a)=>i===0||rank[a[i-1].difficulty]<=rank[q.difficulty]));
   assert(quiz.skillCoverage.tested<=quiz.skillCoverage.available);
   assert.equal(new Set(quiz.questions.map(q=>q.key+'|'+q.group)).size,quiz.questions.length);
