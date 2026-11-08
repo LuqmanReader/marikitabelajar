@@ -4,7 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,follow"><meta name="theme-color" content="#f4eedd">
 <title>Quiz Centre · LedgerPeer</title><link rel="icon" href="favicon-32.png">
-<link rel="stylesheet" href="quiz.css?v=coverage1"><link rel="stylesheet" href="site-nav.css?v=20261028-unifiedback">
+<link rel="stylesheet" href="quiz.css?v=20261108-complete20"><link rel="stylesheet" href="site-nav.css?v=20261028-unifiedback">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="supabase-config.js"></script><script src="auth.js?v=20261029-single-tab-shell1"></script>
 <script defer src="subject-catalog.js?v=20261022acca25v2"></script>
@@ -20,8 +20,8 @@
 <script defer src="quiz-engine.js?v=quality5"></script>
 <script defer src="notes-outcome-lessons.js?v=coverage1"></script>
 <script defer src="quiz-outcome-map.js?v=coverage1"></script>
-<script defer src="quiz-quality-engine.js?v=20261108-integrated1"></script>
-<script defer src="quiz-page.js?v=20261108-integrated1"></script>
+<script defer src="quiz-quality-engine.js?v=20261108-complete20"></script>
+<script defer src="quiz-page.js?v=20261108-complete20"></script>
 </head>
 <body>
 <header class="lp-header"><a class="brand" href="index.html">LEDGER<span>PEER</span></a><nav aria-label="Workspace"><a href="index.html">HOME</a><a href="notes.html">NOTES</a><a href="quiz.html" aria-current="page">QUIZ CENTRE</a><a href="hub.html">REVISION</a><a href="classroom.html">CLASSROOM</a><a href="study-planner.html">PLANNER</a></nav></header>
@@ -42,9 +42,10 @@
         <label>PAPER<select id="paper"></select></label>
         <label id="topicField">SYLLABUS TOPIC<select id="topic"></select></label>
         <label id="countField">QUESTIONS<select id="count"><option value="5">5 / Quick drill</option><option value="10">10 / Practice set</option><option value="20" selected>20 / Extended practice</option></select></label>
-        <label id="difficultyField">DIFFICULTY<select id="difficulty"><option value="mixed" selected>Mixed · all levels</option><option value="easy">Easy · foundations</option><option value="moderate">Moderate · application</option><option value="hard">Hard · multi-step</option></select></label>
+        <label id="difficultyField">DIFFICULTY<select id="difficulty"><option value="mixed" selected>Mixed · all levels</option><option value="easy">Easy first · other levels if needed</option><option value="moderate">Moderate first · other levels if needed</option><option value="hard">Hard first · other levels if needed</option></select></label>
         <label id="orderField">QUESTION ORDER<select id="order"><option value="progressive" selected>Easy → Moderate → Hard</option><option value="random">Shuffled</option></select></label>
       </div>
+      <label id="chapterOnlyWrap" class="quiz-chapter-option" hidden><input type="checkbox" id="chapterOnly"> Chapter only (strict): do not add other syllabus topics. May prevent a full 20-question set.</label>
       <p id="modeDescription" class="hint">FA2 / MA2 · Topic practice targets a 50:50 MCQ/numerical mix when supported; mock practice targets 35 MCQs and 15 numerical entries.</p><p id="coverage" class="hint" aria-live="polite"></p>
       <p class="hint">Integrated cases deliberately combine multiple chapters inside one problem. Mixed-topic practice also includes integrated cases. The links are editorial classifications, not certified ACCA learning-outcome coverage.</p>
       <div class="buttons"><button id="generate" type="button" class="primary">GENERATE 20 QUESTIONS →</button><a id="readTopic" href="notes.html">STUDY THIS TOPIC ↗</a></div>

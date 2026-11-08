@@ -60,6 +60,7 @@ function setMode(next){
  $('integratedMode').setAttribute('aria-pressed',String(isIntegrated));
  $('mockMode').setAttribute('aria-pressed',String(isMock));
  $('topicField').hidden=isMock||isIntegrated;
+ $('chapterOnlyWrap').hidden=isMock||isIntegrated||$('topic').value==='all';
  $('countField').hidden=isMock;
  $('difficultyField').hidden=isMock;
  $('orderField').hidden=isMock;
@@ -67,7 +68,7 @@ function setMode(next){
  $('modeDescription').textContent=isMock
   ?(['FA2','MA2'].includes($('paper').value)?'50-question foundation-style practice: 35 MCQ and 15 numerical entries, including connected-topic cases. This does not replicate all CBE formats.':'50-question foundation-style practice with MCQs, not an official ACCA examination.')
   :isIntegrated?'Integrated Mix deliberately combines two or three FA2/MA2 chapters inside one scenario, alongside standalone problems from across the paper. Original practice, not an ACCA or Kaplan question bank.'
-  :(['FA2','MA2'].includes($('paper').value)?'Up to 20 original questions; choose ALL TOPICS to mix standalone chapter skills with integrated cross-topic scenarios.':'Original multiple-choice practice. Question count depends on available independent skills.');
+  :(['FA2','MA2'].includes($('paper').value)?'Choose 5, 10 or 20. A selected chapter is your focus; LedgerPeer draws additional distinct questions from other chapters to complete the set. Use Chapter only to restrict the scope.':'Original multiple-choice practice. Question count depends on available independent skills.');
  $('generate').textContent=isMock?'GENERATE 50-QUESTION MOCK →':isIntegrated?'GENERATE '+$('count').value+' INTEGRATED QUESTIONS →':'GENERATE '+$('count').value+' QUESTIONS →';
 }
 
@@ -76,26 +77,35 @@ function makeQuiz(){
  const paper=$('paper').value,topics=mode==='mock'||mode==='integrated'?null:getSelection(),count=mode==='mock'?50:Number($('count').value);
  const difficulty=mode==='mock'?'mixed':$('difficulty').value;
  const order=mode==='mock'?'random':$('order').value;
+ const chapterOnly=mode==='topic'&&$('chapterOnly').checked&&$('topic').value!=='all';
  const records=engine.readHistory(root.localStorage).filter(r=>r.paper===paper).slice(0,100);
  const recentIds=records.flatMap(r=>(r.items||[]).map(q=>q.id)).concat(recentlyGenerated);
  const recentGroups=records.flatMap(r=>(r.items||[]).map(q=>q.key&&q.group?q.key+'|'+q.group:null).filter(Boolean)).concat(recentlyGeneratedGroups);
- active=engine.generate({paper,topics,count,mode,difficulty,order,recentIds,recentGroups,lessons,syllabus:syllabi});
+ active=engine.generate({paper,topics,count,mode,difficulty,order,recentIds,recentGroups,lessons,syllabus:syllabi,chapterOnly});
  active.selectedTopic=mode==='mock'||mode==='integrated'?'all':$('topic').value;
+ // Never present a 3-question quiz as the 20-question set the student ordered.
+ // Show a clear capacity error rather than silently starting a partial assessment.
+ if(!active.complete){
+   $('quizSection').hidden=true;
+   const advice=chapterOnly?' Uncheck Chapter only to combine questions across the paper.':' Try All Topics or another supported paper.';
+   setMessage('CANNOT BUILD '+active.requested+' DISTINCT QUESTIONS · Found '+active.available+'. '+(active.reason||'The verified authored question bank is insufficient.')+advice+' No repeated reasoning was inserted to pad the count.');
+   return;
+ }
+ // Count only questions that were actually presented to the student.
  recentlyGenerated=recentlyGenerated.concat(active.questions.map(q=>q.id)).slice(-400);
  recentlyGeneratedGroups=recentlyGeneratedGroups.concat(active.questions.map(q=>q.key+'|'+q.group)).slice(-400);
  answers={};phase='answering';saved=false;cursor=0;flagged=new Set();
- if(!active.questions.length){
-   $('quizSection').hidden=true;
-   setMessage(active.reason||'No original questions for this topic; try another topic.');
-   return;
- }
  $('quizSection').hidden=false;$('results').hidden=true;$('saveStatus').textContent='';$('save').disabled=false;
  const narrow=mode==='mock'?' / PAPER-WIDE MOCK PRACTICE':mode==='integrated'?' / INTEGRATED MULTI-TOPIC CASES':topics?' / '+topics.join(', '):' / MIXED TOPICS';
  $('quizTitle').textContent=mode==='mock'?'50-QUESTION MOCK PRACTICE':mode==='integrated'?'INTEGRATED CASE PRACTICE':'TOPIC PRACTICE SET';
  $('quizSummary').textContent=paper+narrow+' · '+active.available+' original questions · '+active.actualMix.mcq+' MCQ / '+active.actualMix.numeric+' numerical · '+active.topicsCovered+' syllabus topics / '+active.integratedCases+' integrated cases / '+active.familiesCovered+' reasoning families · '+(active.difficulty||'mixed').toUpperCase()+' difficulty · '+active.levelMix.easy+' easy / '+active.levelMix.moderate+' moderate / '+active.levelMix.hard+' hard'+(!active.complete?' · LIMITED: '+active.available+' of '+active.requested+' requested; no invented fillers.':'')+' · '+(active.repeatFamilyExposure?'REPEATED REASONING: '+active.repeatFamilyExposure+' family reuse(s) from recent sessions · ':'')+'Not official ACCA/Kaplan.';
- if(!active.complete)setMessage('QUESTION BANK SHORTAGE · '+active.reason+' Try mixed-topic practice for more distinct questions.');
- else if(active.integratedCases)setMessage(active.integratedCases+' questions combine multiple topics within each case. These topic links are not independently verified ACCA outcome coverage.');
- else if(active.repeatFamilyExposure)setMessage('REASONING REUSE WARNING · '+active.repeatFamilyExposure+' question families were recently practised. The bank is limited; new numbers do not count as a new accounting skill.');
+ const notices=[];
+ if(active.supplementedQuestions)notices.push(active.supplementedQuestions+' questions drawn from other syllabus topics to fulfil all '+active.requested+' requested questions');
+ if(active.difficultyBackfill)notices.push(active.difficultyBackfill+' other-level questions added because too few distinct '+difficulty+' questions were authored');
+ if(active.mixAdjusted)notices.push('MCQ/numerical split adjusted to preserve question count and distinct reasoning');
+ if(active.integratedCases)notices.push(active.integratedCases+' integrated cross-topic cases; not certified ACCA outcome coverage');
+ if(active.repeatFamilyExposure)notices.push('REASONING REUSE WARNING: '+active.repeatFamilyExposure+' families were seen in earlier sessions');
+ setMessage(notices.length?notices.join(' · '):'Complete '+active.requested+'-question session built from '+active.familiesCovered+' distinct question families.');
  $('review').hidden=false;
  renderCoverage();
  renderQuestions();$('quizSection').scrollIntoView({block:'start',behavior:'smooth'});
@@ -272,7 +282,7 @@ async function init(){
     showQuestion(cursor);
   });
   $('paper').addEventListener('change',()=>{fillTopics();setMode(mode);});
-  $('topic').addEventListener('change',updateReadLink);
+  $('topic').addEventListener('change',()=>{updateReadLink();setMode(mode);});
   $('generate').addEventListener('click',makeQuiz);
   $('regenerate').addEventListener('click',makeQuiz);
   $('review').addEventListener('click',reviewQuiz);

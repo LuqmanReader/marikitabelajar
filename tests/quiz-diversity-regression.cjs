@@ -58,12 +58,12 @@ for(const file of ['subject-catalog.js','acca-published-data.js','notes-data.js'
 vm.runInThisContext(read('quiz-quality-engine.js'),{filename:'quiz-quality-engine.js'});
 const syllabus=source.window.LedgerNotesSyllabi.papers,lessons=source.window.LedgerFiaNotes;
 let seed=851924;const rng=()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);
-const topic=engine.generate({paper:'MA2',topics:['D1'],count:5,mode:'topic',difficulty:'mixed',rng,lessons,syllabus});
+const topic=engine.generate({paper:'MA2',topics:['D1'],count:5,mode:'topic',chapterOnly:true,difficulty:'mixed',rng,lessons,syllabus});
 assert(topic.questions.length>=4,'No useful first MA2 D1 practice questions');
 const from=new Set(topic.questions.map(q=>q.key+'|'+q.group));
 assert.equal(from.size,topic.questions.length,'Same family was repeated within one sitting');
 assert(topic.questions.some(q=>/break-even-after-price|margin-of-safety-percentage|target-revenue-using-cs-ratio/.test(q.group)),'New families not selected in MA2 D1');
-const next=engine.generate({paper:'MA2',topics:['D1'],count:5,mode:'topic',difficulty:'mixed',rng,lessons,syllabus,
+const next=engine.generate({paper:'MA2',topics:['D1'],count:5,mode:'topic',chapterOnly:true,difficulty:'mixed',rng,lessons,syllabus,
  recentGroups:[...from],recentIds:topic.questions.map(q=>q.id)});
 assert.equal(next.questions.length,topic.questions.length,'Rotation unexpectedly changed available set length');
 const availableFresh=next.questions.filter(q=>!from.has(q.key+'|'+q.group));
