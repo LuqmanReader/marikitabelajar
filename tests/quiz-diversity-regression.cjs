@@ -27,6 +27,7 @@ const expected={
  'MA2:E3':[['cash-receipts-collection-delay',40000],['cash-budget-with-capital-outlay',14000]]
 };
 const families=new Set();
+const qualityGaps=[];
 let verified=0;
 for(const [key,items] of Object.entries(expected)){
  for(let i=0;i<items.length;i++){
@@ -37,7 +38,7 @@ for(const [key,items] of Object.entries(expected)){
    assert.equal(q.family,family,key+' wrong reasoning family');
    assert.equal(q.answer,answer,key+' '+family+' arithmetic mismatch at fixed parameters');
    assert.equal(q.unit==null,false,key+' unit missing');
-   assert(q.prompt.length>=80&&q.explanation.length>=70,key+' '+family+' lacks a sufficient scenario or working');
+   if(q.prompt.length<80||q.explanation.length<70)qualityGaps.push({key,family,prompt:q.prompt.length,working:q.explanation.length});
    assert(!/\bRM\b/.test(q.prompt+' '+q.explanation),key+' wrong currency');
    assert(!/Complete the accounting principle|A learner is reviewing|Which paragraph/i.test(q.prompt),key+' artificial filler');
   }
@@ -46,6 +47,7 @@ for(const [key,items] of Object.entries(expected)){
  }
  assert.equal(bank.problem(key,()=>0.5,70+items.length*2),null,key+' leaked repeated bonus family');
 }
+assert.equal(qualityGaps.length,0,'Some cases are too brief: '+JSON.stringify(qualityGaps));
 assert.equal(verified,31,'Missing fixed-answer scenario checks');
 assert.equal(globalThis.LedgerQuizDiversityBank.topics.length,14);
 assert.equal(Object.values(globalThis.LedgerQuizDiversityBank.families).reduce((a,b)=>a+b,0),31);
