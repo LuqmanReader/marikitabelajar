@@ -62,12 +62,12 @@ function calculatedMCQ(key,p,rng){
  const ordered=shuffle(values,rng);
  return {key,type:'mcq',group:'skill-'+p.family,prompt:p.prompt,
    choices:ordered.map((x,i)=>({value:'C'+i,label:fmt(x)})),
-   correctValue:'C'+ordered.indexOf(correct),explanation:p.explanation};
+   correctValue:'C'+ordered.indexOf(correct),explanation:p.explanation,difficulty:p.difficulty};
 }
 function calculatedNumeric(key,p){
  if(!p||!Number.isFinite(p.answer))return null;
  return {key,type:'numeric',group:'skill-'+p.family,prompt:p.prompt,
-  correctValue:p.answer,unit:p.unit||'$',explanation:p.explanation};
+   correctValue:p.answer,unit:p.unit||String.fromCharCode(36),explanation:p.explanation,difficulty:p.difficulty};
 }
 function valid(q){
  return q&&typeof q.prompt==='string'&&q.prompt.trim().length>=17&&
@@ -121,9 +121,9 @@ function generate({paper,topics,count=20,mode='topic',difficulty='mixed',order='
    if(!c)break;
    push({...c,key,type:'mcq',group:'concept-'+i});
   }
-  for(let i=0;i<70;i++){
+  for(let i=0;i<90;i++){
    const scenario=bank.problem(key,rng,i);
-   if(!scenario)break;
+   if(!scenario)continue;
    // For intermediate papers, expose the same kind of scenario in either
    // numerical-entry or MCQ format, but never repeat its exact stem in a set.
    const numeric=mixed&&i%2===0;
@@ -141,19 +141,19 @@ function generate({paper,topics,count=20,mode='topic',difficulty='mixed',order='
  const assessedOutcomes=new Set();
  const familyKey=q=>q.key+'|'+q.group;
  const familyExposure=q=>exposure.get(familyKey(q))||0;
- function count(key,group){return used.get(key+'|'+group)||0}
+ function usedCount(key,group){return used.get(key+'|'+group)||0}
  function take(type,n){
   for(let j=0;j<n;j++){
    let best=null,bestScore=Infinity;
    for(const q of eligible){
-    if(q.type!==type||prompts.has(q.prompt)||count(q.key,q.group)>=MAX_VARIANTS_PER_SKILL)continue;
+    if(q.type!==type||prompts.has(q.prompt)||usedCount(q.key,q.group)>=MAX_VARIANTS_PER_SKILL)continue;
     let priorTopic=0;
     for(const p of picked)if(p.key===q.key)priorTopic++;
     const overLevel=selectedDifficulty==='mixed'&&levelsUsed[q.difficulty]>=targetLevels[q.difficulty]?25:0;
     const mappedChapter=Boolean(root.LedgerQuizOutcomeMap?.[q.key]);
     const freshOutcome=(q.outcomeCodes||[]).some(code=>!assessedOutcomes.has(q.key+'|'+code));
     const outcomePenalty=mappedChapter?(freshOutcome?-30:q.outcomeCodes?.length?8:12):0;
-    const score=priorTopic*9+count(q.key,q.group)*110+
+    const score=priorTopic*9+usedCount(q.key,q.group)*110+
       familyExposure(q)*70+(recent.has(q.id)?120:0)+overLevel+outcomePenalty+(rngScores.get(q.id)??rng());
     rngScores.set(q.id,score%1);
     if(score<bestScore){bestScore=score;best=q;}
@@ -173,6 +173,9 @@ function generate({paper,topics,count=20,mode='topic',difficulty='mixed',order='
  result.topicsCovered=new Set(questions.map(q=>q.key)).size;
  result.familiesCovered=new Set(questions.map(familyKey)).size;
  result.repeatFamilyExposure=questions.filter(q=>familyExposure(q)>0).length;
+ result.freshFamilies=questions.length-result.repeatFamilyExposure;
+ result.repeatedFamilies=[...new Set(questions.filter(q=>familyExposure(q)>0).map(q=>q.key+'|'+q.group))];
+ result.diversityAudited=Boolean(root.LedgerQuizDiversityBank);
  for(const q of questions)result.levelMix[q.difficulty]++;
  const tested=new Set(questions.map(familyKey));
  result.skillCoverage={tested:tested.size,available:availableAreas.size,

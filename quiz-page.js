@@ -3,7 +3,7 @@
 const $=id=>document.getElementById(id),engine=root.LedgerQuizEngine;
 const papers=root.SubjectCatalog?.papers||[],syllabi=root.LedgerNotesSyllabi?.papers||{},lessons=root.LedgerFiaNotes||{};
 const params=new URLSearchParams(root.location.search);
-let active=null,answers={},phase='setup',saved=false,mode='topic',recentlyGenerated=[];
+let active=null,answers={},phase='setup',saved=false,mode='topic',recentlyGenerated=[],recentlyGeneratedGroups=[];
 let cursor=0,flagged=new Set();
 const element=(tag,className,value)=>{const n=document.createElement(tag);if(className)n.className=className;if(value!==undefined)n.textContent=value;return n;};
 const getTopics=paper=>(syllabi[paper]?.topics||[]).map(engine.topicCode).filter(Boolean);
@@ -65,10 +65,11 @@ function makeQuiz(){
  const order=mode==='mock'?'random':$('order').value;
  const records=engine.readHistory(root.localStorage).filter(r=>r.paper===paper).slice(0,100);
  const recentIds=records.flatMap(r=>(r.items||[]).map(q=>q.id)).concat(recentlyGenerated);
- const recentGroups=records.flatMap(r=>(r.items||[]).map(q=>q.key&&q.group?q.key+'|'+q.group:null).filter(Boolean));
+ const recentGroups=records.flatMap(r=>(r.items||[]).map(q=>q.key&&q.group?q.key+'|'+q.group:null).filter(Boolean)).concat(recentlyGeneratedGroups);
  active=engine.generate({paper,topics,count,mode,difficulty,order,recentIds,recentGroups,lessons,syllabus:syllabi});
  active.selectedTopic=mode==='mock'?'all':$('topic').value;
  recentlyGenerated=recentlyGenerated.concat(active.questions.map(q=>q.id)).slice(-400);
+ recentlyGeneratedGroups=recentlyGeneratedGroups.concat(active.questions.map(q=>q.key+'|'+q.group)).slice(-400);
  answers={};phase='answering';saved=false;cursor=0;flagged=new Set();
  if(!active.questions.length){
    $('quizSection').hidden=true;
@@ -78,8 +79,9 @@ function makeQuiz(){
  $('quizSection').hidden=false;$('results').hidden=true;$('saveStatus').textContent='';$('save').disabled=false;
  const narrow=mode==='mock'?' / PAPER-WIDE MOCK PRACTICE':topics?' / '+topics.join(', '):' / MIXED TOPICS';
  $('quizTitle').textContent=mode==='mock'?'50-QUESTION MOCK PRACTICE':'TOPIC PRACTICE SET';
- $('quizSummary').textContent=paper+narrow+' · '+active.available+' original questions · '+active.actualMix.mcq+' MCQ / '+active.actualMix.numeric+' numerical · '+active.topicsCovered+' topics / '+active.familiesCovered+' distinct reasoning families · '+(active.difficulty||'mixed').toUpperCase()+' difficulty · '+active.levelMix.easy+' easy / '+active.levelMix.moderate+' moderate / '+active.levelMix.hard+' hard'+(!active.complete?' · LIMITED: '+active.available+' of '+active.requested+' requested; no invented fillers.':'')+' · Not official ACCA/Kaplan.';
+ $('quizSummary').textContent=paper+narrow+' · '+active.available+' original questions · '+active.actualMix.mcq+' MCQ / '+active.actualMix.numeric+' numerical · '+active.topicsCovered+' topics / '+active.familiesCovered+' distinct reasoning families · '+(active.difficulty||'mixed').toUpperCase()+' difficulty · '+active.levelMix.easy+' easy / '+active.levelMix.moderate+' moderate / '+active.levelMix.hard+' hard'+(!active.complete?' · LIMITED: '+active.available+' of '+active.requested+' requested; no invented fillers.':'')+' · '+(active.repeatFamilyExposure?'REPEATED REASONING: '+active.repeatFamilyExposure+' family reuse(s) from recent sessions · ':'')+'Not official ACCA/Kaplan.';
  if(!active.complete)setMessage('QUESTION BANK SHORTAGE · '+active.reason+' Try mixed-topic practice for more distinct questions.');
+ else if(active.repeatFamilyExposure)setMessage('REASONING REUSE WARNING · '+active.repeatFamilyExposure+' question families were recently practised. The bank is limited; new numbers do not count as a new accounting skill.');
  $('review').hidden=false;
  renderCoverage();
  renderQuestions();$('quizSection').scrollIntoView({block:'start',behavior:'smooth'});
