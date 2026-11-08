@@ -69,6 +69,7 @@
     </section>
     <section class="flow-path flow-stage" data-flow-stage="response"><h3>Step 2 · Paste the completed JSON into LedgerPeer</h3>
       <p>Paste the completed AI JSON below, or upload its saved <code>.json</code> / <code>.txt</code>. LedgerPeer checks the question IDs, original marks and topic labels before saving anything.</p>
+      <div class="flow-actions"><a class="flow-button secondary" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT ↗</a><button type="button" class="flow-button secondary" data-flow-return="copy">Back to request</button></div>
       <label class="flow-field">AI JSON response<textarea id="aiResponse" class="flow-response" rows="9" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder='Paste the complete JSON response here, starting with {'></textarea></label>
       <div class="flow-actions"><button type="button" class="flow-button secondary" id="pasteAIResponse">Paste from clipboard</button><button type="button" class="flow-button secondary" id="clearAIResponse">Clear draft</button></div>
        <p id="aiDraftStatus" role="status" class="flow-muted">Unsaved JSON drafts stay in this browser tab until applied or cleared.</p>
@@ -101,6 +102,7 @@
    }
   }
   el.querySelectorAll('[data-flow-step]').forEach(button=>button.addEventListener('click',()=>setStage(button.dataset.flowStep,true)));
+  el.querySelectorAll('[data-flow-return]').forEach(button=>button.addEventListener('click',()=>setStage(button.dataset.flowReturn,true)));
   if(compactView){
    if(compactView.addEventListener)compactView.addEventListener('change',()=>setStage(activeStage));
    else if(compactView.addListener)compactView.addListener(()=>setStage(activeStage));
@@ -110,7 +112,7 @@
    if(draftTimer){clearTimeout(draftTimer);draftTimer=null;}
    const value=$('aiResponse').value;
    try{
-     if(value.trim())sessionStorage.setItem(draftKey,JSON.stringify({signature:draftSignature,value}));
+     if(value.trim())sessionStorage.setItem(draftKey,JSON.stringify({signature:draftSignature,paper:meta.subject,value}));
      else sessionStorage.removeItem(draftKey);
      draftStatus(value.trim()?'Draft preserved in this browser tab. Apply JSON to save it to your attempt.':'No unsaved JSON response in this tab.');
    }catch(e){draftStatus('Browser storage could not retain this draft. Copy your response before leaving this tab.');}
@@ -123,7 +125,7 @@
   }
   try{
     const saved=JSON.parse(sessionStorage.getItem(draftKey)||'null');
-    const recovered=!!(saved&&saved.signature===draftSignature&&typeof saved.value==='string'&&saved.value.trim());
+    const recovered=!!(saved&&saved.signature===draftSignature&&saved.paper===meta.subject&&typeof saved.value==='string'&&saved.value.trim());
     if(recovered){
       $('aiResponse').value=saved.value;
       draftStatus('Unsaved JSON draft restored for this attempt.');
