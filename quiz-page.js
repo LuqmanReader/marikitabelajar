@@ -46,6 +46,13 @@ function setMode(next){
  const isMock=mode==='mock',isIntegrated=mode==='integrated';
  $('integratedMode').disabled=!['FA2','MA2'].includes($('paper').value);
  $('integratedMode').title=$('integratedMode').disabled?'Integrated case bank is currently available for FA2 and MA2.':'Combine several syllabus topics in each problem.';
+ // Cross-topic authored cases combine multiple steps and are rated hard;
+ // do not expose an easy/moderate-only filter that would silently exclude them.
+ const difficultySelect=$('difficulty');
+ for(const option of difficultySelect.options){
+  if(option.value==='easy'||option.value==='moderate')option.disabled=isIntegrated;
+ }
+ if(isIntegrated&&['easy','moderate'].includes(difficultySelect.value))difficultySelect.value='mixed';
  $('topicMode').classList.toggle('active',!isMock&&!isIntegrated);
  $('integratedMode').classList.toggle('active',isIntegrated);
  $('mockMode').classList.toggle('active',isMock);
