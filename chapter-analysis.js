@@ -19,6 +19,8 @@
     questions.forEach(function(q){
       if(typeof q.is_correct!=='boolean'){coverage.unscored++;return;}
       if(q.topic_status==='outside'||q.topic_status==='unreadable'){coverage.outside++;return;}
+      // Keyword heuristics and legacy repair labels are suggestions, never verified topic mastery.
+      if(q.topic_origin==='rule-suggestion'||q.topic_origin==='legacy-syllabus-repair'){coverage.untagged++;return;}
       var name;try{name=label(q.chapter);}catch(e){name='';}
       if(!name||!valid.some(function(t){return t.toLowerCase()===name.toLowerCase();})){coverage.untagged++;return;}
       coverage.tagged++;
