@@ -141,19 +141,19 @@ function generate({paper,topics,count=20,mode='topic',difficulty='mixed',order='
  const assessedOutcomes=new Set();
  const familyKey=q=>q.key+'|'+q.group;
  const familyExposure=q=>exposure.get(familyKey(q))||0;
- function count(key,group){return used.get(key+'|'+group)||0}
+ function usedCount(key,group){return used.get(key+'|'+group)||0}
  function take(type,n){
   for(let j=0;j<n;j++){
    let best=null,bestScore=Infinity;
    for(const q of eligible){
-    if(q.type!==type||prompts.has(q.prompt)||count(q.key,q.group)>=MAX_VARIANTS_PER_SKILL)continue;
+    if(q.type!==type||prompts.has(q.prompt)||usedCount(q.key,q.group)>=MAX_VARIANTS_PER_SKILL)continue;
     let priorTopic=0;
     for(const p of picked)if(p.key===q.key)priorTopic++;
     const overLevel=selectedDifficulty==='mixed'&&levelsUsed[q.difficulty]>=targetLevels[q.difficulty]?25:0;
     const mappedChapter=Boolean(root.LedgerQuizOutcomeMap?.[q.key]);
     const freshOutcome=(q.outcomeCodes||[]).some(code=>!assessedOutcomes.has(q.key+'|'+code));
     const outcomePenalty=mappedChapter?(freshOutcome?-30:q.outcomeCodes?.length?8:12):0;
-    const score=priorTopic*9+count(q.key,q.group)*110+
+    const score=priorTopic*9+usedCount(q.key,q.group)*110+
       familyExposure(q)*70+(recent.has(q.id)?120:0)+overLevel+outcomePenalty+(rngScores.get(q.id)??rng());
     rngScores.set(q.id,score%1);
     if(score<bestScore){bestScore=score;best=q;}
