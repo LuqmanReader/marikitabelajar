@@ -4,6 +4,7 @@ on:
     paths:
       - 'quiz*.js'
       - 'tests/quiz-diversity-regression.cjs'
+      - 'tests/quiz-integrated-regression.cjs'
       - 'quiz*.html'
       - 'quiz*.css'
       - 'notes-page.js'
@@ -30,6 +31,7 @@ on:
       - 'tests/quiz-casebank-content-regression.cjs'
       - 'tests/quiz-million-simulation.cjs'
       - 'tests/quiz-diversity-regression.cjs'
+      - 'tests/quiz-integrated-regression.cjs'
   workflow_dispatch:
 permissions:
   contents: read
@@ -47,6 +49,7 @@ jobs:
           node --check quiz-casebank-knowledge.js
           node --check quiz-casebank-ledger.js
           node --check quiz-diversity-bank.js
+          node --check quiz-integrated-cases.js
           node --check quiz-engine.js
           node --check quiz-outcome-map.js
           node --check quiz-quality-engine.js
@@ -60,5 +63,7 @@ jobs:
         run: node tests/quiz-casebank-content-regression.cjs
       - name: Verify deep reasoning variety and reuse rotation
         run: node tests/quiz-diversity-regression.cjs
+      - name: Verify integrated multi-topic case answers and quiz distribution
+        run: node tests/quiz-integrated-regression.cjs
       - name: Run 1,000,000 real answer-marking simulations
         run: node tests/quiz-million-simulation.cjs

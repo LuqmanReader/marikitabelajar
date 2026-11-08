@@ -78,12 +78,16 @@ function valid(q){
    q.choices.filter(o=>o.value===q.correctValue).length===1);
 }
 function generate({paper,topics,count=20,mode='topic',difficulty='mixed',order='progressive',recentIds=[],recentGroups=[],lessons={},syllabus={},rng=Math.random}){
- const mock=mode==='mock',qty=mock?50:Math.max(1,Math.min(20,Math.floor(Number(count)||20)));
+ const mock=mode==='mock',integratedMode=mode==='integrated',qty=mock?50:Math.max(1,Math.min(20,Math.floor(Number(count)||20)));
  const selectedDifficulty=mock?'mixed':LEVELS.includes(difficulty)?difficulty:'mixed';
  const questionOrder=order==='random'?'random':'progressive';
  const mixed=paper==='FA2'||paper==='MA2';
+ const crossTopic=(mock||integratedMode||!Array.isArray(topics)||topics.length!==1)&&mixed;
+ const integrator=root.LedgerIntegratedCases;
+ const canIntegrate=crossTopic&&integrator&&typeof integrator.get==='function';
  const required={mcq:qty-(mixed?(mock?15:Math.floor(qty/2)):0),numeric:mixed?(mock?15:Math.floor(qty/2)):0};
- const result={questions:[],available:0,requested:qty,paper,mode:mock?'mock':'topic',topicsCovered:0,
+ const result={questions:[],available:0,requested:qty,paper,mode:mock?'mock':integratedMode?'integrated':'topic',topicsCovered:0,
+    integratedCases:0,integratedTopicLinks:0,topicDistribution:{},
     targetMix:required,actualMix:{mcq:0,numeric:0},complete:false,quality:'original-exam-style',
     difficulty:selectedDifficulty,order:questionOrder,
     levelMix:{easy:0,moderate:0,hard:0},availableLevelMix:{easy:0,moderate:0,hard:0},
@@ -91,13 +95,17 @@ function generate({paper,topics,count=20,mode='topic',difficulty='mixed',order='
     syllabusCoverageVerified:false,
     outcomeCoverage:[],
     reason:'Not enough distinct authored questions; fillers have been disabled.'};
+ if(integratedMode&&!mixed){
+   result.reason='Integrated cross-topic case practice is currently authored for FA2 and MA2 only.';
+   return result;
+ }
  if(!allowedPapers.has(paper)){
    result.reason='This paper needs an independently authored question bank and its correct official exam format.';
    return result;
  }
  const headings=syllabus[paper]?.topics||[];
  const available=new Set(headings.map(x=>engine.topicCode(x)?.code).filter(Boolean));
- const wanted=mock||!topics?.length?[...available]:topics.filter(x=>available.has(x));
+ const wanted=mock||integratedMode||!topics?.length?[...available]:topics.filter(x=>available.has(x));
  const keys=shuffle([...new Set(wanted)].map(code=>paper+':'+code),rng);
  const recent=new Set(recentIds||[]),exposure=new Map();
  for(const g of recentGroups||[]){if(typeof g==='string')exposure.set(g,(exposure.get(g)||0)+1);}
@@ -130,6 +138,28 @@ function generate({paper,topics,count=20,mode='topic',difficulty='mixed',order='
    push(numeric?calculatedNumeric(key,scenario):calculatedMCQ(key,scenario,rng));
   }
  }
+ // Cross-topic problems carry every assessed chapter, not just their primary key.
+ // No syllabus learning-outcome credit is given until each mapping is manually verified.
+ if(canIntegrate){
+  const knownKeys=new Set(keys);
+  for(let index=0;index<(integrator.counts?.[paper]||0);index++){
+   const scenario=integrator.get(paper,rng,index);
+   if(!scenario||!Array.isArray(scenario.topicKeys)||scenario.topicKeys.length<2
+      ||!scenario.topicKeys.every(key=>knownKeys.has(key)))continue;
+   const key=scenario.topicKeys[0];
+   for(const converter of [calculatedMCQ,calculatedNumeric]){
+    const question=converter(key,scenario,rng);
+    if(!valid(question))continue;
+    question.integrated=true;
+    question.topicKeys=scenario.topicKeys.slice();
+    question.id=hashId(key,question);
+    question.difficulty=estimateLevel(question);
+    question.skillLabel='Integrated case · '+scenario.topics.join(' + ');
+    question.outcomeCodes=[]; // Not independently mapped; never award false syllabus mastery.
+    pool.push(question);
+   }
+  }
+ }
  const eligible=pool.filter(q=>selectedDifficulty==='mixed'||q.difficulty===selectedDifficulty);
  const availableAreas=new Map();
  for(const q of eligible){const area=q.key+'|'+q.group;if(!availableAreas.has(area))availableAreas.set(area,q.skillLabel);}
@@ -138,31 +168,53 @@ function generate({paper,topics,count=20,mode='topic',difficulty='mixed',order='
  const targetLevels={easy:Math.round(qty*.3),moderate:Math.round(qty*.4),hard:0};
  targetLevels.hard=qty-targetLevels.easy-targetLevels.moderate;
  const levelsUsed={easy:0,moderate:0,hard:0};
- const assessedOutcomes=new Set();
+ const assessedOutcomes=new Set(),topicCounts=new Map();
+ const topicKeys=q=>Array.isArray(q.topicKeys)&&q.topicKeys.length?q.topicKeys:[q.key];
  const familyKey=q=>q.key+'|'+q.group;
  const familyExposure=q=>exposure.get(familyKey(q))||0;
  function usedCount(key,group){return used.get(key+'|'+group)||0}
+ const byType={mcq:{integrated:[],standard:[]},numeric:{integrated:[],standard:[]}};
+ for(const q of eligible)byType[q.type][q.integrated?'integrated':'standard'].push(q);
+ // Integrated mode deliberately gives cross-topic cases the majority of each sitting.
+ // All-topics and mock modes blend them with standalone skills; single-topic drills do not.
+ function targetIntegrated(type,n){
+  if(!canIntegrate)return 0;
+  // Preserve a reserve of unseen integrated families for later sessions.
+  if(integratedMode)return Math.max(1,Math.ceil(n*.4));
+  if(mock)return Math.max(1,Math.round(n*.2));
+  return Math.max(1,Math.round(n*.25));
+ }
  function take(type,n){
+  const integrationQuota=targetIntegrated(type,n);
   for(let j=0;j<n;j++){
+   const preferIntegrated=j<integrationQuota;
+   const primary=byType[type][preferIntegrated?'integrated':'standard'];
+   const fallback=byType[type][preferIntegrated?'standard':'integrated'];
    let best=null,bestScore=Infinity;
-   for(const q of eligible){
-    if(q.type!==type||prompts.has(q.prompt)||usedCount(q.key,q.group)>=MAX_VARIANTS_PER_SKILL)continue;
-    let priorTopic=0;
-    for(const p of picked)if(p.key===q.key)priorTopic++;
-    const overLevel=selectedDifficulty==='mixed'&&levelsUsed[q.difficulty]>=targetLevels[q.difficulty]?25:0;
-    const mappedChapter=Boolean(root.LedgerQuizOutcomeMap?.[q.key]);
-    const freshOutcome=(q.outcomeCodes||[]).some(code=>!assessedOutcomes.has(q.key+'|'+code));
-    const outcomePenalty=mappedChapter?(freshOutcome?-30:q.outcomeCodes?.length?8:12):0;
-    const score=priorTopic*9+usedCount(q.key,q.group)*110+
-      familyExposure(q)*70+(recent.has(q.id)?120:0)+overLevel+outcomePenalty+(rngScores.get(q.id)??rng());
-    rngScores.set(q.id,score%1);
-    if(score<bestScore){bestScore=score;best=q;}
+   for(const candidates of [primary,fallback]){
+    for(const q of candidates){
+     if(prompts.has(q.prompt)||usedCount(q.key,q.group)>=MAX_VARIANTS_PER_SKILL)continue;
+     const keysForQuestion=topicKeys(q);
+     const priorTopic=keysForQuestion.reduce((sum,key)=>sum+(topicCounts.get(key)||0),0)/keysForQuestion.length;
+     const newTopic=keysForQuestion.some(key=>!topicCounts.has(key));
+     const overLevel=selectedDifficulty==='mixed'&&levelsUsed[q.difficulty]>=targetLevels[q.difficulty]?25:0;
+     const mappedChapter=Boolean(root.LedgerQuizOutcomeMap?.[q.key]);
+     const freshOutcome=(q.outcomeCodes||[]).some(code=>!assessedOutcomes.has(q.key+'|'+code));
+     const outcomePenalty=!q.integrated&&mappedChapter?(freshOutcome?-30:q.outcomeCodes?.length?8:12):0;
+     const last=picked[picked.length-1];
+     const adjacent=last&&topicKeys(last).some(key=>keysForQuestion.includes(key))?10:0;
+     const score=priorTopic*18+(newTopic?-15:0)+adjacent+
+       familyExposure(q)*85+(recent.has(q.id)?140:0)+overLevel+outcomePenalty+(rngScores.get(q.id)??rng());
+     rngScores.set(q.id,score%1);
+     if(score<bestScore){bestScore=score;best=q;}
+    }
+    if(best)break;
    }
    if(!best)break;
    picked.push(best);prompts.add(best.prompt);levelsUsed[best.difficulty]++;
+   for(const key of topicKeys(best))topicCounts.set(key,(topicCounts.get(key)||0)+1);
    for(const code of best.outcomeCodes||[])assessedOutcomes.add(best.key+'|'+code);
-   const id=best.key+'|'+best.group;
-   used.set(id,(used.get(id)||0)+1);
+   const id=familyKey(best);used.set(id,(used.get(id)||0)+1);
   }
  }
  take('mcq',required.mcq);take('numeric',required.numeric);
@@ -170,7 +222,10 @@ function generate({paper,topics,count=20,mode='topic',difficulty='mixed',order='
    [...picked].sort((a,b)=>LEVEL_RANK[a.difficulty]-LEVEL_RANK[b.difficulty]):shuffle(picked,rng);
  result.questions=questions;result.available=questions.length;
  result.actualMix={mcq:questions.filter(q=>q.type==='mcq').length,numeric:questions.filter(q=>q.type==='numeric').length};
- result.topicsCovered=new Set(questions.map(q=>q.key)).size;
+ result.topicsCovered=new Set(questions.flatMap(topicKeys)).size;
+ result.integratedCases=questions.filter(q=>q.integrated).length;
+ result.integratedTopicLinks=new Set(questions.filter(q=>q.integrated).flatMap(topicKeys)).size;
+ result.topicDistribution=Object.fromEntries(topicCounts);
  result.familiesCovered=new Set(questions.map(familyKey)).size;
  result.repeatFamilyExposure=questions.filter(q=>familyExposure(q)>0).length;
  result.freshFamilies=questions.length-result.repeatFamilyExposure;
@@ -191,8 +246,10 @@ function generate({paper,topics,count=20,mode='topic',difficulty='mixed',order='
     })),edition:root.LedgerOutcomeLessons[key].edition||'Not independently verified',
     mappedBy:'partial manual editorial question-family mapping'};
  });
- result.complete=questions.length===qty&&result.actualMix.mcq===required.mcq&&result.actualMix.numeric===required.numeric;
+ result.complete=questions.length===qty&&result.actualMix.mcq===required.mcq&&result.actualMix.numeric===required.numeric
+   &&(!integratedMode||result.integratedCases>0);
  if(result.complete)result.reason='';
+ else if(integratedMode&&!result.integratedCases)result.reason='No authored integrated cases are available for this selection; the syllabus cannot be called fully covered.';
  else if(selectedDifficulty!=='mixed')result.reason='Insufficient distinct '+selectedDifficulty+' questions in this chapter; no filler has been invented.';
  return result;
 }

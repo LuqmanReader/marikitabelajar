@@ -41,33 +41,46 @@ function updateReadLink(){
 }
 function getSelection(){return $('topic').value==='all'?null:[$('topic').value];}
 function setMode(next){
- mode=next==='mock'?'mock':'topic';
- const isMock=mode==='mock';
- $('topicMode').classList.toggle('active',!isMock);
+ mode=next==='mock'?'mock':next==='integrated'?'integrated':'topic';
+ if(mode==='integrated'&&!['FA2','MA2'].includes($('paper').value))mode='topic';
+ const isMock=mode==='mock',isIntegrated=mode==='integrated';
+ $('integratedMode').disabled=!['FA2','MA2'].includes($('paper').value);
+ $('integratedMode').title=$('integratedMode').disabled?'Integrated case bank is currently available for FA2 and MA2.':'Combine several syllabus topics in each problem.';
+ // Cross-topic authored cases combine multiple steps and are rated hard;
+ // do not expose an easy/moderate-only filter that would silently exclude them.
+ const difficultySelect=$('difficulty');
+ for(const option of difficultySelect.options){
+  if(option.value==='easy'||option.value==='moderate')option.disabled=isIntegrated;
+ }
+ if(isIntegrated&&['easy','moderate'].includes(difficultySelect.value))difficultySelect.value='mixed';
+ $('topicMode').classList.toggle('active',!isMock&&!isIntegrated);
+ $('integratedMode').classList.toggle('active',isIntegrated);
  $('mockMode').classList.toggle('active',isMock);
- $('topicMode').setAttribute('aria-pressed',String(!isMock));
+ $('topicMode').setAttribute('aria-pressed',String(!isMock&&!isIntegrated));
+ $('integratedMode').setAttribute('aria-pressed',String(isIntegrated));
  $('mockMode').setAttribute('aria-pressed',String(isMock));
- $('topicField').hidden=isMock;
+ $('topicField').hidden=isMock||isIntegrated;
  $('countField').hidden=isMock;
  $('difficultyField').hidden=isMock;
  $('orderField').hidden=isMock;
- $('readTopic').hidden=isMock;
+ $('readTopic').hidden=isMock||isIntegrated;
  $('modeDescription').textContent=isMock
-  ?(['FA2','MA2'].includes($('paper').value)?'50-question foundation-style practice: 35 MCQ and 15 numerical entries; this does not replicate all official CBE question types.':'50-question foundation-style practice with MCQs; not an official ACCA examination.')
-  :(['FA2','MA2'].includes($('paper').value)?'Up to 20 original questions; target 10 MCQ and 10 numeric where the bank has distinct skills.':'Original multiple-choice practice. Question count depends on available independent skills.');
- $('generate').textContent=isMock?'GENERATE 50-QUESTION MOCK →':'GENERATE '+$('count').value+' QUESTIONS →';
+  ?(['FA2','MA2'].includes($('paper').value)?'50-question foundation-style practice: 35 MCQ and 15 numerical entries, including connected-topic cases. This does not replicate all CBE formats.':'50-question foundation-style practice with MCQs, not an official ACCA examination.')
+  :isIntegrated?'Integrated Mix deliberately combines two or three FA2/MA2 chapters inside one scenario, alongside standalone problems from across the paper. Original practice, not an ACCA or Kaplan question bank.'
+  :(['FA2','MA2'].includes($('paper').value)?'Up to 20 original questions; choose ALL TOPICS to mix standalone chapter skills with integrated cross-topic scenarios.':'Original multiple-choice practice. Question count depends on available independent skills.');
+ $('generate').textContent=isMock?'GENERATE 50-QUESTION MOCK →':isIntegrated?'GENERATE '+$('count').value+' INTEGRATED QUESTIONS →':'GENERATE '+$('count').value+' QUESTIONS →';
 }
 
 function qTitle(q){const t=getTopics(active.paper).find(x=>x.code===q.key.split(':')[1]);return t?.title||q.key;}
 function makeQuiz(){
- const paper=$('paper').value,topics=mode==='mock'?null:getSelection(),count=mode==='mock'?50:Number($('count').value);
+ const paper=$('paper').value,topics=mode==='mock'||mode==='integrated'?null:getSelection(),count=mode==='mock'?50:Number($('count').value);
  const difficulty=mode==='mock'?'mixed':$('difficulty').value;
  const order=mode==='mock'?'random':$('order').value;
  const records=engine.readHistory(root.localStorage).filter(r=>r.paper===paper).slice(0,100);
  const recentIds=records.flatMap(r=>(r.items||[]).map(q=>q.id)).concat(recentlyGenerated);
  const recentGroups=records.flatMap(r=>(r.items||[]).map(q=>q.key&&q.group?q.key+'|'+q.group:null).filter(Boolean)).concat(recentlyGeneratedGroups);
  active=engine.generate({paper,topics,count,mode,difficulty,order,recentIds,recentGroups,lessons,syllabus:syllabi});
- active.selectedTopic=mode==='mock'?'all':$('topic').value;
+ active.selectedTopic=mode==='mock'||mode==='integrated'?'all':$('topic').value;
  recentlyGenerated=recentlyGenerated.concat(active.questions.map(q=>q.id)).slice(-400);
  recentlyGeneratedGroups=recentlyGeneratedGroups.concat(active.questions.map(q=>q.key+'|'+q.group)).slice(-400);
  answers={};phase='answering';saved=false;cursor=0;flagged=new Set();
@@ -77,10 +90,11 @@ function makeQuiz(){
    return;
  }
  $('quizSection').hidden=false;$('results').hidden=true;$('saveStatus').textContent='';$('save').disabled=false;
- const narrow=mode==='mock'?' / PAPER-WIDE MOCK PRACTICE':topics?' / '+topics.join(', '):' / MIXED TOPICS';
- $('quizTitle').textContent=mode==='mock'?'50-QUESTION MOCK PRACTICE':'TOPIC PRACTICE SET';
- $('quizSummary').textContent=paper+narrow+' · '+active.available+' original questions · '+active.actualMix.mcq+' MCQ / '+active.actualMix.numeric+' numerical · '+active.topicsCovered+' topics / '+active.familiesCovered+' distinct reasoning families · '+(active.difficulty||'mixed').toUpperCase()+' difficulty · '+active.levelMix.easy+' easy / '+active.levelMix.moderate+' moderate / '+active.levelMix.hard+' hard'+(!active.complete?' · LIMITED: '+active.available+' of '+active.requested+' requested; no invented fillers.':'')+' · '+(active.repeatFamilyExposure?'REPEATED REASONING: '+active.repeatFamilyExposure+' family reuse(s) from recent sessions · ':'')+'Not official ACCA/Kaplan.';
+ const narrow=mode==='mock'?' / PAPER-WIDE MOCK PRACTICE':mode==='integrated'?' / INTEGRATED MULTI-TOPIC CASES':topics?' / '+topics.join(', '):' / MIXED TOPICS';
+ $('quizTitle').textContent=mode==='mock'?'50-QUESTION MOCK PRACTICE':mode==='integrated'?'INTEGRATED CASE PRACTICE':'TOPIC PRACTICE SET';
+ $('quizSummary').textContent=paper+narrow+' · '+active.available+' original questions · '+active.actualMix.mcq+' MCQ / '+active.actualMix.numeric+' numerical · '+active.topicsCovered+' syllabus topics / '+active.integratedCases+' integrated cases / '+active.familiesCovered+' reasoning families · '+(active.difficulty||'mixed').toUpperCase()+' difficulty · '+active.levelMix.easy+' easy / '+active.levelMix.moderate+' moderate / '+active.levelMix.hard+' hard'+(!active.complete?' · LIMITED: '+active.available+' of '+active.requested+' requested; no invented fillers.':'')+' · '+(active.repeatFamilyExposure?'REPEATED REASONING: '+active.repeatFamilyExposure+' family reuse(s) from recent sessions · ':'')+'Not official ACCA/Kaplan.';
  if(!active.complete)setMessage('QUESTION BANK SHORTAGE · '+active.reason+' Try mixed-topic practice for more distinct questions.');
+ else if(active.integratedCases)setMessage(active.integratedCases+' questions combine multiple topics within each case. These topic links are not independently verified ACCA outcome coverage.');
  else if(active.repeatFamilyExposure)setMessage('REASONING REUSE WARNING · '+active.repeatFamilyExposure+' question families were recently practised. The bank is limited; new numbers do not count as a new accounting skill.');
  $('review').hidden=false;
  renderCoverage();
@@ -96,6 +110,11 @@ function renderCoverage(){
  const coverage=active.skillCoverage||{tested:0,available:0,uncovered:[]};
  box.append(element('h3',null,'CURRENT QUESTION BANK · '+coverage.tested+' / '+coverage.available+' DISTINCT SKILLS TESTED'));
  box.append(element('p',null,'This is question-bank skill coverage, not certification that every syllabus learning outcome has been tested.'));
+ if(active.integratedCases){
+  box.append(element('p',null,active.integratedCases+' integrated questions connect '+active.integratedTopicLinks+' distinct syllabus topics. Linked topics are not official learning-outcome mastery claims.'));
+  const distribution=Object.entries(active.topicDistribution||{}).sort((a,b)=>b[1]-a[1]);
+  box.append(element('p',null,'Topic appearances (cross-topic cases count toward each linked topic): '+distribution.slice(0,24).map(([key,n])=>key+' × '+n).join(' · ')+(distribution.length>24?' · …':'')));
+ }
  if(coverage.uncovered.length){
   const missing=coverage.uncovered.slice(0,12).map(x=>x.label).join(' · ');
   box.append(element('p',null,'Not selected from available skills: '+missing+(coverage.uncovered.length>12?' …':'')+'.'));
@@ -150,7 +169,9 @@ function renderQuestions(){
  active.questions.forEach((q,i)=>{
   const card=element('article','question');card.id='practice-'+i;
   const type=q.type==='mcq'?'MULTIPLE CHOICE':'NUMERICAL ENTRY';
-  card.append(element('div','meta',String(i+1).padStart(2,'0')+' / '+q.key+' / '+type+' / '+(q.difficulty||'unrated').toUpperCase()+' / '+(q.skillLabel||'Original question')));
+  const linked=q.topicKeys?.length?q.topicKeys:[q.key];
+  card.append(element('div','meta',String(i+1).padStart(2,'0')+' / '+linked.join(' + ')+' / '+type+' / '+(q.difficulty||'unrated').toUpperCase()+' / '+(q.skillLabel||'Original question')));
+  if(q.integrated)card.append(element('p','integrated-case-label','INTEGRATED CASE · '+linked.map(x=>{const t=getTopics(active.paper).find(y=>x.endsWith(':'+y.code));return t?x+' · '+t.title:x;}).join(' / ')));
   card.append(element('h3',null,q.prompt));
   if(q.type==='mcq'){
     const choices=element('div','choices');
@@ -209,7 +230,8 @@ function saveQuiz(){
     skillCoverage:{tested:active.skillCoverage.tested,available:active.skillCoverage.available},
     flagged:[...flagged].sort((a,b)=>a-b),
     items:outcome.items.map((item,i)=>({...item,group:active.questions[i].group,
-      difficulty:active.questions[i].difficulty,outcomeCodes:active.questions[i].outcomeCodes||[]})),
+      difficulty:active.questions[i].difficulty,outcomeCodes:active.questions[i].outcomeCodes||[],
+      topicKeys:active.questions[i].topicKeys||[active.questions[i].key],integrated:Boolean(active.questions[i].integrated)})),
    edition:syllabi[active.paper]?.edition||null};
  try{
    engine.saveHistory(root.localStorage,record);
@@ -227,7 +249,7 @@ function renderHistory(){
  const wrap=element('div','history-list');
  for(const r of entries.slice(0,8)){
    const row=element('div','history-row'),left=element('div');
-   left.append(element('b',null,r.paper+' / '+(r.mode==='mock'?'50-QUESTION MOCK':r.topic==='all'?'MIXED TOPICS':r.topic||'MIXED')));
+   left.append(element('b',null,r.paper+' / '+(r.mode==='mock'?'50-QUESTION MOCK':r.mode==='integrated'?'INTEGRATED MIX':r.topic==='all'?'MIXED TOPICS':r.topic||'MIXED')));
    left.append(element('small',null,new Date(r.at).toLocaleString('en-MY')+' · '+r.automatic+' attempted answers graded'+(r.difficulty?' · '+r.difficulty+' level':'')));
    row.append(left,element('b',null,r.correct+' / '+r.total));wrap.append(row);
  }
@@ -238,9 +260,10 @@ async function init(){
   if(!engine||papers.length!==25||!root.PersonalHubAuth||!Object.keys(syllabi).length)throw Error('The syllabus or quiz engine could not load.');
   if(!await root.PersonalHubAuth.ready()){if(!root.PersonalHubAuth.isRedirectingToProfile?.())root.location.replace('index.html');return;}
   fillPapers();fillTopics();renderHistory();
-  setMode(params.get('mode')==='mock'?'mock':'topic');
+  setMode(['mock','integrated'].includes(params.get('mode'))?params.get('mode'):'topic');
   $('topicMode').addEventListener('click',()=>setMode('topic'));
   $('mockMode').addEventListener('click',()=>setMode('mock'));
+  $('integratedMode').addEventListener('click',()=>setMode('integrated'));
   $('count').addEventListener('change',()=>setMode(mode));
   $('previousQuestion').addEventListener('click',()=>showQuestion(cursor-1));
   $('nextQuestion').addEventListener('click',()=>showQuestion(cursor+1));
