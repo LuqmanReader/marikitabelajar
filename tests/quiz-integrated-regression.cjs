@@ -18,6 +18,7 @@ const answers={
  FA2:[47040,52500,62000,15200,23400,42200,31000,32000,39000,-3000,35200,50600],
  MA2:[10800,941,0,20.78,22,-4,2435,21000,5000,-8,460,8000]
 };
+const answerMismatches=[];
 for(const [paper,expected] of Object.entries(answers)){
  const uniqueFamilies=new Set();
  const officialKeys=new Set(syllabus[paper].topics.map(s=>paper+':'+engine.topicCode(s).code));
@@ -25,7 +26,7 @@ for(const [paper,expected] of Object.entries(answers)){
   const q=globalThis.LedgerIntegratedCases.get(paper,()=>.5,i);
   assert(q,'Integrated case '+paper+'/'+i+' missing');
   assert(Number.isFinite(q.answer),'Nonfinite calculated answer '+paper+'/'+i);
-  assert.equal(q.answer,expected[i],paper+' case '+i+' incorrect answer');
+  if(q.answer!==expected[i])answerMismatches.push({paper,index:i,actual:q.answer,fixture:expected[i],prompt:q.prompt.slice(0,240)});
   assert(q.prompt.length>=125,paper+' case '+i+' not a detailed business scenario');
   assert(q.explanation.length>=95,paper+' case '+i+' missing multi-step explanation');
   assert(q.topicKeys.length>=2&&new Set(q.topicKeys).size===q.topicKeys.length,'Scenario not genuinely cross-topic: '+paper+'/'+i);
@@ -34,6 +35,7 @@ for(const [paper,expected] of Object.entries(answers)){
   uniqueFamilies.add(q.family);
  }
 }
+assert.equal(answerMismatches.length,0,'Reconcile independent answer fixtures: '+JSON.stringify(answerMismatches));
 let seed=385712;const rng=()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);
 for(const paper of ['FA2','MA2']){
  for(const count of [5,10,20]){
