@@ -157,7 +157,8 @@
    const coverage=M.summary(result.questions,meta.subject).coverage;
    const next=result.questions.filter(q=>incomplete(q,meta));
    $('aiResponsePreview').hidden=false;
-   $('aiResponsePreview').innerHTML='<h3>Import preview</h3><p>'+result.count+' question updates included · '+coverage.tagged+' topics assigned · '+next.length+' questions still need full feedback.</p>'+result.warnings.map(x=>'<p class="flow-notice">'+escape(x)+'</p>').join('')+insights(result.questions,meta.subject)+rankTable(result.questions,meta.subject)+'<details><summary>Preview explanations and classifications</summary>'+result.changed.map(change=>{const q=result.questions.find(x=>String(x.qno)===String(change.qno));return '<section class="flow-preview"><strong>Q'+escape(q.qno)+' · '+escape(q.chapter||'Topic not assigned')+'</strong><p>'+escape(F.plain(q.qtext).slice(0,160))+'</p>'+F.feedback(q)+'</section>';}).join('')+'</details>';
+   const uncertain=result.questions.filter(q=>q.topic_status==='needs_review').length;
+   $('aiResponsePreview').innerHTML='<h3>Import preview</h3><p>'+result.count+' updates included · '+coverage.tagged+' approved topic tags · '+uncertain+' uncertain matches · '+next.length+' questions needing more feedback.</p>'+result.warnings.map(x=>'<p class="flow-notice">'+escape(x)+'</p>').join('')+insights(result.questions,meta.subject)+rankTable(result.questions,meta.subject)+'<details><summary>Preview explanations and classifications</summary>'+result.changed.map(change=>{const q=result.questions.find(x=>String(x.qno)===String(change.qno));return '<section class="flow-preview"><strong>Q'+escape(q.qno)+' · '+escape(q.chapter||'Topic not assigned')+'</strong><p>'+escape(F.plain(q.qtext).slice(0,160))+'</p>'+F.feedback(q)+'</section>';}).join('')+'</details>';
   }
   if(root.SubjectCatalog){
    const paper=$('correctAttemptSubject');
@@ -252,23 +253,55 @@
    $('previewAIResponse').disabled=true;
    $('applyAIResponse').disabled=true;
   }
+
   $('copyAIRequest').addEventListener('click',async()=>{
-   try{await navigator.clipboard.writeText(fillPrompt());message('Request copied. Paste it into your preferred AI; attach the original PDF there if source visuals need checking. Return the JSON here.');}
-   catch(e){fillPrompt();$('requestText').parentElement.open=true;$('requestText').focus();$('requestText').select();message('Clipboard unavailable; the request is selected. Press Ctrl+C.');}
+   try{
+    if(!navigator.clipboard||!navigator.clipboard.writeText)throw Error('Clipboard unavailable');
+    await navigator.clipboard.writeText(fillPrompt());
+    message('Request copied. Paste it into your preferred AI, attach the original PDF if needed, then return to Step 2.');
+    setStage('response',true);
+   }catch(e){
+    fillPrompt();$('requestText').parentElement.open=true;$('requestText').focus();$('requestText').select();
+    message('Clipboard access unavailable. The request is selected. On tablets, use the text-selection menu to Copy, or download the request .txt.',true);
+   }
   });
   $('downloadAIRequest').addEventListener('click',()=>F.download('ledgerpeer-chatgpt-request-'+meta.id+'.txt',fillPrompt(),'text/plain'));
   $('downloadAttemptData').addEventListener('click',()=>F.download('ledgerpeer-attempt-backup-'+meta.id+'.json',JSON.stringify({meta,questions:data},null,2)));
+  $('pasteAIResponse').addEventListener('click',async()=>{
+   try{
+    if(!navigator.clipboard||!navigator.clipboard.readText)throw Error('Clipboard reading is unavailable');
+    const value=await navigator.clipboard.readText();
+    if(!value.trim())throw Error('Clipboard is empty');
+    if($('aiResponse').value.trim()&&!confirm('Replace the existing unsaved JSON draft with the clipboard contents?'))return;
+    $('aiResponse').value=value;scheduleDraft();writeDraft();
+    message('JSON pasted from clipboard. Preview the classification before applying.');
+   }catch(e){
+    $('aiResponse').focus();
+    message('Clipboard reading unavailable ('+(e.message||'permission denied')+'). On tablets, tap and hold the response field and choose Paste, or select a .json/.txt file.',true);
+   }
+  });
+  $('clearAIResponse').addEventListener('click',()=>{
+   if($('aiResponse').value.trim()&&!confirm('Clear the unsaved JSON draft for this attempt?'))return;
+   $('aiResponse').value='';$('aiResponseFile').value='';scheduleDraft();writeDraft();
+   message('Unsaved draft cleared. Original questions, answers and marks were not changed.');
+  });
   $('aiResponseFile').addEventListener('change',async function(){
    const file=this.files[0];if(!file)return;
-   try{$('aiResponse').value=await file.text();$('aiResponsePreview').hidden=true;message('JSON file loaded. Preview or click Apply.');}
-   catch(e){message('Could not read the response file.',true);}
+   try{
+    const contents=await file.text();
+    if($('aiResponse').value.trim()&&!confirm('Replace the existing unsaved response with this file?')){this.value='';return;}
+    $('aiResponse').value=contents;scheduleDraft();writeDraft();
+    message('JSON file loaded. Preview or Apply to save your debrief.');
+   }catch(e){message('Could not read the response file.',true);}
   });
-  $('aiResponse').addEventListener('input',()=>{$('aiResponsePreview').hidden=true;staged=null;});
+  $('aiResponse').addEventListener('input',scheduleDraft);
   $('previewAIResponse').addEventListener('click',()=>{
+   writeDraft();
    try{staged=F.review($('aiResponse').value,data,meta);preview(staged);message('Preview ready. Check topics and explanations before applying.');}
    catch(e){staged=null;message('Invalid AI response: '+e.message,true);}
   });
   $('applyAIResponse').addEventListener('click',()=>{
+   writeDraft();
    const btn=$('applyAIResponse');btn.disabled=true;
    try{
     staged=F.review($('aiResponse').value,data,meta);
@@ -278,7 +311,13 @@
     if(localStorage.getItem('tymba_exam_data:'+meta.id)!==expected)throw Error('The saved attempt changed in another tab. Reload before importing so you do not overwrite newer work.');
     const updated=staged.questions.map(q=>Object.assign({},q,{debrief:typeof q.debrief==='string'?F.sanitize(q.debrief):q.debrief}));
     F.save(localStorage,'tymba_exam_data:'+meta.id,updated);
-    try{sessionStorage.setItem('personal_hub_ai_saved:'+meta.id,'1');}catch(e){}
+    try{
+      sessionStorage.removeItem(draftKey);
+      $('aiResponse').value='';
+      sessionStorage.setItem(stageKey,'results');
+      sessionStorage.setItem('personal_hub_ai_saved:'+meta.id,'1');
+    }catch(e){}
+    setStage('results');
     data=updated;expected=localStorage.getItem('tymba_exam_data:'+meta.id);
     updateInfo();fillPrompt();refreshInvalidTags();
     message('Saved '+staged.count+' question updates. Refreshing questions and topic graphs…');
