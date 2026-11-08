@@ -67,7 +67,7 @@ function calculatedMCQ(key,p,rng){
 function calculatedNumeric(key,p){
  if(!p||!Number.isFinite(p.answer))return null;
  return {key,type:'numeric',group:'skill-'+p.family,prompt:p.prompt,
-  correctValue:p.answer,unit:p.unit||'
+   correctValue:p.answer,unit:p.unit||String.fromCharCode(36),explanation:p.explanation,difficulty:p.difficulty};
 }
 function valid(q){
  return q&&typeof q.prompt==='string'&&q.prompt.trim().length>=17&&
