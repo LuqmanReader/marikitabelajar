@@ -220,8 +220,12 @@ function generate({paper,topics,count=20,mode='topic',difficulty='mixed',order='
      const focusBonus=focusKeys.size&&keysForQuestion.some(key=>focusKeys.has(key))?-23:0;
      const overLevel=selectedDifficulty==='mixed'&&levelsUsed[q.difficulty]>=targetLevels[q.difficulty]?25:0;
      const mappedChapter=Boolean(root.LedgerQuizOutcomeMap?.[q.key]);
-     const freshOutcome=(q.outcomeCodes||[]).some(code=>!assessedOutcomes.has(q.key+'|'+code));
-     const outcomePenalty=!q.integrated&&mappedChapter?(freshOutcome?-30:q.outcomeCodes?.length?8:12):0;
+     const mappedCodes=q.outcomeCodes||[];
+     const freshOutcomeCount=mappedCodes.filter(code=>!assessedOutcomes.has(q.key+'|'+code)).length;
+     // Prioritise coverage of genuinely distinct, documented outcomes.
+     // Selection alone is not academic verification of the material or syllabus.
+     const outcomePenalty=!q.integrated&&mappedChapter?
+       (freshOutcomeCount?-24-10*Math.min(3,freshOutcomeCount):mappedCodes.length?12:18):0;
      const last=picked[picked.length-1];
      const adjacent=last&&topicKeys(last).some(key=>keysForQuestion.includes(key))?10:0;
      const score=priorTopic*18+(newTopic?-15:0)+adjacent+focusBonus+
