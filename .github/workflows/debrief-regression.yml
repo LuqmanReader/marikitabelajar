@@ -44,6 +44,8 @@ jobs:
         run: node tests/debrief-image-answer-regression.js
       - name: Test FIA/ACCA PDF attempt import formats
         run: node tests/pdf-parser-regression.js
+      - name: Check 2026-27 FA2 syllabus topic classification and abstention
+        run: node tests/pdf-topic-fa2-regression.cjs
       - name: Create and inspect correction PDF output
         run: |
           npm install --no-save --package-lock=false --ignore-scripts pdf-lib@1.17.1
