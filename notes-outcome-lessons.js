@@ -324,7 +324,7 @@
       "h": {
         "level": "S",
         "title": "Efficiency and utilisation measures",
-        "explanation": "Efficiency ratio = standard hours for actual output / actual production hours ×100%. Capacity ratio = actual production hours / budgeted production hours ×100%. Production-volume ratio = standard hours / budgeted hours ×100% = efficiency × capacity. Idle time ratio = idle hours / attendance hours ×100%, where defined."
+        "explanation": "Efficiency ratio = standard hours for actual output / actual production hours ×100%. Capacity ratio = actual production hours / budgeted production hours ×100%. Production-volume ratio = standard hours / budgeted hours ×100%. If efficiency and capacity are expressed as percentages, production-volume percentage = efficiency percentage × capacity percentage ÷ 100. Idle time ratio = idle hours / attendance hours ×100%, where defined."
       }
     },
     "workings": [

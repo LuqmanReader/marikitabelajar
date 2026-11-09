@@ -11,13 +11,13 @@ globalThis.LedgerExamScenarios=bank;globalThis.LedgerQuizEngine=engine;
 for(const file of ['quiz-casebank-knowledge.js','quiz-casebank-ledger.js','quiz-diversity-bank.js','quiz-integrated-cases.js'])
  vm.runInThisContext(read(file),{filename:file});
 const expected={
- 'FA2:D4':[['reducing-balance-year-two',9386.3],['capitalised-cost-versus-training',38000],['part-year-depreciation',3250],['disposal-proceeds-from-gain',27000]],
+ 'FA2:D4':[['reducing-balance-year-two',9386.3],['capitalised-cost-versus-training',38000],['part-year-depreciation',3250],['disposal-proceeds-from-gain',27000],['repair-capitalisation-profit-error',3000],['asset-register-ledger-discrepancy',7000],['asset-register-cost-rollforward',96000],['accumulated-depreciation-ledger',30000],['part-exchange-disposal-gain',4000],['business-use-asset-versus-inventory',26000]],
  'FA2:D5':[['outstanding-expense-accrual',2800],['prepaid-expense-current-year-charge',2400],['accrued-income-recognition',4700]],
  'FA2:D6':[['receivables-return-and-cash',15200],['allowance-increase-or-reversal',-750],['net-receivables-after-writeoff',22800],['dishonoured-receipt-restatement',12500]],
  'FA2:E1':[['cash-book-three-unrecorded-items',19200],['deposit-in-transit-reconciliation',2500]],
  'FA2:G1':[['gross-margin-from-revenue',15000],['cost-of-sales-returns-and-carriage',37800]],
  'MA2:B1':[['fifo-two-batches-issue-value',6100],['weighted-average-inventory-unit-cost',8.5]],
- 'MA2:B2':[['labour-turnover-leavers-rate',16.67],['overtime-premium-gross-pay',558]],
+ 'MA2:B2':[['labour-turnover-leavers-rate',16.67],['overtime-premium-gross-pay',558],['piece-rate-production-bonus',1350],['labour-timesheet-direct-wip',442],['payroll-cost-ledger-reconciliation',800],['labour-turnover-replacement-rate',10],['labour-efficiency-ratio',90.4],['labour-capacity-ratio',87.91],['labour-production-volume-ratio',84.75],['labour-idle-time-ratio',7.1]],
  'MA2:B3':[['overhead-under-absorption',0]],
  'MA2:C2':[['absorption-profit-lower-inventory-reduction',-7200],['multiple-variable-cost-contribution',24000]],
  'MA2:C4':[['process-abnormal-gain-or-loss',32]],
@@ -48,9 +48,9 @@ for(const [key,items] of Object.entries(expected)){
  assert.equal(bank.problem(key,()=>0.5,70+items.length*2),null,key+' leaked repeated bonus family');
 }
 assert.equal(qualityGaps.length,0,'Some cases are too brief: '+JSON.stringify(qualityGaps));
-assert.equal(verified,31,'Missing fixed-answer scenario checks');
+assert.equal(verified,45,'Missing fixed-answer scenario checks');
 assert.equal(globalThis.LedgerQuizDiversityBank.topics.length,14);
-assert.equal(Object.values(globalThis.LedgerQuizDiversityBank.families).reduce((a,b)=>a+b,0),31);
+assert.equal(Object.values(globalThis.LedgerQuizDiversityBank.families).reduce((a,b)=>a+b,0),45);
 
 const source={window:{}};
 for(const file of ['subject-catalog.js','acca-published-data.js','notes-data.js','notes-uk-syllabi.js','notes-expanded-data.js'])
