@@ -17,6 +17,7 @@ on:
       - 'tests/quiz-casebank-content-regression.cjs'
       - 'tests/quiz-difficulty-coverage-regression.cjs'
       - 'tests/quiz-million-simulation.cjs'
+      - 'tests/quiz-outcome-depth-regression.cjs'
       - '.github/workflows/topic-quiz-regression.yml'
   pull_request:
     paths:
@@ -31,6 +32,7 @@ on:
       - 'tests/quiz-generator-regression.js'
       - 'tests/quiz-casebank-content-regression.cjs'
       - 'tests/quiz-million-simulation.cjs'
+      - 'tests/quiz-outcome-depth-regression.cjs'
       - 'tests/quiz-diversity-regression.cjs'
       - 'tests/quiz-integrated-regression.cjs'
       - 'tests/quiz-complete-count-regression.cjs'
@@ -69,5 +71,7 @@ jobs:
         run: node tests/quiz-integrated-regression.cjs
       - name: Verify full-length practice for every paper chapter and difficulty
         run: node tests/quiz-complete-count-regression.cjs
+      - name: Verify deep chapter outcome coverage and numerical answer fixtures
+        run: node tests/quiz-outcome-depth-regression.cjs
       - name: Run 1,000,000 real answer-marking simulations
         run: node tests/quiz-million-simulation.cjs
