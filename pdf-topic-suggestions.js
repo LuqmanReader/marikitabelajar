@@ -25,17 +25,40 @@
   ["A3",[/\b(cost classification|direct (?:cost|expense|labou?r|material)|indirect (?:cost|expense)|fixed cost|variable cost|semi[\s-]?variable|mixed cost|step[\s-]?fixed|cost behaviour|cost center|cost centre|cost unit|product cost|period cost)\b/ig]],
   ["B3",[/\b(accounting for (?:other )?expenses|indirect expenses|rental expense|utility expenses|expenses allocation|depreciation charge|depreciation method|reducing balance depreciation|straight line depreciation|depreciation expense)\b/ig]]
  ];
+ const fa2Rules=[
+  ["A1",[/\b(?:going concern|business entity concept|separate entity concept|prudence concept|materiality concept|consistency concept|historical cost concept|accounting conventions)\b/ig]],
+  ["B1",[/\b(?:accounting equation|assets\s*=\s*liabilities\s*\+\s*(?:capital|equity)|current (?:asset|liabilit)y|non-current liabilit(?:y|ies)|elements of (?:financial statements|the statement of financial position))\b/ig]],
+  ["C1",[/\b(?:general journal(?: entry| entries)?|double[\s-]?entry journal|journalise|journalize|journal entry for the transaction)\b/ig]],
+  ["C2",[/\b(?:t[\s-]?accounts?|ledger (?:balanc(?:e|ing)|postings?)|balancing a ledger account|posting (?:to|into) (?:the )?general ledger)\b/ig]],
+  ["D1",[/\b(?:sales tax|value added tax|vat\b|sales (?:returns?|day book)|purchase (?:returns?|day book)|credit notes?|debit notes?|trade discount|goods received note)\b/ig]],
+  ["D2",[/\b(?:imprest (?:system|petty cash)|petty cash|cash book (?:adjustment|entry|posting)|cash receipts? book|cash payments? book)\b/ig]],
+  ["D3",[/\b(?:fifo\b|first[\s-]?in[\s-]?first[\s-]?out|weighted average (?:inventory|cost|method)|net reali[sz]able value|nrv\b|inventory (?:valuation|write[\s-]?down|count|stocktake)|closing inventory)\b/ig]],
+  ["D4",[/\b(?:straight[\s-]?line depreciation|reducing[\s-]?balance depreciation|accumulated depreciation|depreciation (?:expense|charge|method|rate)|asset (?:disposal|register)|disposal (?:gain|loss|proceeds)|carrying amount of (?:equipment|machinery|plant|vehicle)|capital expenditure|revenue expenditure)\b/ig]],
+  ["D5",[/\b(?:accruals?|accrued (?:expense|income|revenue)|prepayments?|prepaid (?:rent|expense|insurance)|deferred income|income received in advance|outstanding (?:rent|utilities|electricity|expenses?))\b/ig]],
+  ["D6",[/\b(?:irrecoverable debts?|bad debts?|allowance for (?:receivables|doubtful debts)|provision for doubtful debts|receivables (?:control|ledger)|payables (?:control|ledger)|trade receivables?|trade payables?|warranty provision)\b/ig]],
+  ["D7",[/\b(?:owner'?s? drawings|drawings account|capital introduced by (?:the )?owner|sole trader capital|finance costs?|interest on (?:bank )?loan|interest payable on borrowings)\b/ig]],
+  ["E1",[/\b(?:bank reconciliation|bank reconcil(?:ing|iation)|unpresented cheques?|outstanding cheques?|uncredited (?:deposits?|lodgements?)|deposits? in transit|bank statement (?:reconciliation|balance))\b/ig]],
+  ["E2",[/\b(?:supplier statement reconciliation|payables account reconciliation|reconcil(?:e|ing) (?:the |a )?supplier statement|supplier statement (?:balance|difference)|supplier account reconciliation)\b/ig]],
+  ["F1",[/\b(?:trial balance|difference between debit and credit (?:balances|totals)|extraction of ledger balances)\b/ig]],
+  ["F2",[/\b(?:suspense account|error of (?:principle|commission|omission)|compensating error|correction of (?:posting |accounting )?errors|rectif(?:y|ication) of errors|journal to correct an error)\b/ig]],
+  ["G1",[/\b(?:statement of (?:profit or loss|financial position)|incomplete records|gross profit margin|cost of sales|net profit from incomplete records|preparation of financial statements)\b/ig]],
+  ["H1",[/\b(?:partnership agreement|partners?['’]? (?:salaries|salary|interest on capital)|profit[\s-]?sharing agreement)\b/ig]],
+  ["H2",[/\b(?:partners?['’]? current accounts?|partnership capital accounts?|partnership appropriation account|interest on partners?['’]? drawings)\b/ig]],
+  ["H3",[/\b(?:admission of (?:a |new )?partner|retirement of (?:a )?partner|partnership statement of financial position|goodwill on (?:partner )?admission|change in profit[\s-]?sharing ratio)\b/ig]]
+ ];
  function plain(value){return String(value||"").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();}
  function pick(q,subject,storage){
   const syllabus=root.LedgerSyllabus&&root.LedgerSyllabus.resolve(storage,subject);
   if(!syllabus||!syllabus.verified||!Array.isArray(syllabus.topics)||!syllabus.topics.length)return null;
   const code=(root.LedgerSyllabus.code(subject)||"").toUpperCase();
-  if(code!=="MA2")return null;
+  // Only the selected, published FIA paper may supply candidates. Unknown papers abstain.
+  if(code!=="MA2"&&code!=="FA2")return null;
+  const activeRules=code==="FA2"?fa2Rules:rules;
   const raw=String(q.qtext||"");
   const stem=plain(raw.includes("INFORMATION FOR THIS QUESTION:")?raw.slice(raw.lastIndexOf("\n\n")+2):raw);
   const information=plain(q.information||"");
   const found=[];
-  for(const [tag,patterns] of rules){
+  for(const [tag,patterns] of activeRules){
    let score=0,evidence=[];
    for(const pat of patterns){
     pat.lastIndex=0;const inStem=[...stem.matchAll(pat)];
@@ -53,6 +76,18 @@
   const lower=stem.toLowerCase();
   for(const [key,expression] of [["C1",/(?:profit|stock valuation|inventory valuation|overheads?).{0,55}absorption|absorption.{0,45}(?:profit|cost|stock|inventory)/],["C2",/(?:profit|stock valuation|inventory valuation).{0,55}marginal|marginal.{0,45}(?:profit|cost|stock|inventory)/]]){
    if(expression.test(lower)){const f=found.find(x=>x.code===key);if(f)f.score+=5;}
+  }
+  // Strong FA2 evidence may outrank a generic term within a multi-skill stem.
+  // If two categories remain equally supported, abstain rather than guess.
+  if(code==="FA2"){
+   for(const [tag,pattern] of [
+    ["E1",/\b(?:bank reconciliation|unpresented cheques?|uncredited (?:deposit|lodgement))\b/i],
+    ["E2",/\b(?:supplier statement reconciliation|payables account reconciliation)\b/i],
+    ["F2",/\b(?:suspense account|error of principle|compensating error)\b/i]
+   ]){
+    const match=found.find(x=>x.code===tag);
+    if(match&&pattern.test(stem))match.score+=4;
+   }
   }
   found.sort((a,b)=>b.score-a.score);
   if(found.length>1&&found[0].score-found[1].score<2)return null;
