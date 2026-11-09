@@ -13,6 +13,8 @@ const engine=require('../quiz-engine.js');
 const bank=require('../quiz-exam-bank.js');
 globalThis.LedgerQuizEngine=engine;
 globalThis.LedgerExamScenarios=bank;
+// The source lessons are browser IIFEs. Mirror the browser global for Node CI.
+globalThis.window=globalThis;
 for(const name of ['quiz-casebank-knowledge.js','quiz-casebank-ledger.js','quiz-diversity-bank.js','quiz-integrated-cases.js','notes-outcome-lessons.js','quiz-outcome-map.js','quiz-quality-engine.js'])
  vm.runInThisContext(read(name),{filename:name});
 
