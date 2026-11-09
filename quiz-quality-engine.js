@@ -244,7 +244,10 @@ function generate({paper,topics,count=20,mode='topic',difficulty='mixed',order='
    const id=familyKey(best);used.set(id,(used.get(id)||0)+1);
   }
  }
- take('mcq',required.mcq);take('numeric',required.numeric);
+ // Reserve numerical capacity before MCQs exhaust skills which support both formats.
+ // This protects the requested objective-question mix when sufficient authored families exist.
+ if(mixed){take('numeric',required.numeric);take('mcq',required.mcq);}
+ else take('mcq',required.mcq);
  // A 50:50 objective-type target is not permission to discard valid authored
  // questions. For topic/integrated practice, backfill with the other format
  // when a type runs short; retain strict official-style mix for mock sessions.
