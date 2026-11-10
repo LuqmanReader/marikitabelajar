@@ -145,7 +145,7 @@ function tableCandidates(layout){
       w:Math.max.apply(null,group.map(function(r){return r.box.x+r.box.w}))-group[0].box.x,
       h:group[group.length-1].box.y+group[group.length-1].box.h-group[0].box.y},
     rows:group.map(function(row){return row.columns.map(function(c){return c.text})})};
-  }});
+  });
 }
 root.LedgerPeerPdfLayout={fromNative:fromNative,fromTsv:fromTsv,
   anchorNumber:anchorNumber,candidateAnchors:candidateAnchors,sourceRegions:sourceRegions,
