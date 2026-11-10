@@ -34,7 +34,7 @@ async function ensureParser(){
  if(root.LedgerPeerOcrParser)return;
  await new Promise(function(resolve,reject){
    var tag=document.createElement('script');
-   tag.src='pdf-ocr-parser.js?v=20261105-ocrfix2';
+   tag.src='pdf-ocr-parser.js?v=20261110-q20-boundary1';
    tag.onload=function(){root.LedgerPeerOcrParser?resolve():reject(new Error('OCR repair parser not available'));};
    tag.onerror=function(){reject(new Error('Unable to load OCR repair parser'));};
    document.head.appendChild(tag);

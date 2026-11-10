@@ -9,7 +9,7 @@ function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){retur
 function clean(s){return String(s||'').replace(/\s+/g,' ').trim();}
 function number(str){var n=Number(String(str||'').replace(/,/g,''));return Number.isFinite(n)?n:null;}
 function grade(line){
- var m=clean(line).match(/\b(?:mark(?:s|ed)?|points?|score)\s*:?\s*(\d+(?:[.,]\d+)?)\s*(?:out\s*of|\/|from)\s*(\d+(?:[.,]\d+)?)/i);
+ var m=clean(line).match(/\b(?:mark(?:s|ed|e)?|wark|points?|score)\s*:?\s*(\d+(?:[.,]\d+)?)\s*(?:out\s*of|\/|from)\s*(\d+(?:[.,]\d+)?)/i);
  if(!m)return null;
  var earned=number(m[1]),possible=number(m[2]);
  if(earned===null||possible===null||possible<=0||earned<0||earned>possible)return null;
@@ -21,8 +21,14 @@ function questionNumber(s){
  return n>0&&n<=300?n:null;
 }
 function status(str){
- var m=clean(str).replace(/^question\s*\d{1,3}\s*/i,'').match(/^(partially\s+correct|incorrect|correct|unanswered|not\s+answered)(?:[.,! ]|$)/i);
- return m?m[1].toLowerCase().replace(/\s+/g,'_'):null;
+ // Common TYMBAFlex screenshot OCR distortions: "Inconect", "Incorect" and "Corect".
+ // Only accept these whole status labels; do not infer a grade from question wording.
+ var m=clean(str).replace(/^question\s*\d{1,3}\s*/i,'').match(/^(partially\s+correct|incorrect|inconect|incorect|correct|corect|unanswered|not\s+answered)(?:[.,! ]|$)/i);
+ if(!m)return null;
+ var label=m[1].toLowerCase().replace(/\s+/g,'_');
+ if(label==='inconect'||label==='incorect')return 'incorrect';
+ if(label==='corect')return 'correct';
+ return label;
 }
 function overall(pages){
  var lines=(pages[0]&&pages[0].lines||[]).map(clean),first=lines.findIndex(l=>questionNumber(l)!==null);
@@ -77,7 +83,9 @@ function parse(pages){
      var n=questionNumber(text);
      if(n!==null){
        // Repeated running headers or question citations must not become new items.
-       var following=lines.slice(i+1,i+7).some(function(x){return status(x)!==null||grade(x)!==null;});
+        // A heading with an OCR-distorted status/mark line still starts a new question.
+        // Never absorb it into the preceding answer block (Q19 -> Q20 regression).
+        var following=lines.slice(i+1,i+8).some(function(x){return status(x)!==null||grade(x)!==null;});
        if(!following){ignoredHeaders++;if(block){block.text.push({text,page:page.number});block.pages.add(page.number);}continue;}
        if(block&&block.n===n&&block.pages.has(page.number)){block.text.push({text,page:page.number});continue;}
        block={n,text:[],pages:new Set([page.number]),heading:text};
