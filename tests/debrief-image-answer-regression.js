@@ -64,6 +64,21 @@ const applied=w.RevisionFlow.review(response,[question],meta);
 assert.strictEqual(applied.questions[0].original_marks,2);
 assert.strictEqual(applied.questions[0].correct_answer,'50');
 assert.strictEqual(applied.coverage.tagged,1);
+const matrixQuestion=Object.assign({},question,{
+ qno:20,qtext:'Could each reason explain missing equipment? Yes No',
+ your_answer:'Invoice not received: No | Purchase not recorded: Yes',
+ correct_answer:'Invoice not received: Yes | Purchase not recorded: Yes',
+ answer_capture_method:'pdf-visual-matrix',answer_capture_status:'captured',
+ matrix_answers:[
+  {statement:'Invoice not received',selected:'No',correct:'Yes',is_correct:false,confidence:'high'},
+  {statement:'Purchase not recorded',selected:'Yes',correct:'Yes',is_correct:true,confidence:'high'}
+ ]
+});
+const matrixPrompt=w.RevisionFlow.prompt(meta,[matrixQuestion],syllabus.topics,[matrixQuestion]);
+assert(matrixPrompt.includes('"matrix_answers"'));
+assert(matrixPrompt.includes('"selected":"No"'));
+assert(matrixPrompt.includes('"correct":"Yes"'));
+assert(matrixPrompt.includes('For any captured matrix_answers'), 'Debrief AI must interpret every statement independently');
 const exporter=fs.readFileSync(path.join(dir,'extension/tymbaflex-bridge/quiz-figure-export.js'),'utf8');
 assert(exporter.includes('credentials:')&&exporter.includes('data:image/png;base64,'));
 assert(exporter.includes('LP_EXPORT_REVIEW_WITH_IMAGES'));
