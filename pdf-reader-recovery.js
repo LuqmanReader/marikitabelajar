@@ -18,8 +18,9 @@ function summarize(candidate){
   var badGlyphs=(joined.match(/[�©®§□■◊]/g)||[]).length;
   var malformed=(joined.match(/\b(?:hitps|tymbaedu\.commod|quizireview|eamed|retums|corect|inconect|wark)\b/gi)||[]).length;
   var symbols=(joined.match(/[A-Za-z0-9]/g)||[]).length;
-  var confidence=Number(candidate&&candidate.confidence);
-  var hasConfidence=Number.isFinite(confidence)&&confidence>=0&&confidence<=100;
+  var rawConfidence=candidate&&candidate.confidence;
+  var confidence=Number(rawConfidence);
+  var hasConfidence=rawConfidence!==null&&rawConfidence!==undefined&&Number.isFinite(confidence)&&confidence>=0&&confidence<=100;
   var words=joined.split(/\s+/).filter(Boolean);
   var score=anchors*35+Math.min(grades,anchors*2+2)*7+
     Math.min(30,letters/35)+Math.min(22,words.length/6)-
