@@ -47,6 +47,7 @@ async function open(source,onProgress){
   }
   throw new Error(health.explain(cause,report));
 }
+function hasMatrixHeader(lines){return /\b(?:yes\s+no|true\s+false)\b/i.test((lines||[]).join(' '));}
 function linesOf(items){
   var rows=[];
   items.forEach(function(it){
@@ -132,7 +133,7 @@ function ensureTesseract(){
   }).catch(function(err){root.__ledgerpeerTesseractLoading=null;throw err;});
   return root.__ledgerpeerTesseractLoading;
 }
-async function recognizePdfPage(page,worker){
+async function recognizePdfPage(page,worker,pageNumber){
   var size=page.getViewport({scale:1.7}),canvas=document.createElement('canvas');
   canvas.width=Math.ceil(size.width);canvas.height=Math.ceil(size.height);
   try{
@@ -140,13 +141,16 @@ async function recognizePdfPage(page,worker){
     if(!context)throw new Error('Canvas rendering is not available in this browser.');
     await page.render({canvasContext:context,viewport:size}).promise;
     var image=canvas.toDataURL('image/png');
-    var reading=await worker.recognize(image);
-    return {lines:String(reading&&reading.data&&reading.data.text||'').split(/\r?\n/).map(clean).filter(Boolean),
-      confidence:reading&&reading.data&&Number.isFinite(reading.data.confidence)?reading.data.confidence:null};
+    var reading=await worker.recognize(image,{}, {text:true,tsv:true});
+    var data=reading&&reading.data||{};
+    var matrixObservations=root.LedgerPeerPdfMatrixEvidence&&data.tsv?
+      root.LedgerPeerPdfMatrixEvidence.scan(canvas,data.tsv,pageNumber):[];
+    return {lines:String(data.text||'').split(/\r?\n/).map(clean).filter(Boolean),
+      confidence:Number.isFinite(data.confidence)?data.confidence:null,matrixObservations:matrixObservations};
   }finally{canvas.width=0;canvas.height=0;}
 }
 async function read(source,onProgress){
-  var pdf=await open(source,onProgress),pages=[],anyOcr=false,worker=null;
+  var pdf=await open(source,onProgress),pages=[],anyOcr=false,worker=null,matrixObservations=[],visualWarnings=[];
   try{
     for(var i=1;i<=pdf.numPages;i++){
       if(onProgress)onProgress('Inspecting page '+i+' / '+pdf.numPages);
@@ -162,8 +166,17 @@ async function read(source,onProgress){
           worker=await root.Tesseract.createWorker('eng');
         }
         if(onProgress)onProgress('Reading image-based page '+i+' / '+pdf.numPages+' (OCR)');
-        var recognized=await recognizePdfPage(page,worker);
+        var recognized=await recognizePdfPage(page,worker,i);
         lines=recognized.lines;confidence=recognized.confidence;anyOcr=true;
+        if(Array.isArray(recognized.matrixObservations))matrixObservations.push(...recognized.matrixObservations);
+      }else if(root.LedgerPeerPdfMatrixEvidence&&hasMatrixHeader(lines)){
+        // A selectable PDF text layer does not preserve filled radio-button pixels.
+        // Read its matrix cells visually as well, without replacing the good text layer.
+        try{
+          if(!worker){await ensureTesseract();worker=await root.Tesseract.createWorker('eng');}
+          var visual=await recognizePdfPage(page,worker,i);
+          if(Array.isArray(visual.matrixObservations))matrixObservations.push(...visual.matrixObservations);
+        }catch(visualError){visualWarnings.push('Page '+i+': visual matrix reading unavailable; selections remain unverified.');}
       }
       pages.push({number:i,lines:lines,ocrConfidence:confidence});
       page.cleanup();
@@ -202,7 +215,9 @@ async function read(source,onProgress){
       engine='universal-document';
     }
   }
-  var warnings=(parsed.warnings||[]).slice().concat(parseFailures);
+  var warnings=(parsed.warnings||[]).slice().concat(parseFailures,visualWarnings);
+  if(root.LedgerPeerPdfMatrixEvidence&&matrixObservations.length)
+    root.LedgerPeerPdfMatrixEvidence.apply(parsed.questions||[],matrixObservations,warnings);
   return {document:pdf,pages:pages,questions:parsed.questions||[],warnings:warnings,
     reconciliation:parsed.reconciliation||null,ocrUsed:anyOcr,readerEngine:engine,
     extractionConfidence:parsed.extractionConfidence||null,
