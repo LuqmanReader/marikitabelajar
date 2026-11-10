@@ -5,6 +5,9 @@ on:
       - 'pdf-input-health.js'
       - 'pdf-attempt-reader.js'
       - 'pdf-ocr-parser.js'
+      - 'pdf-matrix-evidence.js'
+      - 'tests/pdf-visual-matrix-regression.cjs'
+      - 'revision-flow.js'
       - 'ocr-source-repair.js'
       - 'tests/pdf-question20-ocr-regression.cjs'
       - 'attempt-entry.js'
@@ -16,6 +19,9 @@ on:
       - 'pdf-input-health.js'
       - 'pdf-attempt-reader.js'
       - 'pdf-ocr-parser.js'
+      - 'pdf-matrix-evidence.js'
+      - 'tests/pdf-visual-matrix-regression.cjs'
+      - 'revision-flow.js'
       - 'ocr-source-repair.js'
       - 'tests/pdf-question20-ocr-regression.cjs'
       - 'attempt-entry.js'
@@ -38,11 +44,15 @@ jobs:
         run: node tests/pdf-input-recovery.cjs
       - name: Check OCR question boundaries and answer provenance
         run: node tests/pdf-question20-ocr-regression.cjs
+      - name: Verify visual matrix choice extraction
+        run: node tests/pdf-visual-matrix-regression.cjs
       - name: Check JavaScript syntax
         run: |
           node --check pdf-input-health.js
           node --check pdf-attempt-reader.js
           node --check pdf-ocr-parser.js
+          node --check pdf-matrix-evidence.js
+          node --check revision-flow.js
           node --check attempt-entry.js
       - name: Existing universal reader compatibility
         run: node tests/universal-document.test.js
