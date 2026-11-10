@@ -69,4 +69,11 @@ matrix.apply([missing],ambiguous,[]);
 assert.equal(missing.answer_capture_status,'review');
 assert.equal(missing.your_answer,null);
 assert.equal(missing.matrix_answers[0].selected,null);
-console.log('PASS: FA2 Q20 visual matrix: chosen No/Yes, correct Yes/Yes, 0/2 unchanged; ambiguous radio remains unverified.');
+
+const protectedSource={qno:20,source_pdf_pages:[10],your_answer:'Captured source response',correct_answer:'Authoritative source key',answer_capture_status:'captured'};
+matrix.apply([protectedSource],observations,[]);
+assert.equal(protectedSource.answer_capture_status,'review');
+assert.equal(protectedSource.your_answer,'Captured source response');
+assert.equal(protectedSource.correct_answer,'Authoritative source key');
+assert.equal(protectedSource.matrix_source_conflict,true);
+console.log('PASS: FA2 Q20 visual matrix: No/Yes vs Yes/Yes; 0/2 unchanged; uncertainty and source conflicts preserved.');
