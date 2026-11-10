@@ -4,6 +4,8 @@ on:
     paths:
       - 'pdf-input-health.js'
       - 'pdf-attempt-reader.js'
+      - 'pdf-reader-recovery.js'
+      - 'tests/pdf-auto-fallback-regression.cjs'
       - 'pdf-ocr-parser.js'
       - 'pdf-page-layout.js'
       - 'pdf-native-widgets.js'
@@ -25,6 +27,8 @@ on:
     paths:
       - 'pdf-input-health.js'
       - 'pdf-attempt-reader.js'
+      - 'pdf-reader-recovery.js'
+      - 'tests/pdf-auto-fallback-regression.cjs'
       - 'pdf-ocr-parser.js'
       - 'pdf-page-layout.js'
       - 'pdf-native-widgets.js'
@@ -66,10 +70,13 @@ jobs:
         run: node tests/pdf-evidence-layout-regression.cjs
       - name: Verify original per-question visual evidence cropping
         run: node tests/pdf-question-visual-regression.cjs
+      - name: Test automatic page OCR fallback and faithful source display
+        run: node tests/pdf-auto-fallback-regression.cjs
       - name: Check JavaScript syntax
         run: |
           node --check pdf-input-health.js
           node --check pdf-attempt-reader.js
+          node --check pdf-reader-recovery.js
           node --check pdf-ocr-parser.js
           node --check pdf-page-layout.js
           node --check pdf-native-widgets.js
