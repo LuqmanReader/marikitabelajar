@@ -168,8 +168,20 @@ function apply(questions,observations,warnings){
       if(Array.isArray(warnings))warnings.push('Q'+q.qno+': a matrix radio selection was not visually verifiable; do not infer the missing choice.');
       return;
     }
-    q.your_answer=ob.rows.map(function(row){return row.statement+': '+row.selected}).join(' | ');
-    q.correct_answer=ob.rows.map(function(row){return row.statement+': '+row.correct}).join(' | ');
+    var visuallySelected=ob.rows.map(function(row){return row.statement+': '+row.selected}).join(' | ');
+    var visuallyCorrect=ob.rows.map(function(row){return row.statement+': '+row.correct}).join(' | ');
+    // Immutable source records outrank a newly inferred visual answer. If the
+    // two disagree, expose a review conflict instead of silently overwriting.
+    var conflict=(q.your_answer&&String(q.your_answer).trim()!==visuallySelected)||
+      (q.correct_answer&&String(q.correct_answer).trim()!==visuallyCorrect);
+    if(conflict){
+      q.answer_capture_status='review';
+      q.matrix_source_conflict=true;
+      if(Array.isArray(warnings))warnings.push('Q'+q.qno+': visual matrix choices conflict with already captured source answers. Original answers preserved.');
+      return;
+    }
+    q.your_answer=visuallySelected;
+    q.correct_answer=visuallyCorrect;
     q.answer_capture_status='captured';
   });
 }
