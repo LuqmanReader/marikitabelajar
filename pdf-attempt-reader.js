@@ -8,17 +8,44 @@ function assertPdf(file){
   if(!file||!(file.type==='application/pdf'||/\.pdf$/i.test(file.name||'')))throw new Error('Select a PDF file (.pdf).');
   if(file.size>35*1024*1024)throw new Error('PDF is over 35 MB. Reduce its size or use the HTML review export.');
 }
-async function open(source){
+async function open(source,onProgress){
   if(!(source instanceof Uint8Array))assertPdf(source);
-  if(!root.pdfjsLib||!root.pdfjsLib.getDocument)throw new Error('PDF reader library did not load. Check your connection or use HTML import.');
-  root.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
-  // PDF.js can transfer its supplied buffer to a Worker. Copy once so evidence
-  // remains available without re-reading a potentially expired File handle.
+  if(!root.pdfjsLib||!root.pdfjsLib.getDocument)throw new Error('PDF reader library did not load. Check your connection and retry.');
   var bytes=source instanceof Uint8Array?source:new Uint8Array(await source.arrayBuffer());
-  if(bytes.length<5||String.fromCharCode.apply(null,bytes.slice(0,5))!=='%PDF-')throw new Error('The file does not start with a valid PDF header.');
-  var document=await root.pdfjsLib.getDocument({data:bytes.slice()}).promise;
-  if(!document.numPages||document.numPages>120)throw new Error('This PDF has more than 120 pages. Please split it into smaller attempt reviews.');
-  return document;
+  var health=root.LedgerPeerPdfHealth,report=health&&health.inspect(bytes,source&&source.name||'',source&&source.type||'');
+  if(!report||report.kind!=='pdf')throw new Error('This file has no valid PDF header. Export the actual PDF or HTML review and try again.');
+  // PDF.js may transfer an ArrayBuffer to a worker: always pass a fresh copy.
+  var workerUrls=['https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'];
+  var cause=null;
+  for(var attempt=0;attempt<2;attempt++){
+    root.pdfjsLib.GlobalWorkerOptions.workerSrc=workerUrls[attempt];
+    var input=attempt===1&&report.headerOffset>0?bytes.subarray(report.headerOffset):bytes;
+    var options={data:input.slice(),stopAtErrors:false};
+    if(attempt===1){
+      // A second pass changes the worker CDN and disables stream/range behaviour.
+      // It does NOT fabricate missing PDF objects or student marks.
+      options.disableStream=true;options.disableRange=true;options.disableAutoFetch=true;
+      options.isEvalSupported=false;options.useWorkerFetch=false;
+    }
+    var task;
+    try{
+      task=root.pdfjsLib.getDocument(options);
+      var document=await task.promise;
+      if(!document.numPages||document.numPages>120){
+        await document.destroy();
+        throw new Error('This PDF has no readable pages or more than 120 pages. Split it into smaller review files.');
+      }
+      return document;
+    }catch(error){
+      if(task&&typeof task.destroy==='function')try{await task.destroy();}catch(ignore){}
+      if(/no readable pages or more than 120 pages/i.test(String(error.message||'')))throw error;
+      cause=error;
+      if(error&&error.name==='PasswordException')break;
+      if(attempt===0&&onProgress)onProgress('PDF opening failed. Trying a second compatible parsing configuration…');
+    }
+  }
+  throw new Error(health.explain(cause,report));
 }
 function linesOf(items){
   var rows=[];
@@ -119,7 +146,7 @@ async function recognizePdfPage(page,worker){
   }finally{canvas.width=0;canvas.height=0;}
 }
 async function read(source,onProgress){
-  var pdf=await open(source),pages=[],anyOcr=false,worker=null;
+  var pdf=await open(source,onProgress),pages=[],anyOcr=false,worker=null;
   try{
     for(var i=1;i<=pdf.numPages;i++){
       if(onProgress)onProgress('Inspecting page '+i+' / '+pdf.numPages);
@@ -210,5 +237,5 @@ function parseConvertedHtml(raw){
   if(data.format!=='ledgerpeer-pdf-conversion-v1'||!Array.isArray(data.questions))throw new Error('This is not a valid LedgerPeer PDF conversion.');
   return {questions:data.questions,warnings:Array.isArray(data.warnings)?data.warnings:[],pageCount:data.pages||0,documentOnly:!data.questions.length};
 }
-root.LedgerPeerPdfReader={read:read,convertToHTML:convertToHTML,parseConvertedHtml:parseConvertedHtml};
+root.LedgerPeerPdfReader={read:read,openDocument:open,convertToHTML:convertToHTML,parseConvertedHtml:parseConvertedHtml};
 })(window);
