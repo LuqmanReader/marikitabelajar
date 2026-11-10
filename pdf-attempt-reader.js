@@ -218,6 +218,11 @@ async function read(source,onProgress){
   var warnings=(parsed.warnings||[]).slice().concat(parseFailures,visualWarnings);
   if(root.LedgerPeerPdfMatrixEvidence&&matrixObservations.length)
     root.LedgerPeerPdfMatrixEvidence.apply(parsed.questions||[],matrixObservations,warnings);
+  if(matrixObservations.length){
+    warnings=warnings.filter(function(w){return !/selected answer\(s\) could not be proven from OCR/i.test(w);});
+    var unverified=(parsed.questions||[]).filter(function(q){return q.answer_capture_status!=='captured';}).length;
+    if(unverified)warnings.push(unverified+' answer selection(s) remain unverified after visual matrix analysis.');
+  }
   return {document:pdf,pages:pages,questions:parsed.questions||[],warnings:warnings,
     reconciliation:parsed.reconciliation||null,ocrUsed:anyOcr,readerEngine:engine,
     extractionConfidence:parsed.extractionConfidence||null,
