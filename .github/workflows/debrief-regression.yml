@@ -38,6 +38,8 @@ jobs:
           node-version: '22'
       - name: Validate saved exam title and classification editing
         run: node tests/exam-metadata-regression.cjs
+      - name: Ensure AI-only topic classification boundary
+        run: node tests/ai-only-topic-boundary.cjs
       - name: Run 25-paper debrief regression
         run: node tests/debrief-regression.js
       - name: Test responsive debrief with real DOM and clipboard interactions
