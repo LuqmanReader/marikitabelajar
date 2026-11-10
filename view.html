@@ -411,10 +411,10 @@
 <script src="subject-catalog.js"></script><script src="official-exam-registry.js?v=20261013-online-format-v1"></script><script src="acca-published-data.js?v=20261013-online-25-syllabi"></script><script src="syllabus-catalog.js?v=20261013-online-25-syllabi"></script>
 <script src="exam-model.js"></script>
 <script src="topic-taxonomy.js"></script><script src="chapter-analysis.js?v=20261013-online-25-syllabi"></script>
-<script src="pdf-topic-suggestions.js?v=20261103-related-topics"></script><script src="chapter-ui.js?v=20261014-whole-pdf-3"></script>
+<script src="chapter-ui.js?v=20261014-whole-pdf-3"></script>
 <link rel="stylesheet" href="chapter-analysis.css">
 <link rel="stylesheet" href="revision-flow.css">
-<script src="revision-flow.js?v=20261105-visual1"></script>
+<script src="revision-flow.js?v=20261110-ai-only-topics1"></script>
 <script src="answer-option-match.js?v=20261103-exact-correctness"></script>
 
 <script src="correction-pdf.js?v=20261105-pdfarchive2"></script>
@@ -564,14 +564,20 @@
         LOAD_ERROR = 'No saved exam found for id "' + examId + '" in this browser. It may have been saved on a different device/browser, or storage was cleared.';
       } else {
         DATA = JSON.parse(rawData);
-        // Recover clearly identifiable syllabus topics for existing attempts.
-        // Never overwrite a manually assigned topic or a ChatGPT debrief.
-        if(window.LedgerTopicSuggest&&Array.isArray(DATA)){
-          var suggestedCount=LedgerTopicSuggest.apply(DATA,META.subject,localStorage);
-          if(typeof LedgerTopicSuggest.repairLegacyRelated==='function')suggestedCount+=LedgerTopicSuggest.repairLegacyRelated(DATA,META.subject,localStorage);
-          if(suggestedCount){
-            localStorage.setItem('tymba_exam_data:'+examId,JSON.stringify(DATA));
-          }
+        // Imported exam records must remain unclassified until an external AI
+        // response is explicitly applied. Retire old provisional rule-based tags
+        // while preserving questions, marks, answers, and actual AI/manual tags.
+        if(Array.isArray(DATA)){
+          var migrated=false;
+          DATA=DATA.map(function(q){
+            if(!q||!['rule-suggestion','legacy-syllabus-repair'].includes(q.topic_origin))return q;
+            migrated=true;
+            return Object.assign({},q,{
+              chapter:'',topic_status:'',topic_origin:'',topic_reason:'',
+              topic_evidence:'',topic_confidence:''
+            });
+          });
+          if(migrated)localStorage.setItem('tymba_exam_data:'+examId,JSON.stringify(DATA));
         }
       }
     }catch(e){
