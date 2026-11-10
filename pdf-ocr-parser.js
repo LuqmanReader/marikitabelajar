@@ -89,7 +89,17 @@ function parse(pages){
         // A heading with an OCR-distorted status/mark line still starts a new question.
         // Never absorb it into the preceding answer block (Q19 -> Q20 regression).
         var following=lines.slice(i+1,i+8).some(function(x){return status(x)!==null||grade(x)!==null;});
-       if(!following){ignoredHeaders++;if(block){block.text.push({text,page:page.number});block.pages.add(page.number);}continue;}
+        var anchors=root.LedgerPeerPdfLayout&&page.layout?
+          root.LedgerPeerPdfLayout.candidateAnchors(page):[];
+        var spatial=anchors.some(function(a){return a.qno===n});
+        var sequential=block?n===block.n+1:n===1;
+        var bodyEvidence=lines.slice(i+1,i+8).some(function(x){
+          return clean(x).split(/\s+/).length>=4&&
+            questionNumber(x)===null&&!/^https?:/i.test(x);
+        });
+        if(!following&&!(spatial&&sequential&&bodyEvidence)){
+          ignoredHeaders++;if(block){block.text.push({text,page:page.number});block.pages.add(page.number);}continue;
+        }
        if(block&&block.n===n&&block.pages.has(page.number)){block.text.push({text,page:page.number});continue;}
        block={n,text:[],pages:new Set([page.number]),heading:text};
        blocks.push(block);
@@ -184,8 +194,10 @@ function parse(pages){
  if(lowConfidence.length)warnings.push('Low-confidence OCR page(s): '+lowConfidence.join(', ')+'.');
  var unknown=questions.filter(function(q){return q.is_correct===null;}).length;
  if(unknown)warnings.push(unknown+' question(s) have uncertain grades and remain unscored.');
- var unselected=questions.filter(function(q){return !q.your_answer;}).length;
- if(unselected)warnings.push(unselected+' selected answer(s) could not be proven from OCR; verify the original PDF pages.');
+ var unanswered=questions.filter(function(q){return q.source_result==='not_answered'||q.source_result==='unanswered';}).length;
+ var unresolved=questions.filter(function(q){return !q.your_answer&&q.source_result!=='not_answered'&&q.source_result!=='unanswered';}).length;
+ if(unresolved)warnings.push(unresolved+' question(s) have no proven selected-answer evidence. They may be unanswered or visually unreadable; do not assume either.');
+ if(unanswered)warnings.push(unanswered+' question(s) are explicitly marked unanswered in the original review.');
  if(ignoredHeaders)warnings.push(ignoredHeaders+' ungraded question references were ignored.');
  return {questions,warnings,reconciliation:reconciled?
      {questions:questions.length,originalEarned:overallBest.earned,originalPossible:overallBest.possible,

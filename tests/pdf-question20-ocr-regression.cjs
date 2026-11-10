@@ -47,5 +47,5 @@ assert.equal(q20.answer_capture_status,'not_captured');
 assert.equal(q20.your_answer,null);
 assert.deepEqual(Array.from(q20.source_pdf_pages),[10]);
 // Readable question and grade are not proof of selected Yes/No matrix cells.
-assert.ok(result.warnings.some(w=>/selected answer/.test(w)));
+assert.ok(result.warnings.some(w=>/no proven selected-answer evidence/.test(w)));
 console.log('PASS: Q19/Q20/Q21 remain separate; Q20 grade retained; missing matrix selections not fabricated.');
