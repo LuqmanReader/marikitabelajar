@@ -176,7 +176,9 @@ async function read(source,onProgress){
   }
   async function recover(page,pageNo,first,force){
     var engine=root.LedgerPeerPdfRecovery;
-    var reason=engine&&engine.retryReason(first,{expectQuestionHeader:false});
+    var head=(first.lines||[]).slice(0,10).join(' ');
+    var shouldHaveHeading=/\b(?:mark(?:s|ed)?|wark|incorrect|inconect|correct|partially\s+correct)\b/i.test(head);
+    var reason=engine&&engine.retryReason(first,{expectQuestionHeader:shouldHaveHeading});
     if(!engine||(!reason&&!force))return first;
     var original=Object.assign({},first),recovery={reason:reason||'native_layer_unreadable',improved:false,
       attempts:[{method:force?'native-text':'ocr-1.7',confidence:first.confidence,reason:reason||''}]};
