@@ -1,0 +1,39 @@
+name: PDF input and recovery regression
+on:
+  push:
+    paths:
+      - 'pdf-input-health.js'
+      - 'pdf-attempt-reader.js'
+      - 'attempt-entry.js'
+      - 'add-exam.html'
+      - 'tests/pdf-input-recovery.cjs'
+      - '.github/workflows/pdf-input-regression.yml'
+  pull_request:
+    paths:
+      - 'pdf-input-health.js'
+      - 'pdf-attempt-reader.js'
+      - 'attempt-entry.js'
+      - 'add-exam.html'
+      - 'tests/pdf-input-recovery.cjs'
+      - '.github/workflows/pdf-input-regression.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test PDF structure handling and retry
+        run: node tests/pdf-input-recovery.cjs
+      - name: Check JavaScript syntax
+        run: |
+          node --check pdf-input-health.js
+          node --check pdf-attempt-reader.js
+          node --check attempt-entry.js
+      - name: Existing universal reader compatibility
+        run: node tests/universal-document.test.js
