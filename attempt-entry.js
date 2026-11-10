@@ -177,6 +177,11 @@
       if(versionAtStart!==inputVersion||readerMode()!==selectedMode)throw new Error('Inputs changed while extraction was running. Choose Extract answer review again.');
       if(!Array.isArray(qs)||!qs.length)throw new Error('The PDF was opened, but no identifiable exam questions were found. Check that you uploaded a completed, marked attempt review; no scores have been invented.');
       qs=validateQuestions(qs,meta);
+      var extractionAudit=window.LedgerPeerPdfAudit?LedgerPeerPdfAudit.audit(qs):null;
+      if(extractionAudit){
+        meta.extractionAudit=extractionAudit;
+        if(!result)warnings.push(...extractionAudit.warnings);
+      }
       var graded=qs.filter(function(q){return typeof q.is_correct==='boolean';});
       var correct=graded.filter(function(q){return q.is_correct;}).length;
       if(!graded.length)warnings.push('This attempt has unverified scores. It will be saved as unscored, with its source evidence available for checking.');
@@ -185,24 +190,28 @@
         return Number.isFinite(q.original_marks)&&Number.isFinite(q.original_max_marks)&&q.original_max_marks>0&&q.original_marks>=0&&q.original_marks<=q.original_max_marks;
       });
       meta.markCoverage=sourceMarks.length;
-      if(sourceMarks.length===qs.length){
+      if(sourceMarks.length===qs.length&&(!extractionAudit||extractionAudit.marksAligned)){
         meta.originalEarnedMarks=Math.round(sourceMarks.reduce(function(sum,q){return sum+q.original_marks;},0)*100)/100;
         meta.originalPossibleMarks=Math.round(sourceMarks.reduce(function(sum,q){return sum+q.original_max_marks;},0)*100)/100;
       }
       meta.readerEngine=result&&result.readerEngine||'html-structured';
       staged={meta:meta,questions:qs,warnings:warnings};
       var captured=qs.filter(function(q){return q.answer_capture_status==='captured';}).length;
+      var states=extractionAudit&&extractionAudit.answerStates||{answered:captured,unanswered:0,partially_answered:0,unresolved:qs.length-captured};
+      var captureDescription='<p><strong>'+states.answered+' answered · '+states.unanswered+' confirmed unanswered · '+states.partially_answered+' partially answered · '+states.unresolved+' unresolved</strong>. Blank fields are not automatically classified as extraction failures.</p>';
+      var structureDescription=extractionAudit&&extractionAudit.missing.length?
+        '<p class="capture-warning">Missing question number(s): '+extractionAudit.missing.join(', ')+'. This export is not structurally verified.</p>':'';
       $('entryPreview').innerHTML='<div class="flow-score"><strong>'+(graded.length?Math.round(correct/graded.length*100)+'%':'Unscored')+'</strong><span>Full-correct rate · '+correct+'/'+graded.length+' questions · '+qs.length+' total</span></div>'+
         (meta.originalPossibleMarks?'<p><strong>Original graded marks: '+meta.originalEarnedMarks+' / '+meta.originalPossibleMarks+'</strong> (source marking, including partial credit).</p>':'<p>Original marks verified for '+sourceMarks.length+'/'+qs.length+' questions; a weighted original score cannot be confirmed.</p>')+
         (qs.length!==graded.length?'<p class="capture-warning">'+(qs.length-graded.length)+' questions are unscored and excluded from accuracy.</p>':'')+
-        '<p><strong class="capture-ok">'+captured+' learner answers captured</strong> · Topics remain unclassified until you import the external AI JSON.</p>'+
+        captureDescription+structureDescription+'<p>Topics remain unclassified until you import the external AI JSON.</p>'+
         '<div class="question-preview">'+qs.map(function(q){return '<article><strong>Q'+q.qno+' · '+(q.is_correct===true?'Correct':q.is_correct===false?'Incorrect':'Unscored')+'</strong>'+
           (q.source_pdf_pages?'<p>Original PDF page(s): '+q.source_pdf_pages.join(', ')+'</p>':'')+
           '<p>'+F.escape(F.plain(q.qtext).slice(0,220)||'Question text missing')+'</p><p class="'+(q.answer_capture_status==='captured'?'capture-ok':'capture-warning')+'">'+
-          (q.answer_capture_status==='captured'?'Learner answer captured':'Learner answer not found—verify original review')+'</p></article>';}).join('')+'</div>';
+          (q.answer_state==='unanswered'?'Confirmed unanswered':q.answer_state==='partially_answered'?'Partially answered':q.answer_state==='answered'?'Learner answer captured':'Answer state unresolved; inspect source evidence')+'</p></article>';}).join('')+'</div>';
       if(meta.sourceType!=='html'){
         $('pdfReviewGate').hidden=false;
-        $('pdfWarningSummary').innerHTML='<p>'+warnings.length+' extraction warning(s). '+(qs.length-graded.length)+' unscored question(s). '+(qs.length-captured)+' without explicitly captured learner answers.</p>'+
+        $('pdfWarningSummary').innerHTML='<p>'+warnings.length+' extraction warning(s). '+(qs.length-graded.length)+' unscored question(s). '+states.unanswered+' confirmed unanswered; '+states.unresolved+' unresolved answer state(s).</p>'+
           '<ul>'+warnings.slice(0,12).map(function(w){return '<li>'+F.escape(w)+'</li>';}).join('')+'</ul>'+
           (warnings.length>12?'<p>And '+(warnings.length-12)+' more; consult every question before relying on the result.</p>':'');
         $('saveAttempt').disabled=false;
