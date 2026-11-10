@@ -10,6 +10,7 @@ on:
       - 'revision-flow.js'
       - 'ocr-source-repair.js'
       - 'tests/pdf-question20-ocr-regression.cjs'
+      - 'tests/pdf-question43-ocr-regression.cjs'
       - 'attempt-entry.js'
       - 'add-exam.html'
       - 'tests/pdf-input-recovery.cjs'
@@ -24,6 +25,7 @@ on:
       - 'revision-flow.js'
       - 'ocr-source-repair.js'
       - 'tests/pdf-question20-ocr-regression.cjs'
+      - 'tests/pdf-question43-ocr-regression.cjs'
       - 'attempt-entry.js'
       - 'add-exam.html'
       - 'tests/pdf-input-recovery.cjs'
@@ -46,6 +48,8 @@ jobs:
         run: node tests/pdf-question20-ocr-regression.cjs
       - name: Verify visual matrix choice extraction
         run: node tests/pdf-visual-matrix-regression.cjs
+      - name: Check Q43 and malformed marked-review marks
+        run: node tests/pdf-question43-ocr-regression.cjs
       - name: Check JavaScript syntax
         run: |
           node --check pdf-input-health.js

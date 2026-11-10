@@ -9,10 +9,13 @@ function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){retur
 function clean(s){return String(s||'').replace(/\s+/g,' ').trim();}
 function number(str){var n=Number(String(str||'').replace(/,/g,''));return Number.isFinite(n)?n:null;}
 function grade(line){
- var m=clean(line).match(/\b(?:mark(?:s|ed|e)?|wark|points?|score)\s*:?\s*(\d+(?:[.,]\d+)?)\s*(?:out\s*of|\/|from)\s*(\d+(?:[.,]\d+)?)/i);
+ var m=clean(line).match(/\b(?:mark(?:s|ed|e)?|mar|wark|points?|score)\s*:?\s*(\d+(?:[.,]\d+)?)\s*(?:out\s*(?:of)?|auto|0\s*of|\/|from)\s*(\d+(?:[.,]\d+)?)/i);
  if(!m)return null;
  var earned=number(m[1]),possible=number(m[2]);
- if(earned===null||possible===null||possible<=0||earned<0||earned>possible)return null;
+ if(earned===null||possible===null||possible<=0||earned<0)return null;
+ // OCR may turn 4.00 into 400 against an explicit 10.00 maximum.
+ // Retain this possibility only when a /100 scaled mark fits the maximum.
+ if(earned>possible&&!(!/[.,]/.test(m[1])&&earned>=100&&earned%100===0&&earned/100<=possible))return null;
  return {earned,possible,earnedToken:m[1],possibleToken:m[2]};
 }
 function questionNumber(s){
@@ -23,11 +26,11 @@ function questionNumber(s){
 function status(str){
  // Common TYMBAFlex screenshot OCR distortions: "Inconect", "Incorect" and "Corect".
  // Only accept these whole status labels; do not infer a grade from question wording.
- var m=clean(str).replace(/^question\s*\d{1,3}\s*/i,'').match(/^(partially\s+correct|incorrect|inconect|incorect|correct|corect|unanswered|not\s+answered)(?:[.,! ]|$)/i);
+ var m=clean(str).replace(/^question\s*\d{1,3}\s*/i,'').match(/^(partially\s+correct|incorrect|inconect|incorect|correct|corect|comet|unanswered|not\s+answered)(?:[.,! ]|$)/i);
  if(!m)return null;
  var label=m[1].toLowerCase().replace(/\s+/g,'_');
  if(label==='inconect'||label==='incorect')return 'incorrect';
- if(label==='corect')return 'correct';
+ if(label==='corect'||label==='comet')return 'correct';
  return label;
 }
 function overall(pages){
