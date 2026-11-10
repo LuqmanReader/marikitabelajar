@@ -266,24 +266,36 @@ async function read(source,onProgress){
 }
 async function convertToHTML(result,onProgress){
   if(!result||!result.document||!result.pages)throw new Error('Read a PDF first.');
-  var headingText=esc(result.originalName||'Converted PDF'),visuals=[];
+  var headingText=esc(result.originalName||'Converted PDF'),visuals=[],questionCrops=[];
   for(var i=1;i<=result.pageCount;i++){
     if(onProgress)onProgress('Preserving visual PDF page '+i+' / '+result.pageCount+' in HTML');
     var page=await result.document.getPage(i),natural=page.getViewport({scale:1});
-    var scale=Math.min(1.5,1000/Math.max(1,natural.width));
+    var scale=Math.min(2,1400/Math.max(1,natural.width));
     var viewport=page.getViewport({scale:scale}),canvas=document.createElement('canvas');
     canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
     var ctx=canvas.getContext('2d',{alpha:false});
     if(!ctx)throw new Error('Canvas is not available for PDF page images.');
     await page.render({canvasContext:ctx,viewport:viewport}).promise;
-    visuals.push(canvas.toDataURL('image/jpeg',0.62));
+    visuals.push(canvas.toDataURL('image/jpeg',0.76));
+    if(root.LedgerPeerPdfVisual){
+      (result.questions||[]).forEach(function(q){
+        (q.source_regions||[]).forEach(function(region){
+          if(region.page!==i||!region.hasAnchor)return;
+          var photo=root.LedgerPeerPdfVisual.crop(canvas,region,viewport.scale);
+          if(photo)questionCrops.push({qno:q.qno,page:i,src:photo});
+        });
+      });
+    }
     canvas.width=0;canvas.height=0;page.cleanup();
   }
   var json=JSON.stringify({format:'ledgerpeer-pdf-conversion-v1',originalName:result.originalName,pages:result.pageCount,readerEngine:result.readerEngine||'unknown',questions:result.questions,warnings:result.warnings}).replace(/</g,'\\u003c');
+  var originalQuestions=questionCrops.map(function(c){
+    return '<details class="question-evidence"><summary>Question '+c.qno+' · original page '+c.page+'</summary><img alt="Original PDF visual evidence for Question '+c.qno+'" src="'+c.src+'"></details>';
+  }).join('');
   var body=result.pages.map(function(page,i){
     return '<section class="page" id="page-'+page.number+'"><h2>Page '+page.number+'</h2><img alt="Visual snapshot of original PDF page '+page.number+'" src="'+visuals[i]+'"><div class="page-text" aria-label="Reconstructed searchable text from page '+page.number+'"><h3>Recognized text</h3>'+ (page.lines.length?page.lines.map(function(line){return '<p>'+esc(line)+'</p>';}).join(''):'<p>No readable text detected; consult the original page image.</p>') + '</div></section>';
   }).join('\n');
-  var html='<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+headingText+' · PDF to HTML</title><style>body{background:#f6f3ec;color:#171717;font:15px system-ui;margin:0;padding:20px}main{max-width:1050px;margin:auto}h1{font-size:26px}.notice,.page{background:white;border:2px solid #111;padding:18px;margin:18px 0}.notice{background:#fff0c8}.page img{display:block;max-width:100%;height:auto;margin:auto;border:1px solid #bbb}.page-text{padding:14px;margin:16px 0;background:#f6f7f7;border:1px solid #bbb}.page-text p{margin:.3em 0;line-height:1.55;overflow-wrap:anywhere}.page-text h3{font-size:15px}pre{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5}</style></head><body><main><h1>PDF → HTML · '+headingText+'</h1><div class="notice">Visual page snapshots preserve charts and diagrams. Text extraction may reorder tables and cannot prove which answer was selected. Check the original PDF before trusting marks. This HTML can be viewed independently. Re-importing it as a graded exam requires complete, verified exam results.</div>'+body+'</main><script type="application/json" id="ledgerpeer-pdf-record">'+json+'</script></body></html>';
+  var html='<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+headingText+' · PDF to HTML</title><style>body{background:#f6f3ec;color:#171717;font:15px system-ui;margin:0;padding:20px}main{max-width:1050px;margin:auto}h1{font-size:26px}.notice,.page{background:white;border:2px solid #111;padding:18px;margin:18px 0}.notice{background:#fff0c8}.page img{display:block;max-width:100%;height:auto;margin:auto;border:1px solid #bbb}.page-text{padding:14px;margin:16px 0;background:#f6f7f7;border:1px solid #bbb}.page-text p{margin:.3em 0;line-height:1.55;overflow-wrap:anywhere}.page-text h3{font-size:15px}pre{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5}.question-evidence{background:white;border:1px solid #aaa;padding:10px;margin:10px 0}.question-evidence img{display:block;max-width:100%;height:auto;margin:10px auto}</style></head><body><main><h1>PDF → HTML · '+headingText+'</h1><div class="notice">Visual page snapshots preserve charts and diagrams. Text extraction may reorder tables and cannot prove which answer was selected. Check the original PDF before trusting marks. This HTML can be viewed independently. Re-importing it as a graded exam requires complete, verified exam results.</div>'+originalQuestions+body+'</main><script type="application/json" id="ledgerpeer-pdf-record">'+json+'</script></body></html>';
   return new Blob([html],{type:'text/html'});
 }
 function parseConvertedHtml(raw){
