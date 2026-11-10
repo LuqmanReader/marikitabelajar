@@ -133,8 +133,9 @@ function ensureTesseract(){
   }).catch(function(err){root.__ledgerpeerTesseractLoading=null;throw err;});
   return root.__ledgerpeerTesseractLoading;
 }
-async function recognizePdfPage(page,worker,pageNumber){
-  var size=page.getViewport({scale:1.7}),canvas=document.createElement('canvas');
+async function recognizePdfPage(page,worker,pageNumber,requestedScale){
+  var scale=Number(requestedScale)||1.7;
+  var size=page.getViewport({scale:scale}),canvas=document.createElement('canvas');
   canvas.width=Math.ceil(size.width);canvas.height=Math.ceil(size.height);
   try{
     var context=canvas.getContext('2d',{alpha:false});
@@ -144,6 +145,16 @@ async function recognizePdfPage(page,worker,pageNumber){
     var reading=await worker.recognize(image,{}, {text:true,tsv:true});
     var data=reading&&reading.data||{};
     var positioned=root.LedgerPeerPdfLayout&&data.tsv?root.LedgerPeerPdfLayout.fromTsv(data.tsv):null;
+    // Source regions use the canonical 1.7x viewport even when retry OCR
+    // is performed at higher resolution.
+    if(positioned&&Math.abs(scale-1.7)>.01){
+      var factor=1.7/scale;
+      positioned.words.forEach(function(w){w.x*=factor;w.y*=factor;w.w*=factor;w.h*=factor;});
+      positioned.lines.forEach(function(line){
+        line.box.x*=factor;line.box.y*=factor;line.box.w*=factor;line.box.h*=factor;
+        line.columns.forEach(function(c){c.x*=factor;c.w*=factor;});
+      });
+    }
     var matrixObservations=root.LedgerPeerPdfMatrixEvidence&&data.tsv?
       root.LedgerPeerPdfMatrixEvidence.scan(canvas,data.tsv,pageNumber):[];
     var flat=String(data.text||'').split(/\r?\n/).map(clean).filter(Boolean);
@@ -159,11 +170,34 @@ async function recognizePdfPage(page,worker,pageNumber){
 }
 async function read(source,onProgress){
   var pdf=await open(source,onProgress),pages=[],anyOcr=false,worker=null,matrixObservations=[],visualWarnings=[];
+  async function localOcr(page,pageNo,scale){
+    if(!worker){await ensureTesseract();worker=await root.Tesseract.createWorker('eng');}
+    return recognizePdfPage(page,worker,pageNo,scale||1.7);
+  }
+  async function recover(page,pageNo,first,force){
+    var engine=root.LedgerPeerPdfRecovery;
+    var reason=engine&&engine.retryReason(first,{expectQuestionHeader:false});
+    if(!engine||(!reason&&!force))return first;
+    var original=Object.assign({},first),recovery={reason:reason||'native_layer_unreadable',improved:false,
+      attempts:[{method:force?'native-text':'ocr-1.7',confidence:first.confidence,reason:reason||''}]};
+    if(onProgress)onProgress('Cross-checking difficult PDF page '+pageNo+' at higher resolution…');
+    try{
+      var again=await localOcr(page,pageNo,force?2.2:2.7);
+      recovery.attempts.push({method:force?'ocr-2.2':'ocr-2.7',confidence:again.confidence});
+      var selected=engine.choose(first,again);
+      recovery.reason=selected.reason;recovery.improved=selected.improved;
+      return Object.assign({},selected.chosen,{recovery:recovery});
+    }catch(e){
+      visualWarnings.push('Page '+pageNo+': high-resolution fallback could not run; original PDF image retained.');
+      recovery.reason='retry_unavailable';
+      return Object.assign({},original,{recovery:recovery});
+    }
+  }
   try{
     for(var i=1;i<=pdf.numPages;i++){
       if(onProgress)onProgress('Inspecting page '+i+' / '+pdf.numPages);
       var page=await pdf.getPage(i),content=await page.getTextContent();
-      var lines=linesOf(content.items),confidence=null;
+      var lines=linesOf(content.items),confidence=null,chosenRecovery=null;
       var viewport=page.getViewport({scale:1.7});
       var layout=root.LedgerPeerPdfLayout?root.LedgerPeerPdfLayout.fromNative(content.items,viewport):null;
       var widgets=[];
@@ -181,10 +215,23 @@ async function read(source,onProgress){
           worker=await root.Tesseract.createWorker('eng');
         }
         if(onProgress)onProgress('Reading image-based page '+i+' / '+pdf.numPages+' (OCR)');
-        var recognized=await recognizePdfPage(page,worker,i);
+        var recognized=await localOcr(page,i,1.7);
+        recognized=await recover(page,i,recognized,false);
         lines=recognized.lines;confidence=recognized.confidence;anyOcr=true;
+        chosenRecovery=recognized.recovery||null;
         if(recognized.layout&&recognized.layout.lines.length)layout=recognized.layout;
         if(Array.isArray(recognized.matrixObservations))matrixObservations.push(...recognized.matrixObservations);
+      }else if(root.LedgerPeerPdfRecovery&&
+        root.LedgerPeerPdfRecovery.retryReason({lines:lines},{expectQuestionHeader:false})){
+        // Detect damaged native text layers rather than trusting their presence.
+        var nativeCandidate={lines:lines,layout:layout,confidence:null};
+        var recovered=await recover(page,i,nativeCandidate,true);
+        chosenRecovery=recovered.recovery||null;
+        if(recovered!==nativeCandidate&&recovered.lines!==nativeCandidate.lines){
+          lines=recovered.lines;confidence=recovered.confidence;anyOcr=true;
+          if(recovered.layout&&recovered.layout.lines.length)layout=recovered.layout;
+          if(Array.isArray(recovered.matrixObservations))matrixObservations.push(...recovered.matrixObservations);
+        }
       }else if(root.LedgerPeerPdfMatrixEvidence&&hasMatrixHeader(lines)){
         // A selectable PDF text layer does not preserve filled radio-button pixels.
         // Read its matrix cells visually as well, without replacing the good text layer.
@@ -194,7 +241,8 @@ async function read(source,onProgress){
           if(Array.isArray(visual.matrixObservations))matrixObservations.push(...visual.matrixObservations);
         }catch(visualError){visualWarnings.push('Page '+i+': visual matrix reading unavailable; selections remain unverified.');}
       }
-      pages.push({number:i,lines:lines,ocrConfidence:confidence,layout:layout,widgets:widgets});
+      pages.push({number:i,lines:lines,ocrConfidence:confidence,layout:layout,widgets:widgets,
+        recovery:chosenRecovery,originalVisualRequired:!!chosenRecovery&&chosenRecovery.reason==='retry_unavailable'});
       page.cleanup();
     }
   }finally{if(worker)await worker.terminate();}
@@ -251,8 +299,13 @@ async function read(source,onProgress){
     root.LedgerPeerPdfMatrixEvidence.apply(parsed.questions||[],matrixObservations,warnings);
   if(matrixObservations.length){
     warnings=warnings.filter(function(w){return !/selected answer\(s\) could not be proven from OCR/i.test(w);});
-    var unverified=(parsed.questions||[]).filter(function(q){return q.answer_capture_status!=='captured';}).length;
-    if(unverified)warnings.push(unverified+' answer selection(s) remain unverified after visual matrix analysis.');
+    var unresolved=(parsed.questions||[]).filter(function(q){return q.answer_capture_status!=='captured'&&q.answer_state!=='unanswered';}).length;
+    if(unresolved)warnings.push(unresolved+' answer state(s) need source verification after visual matrix analysis; blank responses are not assumed erroneous.');
+  }
+  if(root.LedgerPeerPdfRecovery){
+    pages.forEach(function(page){
+      if(page.recovery)warnings.push('Page '+page.number+': automatic fallback — '+page.recovery.reason+'. Original page evidence preserved.');
+    });
   }
   var extractionAudit=null;
   if(root.LedgerPeerPdfAudit){
