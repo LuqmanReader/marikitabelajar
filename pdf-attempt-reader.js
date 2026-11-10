@@ -143,9 +143,17 @@ async function recognizePdfPage(page,worker,pageNumber){
     var image=canvas.toDataURL('image/png');
     var reading=await worker.recognize(image,{}, {text:true,tsv:true});
     var data=reading&&reading.data||{};
+    var positioned=root.LedgerPeerPdfLayout&&data.tsv?root.LedgerPeerPdfLayout.fromTsv(data.tsv):null;
     var matrixObservations=root.LedgerPeerPdfMatrixEvidence&&data.tsv?
       root.LedgerPeerPdfMatrixEvidence.scan(canvas,data.tsv,pageNumber):[];
-    return {lines:String(data.text||'').split(/\r?\n/).map(clean).filter(Boolean),
+    var flat=String(data.text||'').split(/\r?\n/).map(clean).filter(Boolean);
+    var sourceAnchors=flat.filter(function(line){return /^question\s*\d{1,3}\s*$/i.test(line)}).length;
+    var positionedAnchors=positioned?positioned.lines.filter(function(row){return root.LedgerPeerPdfLayout.anchorNumber(row.text)!==null}).length:0;
+    // OCR word coordinates can rescue a question heading that was merged into
+    // a neighbouring line by plain-text OCR. Keep the original if no improvement.
+    if(positionedAnchors>sourceAnchors&&positioned.lines.length>=flat.length*.65)
+      flat=positioned.lines.map(function(row){return row.text});
+    return {lines:flat,layout:positioned,
       confidence:Number.isFinite(data.confidence)?data.confidence:null,matrixObservations:matrixObservations};
   }finally{canvas.width=0;canvas.height=0;}
 }
@@ -156,6 +164,13 @@ async function read(source,onProgress){
       if(onProgress)onProgress('Inspecting page '+i+' / '+pdf.numPages);
       var page=await pdf.getPage(i),content=await page.getTextContent();
       var lines=linesOf(content.items),confidence=null;
+      var viewport=page.getViewport({scale:1.7});
+      var layout=root.LedgerPeerPdfLayout?root.LedgerPeerPdfLayout.fromNative(content.items,viewport):null;
+      var widgets=[];
+      if(root.LedgerPeerPdfWidgets&&typeof page.getAnnotations==='function'){
+        try{widgets=root.LedgerPeerPdfWidgets.widgets(await page.getAnnotations({intent:'display'}),viewport,i)}
+        catch(formErr){visualWarnings.push('Page '+i+': native PDF form fields unavailable.');}
+      }
       // OCR selection is based on text-layer presence, not exam vocabulary.
       // Ordinary reports and documents must not require "Question" or "Mark".
       var requiresOcr=!lines.length||lines.join(' ').length<18;
@@ -168,6 +183,7 @@ async function read(source,onProgress){
         if(onProgress)onProgress('Reading image-based page '+i+' / '+pdf.numPages+' (OCR)');
         var recognized=await recognizePdfPage(page,worker,i);
         lines=recognized.lines;confidence=recognized.confidence;anyOcr=true;
+        if(recognized.layout&&recognized.layout.lines.length)layout=recognized.layout;
         if(Array.isArray(recognized.matrixObservations))matrixObservations.push(...recognized.matrixObservations);
       }else if(root.LedgerPeerPdfMatrixEvidence&&hasMatrixHeader(lines)){
         // A selectable PDF text layer does not preserve filled radio-button pixels.
@@ -178,7 +194,7 @@ async function read(source,onProgress){
           if(Array.isArray(visual.matrixObservations))matrixObservations.push(...visual.matrixObservations);
         }catch(visualError){visualWarnings.push('Page '+i+': visual matrix reading unavailable; selections remain unverified.');}
       }
-      pages.push({number:i,lines:lines,ocrConfidence:confidence});
+      pages.push({number:i,lines:lines,ocrConfidence:confidence,layout:layout,widgets:widgets});
       page.cleanup();
     }
   }finally{if(worker)await worker.terminate();}
@@ -216,6 +232,21 @@ async function read(source,onProgress){
     }
   }
   var warnings=(parsed.warnings||[]).slice().concat(parseFailures,visualWarnings);
+  if(root.LedgerPeerPdfLayout){
+    root.LedgerPeerPdfLayout.sourceRegions(parsed.questions||[],pages);
+    (parsed.questions||[]).forEach(function(q){
+      var tablePages=[];
+      (q.source_regions||[]).forEach(function(region){
+        var page=pages.find(function(p){return p.number===region.page});
+        if(page&&page.layout)root.LedgerPeerPdfLayout.tableCandidates(page.layout).forEach(function(table){
+          if(table.box.y+table.box.h>=region.y&&table.box.y<=region.y+region.h)
+            tablePages.push({page:region.page,rows:table.rows,box:table.box});
+        });
+      });
+      if(tablePages.length)q.source_tables=tablePages.slice(0,4);
+    });
+  }
+  if(root.LedgerPeerPdfWidgets)root.LedgerPeerPdfWidgets.attach(parsed.questions||[],pages);
   if(root.LedgerPeerPdfMatrixEvidence&&matrixObservations.length)
     root.LedgerPeerPdfMatrixEvidence.apply(parsed.questions||[],matrixObservations,warnings);
   if(matrixObservations.length){
@@ -223,7 +254,12 @@ async function read(source,onProgress){
     var unverified=(parsed.questions||[]).filter(function(q){return q.answer_capture_status!=='captured';}).length;
     if(unverified)warnings.push(unverified+' answer selection(s) remain unverified after visual matrix analysis.');
   }
-  return {document:pdf,pages:pages,questions:parsed.questions||[],warnings:warnings,
+  var extractionAudit=null;
+  if(root.LedgerPeerPdfAudit){
+    extractionAudit=root.LedgerPeerPdfAudit.audit(parsed.questions||[]);
+    warnings.push(...extractionAudit.warnings);
+  }
+  return {document:pdf,pages:pages,questions:parsed.questions||[],warnings:warnings,extractionAudit:extractionAudit,
     reconciliation:parsed.reconciliation||null,ocrUsed:anyOcr,readerEngine:engine,
     extractionConfidence:parsed.extractionConfidence||null,
     pageCount:pdf.numPages,originalName:source&&source.name||'Original exam PDF'};
