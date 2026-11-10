@@ -23,7 +23,7 @@ function questionNumber(s){
 function status(str){
  // Common TYMBAFlex screenshot OCR distortions: "Inconect", "Incorect" and "Corect".
  // Only accept these whole status labels; do not infer a grade from question wording.
- var m=clean(str).replace(/^question\s*\d{1,3}\s*/i,'').match(/^(partially\s+correct|incorrect|inconect|incorect|incorrect|correct|corect|unanswered|not\s+answered)(?:[.,! ]|$)/i);
+ var m=clean(str).replace(/^question\s*\d{1,3}\s*/i,'').match(/^(partially\s+correct|incorrect|inconect|incorect|correct|corect|unanswered|not\s+answered)(?:[.,! ]|$)/i);
  if(!m)return null;
  var label=m[1].toLowerCase().replace(/\s+/g,'_');
  if(label==='inconect'||label==='incorect')return 'incorrect';
@@ -83,7 +83,7 @@ function parse(pages){
      var n=questionNumber(text);
      if(n!==null){
        // Repeated running headers or question citations must not become new items.
-       // A heading with an OCR-distorted status/mark line still starts a new question.
+        // A heading with an OCR-distorted status/mark line still starts a new question.
         // Never absorb it into the preceding answer block (Q19 -> Q20 regression).
         var following=lines.slice(i+1,i+8).some(function(x){return status(x)!==null||grade(x)!==null;});
        if(!following){ignoredHeaders++;if(block){block.text.push({text,page:page.number});block.pages.add(page.number);}continue;}
