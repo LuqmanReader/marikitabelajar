@@ -99,7 +99,14 @@
       var n=Number(q.qno);if(!Number.isSafeInteger(n)||n<1||seen.has(n))throw new Error('Every question needs a unique positive question number.');seen.add(n);
       if(q.is_correct!==true&&q.is_correct!==false&&q.is_correct!==null)throw new Error('Q'+n+' needs an original result (true, false, or null for unscored).');
       if(typeof q.qtext!=='string')throw new Error('Q'+n+' is missing its question text field.');
-      var x=Object.assign({},q,{qno:n,qtext:F.sanitize(q.qtext),chapter:ChapterAnalysis.label(q.chapter||''),options:(Array.isArray(q.options)?q.options:[]).map(function(o){return {text:F.sanitize(o.text||''),checked:!!o.checked};})});
+      // Import is evidence capture only. A PDF/HTML adapter must not assign topic tags.
+      // The external AI, prompted in the debrief stage, classifies each question.
+      var x=Object.assign({},q,{
+        qno:n,qtext:F.sanitize(q.qtext),
+        chapter:'',topic_status:'',topic_reason:'',topic_origin:'',
+        topic_evidence:'',topic_confidence:'',
+        options:(Array.isArray(q.options)?q.options:[]).map(function(o){return {text:F.sanitize(o.text||''),checked:!!o.checked};})
+      });
       x.your_answer=q.your_answer==null?null:F.sanitize(q.your_answer);x.correct_answer=String(q.correct_answer||'');x.debrief=F.sanitize(q.debrief||'');
       return x;
     });
@@ -170,7 +177,6 @@
       if(versionAtStart!==inputVersion||readerMode()!==selectedMode)throw new Error('Inputs changed while extraction was running. Choose Extract answer review again.');
       if(!Array.isArray(qs)||!qs.length)throw new Error('The PDF was opened, but no identifiable exam questions were found. Check that you uploaded a completed, marked attempt review; no scores have been invented.');
       qs=validateQuestions(qs,meta);
-      var suggestions=meta.subject&&window.LedgerTopicSuggest?LedgerTopicSuggest.apply(qs,meta.subject,localStorage):0;
       var graded=qs.filter(function(q){return typeof q.is_correct==='boolean';});
       var correct=graded.filter(function(q){return q.is_correct;}).length;
       if(!graded.length)warnings.push('This attempt has unverified scores. It will be saved as unscored, with its source evidence available for checking.');
@@ -189,12 +195,11 @@
       $('entryPreview').innerHTML='<div class="flow-score"><strong>'+(graded.length?Math.round(correct/graded.length*100)+'%':'Unscored')+'</strong><span>Full-correct rate · '+correct+'/'+graded.length+' questions · '+qs.length+' total</span></div>'+
         (meta.originalPossibleMarks?'<p><strong>Original graded marks: '+meta.originalEarnedMarks+' / '+meta.originalPossibleMarks+'</strong> (source marking, including partial credit).</p>':'<p>Original marks verified for '+sourceMarks.length+'/'+qs.length+' questions; a weighted original score cannot be confirmed.</p>')+
         (qs.length!==graded.length?'<p class="capture-warning">'+(qs.length-graded.length)+' questions are unscored and excluded from accuracy.</p>':'')+
-        '<p><strong class="capture-ok">'+captured+' learner answers captured</strong> · '+suggestions+' provisional topic suggestions. The returned JSON can classify questions against the approved syllabus.</p>'+
+        '<p><strong class="capture-ok">'+captured+' learner answers captured</strong> · Topics remain unclassified until you import the external AI JSON.</p>'+
         '<div class="question-preview">'+qs.map(function(q){return '<article><strong>Q'+q.qno+' · '+(q.is_correct===true?'Correct':q.is_correct===false?'Incorrect':'Unscored')+'</strong>'+
           (q.source_pdf_pages?'<p>Original PDF page(s): '+q.source_pdf_pages.join(', ')+'</p>':'')+
           '<p>'+F.escape(F.plain(q.qtext).slice(0,220)||'Question text missing')+'</p><p class="'+(q.answer_capture_status==='captured'?'capture-ok':'capture-warning')+'">'+
-          (q.answer_capture_status==='captured'?'Learner answer captured':'Learner answer not found—verify original review')+
-          (q.chapter?' · Suggested topic: '+F.escape(q.chapter):'')+'</p></article>';}).join('')+'</div>';
+          (q.answer_capture_status==='captured'?'Learner answer captured':'Learner answer not found—verify original review')+'</p></article>';}).join('')+'</div>';
       if(meta.sourceType!=='html'){
         $('pdfReviewGate').hidden=false;
         $('pdfWarningSummary').innerHTML='<p>'+warnings.length+' extraction warning(s). '+(qs.length-graded.length)+' unscored question(s). '+(qs.length-captured)+' without explicitly captured learner answers.</p>'+
@@ -230,7 +235,6 @@
       meta.title=$('titleInput').value.trim()||ExamModel.label(meta)+(meta.setChapter?' · '+meta.setChapter:'');
       meta.id=id;meta.createdAt=new Date().toISOString();meta.file='view.html?id='+encodeURIComponent(id);meta.autoDebriefRequested=false;meta.topics={};
       var questions=staged.questions.map(function(q){return Object.assign({},q);});
-      if(window.LedgerTopicSuggest)LedgerTopicSuggest.apply(questions,meta.subject,localStorage);
       var exams=JSON.parse(localStorage.getItem('tymba_custom_exams')||'[]');if(!Array.isArray(exams))throw new Error('Saved attempts could not be read.');
       if(meta.sourceType==='pdf'||meta.sourceType==='pdf-html'){
         if(originalPdf){
