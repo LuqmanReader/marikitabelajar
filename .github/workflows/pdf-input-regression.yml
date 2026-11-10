@@ -8,6 +8,8 @@ on:
       - 'pdf-page-layout.js'
       - 'pdf-native-widgets.js'
       - 'pdf-extraction-audit.js'
+      - 'pdf-question-visual.js'
+      - 'tests/pdf-question-visual-regression.cjs'
       - 'tests/pdf-evidence-layout-regression.cjs'
       - 'pdf-matrix-evidence.js'
       - 'tests/pdf-visual-matrix-regression.cjs'
@@ -27,6 +29,8 @@ on:
       - 'pdf-page-layout.js'
       - 'pdf-native-widgets.js'
       - 'pdf-extraction-audit.js'
+      - 'pdf-question-visual.js'
+      - 'tests/pdf-question-visual-regression.cjs'
       - 'tests/pdf-evidence-layout-regression.cjs'
       - 'pdf-matrix-evidence.js'
       - 'tests/pdf-visual-matrix-regression.cjs'
@@ -60,6 +64,8 @@ jobs:
         run: node tests/pdf-question43-ocr-regression.cjs
       - name: Verify native PDF layout and answer provenance
         run: node tests/pdf-evidence-layout-regression.cjs
+      - name: Verify original per-question visual evidence cropping
+        run: node tests/pdf-question-visual-regression.cjs
       - name: Check JavaScript syntax
         run: |
           node --check pdf-input-health.js
@@ -68,6 +74,7 @@ jobs:
           node --check pdf-page-layout.js
           node --check pdf-native-widgets.js
           node --check pdf-extraction-audit.js
+          node --check pdf-question-visual.js
           node --check pdf-matrix-evidence.js
           node --check revision-flow.js
           node --check attempt-entry.js
