@@ -37,7 +37,7 @@
     $('sourceFile').value='';$('sourceFile').accept='.pdf,.html,.htm,application/pdf,text/html';
     $('parseAttempt').disabled=true;$('parseAttempt').hidden=true;
     $('uploadLabel').textContent='Upload a marked attempt · PDF or HTML';
-    $('htmlDescription').textContent='Universal detection, OCR for image-based PDFs, and internal PDF-to-HTML reconstruction.';
+    $('htmlDescription').textContent='PDFs are converted to HTML first. Questions are read from the HTML; image reading is reserved for missing text or visual answer selections.';
     message('Choose one PDF or HTML. Extraction begins automatically.');
   }
   function syllabus(){
@@ -85,7 +85,7 @@
         throw new Error('This file is named as a PDF but has no PDF header. Download the complete original PDF, or export HTML instead.');
       }else throw new Error('Unsupported file content. Select a genuine PDF or HTML marked-review export.');
       $('parseAttempt').disabled=false;
-      message('Reading '+(sourceKind==='pdf'?'PDF pages and recognising questions…':'HTML questions and answers…'));
+      message(sourceKind==='pdf'?'Converting PDF to HTML first…':'Reading HTML questions and answers…');
       $('parseAttempt').click();
     }catch(e){
       sourceFile=null;pdfBytes=null;originalPdf=null;sourceKind='';
@@ -160,25 +160,42 @@
       var result,qs,warnings=[],pdfRecord=null;
       if(readerMode()==='html'){
         pdfRecord=window.LedgerPeerPdfReader&&LedgerPeerPdfReader.parseConvertedHtml(source);
-        qs=pdfRecord?pdfRecord.questions:parseHtml(source);
-        if(pdfRecord){meta.sourceType='pdf-html';meta.sourceFormat='pdf';convertedHtml=new Blob([source],{type:'text/html'});warnings=pdfRecord.warnings.concat(['Converted HTML was imported without its original PDF. Keep the source PDF for evidence.']);}
+        if(!pdfRecord&&window.LedgerPeerPdfHtml&&LedgerPeerPdfHtml.parse(source)){
+          convertedHtml=new Blob([source],{type:'text/html'});$('conversionResult').hidden=false;
+          result=await LedgerPeerPdfReader.readHtml(source,message);
+          meta.sourceType='pdf-html';meta.sourceFormat='pdf';
+        }else{
+          qs=pdfRecord?pdfRecord.questions:parseHtml(source);
+          if(pdfRecord){meta.sourceType='pdf-html';meta.sourceFormat='pdf';convertedHtml=new Blob([source],{type:'text/html'});meta.extractionPipeline=pdfRecord.extractionPipeline;warnings=pdfRecord.warnings.concat(['Converted HTML was imported without its original PDF. Keep the source PDF for evidence.']);$('conversionResult').hidden=false;}
+        }
       }else{
         if(!originalPdf)throw new Error('Select the original PDF first.');
         await ensurePdfJs();
-        result=await LedgerPeerPdfReader.read(pdfBytes,message);
+        if(!window.LedgerPeerPdfHtml)throw new Error('PDF-to-HTML converter did not load. Refresh and retry.');
+        var htmlFirst=await LedgerPeerPdfHtml.convert(pdfBytes,message,originalPdf.name);
+        if(versionAtStart!==inputVersion)throw new Error('The selected file changed. Reading the new upload next.');
+        convertedHtml=htmlFirst;
+        $('conversionResult').hidden=false;
+        // Only now read questions from the completed HTML. The PDF is closed.
+        result=await LedgerPeerPdfReader.readHtml(await convertedHtml.text(),message);
         result.originalName=originalPdf.name;
+      }
+      if(result){
         if(result.reconciliation)meta.ocrReconciliation=result.reconciliation;
         if(result.ocrUsed)meta.ocrUsed=true;
+        meta.extractionPipeline=result.extractionPipeline;
         qs=result.questions;warnings=result.warnings.slice();
-        // PDF-to-HTML runs internally; no intermediate download or re-upload.
-        try{convertedHtml=await LedgerPeerPdfReader.convertToHTML(result,message);$('conversionResult').hidden=false;}
-        catch(err){warnings.push('HTML visual copy was unavailable: '+err.message+'. Original PDF remains attached.');}
+        convertedHtml=result.convertedHtml||convertedHtml;
       }
       if(versionAtStart!==inputVersion||readerMode()!==selectedMode)throw new Error('Inputs changed while extraction was running. Choose Extract answer review again.');
-      if(!Array.isArray(qs)||!qs.length)throw new Error('The PDF was opened, but no identifiable exam questions were found. Check that you uploaded a completed, marked attempt review; no scores have been invented.');
+      if(!Array.isArray(qs)||!qs.length)throw new Error('HTML conversion is available, but no identifiable exam questions were recovered. Open the converted HTML to inspect the source; no scores have been invented.');
       qs=validateQuestions(qs,meta);
       var extractionAudit=window.LedgerPeerPdfAudit?LedgerPeerPdfAudit.audit(qs):null;
       if(extractionAudit){
+        if(meta.extractionPipeline&&meta.extractionPipeline.unresolvedPages&&meta.extractionPipeline.unresolvedPages.length){
+          extractionAudit.quality='needs_review';extractionAudit.structuralComplete=false;extractionAudit.marksAligned=false;
+          extractionAudit.warnings.push('Converted HTML page(s) still need source verification: '+meta.extractionPipeline.unresolvedPages.join(', ')+'.');
+        }
         meta.extractionAudit=extractionAudit;
         if(!result)warnings.push(...extractionAudit.warnings);
       }
@@ -195,6 +212,7 @@
         meta.originalPossibleMarks=Math.round(sourceMarks.reduce(function(sum,q){return sum+q.original_max_marks;},0)*100)/100;
       }
       meta.readerEngine=result&&result.readerEngine||'html-structured';
+      meta.extractionWarnings=warnings;
       staged={meta:meta,questions:qs,warnings:warnings};
       var captured=qs.filter(function(q){return q.answer_capture_status==='captured';}).length;
       var states=extractionAudit&&extractionAudit.answerStates||{answered:captured,unanswered:0,partially_answered:0,unresolved:qs.length-captured};
@@ -235,6 +253,12 @@
         $('parseAttempt').click();
       }
     }
+  });
+  $('downloadConvertedHtml').addEventListener('click',function(){
+    if(!convertedHtml)return;
+    var url=URL.createObjectURL(convertedHtml),link=document.createElement('a');
+    link.href=url;link.download='ledgerpeer-converted-attempt.html';link.click();
+    setTimeout(function(){URL.revokeObjectURL(url)},1000);
   });
   $('saveAttempt').addEventListener('click',async function(){
     if(!staged)return;

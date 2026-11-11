@@ -11,6 +11,11 @@ on:
       - 'syllabus-catalog.js'
       - 'official-exam-registry.js'
       - 'revision-flow.js'
+      - 'add-exam.html'
+      - 'attempt-entry.js'
+      - 'pdf-*.js'
+      - 'universal-*-reader.js'
+      - 'universal-pdf-document.js'
       - 'correction-pdf.js'
       - 'answer-option-match.js'
       - 'pdf-topic-suggestions.js'
@@ -21,6 +26,15 @@ on:
       - '.github/workflows/debrief-regression.yml'
   pull_request:
     paths:
+      - 'add-exam.html'
+      - 'attempt-entry.js'
+      - 'revision-flow.js'
+      - 'debrief-workflow.js'
+      - 'view.html'
+      - 'pdf-*.js'
+      - 'universal-*-reader.js'
+      - 'universal-pdf-document.js'
+      - 'tests/**'
       - 'pdf-topic-suggestions.js'
       - 'tests/pdf-topic-fa2-regression.cjs'
       - '.github/workflows/debrief-regression.yml'
@@ -45,12 +59,20 @@ jobs:
       - name: Test responsive debrief with real DOM and clipboard interactions
         run: |
           npm install --no-save --package-lock=false --ignore-scripts jsdom@26 puppeteer-core@24
+          node tests/pdf-html-first-regression.cjs
           node tests/debrief-ux-regression.cjs
           node tests/debrief-responsive-browser.cjs
       - name: Test image export and exact answer highlighting
         run: node tests/debrief-image-answer-regression.js
       - name: Test FIA/ACCA PDF attempt import formats
-        run: node tests/pdf-parser-regression.js
+        run: |
+          node tests/pdf-parser-regression.js
+          node tests/pdf-input-recovery.cjs
+          node tests/pdf-evidence-layout-regression.cjs
+          node tests/pdf-question-visual-regression.cjs
+          node tests/pdf-question20-ocr-regression.cjs
+          node tests/pdf-question43-ocr-regression.cjs
+          node tests/pdf-visual-matrix-regression.cjs
       - name: Check 2026-27 FA2 syllabus topic classification and abstention
         run: node tests/pdf-topic-fa2-regression.cjs
       - name: Create and inspect correction PDF output

@@ -196,6 +196,8 @@
     var instruction=[
       'PAPER SELECTED BY STUDENT (AUTHORITATIVE): '+meta.subject+'. DO NOT infer a different paper from the exam content or PDF.',
       'ATTEMPT TYPE: '+type+'; number '+meta.testNumber+'.',
+      'PRIMARY READING SOURCE: '+(meta.extractionPipeline&&meta.extractionPipeline.primarySource==='converted-html'?'HTML converted from the PDF BEFORE question extraction. Read the supplied HTML/text evidence first. Use original PDF pages or screenshots only for missing, ambiguous or image-dependent evidence; do not require a new scan of the entire PDF when the HTML is sufficient.':'The supplied question HTML and text.') ,
+      'EXTRACTION REPORT: '+JSON.stringify({pipeline:meta.extractionPipeline||null,warnings:meta.extractionWarnings||[],detectedQuestions:(signatureSource||questions).length,missingQuestionNumbers:meta.extractionAudit&&meta.extractionAudit.missing||[],quality:meta.extractionAudit&&meta.extractionAudit.quality||'unknown',expectedQuestionCount:null})+'. Expected question count is unknown unless independently established by the source; the detected list may be incomplete.',
       'OFFICIAL FULL EXAM FORMAT (REFERENCE ONLY; shorter chapter/progress tests may differ): '+(fullFormat?JSON.stringify(fullFormat.format):'Not yet verified'),
       'SYLLABUS JURISDICTION / VARIANT: '+(fullFormat?fullFormat.variant:'Not specified')+'. Do not substitute another jurisdiction, especially tax/law.',
       'OFFICIAL ACCA EXAM FORMAT REFERENCE: '+(fullFormat?fullFormat.formatSource:'Not available'),

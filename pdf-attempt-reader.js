@@ -1,5 +1,5 @@
-/* LedgerPeer PDF attempt reader. Conservative extraction: unverifiable marks remain null.
-   The optional PDF-to-HTML report embeds visual page snapshots, while AI prompts use text only. */
+/* HTML-first exam reader. Convert PDF to HTML before question extraction.
+   Only unreadable HTML pages/answer matrices need OCR of preserved HTML images. */
 (function(root){
 'use strict';
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
@@ -133,71 +133,78 @@ function ensureTesseract(){
   }).catch(function(err){root.__ledgerpeerTesseractLoading=null;throw err;});
   return root.__ledgerpeerTesseractLoading;
 }
-async function recognizePdfPage(page,worker,pageNumber){
-  var size=page.getViewport({scale:1.7}),canvas=document.createElement('canvas');
-  canvas.width=Math.ceil(size.width);canvas.height=Math.ceil(size.height);
+function normalizeHtmlLayout(layout,imageScale){
+  if(!layout)return layout;
+  var ratio=1.7/(Number(imageScale)||1.7),seen=new Set();
+  function scale(box){if(!box||seen.has(box))return;seen.add(box);['x','y','w','h'].forEach(function(k){if(Number.isFinite(box[k]))box[k]*=ratio});}
+  (layout.words||[]).forEach(scale);
+  (layout.lines||[]).forEach(function(row){scale(row.box);(row.words||[]).forEach(scale);(row.columns||[]).forEach(scale)});
+  return layout;
+}
+async function recognizeHtmlPage(page,worker){
+  var canvas=await root.LedgerPeerPdfHtml.imageCanvas(page.image);
   try{
-    var context=canvas.getContext('2d',{alpha:false});
-    if(!context)throw new Error('Canvas rendering is not available in this browser.');
-    await page.render({canvasContext:context,viewport:size}).promise;
-    var image=canvas.toDataURL('image/png');
-    var reading=await worker.recognize(image,{}, {text:true,tsv:true});
+    var reading=await worker.recognize(page.image,{}, {text:true,tsv:true});
     var data=reading&&reading.data||{};
     var positioned=root.LedgerPeerPdfLayout&&data.tsv?root.LedgerPeerPdfLayout.fromTsv(data.tsv):null;
     var matrixObservations=root.LedgerPeerPdfMatrixEvidence&&data.tsv?
-      root.LedgerPeerPdfMatrixEvidence.scan(canvas,data.tsv,pageNumber):[];
+      root.LedgerPeerPdfMatrixEvidence.scan(canvas,data.tsv,page.number):[];
     var flat=String(data.text||'').split(/\r?\n/).map(clean).filter(Boolean);
     var sourceAnchors=flat.filter(function(line){return /^question\s*\d{1,3}\s*$/i.test(line)}).length;
     var positionedAnchors=positioned?positioned.lines.filter(function(row){return root.LedgerPeerPdfLayout.anchorNumber(row.text)!==null}).length:0;
-    // OCR word coordinates can rescue a question heading that was merged into
-    // a neighbouring line by plain-text OCR. Keep the original if no improvement.
     if(positionedAnchors>sourceAnchors&&positioned.lines.length>=flat.length*.65)
       flat=positioned.lines.map(function(row){return row.text});
-    return {lines:flat,layout:positioned,
+    return {lines:flat,layout:normalizeHtmlLayout(positioned,page.imageScale),
       confidence:Number.isFinite(data.confidence)?data.confidence:null,matrixObservations:matrixObservations};
   }finally{canvas.width=0;canvas.height=0;}
 }
-async function read(source,onProgress){
-  var pdf=await open(source,onProgress),pages=[],anyOcr=false,worker=null,matrixObservations=[],visualWarnings=[];
+function needsHtmlRecovery(page){
+  var lines=page.lines||[],text=lines.join(' ');
+  if(page.textStatus==='unavailable'||text.length<18)return true;
+  // A small running header is not a usable question text layer.
+  var hasQuestion=lines.some(function(line){return heading(line)!==null});
+  var body=lines.filter(function(line){return heading(line)===null&&!/^(?:correct|incorrect|partially correct|not answered|marks?\s*\d|grade\b)/i.test(line)}).join(' ');
+  return text.length<240&&(!hasQuestion||body.length<30);
+}
+async function readHtml(raw,onProgress){
+  if(!root.LedgerPeerPdfHtml)throw new Error('PDF-to-HTML converter did not load. Refresh and retry.');
+  var converted=root.LedgerPeerPdfHtml.parse(raw);
+  if(!converted)throw new Error('This is not a converted PDF HTML document.');
+  var pages=converted.pages,anyOcr=false,worker=null,matrixObservations=[],visualWarnings=(converted.metadata.warnings||[]).slice(),ocrPages=[],failedPages=[];
+  if(onProgress)onProgress('HTML conversion complete. Reading questions from the converted HTML…');
   try{
-    for(var i=1;i<=pdf.numPages;i++){
-      if(onProgress)onProgress('Inspecting page '+i+' / '+pdf.numPages);
-      var page=await pdf.getPage(i),content=await page.getTextContent();
-      var lines=linesOf(content.items),confidence=null;
-      var viewport=page.getViewport({scale:1.7});
-      var layout=root.LedgerPeerPdfLayout?root.LedgerPeerPdfLayout.fromNative(content.items,viewport):null;
-      var widgets=[];
-      if(root.LedgerPeerPdfWidgets&&typeof page.getAnnotations==='function'){
-        try{widgets=root.LedgerPeerPdfWidgets.widgets(await page.getAnnotations({intent:'display'}),viewport,i)}
-        catch(formErr){visualWarnings.push('Page '+i+': native PDF form fields unavailable.');}
+    for(var page of pages){
+      var requiresOcr=needsHtmlRecovery(page),matrix=hasMatrixHeader(page.lines);
+      if(!(requiresOcr||matrix))continue;
+      if(!page.image){
+        if(requiresOcr){failedPages.push(page.number);visualWarnings.push('Page '+page.number+': converted HTML has insufficient text and no page image.');}
+        continue;
       }
-      // OCR selection is based on text-layer presence, not exam vocabulary.
-      // Ordinary reports and documents must not require "Question" or "Mark".
-      var requiresOcr=!lines.length||lines.join(' ').length<18;
-      if(requiresOcr){
-        if(!worker){
-          if(onProgress)onProgress('This PDF has image-only pages. Loading local-browser OCR engine…');
-          await ensureTesseract();
-          worker=await root.Tesseract.createWorker('eng');
+      try{
+        if(!worker){await ensureTesseract();worker=await root.Tesseract.createWorker('eng');}
+        if(onProgress)onProgress('Recovering '+(requiresOcr?'missing HTML text':'answer selections')+' from HTML page image '+page.number+' / '+pages.length);
+        ocrPages.push(page.number);
+        var recognized=await recognizeHtmlPage(page,worker);
+        if(requiresOcr&&recognized.lines.length){
+          // Preserve readable native text when OCR returns less information.
+          if(!page.lines.length||recognized.lines.join(' ').length>=page.lines.join(' ').length){
+            page.lines=recognized.lines;page.ocrConfidence=recognized.confidence;page.textStatus='ocr-recovered';anyOcr=true;
+            if(recognized.layout&&recognized.layout.lines.length)page.layout=recognized.layout;
+          }
         }
-        if(onProgress)onProgress('Reading image-based page '+i+' / '+pdf.numPages+' (OCR)');
-        var recognized=await recognizePdfPage(page,worker,i);
-        lines=recognized.lines;confidence=recognized.confidence;anyOcr=true;
-        if(recognized.layout&&recognized.layout.lines.length)layout=recognized.layout;
         if(Array.isArray(recognized.matrixObservations))matrixObservations.push(...recognized.matrixObservations);
-      }else if(root.LedgerPeerPdfMatrixEvidence&&hasMatrixHeader(lines)){
-        // A selectable PDF text layer does not preserve filled radio-button pixels.
-        // Read its matrix cells visually as well, without replacing the good text layer.
-        try{
-          if(!worker){await ensureTesseract();worker=await root.Tesseract.createWorker('eng');}
-          var visual=await recognizePdfPage(page,worker,i);
-          if(Array.isArray(visual.matrixObservations))matrixObservations.push(...visual.matrixObservations);
-        }catch(visualError){visualWarnings.push('Page '+i+': visual matrix reading unavailable; selections remain unverified.');}
+        if(requiresOcr&&needsHtmlRecovery(page)){
+          failedPages.push(page.number);visualWarnings.push('Page '+page.number+': HTML image recovery remains incomplete; inspect the preserved source image.');
+        }
+        if(Number.isFinite(recognized.confidence)&&recognized.confidence<65)
+          visualWarnings.push('Page '+page.number+': low-confidence HTML image recovery; verify the source.');
+      }catch(error){
+        page.ocrError=String(error.message||error);
+        if(requiresOcr)failedPages.push(page.number);
+        visualWarnings.push('Page '+page.number+': HTML image recovery failed; original HTML and other readable pages were retained.');
       }
-      pages.push({number:i,lines:lines,ocrConfidence:confidence,layout:layout,widgets:widgets});
-      page.cleanup();
     }
-  }finally{if(worker)await worker.terminate();}
+  }finally{if(worker)try{await worker.terminate()}catch(ignore){}}
   // Conversion is universal; assessment-grading readers are optional adapters.
   // Unfamiliar layouts must still yield a visual + text HTML document.
   var parseFailures=[],parsed=null,engine='universal-document';
@@ -259,12 +266,29 @@ async function read(source,onProgress){
     extractionAudit=root.LedgerPeerPdfAudit.audit(parsed.questions||[]);
     warnings.push(...extractionAudit.warnings);
   }
-  return {document:pdf,pages:pages,questions:parsed.questions||[],warnings:warnings,extractionAudit:extractionAudit,
-    reconciliation:parsed.reconciliation||null,ocrUsed:anyOcr,readerEngine:engine,
+  var result={pages:pages,questions:parsed.questions||[],warnings:warnings,extractionAudit:extractionAudit,
+    reconciliation:parsed.reconciliation||null,ocrUsed:anyOcr,readerEngine:'html-first/'+engine,
     extractionConfidence:parsed.extractionConfidence||null,
-    pageCount:pdf.numPages,originalName:source&&source.name||'Original exam PDF'};
+    pageCount:pages.length,originalName:converted.metadata.originalName,
+    extractionPipeline:{order:['pdf-to-html','html-question-extraction','external-ai-debrief'],primarySource:'converted-html',
+      pages:pages.length,ocrPages:ocrPages,unresolvedPages:Array.from(new Set(failedPages)),warnings:visualWarnings}};
+  if(failedPages.length){
+    result.warnings.push('Some converted HTML pages remain unresolved. Extracted questions may be incomplete.');
+    if(result.extractionAudit){
+      result.extractionAudit.quality='needs_review';result.extractionAudit.structuralComplete=false;
+      result.extractionAudit.marksAligned=false;result.extractionAudit.originalEarnedMarks=null;result.extractionAudit.originalPossibleMarks=null;
+    }
+  }
+  result.convertedHtml=await root.LedgerPeerPdfHtml.complete(converted,result);
+  return result;
+}
+async function read(source,onProgress){
+  if(!root.LedgerPeerPdfHtml)throw new Error('PDF-to-HTML converter did not load.');
+  var html=await root.LedgerPeerPdfHtml.convert(source,onProgress);
+  return readHtml(await html.text(),onProgress);
 }
 async function convertToHTML(result,onProgress){
+  if(result&&result.convertedHtml)return result.convertedHtml;
   if(!result||!result.document||!result.pages)throw new Error('Read a PDF first.');
   var headingText=esc(result.originalName||'Converted PDF'),visuals=[],questionCrops=[];
   for(var i=1;i<=result.pageCount;i++){
@@ -303,7 +327,7 @@ function parseConvertedHtml(raw){
   if(!el)return null;
   var data;try{data=JSON.parse(el.textContent||'');}catch(e){throw new Error('The converted PDF metadata is invalid. Reconvert the original PDF.');}
   if(data.format!=='ledgerpeer-pdf-conversion-v1'||!Array.isArray(data.questions))throw new Error('This is not a valid LedgerPeer PDF conversion.');
-  return {questions:data.questions,warnings:Array.isArray(data.warnings)?data.warnings:[],pageCount:data.pages||0,documentOnly:!data.questions.length};
+  return {questions:data.questions,warnings:Array.isArray(data.warnings)?data.warnings:[],pageCount:data.pages||0,documentOnly:!data.questions.length,extractionPipeline:data.extractionPipeline||null};
 }
-root.LedgerPeerPdfReader={read:read,openDocument:open,convertToHTML:convertToHTML,parseConvertedHtml:parseConvertedHtml};
+root.LedgerPeerPdfReader={read:read,readHtml:readHtml,openDocument:open,convertToHTML:convertToHTML,parseConvertedHtml:parseConvertedHtml};
 })(window);

@@ -63,7 +63,7 @@
        <button type="button" data-flow-step="results" aria-pressed="false">3 · Results</button>
      </nav>
     <section class="flow-path flow-stage" data-flow-stage="copy"><h3>Step 1 · Copy the question JSON request</h3>
-      <p>Click Copy Request, open your preferred AI, and paste it. <strong>${isPdf?'Attach the same original PDF in ChatGPT':'Attach the original marked exam PDF if available'}</strong> so figures, tables and answers can be verified against the source rather than unreliable OCR. Ask ChatGPT to return the <strong>complete JSON</strong>.</p>
+      <p>Click Copy Request, open your preferred AI, and paste it. <strong>${meta.extractionPipeline&&meta.extractionPipeline.primarySource==='converted-html'?'The request uses the converted HTML text first. Attach the relevant page images or original PDF only where source verification is needed':isPdf?'Attach the original PDF for any missing or unclear source evidence':'Attach source images for figures that the copied text cannot include'}</strong>. Copied text does not transfer image pixels. Ask ChatGPT to return the <strong>complete JSON</strong>.</p>
       <div class="flow-actions"><button type="button" class="flow-button primary" id="copyAIRequest">Copy questions + JSON instructions</button><a class="flow-button secondary" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT ↗</a><button type="button" class="flow-button secondary" id="downloadAIRequest">Download request .txt</button></div>
       <details><summary>View / manually copy your AI request</summary><textarea id="requestText" rows="7" readonly aria-label="Prepared request"></textarea></details>
     </section>
