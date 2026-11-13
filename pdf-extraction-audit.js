@@ -4,9 +4,21 @@
 (function(root){
 'use strict';
 function number(value){return Number.isFinite(value)?value:null;}
+function questionText(q){
+  // Only original question/context content counts. Grades and answer feedback
+  // cannot substitute for a missing question, even with complete numbering.
+  var html=String(q.qtext||q.question_html||q.question||'');
+  var text=html.replace(/<!--[\s\S]*?-->/g,' ')
+    .replace(/<(?:script|style)\b[^>]*>[\s\S]*?<\/\s*(?:script|style)\s*>/gi,' ')
+    .replace(/<[^>]+>/g,' ').replace(/&(?:nbsp|#160|#xA0);/gi,' ')
+    .replace(/&[a-z]+;|&#\d+;|&#x[0-9a-f]+;/gi,' ').replace(/\s+/g,' ').trim();
+  return text;
+}
+function missingQuestion(q){
+  var text=questionText(q);
+  return text.length<4||!/[a-z0-9]/i.test(text);
+}
 function state(q){
-  var explicit=String(q.answer_state||'').toLowerCase().replace(/\s+/g,'_');
-  if(['answered','unanswered','partially_answered','unresolved'].includes(explicit))return explicit;
   var status=String(q.source_result||'').toLowerCase().replace(/\s+/g,'_');
   if(status==='not_answered'||status==='unanswered')return 'unanswered';
   if(Array.isArray(q.matrix_answers)&&q.matrix_answers.length){
@@ -15,12 +27,12 @@ function state(q){
     if(selected>0)return 'partially_answered';
     return 'unresolved';
   }
-  if(q.answer_capture_status==='captured'&&
-    (String(q.your_answer||'').trim()||Array.isArray(q.selected_answers)&&q.selected_answers.length))
-    return 'answered';
-  // A grade of zero does not prove that the student skipped the question.
-  // Likewise a correct grade without a captured selection does not reconstruct
-  // the selected option.
+  var checked=Array.isArray(q.options)&&q.options.some(function(o){return o.checked===true||o.chosen===true;});
+  var captured=q.answer_capture_status==='captured'&&String(q.your_answer||q.my_answer||'').trim();
+  if(checked||captured)return 'answered';
+  // Never trust a stale answer_state="unresolved" over captured selections.
+  // Equally, a correct grade or answer_state="answered" alone is not proof
+  // that the underlying choice was captured.
   return 'unresolved';
 }
 function apply(questions){
@@ -54,23 +66,25 @@ function audit(questions,opts){
   var markedTotal=opts.sourceTotal;
   var marksAligned=scoreRecords.length===list.length&&!invalidNumbers&&
     (markedTotal==null||(Math.abs(earned-markedTotal.earned)<.011&&Math.abs(possible-markedTotal.possible)<.011));
+  var emptyQuestions=list.filter(missingQuestion).map(function(q){return q.qno;});
   var distribution={answered:0,unanswered:0,partially_answered:0,unresolved:0};
   list.forEach(function(q){distribution[q.answer_state]++});
-  var structuralComplete=!!list.length&&!duplicates.length&&!gaps.length&&first===1&&!invalidNumbers;
+  var structuralComplete=!!list.length&&!duplicates.length&&!gaps.length&&!emptyQuestions.length&&first===1&&!invalidNumbers;
   var warnings=[];
   if(gaps.length)warnings.push('Missing numbered question(s): '+gaps.join(', ')+'. Text may have merged into a neighbour; original PDF evidence must be inspected.');
   if(duplicates.length)warnings.push('Duplicate question number(s): '+duplicates.join(', ')+'.');
+  if(emptyQuestions.length)warnings.push('Unreadable/empty question content for Q'+emptyQuestions.join(', Q')+'. Numbering and grades alone DO NOT prove successful extraction. Reopen the source; do not generate a debrief request yet.');
   if(first!==1&&list.length)warnings.push('Question numbering does not begin at 1.');
   if(!marksAligned)warnings.push('Original source marks are incomplete or do not reconcile; a full weighted score cannot be certified.');
   if(distribution.unresolved)warnings.push(distribution.unresolved+' answer state(s) remain unresolved. This is NOT the same as '+distribution.unanswered+' explicitly unanswered question(s).');
   return {structuralComplete:structuralComplete,marksAligned:marksAligned,
     allSelectionsVerified:distribution.unresolved===0,
     quality:structuralComplete&&marksAligned&&distribution.unresolved===0?'verified':'needs_review',
-    detected:list.length,expected:expected,duplicates:duplicates,missing:gaps,
+    detected:list.length,expected:Number.isInteger(opts.expectedQuestionCount)&&opts.expectedQuestionCount>0?expected:null,duplicates:duplicates,missing:gaps,emptyQuestions:emptyQuestions,
     answerStates:distribution,marksCaptured:scoreRecords.length,
     originalEarnedMarks:marksAligned?Math.round(earned*100)/100:null,
     originalPossibleMarks:marksAligned?Math.round(possible*100)/100:null,
     warnings:warnings};
 }
-root.LedgerPeerPdfAudit={state:state,apply:apply,audit:audit};
+root.LedgerPeerPdfAudit={state:state,apply:apply,audit:audit,missingQuestion:missingQuestion};
 })(window);
