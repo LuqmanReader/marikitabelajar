@@ -56,6 +56,9 @@ const records=[
  {qno:4,source_result:'incorrect',your_answer:null,matrix_answers:[{selected:'Yes'},{selected:null}],
   original_marks:0,original_max_marks:2}
 ];
+// This fixture tests answer-state provenance, not missing question content.
+// Supply genuine question prompts; a textless question is now correctly incomplete.
+records.forEach((record,i)=>{record.qtext='<p>What is the source treatment for test record '+(i+1)+'?</p>';});
 const a=audit.audit(records,{expectedQuestionCount:4});
 assert.equal(a.structuralComplete,true);
 assert.equal(a.marksAligned,true);
