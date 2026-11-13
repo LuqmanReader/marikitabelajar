@@ -149,6 +149,15 @@
     return F.prompt(meta,selected,catalog(meta),data);
   }
   function fillPrompt(){
+   const integrity=F.sourceIntegrity(data);
+   if(!integrity.ok){
+    const msg='Source extraction incomplete: Q'+integrity.missingQuestions.join(', Q')+
+      ' are missing question content. Re-import the original marked PDF or HTML through Add Exam before generating an AI debrief. <a href="add-exam.html">Open Add Exam</a>.';
+    $('requestText').value=msg.replace(/<[^>]*>/g,'');
+    $('copyAIRequest').disabled=true;$('downloadAIRequest').disabled=true;
+    $('debriefProgress').innerHTML='<strong>Debrief blocked:</strong> '+msg;
+    return '';
+   }
    if(!catalog(meta).length){
     const msg='No verified syllabus topics are configured for '+meta.subject+'. Complete one-time ACCA syllabus setup above, then copy the question request.';
     $('requestText').value=msg;return msg;
@@ -260,10 +269,12 @@
   $('copyAIRequest').addEventListener('click',async()=>{
    try{
     if(!navigator.clipboard||!navigator.clipboard.writeText)throw Error('Clipboard unavailable');
-    await navigator.clipboard.writeText(fillPrompt());
+    const prepared=fillPrompt();if(!prepared)throw new Error('Source extraction is incomplete. Recover the missing question content before generating a debrief.');
+    await navigator.clipboard.writeText(prepared);
     message('Request copied. Paste it into your preferred AI, attach the original PDF if needed, then return to Step 2.');
     setStage('response',true);
    }catch(e){
+    if(!F.sourceIntegrity(data).ok){message(e.message,true);return;}
     fillPrompt();$('requestText').parentElement.open=true;$('requestText').focus();$('requestText').select();
     message('Clipboard access unavailable. The request is selected. On tablets, use the text-selection menu to Copy, or download the request .txt.',true);
    }

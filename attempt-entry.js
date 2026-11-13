@@ -144,7 +144,18 @@
       var marks=gradeText.match(/(?:mark(?:s|ed)?\s*)?(-?\d+(?:\.\d+)?)\s*(?:out of|\/|from)\s*(-?\d+(?:\.\d+)?)/i);
       var originalMarks=marks?Number(marks[1]):null,originalMax=marks?Number(marks[2]):null;
       if(correct===null&&originalMarks!==null&&originalMax!==null)correct=originalMarks>=originalMax;
+      // Some Moodle/HTML exports place their actual prompt outside .qtext.
+      // Recover from semantic question containers, but never from answer or
+      // feedback nodes (which could falsely make an empty question look valid).
       var qtext=qt?qt.innerHTML:'';
+      if(!qtext.trim()){
+        var fallback=el.querySelector('.formulation .questiontext, .questiontext, [data-region="question-text"], .prompt, .formulation');
+        if(fallback){
+          var clone=fallback.cloneNode(true);
+          clone.querySelectorAll('.answer,.specificfeedback,.rightanswer,.outcome,.grade,input,button,select').forEach(function(n){n.remove();});
+          qtext=clone.innerHTML;
+        }
+      }
       var information='';if(sharedHtml&&sharedRemaining>0){information=sharedPlain;qtext='<div><strong>Shared information:</strong>'+sharedHtml+'</div>'+qtext;sharedRemaining--;if(!sharedRemaining){sharedHtml='';sharedPlain='';}}
       questions.push({qno:Number(no.textContent),is_correct:correct,qtext:qtext,options:options,your_answer:chosen.join('<br>')||null,correct_answer:right?right.textContent.replace(/^\s*The correct answer is:\s*/i,'').trim():'',debrief:'',source_feedback:feedback?F.sanitize(feedback.innerHTML):'',source_result:state,original_marks:originalMarks,original_max_marks:originalMax,information:information,answer_capture_status:chosen.length?'captured':'not_captured',fb_is_custom:false});
     });
@@ -190,7 +201,14 @@
       if(versionAtStart!==inputVersion||readerMode()!==selectedMode)throw new Error('Inputs changed while extraction was running. Choose Extract answer review again.');
       if(!Array.isArray(qs)||!qs.length)throw new Error('HTML conversion is available, but no identifiable exam questions were recovered. Open the converted HTML to inspect the source; no scores have been invented.');
       qs=validateQuestions(qs,meta);
+      // The audit owns answer-state proof, not the importer or AI.
+      // It recalculates stale unresolved flags from captured selections.
       var extractionAudit=window.LedgerPeerPdfAudit?LedgerPeerPdfAudit.audit(qs):null;
+      if(!extractionAudit)throw new Error('Extraction validation is unavailable. Refresh and retry; an unvalidated attempt cannot be saved.');
+      if(extractionAudit.emptyQuestions&&extractionAudit.emptyQuestions.length){
+        throw new Error('Question content missing for Q'+extractionAudit.emptyQuestions.join(', Q')+
+          '. The PDF-to-HTML reader could not verify these questions. Retry the source export or inspect the preserved converted HTML. Nothing was saved or sent for AI debrief.');
+      }
       if(extractionAudit){
         if(meta.extractionPipeline&&meta.extractionPipeline.unresolvedPages&&meta.extractionPipeline.unresolvedPages.length){
           extractionAudit.quality='needs_review';extractionAudit.structuralComplete=false;extractionAudit.marksAligned=false;
