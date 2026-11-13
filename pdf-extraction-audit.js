@@ -5,14 +5,18 @@
 'use strict';
 function number(value){return Number.isFinite(value)?value:null;}
 function questionText(q){
-  // Only original question/context content counts. Grades and answer feedback
-  // cannot substitute for a missing question, even with complete numbering.
-  var html=String(q.qtext||q.question_html||q.question||'');
-  var text=html.replace(/<!--[\s\S]*?-->/g,' ')
+  // Only question content counts, never grading labels, selected-answer
+  // feedback or a placeholder for missing image pixels.
+  var html=String(q.qtext||q.question_html||q.question||'')
+    .replace(/<!--[\s\S]*?-->/g,' ')
     .replace(/<(?:script|style)\b[^>]*>[\s\S]*?<\/\s*(?:script|style)\s*>/gi,' ')
+    .replace(/<\/?(?:p|div|li|tr|br|h[1-6])\b[^>]*>/gi,'\n')
     .replace(/<[^>]+>/g,' ').replace(/&(?:nbsp|#160|#xA0);/gi,' ')
-    .replace(/&[a-z]+;|&#\d+;|&#x[0-9a-f]+;/gi,' ').replace(/\s+/g,' ').trim();
-  return text;
+    .replace(/&[a-z]+;|&#\d+;|&#x[0-9a-f]+;/gi,' ');
+  return html.split(/\n+/).map(function(line){return line.replace(/\s+/g,' ').trim()})
+    .filter(function(line){
+      return line&&!/^(?:question\s+\d{1,3}\s*[:.\-]?|correct|incorrect|partially\s+correct|not\s+answered|unanswered|marked?\s+out\s+of|mark(?:s|ed)?\s*[:\d]|grade\s*[:\d]|your\s+(?:answer|response)\s*:|selected\s+answer\s*:|the\s+correct\s+answers?\s+(?:is|are)\s*:|https?:\/\/\S+)$/i.test(line);
+    }).join(' ').replace(/\[(?:image unavailable|figure present|question figure present)[^\]]*\]/gi,' ').replace(/\s+/g,' ').trim();
 }
 function missingQuestion(q){
   var text=questionText(q);
