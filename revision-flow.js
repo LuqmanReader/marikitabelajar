@@ -57,7 +57,25 @@
       ||(allowed.filter(name=>name.match(/^[A-Z]\d+/)&&name.match(/^[A-Z]\d+/)[0].toLowerCase()===clean).length===1
           ?allowed.find(name=>name.match(/^[A-Z]\d+/)&&name.match(/^[A-Z]\d+/)[0].toLowerCase()===clean):'');
   }
+  function sourceIntegrity(questions){
+    var records=Array.isArray(questions)?questions:[];
+    var missing=records.filter(function(q){
+      if(root.LedgerPeerPdfAudit&&root.LedgerPeerPdfAudit.missingQuestion)
+        return root.LedgerPeerPdfAudit.missingQuestion(q);
+      var text=String(q.qtext||'').replace(/<[^>]+>/g,' ').replace(/&(?:nbsp|#160|#xA0);/gi,' ')
+        .replace(/&[a-z]+;|&#\d+;|&#x[0-9a-f]+;/gi,' ').replace(/\s+/g,' ').trim();
+      return text.length<4||!/[a-z0-9]/i.test(text);
+    }).map(function(q){return q.qno;});
+    return {missingQuestions:missing,ok:!missing.length&&!!records.length};
+  }
+  function requireSourceIntegrity(questions){
+    var check=sourceIntegrity(questions);
+    if(!check.ok)throw new Error('Source extraction incomplete: '+(check.missingQuestions.length?'Q'+check.missingQuestions.join(', Q')+' have no readable question text. ':'No questions were saved. ')+
+      'Re-import the original PDF or marked HTML in Add Exam. Do not use an AI debrief for this incomplete source.');
+    return check;
+  }
   function review(raw,questions,meta){
+    requireSourceIntegrity(questions);
     var data=typeof raw==='string'?parse(raw):raw, warnings=[];
     if(!data||typeof data!=='object')throw new Error('Expected an AI response object or question array.');
     if(data.exam_id!=null&&data.exam_id!==meta.id)throw new Error('This AI response belongs to another attempt. Copy the prompt from this attempt again.');
@@ -130,6 +148,7 @@
   // The AI is external. Verification passes are instructions for one response,
   // not a claim of automatic reruns or background processing.
   function prompt(meta,questions,catalog,signatureSource){
+    requireSourceIntegrity(signatureSource||questions);
     var type=meta.testType==='set'?'Chapter Set':meta.testType==='pre'?'Progress Test':'Mock Test';
     var fullFormat=root.LedgerOfficialExamRegistry&&root.LedgerOfficialExamRegistry.get(meta.subject);
     if(!Array.isArray(catalog)||!catalog.length)throw new Error('Configure the approved ACCA syllabus for '+meta.subject+' before generating this request.');
@@ -152,6 +171,7 @@
         focus:'One specific practice action.'
       }]
     };
+    var currentAudit=root.LedgerPeerPdfAudit&&root.LedgerPeerPdfAudit.audit(signatureSource||questions);
     var payload=questions.map(function(q){
       var sourcePages=Array.isArray(q.source_pdf_pages)?q.source_pdf_pages:[];
       var item={
@@ -169,7 +189,7 @@
         context_information:plain(q.information||''),
         context_information_html:sourceHtml(q.information||''),
         answer_capture_status:q.answer_capture_status||'not_captured',
-        answer_state:q.answer_state||'unresolved',
+        answer_state:root.LedgerPeerPdfAudit?root.LedgerPeerPdfAudit.state(q):q.answer_state||'unresolved',
         answer_state_evidence:q.answer_state_evidence||'',
         source_regions:Array.isArray(q.source_regions)?q.source_regions.map(function(r){return {page:r.page,x:r.x,y:r.y,w:r.w,h:r.h,source:r.source,hasAnchor:r.hasAnchor};}):[],
         source_tables:Array.isArray(q.source_tables)?q.source_tables.map(function(t){return {page:t.page,rows:t.rows,box:t.box};}):[],
@@ -197,7 +217,7 @@
       'PAPER SELECTED BY STUDENT (AUTHORITATIVE): '+meta.subject+'. DO NOT infer a different paper from the exam content or PDF.',
       'ATTEMPT TYPE: '+type+'; number '+meta.testNumber+'.',
       'PRIMARY READING SOURCE: '+(meta.extractionPipeline&&meta.extractionPipeline.primarySource==='converted-html'?'HTML converted from the PDF BEFORE question extraction. Read the supplied HTML/text evidence first. Use original PDF pages or screenshots only for missing, ambiguous or image-dependent evidence; do not require a new scan of the entire PDF when the HTML is sufficient.':'The supplied question HTML and text.') ,
-      'EXTRACTION REPORT: '+JSON.stringify({pipeline:meta.extractionPipeline||null,warnings:meta.extractionWarnings||[],detectedQuestions:(signatureSource||questions).length,missingQuestionNumbers:meta.extractionAudit&&meta.extractionAudit.missing||[],quality:meta.extractionAudit&&meta.extractionAudit.quality||'unknown',expectedQuestionCount:null})+'. Expected question count is unknown unless independently established by the source; the detected list may be incomplete.',
+      'EXTRACTION REPORT: '+JSON.stringify({pipeline:meta.extractionPipeline||null,warnings:meta.extractionWarnings||[],detectedQuestions:(signatureSource||questions).length,missingQuestionNumbers:currentAudit?currentAudit.missing:meta.extractionAudit&&meta.extractionAudit.missing||[],emptyQuestionNumbers:currentAudit?currentAudit.emptyQuestions:[],quality:currentAudit?currentAudit.quality:meta.extractionAudit&&meta.extractionAudit.quality||'unknown',expectedQuestionCount:meta.extractionAudit&&meta.extractionAudit.expected||null})+'. Expected question count is unknown unless independently established by the source; the detected list may be incomplete.',
       'OFFICIAL FULL EXAM FORMAT (REFERENCE ONLY; shorter chapter/progress tests may differ): '+(fullFormat?JSON.stringify(fullFormat.format):'Not yet verified'),
       'SYLLABUS JURISDICTION / VARIANT: '+(fullFormat?fullFormat.variant:'Not specified')+'. Do not substitute another jurisdiction, especially tax/law.',
       'OFFICIAL ACCA EXAM FORMAT REFERENCE: '+(fullFormat?fullFormat.formatSource:'Not available'),
@@ -246,6 +266,6 @@
   function download(name,content,type){
     var url=URL.createObjectURL(new Blob([content],{type:type||'application/json'})),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(function(){URL.revokeObjectURL(url);},1000);
   }
-  root.RevisionFlow={escape:esc,plain:plain,sanitize:sanitize,signature:signature,parse:parse,review:review,hasFeedback:hasFeedback,feedback:feedback,prompt:prompt,save:save,download:download};
+  root.RevisionFlow={escape:esc,plain:plain,sanitize:sanitize,signature:signature,parse:parse,review:review,hasFeedback:hasFeedback,feedback:feedback,prompt:prompt,sourceIntegrity:sourceIntegrity,save:save,download:download};
   if(typeof module!=='undefined'&&module.exports)module.exports=root.RevisionFlow;
 })(typeof window!=='undefined'?window:globalThis);
