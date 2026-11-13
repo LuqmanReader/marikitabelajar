@@ -15,7 +15,7 @@ function questionText(q){
     .replace(/&[a-z]+;|&#\d+;|&#x[0-9a-f]+;/gi,' ');
   return html.split(/\n+/).map(function(line){return line.replace(/\s+/g,' ').trim()})
     .filter(function(line){
-      return line&&!/^(?:question\s+\d{1,3}\s*[:.\-]?|correct|incorrect|partially\s+correct|not\s+answered|unanswered|marked?\s+out\s+of|mark(?:s|ed)?\s*[:\d]|grade\s*[:\d]|your\s+(?:answer|response)\s*:|selected\s+answer\s*:|the\s+correct\s+answers?\s+(?:is|are)\s*:|https?:\/\/\S+)$/i.test(line);
+      return line&&!/^(?:question\s+\d{1,3}\s*[:.\-]?|correct|incorrect|partially\s+correct|not\s+answered|unanswered|marked?\s+out\s+of|mark(?:s|ed)?\s*[:\d].*|grade\s*[:\d].*|your\s+(?:answer|response)\s*:.*|selected\s+answer\s*:.*|the\s+correct\s+answers?\s+(?:is|are)\s*:.*|https?:\/\/\S+)$/i.test(line);
     }).join(' ').replace(/\[(?:image unavailable|figure present|question figure present)[^\]]*\]/gi,' ').replace(/\s+/g,' ').trim();
 }
 function missingQuestion(q){
