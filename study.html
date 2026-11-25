@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en" data-lp-page="study"><head>
+<meta name="robots" content="noindex,follow"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Study Plan & Calendar · LedgerPeer</title><link rel="icon" href="favicon-32.png">
+<link rel="stylesheet" href="ledgerpeer-theme.css"><link rel="stylesheet" href="site-nav.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script><script src="supabase-config.js"></script><script src="auth.js?v=20261125-streamlined1"></script>
+<script>if(!PersonalHubAuth.guard())throw Error('Locked');</script>
+<style>
+  :root{--ink:#111;--paper:#f7f1e4;--yellow:#ffcf24;--blue:#2956ff}
+  *{box-sizing:border-box}body{margin:0;background:var(--paper);font-family:ui-monospace,Consolas,monospace;color:var(--ink)}
+  .study-shell{max-width:1360px;margin:0 auto;padding:22px clamp(12px,3vw,36px) 40px}
+  .study-top{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+  .study-top nav{display:flex;flex-wrap:wrap;gap:9px}.study-top a{display:inline-flex;align-items:center;min-height:43px;padding:9px 12px;border:3px solid var(--ink);background:white;color:var(--ink);text-decoration:none;font-size:12px;font-weight:900}
+  .study-hero{background:var(--yellow);border:4px solid var(--ink);box-shadow:7px 7px 0 var(--ink);padding:22px clamp(18px,3vw,32px);margin:20px 7px 22px 0}
+  .study-hero small{font-weight:900;letter-spacing:.08em}.study-hero h1{font-family:'Arial Black',Impact,sans-serif;letter-spacing:-.035em;font-size:clamp(28px,4vw,52px);margin:8px 0;line-height:1.08}.study-hero p{font-size:13px;line-height:1.6;font-weight:700;max-width:740px;margin:8px 0 0}
+  .study-tabs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 12px}
+  .study-tabs button{padding:15px 12px;border:3px solid var(--ink);background:#fff;cursor:pointer;font:900 15px ui-monospace,monospace;text-align:center;min-height:53px}
+  .study-tabs button[aria-selected="true"]{background:var(--blue);color:white;box-shadow:4px 4px 0 var(--ink)}
+  .study-frame{display:block;width:100%;height:max(720px,calc(100vh - 290px));border:3px solid var(--ink);background:#fff}
+  .study-frame[hidden]{display:none}
+  .study-help{font-size:12px;line-height:1.5;font-weight:700;margin:15px 0 0;color:#454545}
+  @media(max-width:640px){.study-shell{padding:12px 10px 24px}.study-tabs{gap:7px}.study-tabs button{font-size:12px;padding:12px 7px}.study-frame{height:calc(100dvh - 235px);min-height:650px}.study-hero{padding:17px}}
+</style></head><body>
+<main class="study-shell">
+  <div class="study-top"><strong>LEDGERPEER · STUDY SPACE</strong><nav aria-label="Study navigation"><a href="index.html#access">← Home</a><a href="hub.html">My Revision</a><a href="add-exam.html">Exam Debrief</a></nav></div>
+  <header class="study-hero"><small>PLAN · SCHEDULE · LOG</small><h1>STUDY PLANNER & CALENDAR.</h1><p>Your tasks, revision sessions, important dates and connected Google events in one place. Switching tabs keeps your existing study records.</p></header>
+  <div class="study-tabs" role="tablist" aria-label="Study planning views">
+    <button type="button" id="plannerTab" role="tab" aria-controls="plannerPanel" aria-selected="true">☑ TASKS & SESSIONS</button>
+    <button type="button" id="calendarTab" role="tab" aria-controls="calendarPanel" aria-selected="false">▦ CALENDAR & EVENTS</button>
+  </div>
+  <section id="plannerPanel" role="tabpanel" aria-labelledby="plannerTab"><iframe class="study-frame" title="Study tasks and sessions" src="study-planner.html?embedded=1" id="plannerFrame"></iframe></section>
+  <section id="calendarPanel" role="tabpanel" aria-labelledby="calendarTab" hidden><iframe class="study-frame" title="Calendar and events" id="calendarFrame" data-src="calendar.html?embedded=1"></iframe></section>
+  <p class="study-help">Tasks and calendar events use the same local study record. Google Calendar connection remains optional.</p>
+</main>
+<script>
+(function(){
+  const panels={planner:document.getElementById('plannerPanel'),calendar:document.getElementById('calendarPanel')};
+  const frames={planner:document.getElementById('plannerFrame'),calendar:document.getElementById('calendarFrame')};
+  let active='planner';
+  function show(name){
+    if(!panels[name])return;
+    const changed=active!==name;
+    active=name;
+    Object.keys(panels).forEach(key=>{
+      panels[key].hidden=key!==name;
+      document.getElementById(key+'Tab').setAttribute('aria-selected',String(key===name));
+    });
+    const frame=frames[name];
+    // Reload when returning to a tab so tasks/events edited in the other
+    // frame are picked up from their existing shared storage.
+    if(!frame.src||changed)frame.src=frame.dataset.src||frame.getAttribute('src');
+    history.replaceState(null,'',name==='calendar'?'#calendar':'#planner');
+  }
+  document.getElementById('plannerTab').addEventListener('click',()=>show('planner'));
+  document.getElementById('calendarTab').addEventListener('click',()=>show('calendar'));
+  show(location.hash==='#calendar'?'calendar':'planner');
+})();
+</script>
+</body></html>

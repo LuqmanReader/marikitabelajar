@@ -71,7 +71,7 @@ assert.equal(parser.detectSavedUrl('<!-- saved from url=(0056)https://twofive.fl
 assert.equal(manifest.manifest_version,3,'Use supported Manifest V3');
 assert.ok(!manifest.permissions.includes('cookies')&&!manifest.permissions.includes('webRequest'),'Bridge needs no browser cookies or network monitoring permissions');
 assert.ok(manifest.host_permissions.every(host=>host.includes('tymbaedu.com')||host.includes('luqmanreader.github.io')),'Limit allowed hosts');
-assert.ok(worker.includes('sender.frameId!==0')&&worker.includes('caller.origin+caller.pathname!==BRIDGE'),'Other pages must not trigger the extension');
+assert.ok(worker.includes('trustedFrame(sender,BRIDGE)')&&worker.includes('TRUSTED_TABS.has(tab.pathname)'),'Only trusted LedgerPeer tabs may trigger a bridge sync');
 assert.ok(worker.includes('chrome.tabs.sendMessage'),'Read visible page content, not hidden institutional APIs');
 assert.ok(!worker.includes('fetch('),'Extension must not fetch TYMBAFlex protected resources');
 assert.ok(page.includes('tbFiles')&&page.includes('tbSyncTabs'),'Both local HTML import and live-tab sync are available');

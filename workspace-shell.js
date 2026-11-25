@@ -6,11 +6,10 @@
 const frame=document.getElementById('lpContentFrame');
 if(!frame)return;
 const names=new Set([
- 'index.html','hub.html','notes.html','quiz.html','classroom.html',
- 'profile.html','study-planner.html','study-planner-3d.html','calendar.html',
- 'tymbaflex-revision.html','tymbaflex-bridge.html','ai-tutor.html',
- 'fia-study.html','view.html','add-exam.html','quant-model.html','about.html',
- 'achievements.html','financial-dashboard.html','financial-manager.html'
+ 'index.html','hub.html','study.html','profile.html','study-planner.html',
+ 'study-planner-3d.html','calendar.html','tymbaflex-revision.html',
+ 'tymbaflex-bridge.html','view.html','add-exam.html',
+ 'quant-model.html','about.html','financial-dashboard.html','financial-manager.html'
 ]);
 const base=new URL('.',location.href);
 const label=document.getElementById('lpShellSection');
@@ -50,12 +49,11 @@ document.getElementById('lpShellBack').addEventListener('click',()=>{
 });
 function changeTitle(file){
  const labels={
-  'index.html':'HOME','hub.html':'REVISION DASHBOARD','notes.html':'STUDY LIBRARY',
-  'quiz.html':'QUIZ CENTRE','classroom.html':'CLASSROOM','study-planner.html':'STUDY PLANNER',
-  'study-planner-3d.html':'STUDY PLANNER','calendar.html':'CALENDAR',
+  'index.html':'HOME','hub.html':'REVISION DASHBOARD','study.html':'STUDY PLAN & CALENDAR',
+  'study-planner.html':'STUDY PLANNER','study-planner-3d.html':'STUDY PLANNER','calendar.html':'CALENDAR',
   'tymbaflex-revision.html':'TYMBAFLEX REVISION','tymbaflex-bridge.html':'TYMBAFLEX BRIDGE',
-  'ai-tutor.html':'AI TUTOR','profile.html':'STUDENT PROFILE','view.html':'ATTEMPT REVIEW',
-  'add-exam.html':'ADD AN ATTEMPT','fia-study.html':'STUDY GUIDES','quant-model.html':'QUANT',
+  'profile.html':'STUDENT PROFILE','view.html':'ATTEMPT REVIEW',
+  'add-exam.html':'ADD AN ATTEMPT','quant-model.html':'QUANT',
   'about.html':'ABOUT LEDGERPEER'
  };
  label.textContent=labels[file]||'LEDGERPEER';

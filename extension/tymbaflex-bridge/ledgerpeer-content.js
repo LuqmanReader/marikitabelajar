@@ -15,6 +15,8 @@ if(location.origin+location.pathname===PAGE){
   });
  });
 }
+// The revision dashboard can be embedded under My Revision (and the music
+// workspace), so match this document's path, not the outer tab's hash.
 const REVISION_PAGE='https://luqmanreader.github.io/marikitabelajar/tymbaflex-revision.html';
 if(location.origin+location.pathname===REVISION_PAGE){
  window.addEventListener('message',event=>{

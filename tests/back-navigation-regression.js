@@ -4,9 +4,8 @@ const fs=require('node:fs'),path=require('node:path');
 const root=path.resolve(__dirname,'..');
 const read=(p)=>fs.readFileSync(path.join(root,p),'utf8');
 const activePages=[
- 'about.html','add-exam.html','ai-tutor.html','calendar.html',
- 'classroom.html','fia-study.html','hub.html','notes.html',
- 'profile.html','quant-model.html','quiz.html','study-planner-3d.html',
+ 'about.html','add-exam.html','calendar.html','hub.html',
+ 'profile.html','quant-model.html','study-planner-3d.html',
  'study-planner.html','tymbaflex-bridge.html','tymbaflex-revision.html','view.html'
 ];
 const renderedByCore=new Set(['calendar.html','study-planner.html','study-planner-3d.html']);
@@ -27,12 +26,16 @@ for(const file of activePages){
  const visible=anchors.find(a=>a.markup.includes('site-back')&&/href="index\.html(?:#access)?"/.test(a.markup)&&a.offset<5000&&!/\bhidden(?:=|\s|>)/.test(a.markup));
  assert.ok(visible,'Prominent visible Back to Home control missing near top of '+file);
 }
-for(const file of ['add-exam.html','ai-tutor.html','fia-study.html','notes.html','quant-model.html','quiz.html','tymbaflex-bridge.html','tymbaflex-revision.html','view.html']){
+for(const file of ['add-exam.html','quant-model.html','tymbaflex-bridge.html','tymbaflex-revision.html','view.html']){
  const html=read(file);
- const expected=(file==='fia-study.html')?'notes.html?edition=fia-2':(file==='quiz.html'?'notes.html':'hub.html');
- assert.ok(html.includes('href="'+expected+'"'),'Contextual parent route removed: '+file);
+ assert.ok(html.includes('href="hub.html"'),'Contextual revision route removed: '+file);
 }
+const study=read('study.html');
+assert.match(study,/href="index\.html#access"/, 'Combined study page must offer Home');
+assert.match(study,/href="hub\.html"/, 'Combined study page must offer Revision');
+assert.match(study,/study-planner\.html\?embedded=1/, 'Combined study page must show tasks');
+assert.match(study,/calendar\.html\?embedded=1/, 'Combined study page must show calendar');
 assert.ok(read('tymbaflex-revision.html').indexOf('← BACK TO HOME')<read('tymbaflex-revision.html').indexOf('class="tf-hero"'),'TYMBAFlex Back button must appear above its oversized hero');
 assert.ok(read('index.html').includes('id="hubView"'),'Homepage must remain the root destination');
-for(const page of ['achievements.html','financial-manager.html','financial-dashboard.html'])assert.ok(/location\.replace\(/.test(read(page)),'Retired redirect must stay functional: '+page);
-console.log('PASS: 16 active secondary pages have visible Back to Home controls; legacy redirect pages and root homepage intentionally exempt.');
+for(const page of ['financial-manager.html','financial-dashboard.html'])assert.ok(/location\.replace\(/.test(read(page)),'Retired redirect must stay functional: '+page);
+console.log('PASS: Active secondary pages have visible Home routes; combined Study page and legacy redirects verified.');
