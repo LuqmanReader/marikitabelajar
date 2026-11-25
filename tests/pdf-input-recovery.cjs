@@ -41,14 +41,16 @@ const password=Object.assign(new Error('Password required'),{name:'PasswordExcep
   context.pdfjsLib.getDocument=()=>{calls++;return {promise:Promise.reject(password),destroy:async()=>{}};};
   await assert.rejects(context.LedgerPeerPdfReader.openDocument(complete),/password-protected/);
   assert.equal(calls,1,'password errors must not be retried');
-  // The front-end wiring should keep the existing manual JSON debrief and
-  // show recoverable diagnostics, rather than silently saving bad results.
+  // Standalone PDF recovery remains tested for historical saved attempts.
+  // The active upload screen now accepts only HTML and retains manual JSON.
   const entry=fs.readFileSync(path.join(__dirname,'..','attempt-entry.js'),'utf8');
   const html=fs.readFileSync(path.join(__dirname,'..','add-exam.html'),'utf8');
   assert.match(entry,/pendingReparse/);
   assert.match(entry,/\$\('parseAttempt'\)\.hidden=false/);
-  assert.match(html,/id="pdfDiagnostics"/);
-  assert.match(html,/pdf-input-health\.js/);
+  assert.match(html,/accept="\.html,\.htm,text\/html"/);
+  assert.doesNotMatch(html,/id="pdfDiagnostics"/);
+  assert.doesNotMatch(html,/pdf-input-health\.js/);
+  assert.match(entry,/PDF uploads are no longer supported/);
   assert.match(html,/Save attempt &amp; open JSON debrief/);
-  console.log('PDF input recovery regression: PASS (signature, HTML, EOF, retry, password, diagnostics, workflow)');
+  console.log('PDF subsystem recovery and HTML-only upload boundary: PASS (signature, EOF, retry, password, workflow)');
 })().catch(e=>{console.error(e);process.exitCode=1;});

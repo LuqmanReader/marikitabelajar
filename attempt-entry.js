@@ -2,43 +2,22 @@
   'use strict';
   var $=function(id){return document.getElementById(id);}, F=RevisionFlow;
   SubjectCatalog.fill($('subjectSelect'));
-  var staged=null,source='',sourceFile=null,sourceKind='',originalPdf=null,pdfBytes=null,convertedHtml=null,fileVersion=0,inputVersion=0,reading=false,pendingReparse=false,inputHealth=null;
+  var staged=null,source='',sourceFile=null,fileVersion=0,inputVersion=0,reading=false,pendingReparse=false;
   var localNow=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,16);
   $('attemptDate').value=localNow;
   function message(text){$('entryMessage').textContent=text;}
-  function readerMode(){return sourceKind;}
   function invalidate(){
     inputVersion++;
-    staged=null;convertedHtml=null;$('saveAttempt').disabled=true;$('entryPreview').innerHTML='';
-    $('pdfReviewGate').hidden=true; // The old acknowledgement checkbox was retired from the import page.
-    $('conversionResult').hidden=true;
-    if($('pdfDiagnostics'))$('pdfDiagnostics').hidden=true;
-    // Converted HTML is attached internally as a Blob.
-  }
-  function ensurePdfJs(){
-    if(window.pdfjsLib&&window.pdfjsLib.getDocument)return Promise.resolve();
-    if(window.__ledgerpeerPdfJsLoading)return window.__ledgerpeerPdfJsLoading;
-    var urls=['https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js',
-      'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js'];
-    window.__ledgerpeerPdfJsLoading=new Promise(function(resolve,reject){
-      function attempt(n){
-        if(n>=urls.length){reject(new Error('PDF.js could not load from either library mirror. Check your connection and retry extraction.'));return;}
-        var script=document.createElement('script');script.src=urls[n];
-        script.onload=function(){window.pdfjsLib&&window.pdfjsLib.getDocument?resolve():attempt(n+1);};
-        script.onerror=function(){attempt(n+1);};
-        document.head.appendChild(script);
-      }
-      attempt(0);
-    }).catch(function(err){window.__ledgerpeerPdfJsLoading=null;throw err;});
-    return window.__ledgerpeerPdfJsLoading;
+    staged=null;$('saveAttempt').disabled=true;$('entryPreview').innerHTML='';
+    $('htmlReviewGate').hidden=true;
   }
   function changeReader(){
-    invalidate();source='';sourceKind='';sourceFile=null;originalPdf=null;pdfBytes=null;inputHealth=null;fileVersion++;
-    $('sourceFile').value='';$('sourceFile').accept='.pdf,.html,.htm,application/pdf,text/html';
+    invalidate();source='';sourceFile=null;fileVersion++;
+    $('sourceFile').value='';$('sourceFile').accept='.html,.htm,text/html';
     $('parseAttempt').disabled=true;$('parseAttempt').hidden=true;
-    $('uploadLabel').textContent='Upload a marked attempt · PDF or HTML';
-    $('htmlDescription').textContent='PDFs are converted to HTML first. Questions are read from the HTML; image reading is reserved for missing text or visual answer selections.';
-    message('Choose one PDF or HTML. Extraction begins automatically.');
+    $('uploadLabel').textContent='Upload your marked HTML attempt';
+    $('htmlDescription').textContent='Choose one .html or .htm marked review export. Questions and selected answers are read directly from the HTML.';
+    message('Choose an HTML review file. Extraction begins automatically.');
   }
   function syllabus(){
     var resolved=window.LedgerSyllabus&&LedgerSyllabus.resolve(localStorage,$('subjectSelect').value);
@@ -54,7 +33,7 @@
     if(type==='set'&&approved.length&&!approved.includes(chapter))throw new Error('Choose the Chapter Set target from the approved syllabus topic list.');
     if(type==='set'&&total!==null&&(!Number.isSafeInteger(total)||total<n))throw new Error('The number of available sets must be a whole number at least as high as this set number.');
     var date=new Date($('attemptDate').value);if(!Number.isFinite(date.getTime()))throw new Error('Choose the date and time of the attempt.');
-    return {subject:subject,testType:type,testNumber:n,setChapter:type==='set'?chapter:'',setTotal:type==='set'?total:null,attemptedAt:date.toISOString(),sourceType:readerMode()==='html'?'html':'pdf-html',sourceFormat:readerMode()==='html'?'html':'pdf'};
+    return {subject:subject,testType:type,testNumber:n,setChapter:type==='set'?chapter:'',setTotal:type==='set'?total:null,attemptedAt:date.toISOString(),sourceType:'html',sourceFormat:'html'};
   }
   function names(){
     var selected=syllabus(),topics=selected.topics.length?selected.topics:ChapterAnalysis.catalog(localStorage,$('subjectSelect').value);
@@ -66,29 +45,22 @@
   $('testType').addEventListener('change',mode);$('subjectSelect').addEventListener('change',names);
   // Adjusting paper, type or date must not discard extracted questions.
   $('sourceFile').addEventListener('change',async function(){
-    invalidate();source='';sourceKind='';originalPdf=null;pdfBytes=null;inputHealth=null;
+    invalidate();source='';
     var version=++fileVersion,file=this.files[0];sourceFile=file||null;$('parseAttempt').disabled=true;$('parseAttempt').hidden=true;
     if(!file)return;
     try{
       if(file.size>35*1024*1024)throw new Error('File is over 35 MB; reduce its size before importing.');
+      if(!/\.html?$/i.test(file.name))throw new Error('Select a .html or .htm marked-review export. PDF uploads are no longer supported.');
       var bytes=new Uint8Array(await file.arrayBuffer());
       if(version!==fileVersion)return;
-      if(!window.LedgerPeerPdfHealth)throw new Error('File validation library did not load. Refresh and retry.');
-      inputHealth=LedgerPeerPdfHealth.inspect(bytes,file.name,file.type);
-      if(inputHealth.kind==='pdf'){
-        sourceKind='pdf';pdfBytes=bytes;
-        originalPdf=new File([bytes],file.name,{type:'application/pdf'});
-      }else if(inputHealth.kind==='html'||(/\.html?$/i.test(file.name)||file.type==='text/html')&&!inputHealth.expectedPdf){
-        sourceKind='html';source=new TextDecoder('utf-8').decode(bytes);
-        if(!/<(?:!doctype\s+html|html|body|div|section)\b/i.test(source))throw new Error('This HTML does not contain a readable document.');
-      }else if(inputHealth.expectedPdf){
-        throw new Error('This file is named as a PDF but has no PDF header. Download the complete original PDF, or export HTML instead.');
-      }else throw new Error('Unsupported file content. Select a genuine PDF or HTML marked-review export.');
+      if(/^\s*%PDF-/i.test(new TextDecoder('ascii').decode(bytes.slice(0,64))))throw new Error('This file contains PDF data. Export the marked review as HTML instead.');
+      source=new TextDecoder('utf-8').decode(bytes);
+      if(!/<(?:!doctype\s+html|html|head|body|main|form|div|section|article)\b/i.test(source))throw new Error('This does not contain a recognizable HTML document. Save the completed review page as HTML.');
       $('parseAttempt').disabled=false;
-      message(sourceKind==='pdf'?'Converting PDF to HTML first…':'Reading HTML questions and answers…');
+      message('Reading HTML questions and answers…');
       $('parseAttempt').click();
     }catch(e){
-      sourceFile=null;pdfBytes=null;originalPdf=null;sourceKind='';
+      sourceFile=null;
       message(e&&e.name==='NotReadableError'?'Browser access to the file expired; save a local copy and reselect it.':'Unable to read file: '+e.message);
     }
   });
@@ -165,58 +137,23 @@
   $('parseAttempt').addEventListener('click',async function(){
     if(reading){pendingReparse=true;return;}
     invalidate();reading=true;$('parseAttempt').disabled=true;$('parseAttempt').hidden=true;
-    var versionAtStart=inputVersion,selectedMode=readerMode();
+    var versionAtStart=inputVersion;
     try{
-      var meta={sourceType:readerMode()==='html'?'html':'pdf-html',sourceFormat:readerMode()==='html'?'html':'pdf',subject:$('subjectSelect').value||''};
-      var result,qs,warnings=[],pdfRecord=null;
-      if(readerMode()==='html'){
-        pdfRecord=window.LedgerPeerPdfReader&&LedgerPeerPdfReader.parseConvertedHtml(source);
-        if(!pdfRecord&&window.LedgerPeerPdfHtml&&LedgerPeerPdfHtml.parse(source)){
-          convertedHtml=new Blob([source],{type:'text/html'});$('conversionResult').hidden=false;
-          result=await LedgerPeerPdfReader.readHtml(source,message);
-          meta.sourceType='pdf-html';meta.sourceFormat='pdf';
-        }else{
-          qs=pdfRecord?pdfRecord.questions:parseHtml(source);
-          if(pdfRecord){meta.sourceType='pdf-html';meta.sourceFormat='pdf';convertedHtml=new Blob([source],{type:'text/html'});meta.extractionPipeline=pdfRecord.extractionPipeline;warnings=pdfRecord.warnings.concat(['Converted HTML was imported without its original PDF. Keep the source PDF for evidence.']);$('conversionResult').hidden=false;}
-        }
-      }else{
-        if(!originalPdf)throw new Error('Select the original PDF first.');
-        await ensurePdfJs();
-        if(!window.LedgerPeerPdfHtml)throw new Error('PDF-to-HTML converter did not load. Refresh and retry.');
-        var htmlFirst=await LedgerPeerPdfHtml.convert(pdfBytes,message,originalPdf.name);
-        if(versionAtStart!==inputVersion)throw new Error('The selected file changed. Reading the new upload next.');
-        convertedHtml=htmlFirst;
-        $('conversionResult').hidden=false;
-        // Only now read questions from the completed HTML. The PDF is closed.
-        result=await LedgerPeerPdfReader.readHtml(await convertedHtml.text(),message);
-        result.originalName=originalPdf.name;
-      }
-      if(result){
-        if(result.reconciliation)meta.ocrReconciliation=result.reconciliation;
-        if(result.ocrUsed)meta.ocrUsed=true;
-        meta.extractionPipeline=result.extractionPipeline;
-        qs=result.questions;warnings=result.warnings.slice();
-        convertedHtml=result.convertedHtml||convertedHtml;
-      }
-      if(versionAtStart!==inputVersion||readerMode()!==selectedMode)throw new Error('Inputs changed while extraction was running. Choose Extract answer review again.');
-      if(!Array.isArray(qs)||!qs.length)throw new Error('HTML conversion is available, but no identifiable exam questions were recovered. Open the converted HTML to inspect the source; no scores have been invented.');
+      if(!source)throw new Error('Choose a marked HTML review file first.');
+      var meta={sourceType:'html',sourceFormat:'html',subject:$('subjectSelect').value||''};
+      var qs=parseHtml(source),warnings=[];
+      if(versionAtStart!==inputVersion)throw new Error('Inputs changed while the HTML was being read. Retry the extraction.');
       qs=validateQuestions(qs,meta);
-      // The audit owns answer-state proof, not the importer or AI.
-      // It recalculates stale unresolved flags from captured selections.
+      // Preserve source marks. The evidence audit never invents unanswered
+      // states or lets the external AI overwrite grading.
       var extractionAudit=window.LedgerPeerPdfAudit?LedgerPeerPdfAudit.audit(qs):null;
       if(!extractionAudit)throw new Error('Extraction validation is unavailable. Refresh and retry; an unvalidated attempt cannot be saved.');
       if(extractionAudit.emptyQuestions&&extractionAudit.emptyQuestions.length){
         throw new Error('Question content missing for Q'+extractionAudit.emptyQuestions.join(', Q')+
-          '. The PDF-to-HTML reader could not verify these questions. Retry the source export or inspect the preserved converted HTML. Nothing was saved or sent for AI debrief.');
+          '. Reopen the marked HTML review and check those questions. Nothing was saved or sent for AI debrief.');
       }
-      if(extractionAudit){
-        if(meta.extractionPipeline&&meta.extractionPipeline.unresolvedPages&&meta.extractionPipeline.unresolvedPages.length){
-          extractionAudit.quality='needs_review';extractionAudit.structuralComplete=false;extractionAudit.marksAligned=false;
-          extractionAudit.warnings.push('Converted HTML page(s) still need source verification: '+meta.extractionPipeline.unresolvedPages.join(', ')+'.');
-        }
-        meta.extractionAudit=extractionAudit;
-        if(!result)warnings.push(...extractionAudit.warnings);
-      }
+      meta.extractionAudit=extractionAudit;
+      warnings.push(...extractionAudit.warnings);
       var graded=qs.filter(function(q){return typeof q.is_correct==='boolean';});
       var correct=graded.filter(function(q){return q.is_correct;}).length;
       if(!graded.length)warnings.push('This attempt has unverified scores. It will be saved as unscored, with its source evidence available for checking.');
@@ -229,7 +166,7 @@
         meta.originalEarnedMarks=Math.round(sourceMarks.reduce(function(sum,q){return sum+q.original_marks;},0)*100)/100;
         meta.originalPossibleMarks=Math.round(sourceMarks.reduce(function(sum,q){return sum+q.original_max_marks;},0)*100)/100;
       }
-      meta.readerEngine=result&&result.readerEngine||'html-structured';
+      meta.readerEngine='html-structured';
       meta.extractionWarnings=warnings;
       staged={meta:meta,questions:qs,warnings:warnings};
       var captured=qs.filter(function(q){return q.answer_capture_status==='captured';}).length;
@@ -242,28 +179,21 @@
         (qs.length!==graded.length?'<p class="capture-warning">'+(qs.length-graded.length)+' questions are unscored and excluded from accuracy.</p>':'')+
         captureDescription+structureDescription+'<p>Topics remain unclassified until you import the external AI JSON.</p>'+
         '<div class="question-preview">'+qs.map(function(q){return '<article><strong>Q'+q.qno+' · '+(q.is_correct===true?'Correct':q.is_correct===false?'Incorrect':'Unscored')+'</strong>'+
-          (q.source_pdf_pages?'<p>Original PDF page(s): '+q.source_pdf_pages.join(', ')+'</p>':'')+
           '<p>'+F.escape(F.plain(q.qtext).slice(0,220)||'Question text missing')+'</p><p class="'+(q.answer_capture_status==='captured'?'capture-ok':'capture-warning')+'">'+
           (q.answer_state==='unanswered'?'Confirmed unanswered':q.answer_state==='partially_answered'?'Partially answered':q.answer_state==='answered'?'Learner answer captured':'Answer state unresolved; inspect source evidence')+'</p></article>';}).join('')+'</div>';
-      if(meta.sourceType!=='html'){
-        $('pdfReviewGate').hidden=false;
-        $('pdfWarningSummary').innerHTML='<p>'+warnings.length+' extraction warning(s). '+(qs.length-graded.length)+' unscored question(s). '+states.unanswered+' confirmed unanswered; '+states.unresolved+' unresolved answer state(s).</p>'+
+      if(warnings.length){
+        $('htmlReviewGate').hidden=false;
+        $('htmlWarningSummary').innerHTML='<p>'+warnings.length+' HTML extraction warning(s). '+(qs.length-graded.length)+' unscored question(s). '+states.unanswered+' confirmed unanswered; '+states.unresolved+' unresolved answer state(s).</p>'+
           '<ul>'+warnings.slice(0,12).map(function(w){return '<li>'+F.escape(w)+'</li>';}).join('')+'</ul>'+
           (warnings.length>12?'<p>And '+(warnings.length-12)+' more; consult every question before relying on the result.</p>':'');
-        $('saveAttempt').disabled=false;
-      }else $('saveAttempt').disabled=false;
+      }
+      $('saveAttempt').disabled=false;
       message('Extraction finished. Confirm the paper and assessment type, then save to open the manual JSON debrief.');
     }catch(e){
       staged=null;$('saveAttempt').disabled=true;
-      var reason=e&&e.name==='NotReadableError'?'This browser no longer has permission to read the selected PDF. Save a local copy and reselect it.':String(e&&e.message||e);
+      var reason=e&&e.name==='NotReadableError'?'This browser no longer has permission to read the selected HTML. Save a local copy and reselect it.':String(e&&e.message||e);
       message('Extraction stopped: '+reason);
-      if(sourceFile){
-        $('parseAttempt').hidden=false;
-        if(sourceKind==='pdf'&&inputHealth&&$('pdfDiagnostics')){
-          $('pdfDiagnostics').hidden=false;
-          $('pdfDiagnosticsText').textContent='Selected file: '+sourceFile.name+' ('+Math.ceil(inputHealth.size/1024)+' KB). PDF header: '+(inputHealth.headerOffset>=0?'found':'missing')+'; end-of-file marker: '+(inputHealth.hasEof?'found':'not detected')+'; cross-reference index: '+(inputHealth.hasStartXref?'found':'not detected')+'. The markers are diagnostic only and do not prove that every page is valid.';
-        }
-      }
+      if(sourceFile)$('parseAttempt').hidden=false;
     }finally{
       reading=false;$('parseAttempt').disabled=!sourceFile;
       if(pendingReparse&&sourceFile){
@@ -271,12 +201,6 @@
         $('parseAttempt').click();
       }
     }
-  });
-  $('downloadConvertedHtml').addEventListener('click',function(){
-    if(!convertedHtml)return;
-    var url=URL.createObjectURL(convertedHtml),link=document.createElement('a');
-    link.href=url;link.download='ledgerpeer-converted-attempt.html';link.click();
-    setTimeout(function(){URL.revokeObjectURL(url)},1000);
   });
   $('saveAttempt').addEventListener('click',async function(){
     if(!staged)return;
@@ -287,13 +211,6 @@
       meta.id=id;meta.createdAt=new Date().toISOString();meta.file='view.html?id='+encodeURIComponent(id);meta.autoDebriefRequested=false;meta.topics={};
       var questions=staged.questions.map(function(q){return Object.assign({},q);});
       var exams=JSON.parse(localStorage.getItem('tymba_custom_exams')||'[]');if(!Array.isArray(exams))throw new Error('Saved attempts could not be read.');
-      if(meta.sourceType==='pdf'||meta.sourceType==='pdf-html'){
-        if(originalPdf){
-          if(!window.LedgerPeerPdfProof)throw new Error('PDF evidence storage was not loaded.');
-          await LedgerPeerPdfProof.put(id,originalPdf);
-        }
-        if(convertedHtml)await LedgerPeerPdfProof.putHtml(id,convertedHtml);
-      }
       F.save(localStorage,key,questions);
       try{F.save(localStorage,'tymba_custom_exams',exams.concat([meta]));}catch(e){localStorage.removeItem(key);throw e;}
       this.disabled=true;

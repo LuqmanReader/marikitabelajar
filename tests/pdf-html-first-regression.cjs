@@ -89,11 +89,13 @@ async function run(){
  assert(prompt.includes('TOPIC CLASSIFICATION RUNS HERE'));
  console.log('PASS request: HTML primary source, unresolved-page evidence and external-only topic sorting.');
 
- // Exercise the real upload handler, not only the reader API.
- setup([{lines:native(1,['Grade','2.00 out of 2.00'])}],()=>{throw Error('Unexpected OCR')});
+ // The PDF converter remains testable for existing saved attempts, but the
+ // Debrief upload screen has deliberately returned to HTML-only imports.
  w.eval(source('attempt-entry.js'));
  const input=w.document.getElementById('sourceFile');
- Object.defineProperty(input,'files',{configurable:true,value:[{name:'upload.pdf',size:bytes.length,type:'application/pdf',arrayBuffer:async()=>bytes.buffer}]});
+ const markedHtml='<!doctype html><html><body><div class="que"><h3 class="no"><span class="qno">1</span></h3><div class="state">Correct</div><div class="qtext"><p>'+stem+'</p><table><tr><td>Cost</td><td>$40</td></tr></table></div><div class="answer"><div><label data-region="answer-label"><span class="flex-fill">$40</span></label><input type="radio" checked></div></div><div class="grade">Mark 2.00 out of 2.00</div><div class="rightanswer">The correct answer is: $40</div></div></body></html>';
+ const htmlBytes=Uint8Array.from(Buffer.from(markedHtml));
+ Object.defineProperty(input,'files',{configurable:true,value:[{name:'attempt.html',size:htmlBytes.length,type:'text/html',arrayBuffer:async()=>htmlBytes.buffer}]});
  input.dispatchEvent(new w.Event('change'));
  for(let i=0;i<30;i++){
   await new Promise(r=>setTimeout(r,10));
@@ -101,9 +103,17 @@ async function run(){
  }
  assert.match(w.document.getElementById('entryMessage').textContent,/Extraction finished/);
  assert.equal(w.document.getElementById('saveAttempt').disabled,false);
- assert.equal(w.document.getElementById('conversionResult').hidden,false);
- assert(w.document.getElementById('downloadConvertedHtml'));
- assert.equal(events.filter(x=>x==='ocr').length,0);
- console.log('PASS upload UI: automatic PDF -> HTML -> extraction, downloadable HTML and save enabled.');
+ assert.equal(input.accept,'.html,.htm,text/html');
+ assert.match(w.document.getElementById('entryPreview').textContent,/Original graded marks: 2 \/ 2/);
+ assert.equal(w.document.getElementById('conversionResult'),null);
+ Object.defineProperty(input,'files',{configurable:true,value:[{name:'upload.pdf',size:bytes.length,type:'application/pdf',arrayBuffer:async()=>bytes.buffer}]});
+ input.dispatchEvent(new w.Event('change'));
+ for(let i=0;i<20;i++){
+  await new Promise(r=>setTimeout(r,10));
+  if(/PDF uploads are no longer supported/.test(w.document.getElementById('entryMessage').textContent))break;
+ }
+ assert.match(w.document.getElementById('entryMessage').textContent,/PDF uploads are no longer supported/);
+ assert.equal(w.document.getElementById('saveAttempt').disabled,true);
+ console.log('PASS upload UI: marked HTML reads directly, keeps marks, and rejects PDF files.');
 }
 run().then(()=>dom.window.close()).catch(e=>{console.error(e);dom.window.close();process.exitCode=1});

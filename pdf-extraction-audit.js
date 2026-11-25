@@ -75,7 +75,7 @@ function audit(questions,opts){
   list.forEach(function(q){distribution[q.answer_state]++});
   var structuralComplete=!!list.length&&!duplicates.length&&!gaps.length&&!emptyQuestions.length&&first===1&&!invalidNumbers;
   var warnings=[];
-  if(gaps.length)warnings.push('Missing numbered question(s): '+gaps.join(', ')+'. Text may have merged into a neighbour; original PDF evidence must be inspected.');
+  if(gaps.length)warnings.push('Missing numbered question(s): '+gaps.join(', ')+'. Text may have merged into a neighbour; inspect the original source review.');
   if(duplicates.length)warnings.push('Duplicate question number(s): '+duplicates.join(', ')+'.');
   if(emptyQuestions.length)warnings.push('Unreadable/empty question content for Q'+emptyQuestions.join(', Q')+'. Numbering and grades alone DO NOT prove successful extraction. Reopen the source; do not generate a debrief request yet.');
   if(first!==1&&list.length)warnings.push('Question numbering does not begin at 1.');
